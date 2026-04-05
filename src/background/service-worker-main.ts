@@ -77,22 +77,46 @@ chrome.runtime.onMessage.addListener(
 /*  Chrome Event Registrations                                         */
 /* ------------------------------------------------------------------ */
 
-registerAutoInjector();
-registerInstallListener();
-registerCookieWatcher();
-registerContextMenu();
-registerShortcutCommands();
-registerSpaReinject();
-registerKeepalive();
-startHotReload();
+/**
+ * Each registration is wrapped in try/catch so a single failure
+ * (e.g. missing API, changed Chrome version) cannot crash the
+ * entire service worker and prevent the message listener from
+ * being installed.
+ */
+const registrations: Array<[string, () => void]> = [
+    ["auto-injector", registerAutoInjector],
+    ["install-listener", registerInstallListener],
+    ["cookie-watcher", registerCookieWatcher],
+    ["context-menu", registerContextMenu],
+    ["shortcut-commands", registerShortcutCommands],
+    ["spa-reinject", registerSpaReinject],
+    ["keepalive", registerKeepalive],
+    ["hot-reload", startHotReload],
+];
+
+for (const [label, register] of registrations) {
+    try {
+        register();
+    } catch (err) {
+        console.warn(
+            "[Marco] ⚠ Registration '%s' failed (non-fatal): %s",
+            label,
+            err instanceof Error ? err.message : String(err),
+        );
+    }
+}
 
 /* ------------------------------------------------------------------ */
 /*  Tab Removal Listener                                               */
 /* ------------------------------------------------------------------ */
 
-chrome.tabs.onRemoved.addListener((tabId) => {
-    removeTabInjection(tabId);
-});
+try {
+    chrome.tabs.onRemoved.addListener((tabId) => {
+        removeTabInjection(tabId);
+    });
+} catch (err) {
+    console.warn("[Marco] ⚠ tabs.onRemoved registration failed:", err);
+}
 
 /* ------------------------------------------------------------------ */
 /*  Boot                                                               */
