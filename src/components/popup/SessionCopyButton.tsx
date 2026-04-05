@@ -37,16 +37,30 @@ interface SessionLog {
   ext_version?: string;
 }
 
-interface SessionLogsResponse {
-  sessionId: string;
-  logs: SessionLog[];
-  errors: SessionLog[];
+interface SessionInfoEntry {
+  id: string;
+  lastModified: string;
 }
 
 interface SessionReportResponse {
   report: string;
   sessionId: string;
   sessions: string[];
+  sessionsWithTimestamps?: SessionInfoEntry[];
+}
+
+/** Formats an ISO timestamp as a relative age label like "2h ago", "3d ago". */
+function formatAge(iso: string): string {
+  if (!iso) return "";
+  const diffMs = Date.now() - new Date(iso).getTime();
+  if (diffMs < 0) return "now";
+  const mins = Math.floor(diffMs / 60_000);
+  if (mins < 1) return "now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
 }
 
 function formatLogEntry(entry: SessionLog): string {
