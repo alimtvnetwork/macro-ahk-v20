@@ -48,7 +48,7 @@ const SESSION_PREFIX = "session-";
 const EVENTS_LOG = "events.log";
 const ERRORS_LOG = "errors.log";
 const SCRIPTS_LOG = "scripts.log";
-const LOG_SEPARATOR = LOG_SEPARATOR;
+const LOG_SEPARATOR = "============================================================";
 
 /* ------------------------------------------------------------------ */
 /*  State                                                              */

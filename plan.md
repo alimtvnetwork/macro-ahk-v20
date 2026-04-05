@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-04-05
 **Active Codebase**: `marco-script-ahk-v7.latest/` (v7.23)
-**Chrome Extension**: v2.6.0
+**Chrome Extension**: v2.7.0
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
@@ -11,9 +11,9 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.6.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.7.0 — Stable
 
-All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.6.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, and hover micro-interactions. ESLint zero errors/warnings. All immediate workstream items complete.
+All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.7.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, and hover micro-interactions. ESLint zero errors/warnings. All immediate workstream items complete.
 
 ---
 

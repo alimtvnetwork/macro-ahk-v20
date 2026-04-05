@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-04-05T10:28:23.803Z",
+  "generatedAt": "2026-04-05T15:37:33.323Z",
   "schemaVersion": 1,
   "projects": [
     {
       "name": "marco-sdk",
       "displayName": "Rise Up Macro SDK",
-      "version": "2.6.0",
+      "version": "2.7.0",
       "description": "Core SDK — creates and freezes window.marco namespace",
       "seedId": "default-marco-sdk",
       "seedOnInstall": true,
@@ -77,7 +77,7 @@
     {
       "name": "xpath",
       "displayName": "XPath Utilities",
-      "version": "2.6.0",
+      "version": "2.7.0",
       "description": "Global XPath utility library (getByXPath, findElement, reactClick)",
       "seedId": "default-xpath-utils",
       "seedOnInstall": true,
@@ -121,7 +121,7 @@
     {
       "name": "macro-controller",
       "displayName": "Macro Controller",
-      "version": "2.6.0",
+      "version": "2.7.0",
       "description": "Macro Controller for workspace and credit management",
       "seedId": "default-macro-looping",
       "seedOnInstall": true,
