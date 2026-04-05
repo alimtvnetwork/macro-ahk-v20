@@ -100,7 +100,7 @@ export async function initSessionLogDir(sid: string, ver: string): Promise<void>
             "",
         ].join("\n"));
 
-        console.log(`[session-log-writer] Initialized session-logs/session-${sid}/`);
+        console.log(`[session-log-writer] Initialized OPFS dir "opfs-root/${LOGS_DIR_NAME}/${SESSION_PREFIX}${sid}/" with files: [${EVENTS_LOG}, ${ERRORS_LOG}, ${SCRIPTS_LOG}]`);
 
         // Fire-and-forget: prune old sessions on each new session start
         void pruneOldSessionLogs();
