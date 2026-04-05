@@ -181,11 +181,9 @@ function bindAllHandlers(manager: DbManager): void {
     bindKvDbManager(manager);
     bindGroupedKvDbManager(manager);
     bindFileStorageDbManager(manager);
-    // Wire file-change → namespace cache invalidation without circular import
+    // Wire file-change → namespace cache invalidation without circular import.
     onFileStorageChange((projectId) => {
-        import("./namespace-cache").then(({ invalidateNamespaceCache }) => {
-            invalidateNamespaceCache(projectId).catch(() => {});
-        }).catch(() => {});
+        invalidateNamespaceCache(projectId).catch(() => {});
     });
     bindStorageBrowserDbManager(manager);
     bindUpdaterDbManager(manager);
