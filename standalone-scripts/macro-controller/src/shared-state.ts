@@ -97,7 +97,7 @@ const TTypo = theme.typography || {};
 // Exported constants
 // ============================================
 export const FILE_NAME = 'macro-looping.js';
-export const VERSION = '2.15.0';
+export const VERSION = '2.16.0';
 
 // Expose version via RiseupAsiaMacroExt namespace (Issue 78 — no bare window globals)
 try {

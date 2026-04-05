@@ -227,21 +227,49 @@ export async function buildSessionReport(sid?: string): Promise<string> {
         return "[session-log-writer] No active session.";
     }
 
-    const sessionDirPath = `${LOGS_DIR_NAME}/${SESSION_PREFIX}${targetSid}`;
-    const absoluteSessionDirPath = `opfs-root/${sessionDirPath}`;
+    const result = await tryReadSessionDir(targetSid);
+    if (result.ok) return result.report;
+
+    // Fallback: requested session dir missing — try the most recent available session
+    const available = await listSessionIds();
+    const availableList = available.length > 0
+        ? available.map((id) => `opfs-root/${LOGS_DIR_NAME}/${SESSION_PREFIX}${id}/`).join(", ")
+        : "(none)";
+
+    if (available.length > 0) {
+        const fallbackSid = available[0]; // most recent
+        const fallback = await tryReadSessionDir(fallbackSid);
+        if (fallback.ok) {
+            const notice = [
+                `[session-log-writer] Requested session #${targetSid} not found at "opfs-root/${LOGS_DIR_NAME}/${SESSION_PREFIX}${targetSid}/".`,
+                `  Available sessions: [${availableList}]`,
+                `  Falling back to most recent session #${fallbackSid}.`,
+                "",
+            ].join("\n");
+            return notice + fallback.report;
+        }
+    }
+
+    // No fallback available
+    const absDir = `opfs-root/${LOGS_DIR_NAME}/${SESSION_PREFIX}${targetSid}`;
+    const expectedPaths = [EVENTS_LOG, ERRORS_LOG, SCRIPTS_LOG].map((f) => `${absDir}/${f}`);
+    return `[session-log-writer] Failed to read session #${targetSid} at OPFS dir "${absDir}". Expected file paths: [${expectedPaths.join(", ")}]. Available sessions: [${availableList}]. No fallback session had readable data.`;
+}
+
+/** Attempts to read a session directory. Returns { ok, report } or { ok: false, error }. */
+async function tryReadSessionDir(sid: string): Promise<{ ok: true; report: string } | { ok: false; error: string }> {
+    const absDir = `opfs-root/${LOGS_DIR_NAME}/${SESSION_PREFIX}${sid}`;
     const expectedFiles = [EVENTS_LOG, ERRORS_LOG, SCRIPTS_LOG] as const;
-    const expectedAbsolutePaths = expectedFiles.map((filename) => `${absoluteSessionDirPath}/${filename}`);
 
     try {
         const root = await navigator.storage.getDirectory();
         const logsRoot = await root.getDirectoryHandle(LOGS_DIR_NAME);
-        const dir = await logsRoot.getDirectoryHandle(`${SESSION_PREFIX}${targetSid}`);
+        const dir = await logsRoot.getDirectoryHandle(`${SESSION_PREFIX}${sid}`);
 
         const sections: string[] = [];
         const found: string[] = [];
         const missing: string[] = [];
 
-        // Read each log file
         for (const filename of expectedFiles) {
             try {
                 const handle = await dir.getFileHandle(filename);
@@ -250,34 +278,35 @@ export async function buildSessionReport(sid?: string): Promise<string> {
                 if (text.trim()) {
                     sections.push(text);
                 }
-                found.push(`${absoluteSessionDirPath}/${filename}`);
+                found.push(`${absDir}/${filename}`);
             } catch {
-                missing.push(`${absoluteSessionDirPath}/${filename}`);
+                missing.push(`${absDir}/${filename}`);
             }
         }
 
         if (sections.length === 0) {
             const missingList = missing.length > 0 ? ` Missing files: [${missing.join(", ")}].` : "";
             const foundList = found.length > 0 ? ` Found but empty: [${found.join(", ")}].` : "";
-            return `[session-log-writer] Session #${targetSid} has no readable log data at dir "${absoluteSessionDirPath}".${missingList}${foundList}`;
+            return { ok: false, error: `Session #${sid} has no readable log data at dir "${absDir}".${missingList}${foundList}` };
         }
 
         const ver = version || "?";
         const header = [
             LOG_SEPARATOR,
             `  Marco Full Session Report`,
-            `  Session:   #${targetSid}`,
+            `  Session:   #${sid}`,
             `  Generated: ${new Date().toISOString()}`,
             `  Version:   ${ver}`,
             LOG_SEPARATOR,
             "",
         ].join("\n");
 
-        return header + sections.join("\n\n");
+        return { ok: true, report: header + sections.join("\n\n") };
     } catch (err) {
         const errName = err instanceof DOMException ? err.name : "UnknownError";
         const errMsg = err instanceof Error ? err.message : String(err);
-        return `[session-log-writer] Failed to read session #${targetSid} at OPFS dir "${absoluteSessionDirPath}" (${errName}: ${errMsg}). Expected file paths: [${expectedAbsolutePaths.join(", ")}]. Cause: The session directory was likely pruned or never created.`;
+        const expectedPaths = expectedFiles.map((f) => `${absDir}/${f}`);
+        return { ok: false, error: `Failed to read session #${sid} at "${absDir}" (${errName}: ${errMsg}). Expected: [${expectedPaths.join(", ")}]` };
     }
 }
 
