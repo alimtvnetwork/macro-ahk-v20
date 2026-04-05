@@ -91,22 +91,38 @@ export async function boot(): Promise<void> {
 
         step = "reseed-prompts";
         setBootStep(step);
-        await reseedPrompts();
-        console.log("[Marco] ✓ Prompts reseeded from dist");
+        try {
+            await reseedPrompts();
+            console.log("[Marco] ✓ Prompts reseeded from dist");
+        } catch (err) {
+            console.warn("[Marco] Prompt reseed failed (non-fatal):", err);
+        }
 
         step = "normalize-default-project";
         setBootStep(step);
-        await ensureDefaultProjectSingleScript();
-        console.log("[Marco] ✓ Default project normalized");
+        try {
+            await ensureDefaultProjectSingleScript();
+            console.log("[Marco] ✓ Default project normalized");
+        } catch (err) {
+            console.warn("[Marco] Default project normalization failed (non-fatal):", err);
+        }
 
         step = "purge-stale-cache";
         setBootStep(step);
-        await purgeStaleEntries();
+        try {
+            await purgeStaleEntries();
+        } catch (err) {
+            console.warn("[Marco] Cache purge failed (non-fatal):", err);
+        }
 
         step = "precache-scripts";
         setBootStep(step);
-        await precacheStableScripts();
-        console.log("[Marco] Pre-cached stable scripts into IndexedDB");
+        try {
+            await precacheStableScripts();
+            console.log("[Marco] Pre-cached stable scripts into IndexedDB");
+        } catch (err) {
+            console.warn("[Marco] Script pre-cache failed (non-fatal):", err);
+        }
 
         step = "ready";
         setBootStep(step);
