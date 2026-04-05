@@ -25,6 +25,56 @@ import { execSync } from "node:child_process";
 const EXT_DIR = resolve(__dirname, "chrome-extension");
 const DIST_DIR = resolve(EXT_DIR, "dist");
 
+function resolveDeclaredAssetSource(
+    projectRootDir: string,
+    projectDistDir: string,
+    fileName: string,
+    assetKey?: string,
+): string | null {
+    const directCandidates = [
+        resolve(projectDistDir, fileName),
+        resolve(projectRootDir, fileName),
+    ];
+
+    for (const candidate of directCandidates) {
+        if (existsSync(candidate)) {
+            return candidate;
+        }
+    }
+
+    const rootFiles = existsSync(projectRootDir)
+        ? readdirSync(projectRootDir).filter((file) => !file.startsWith("."))
+        : [];
+    const normalizedFileName = fileName.toLowerCase();
+    const prefixedMatch = rootFiles.find((file) => file.toLowerCase().endsWith(`-${normalizedFileName}`));
+
+    if (prefixedMatch) {
+        return resolve(projectRootDir, prefixedMatch);
+    }
+
+    if (assetKey === "config") {
+        const configMatch = rootFiles.find(
+            (file) => /\.json$/i.test(file)
+                && /config/i.test(file)
+                && !/instruction|theme|prompt/i.test(file),
+        );
+        if (configMatch) {
+            return resolve(projectRootDir, configMatch);
+        }
+    }
+
+    if (assetKey === "theme") {
+        const themeMatch = rootFiles.find(
+            (file) => /\.json$/i.test(file) && /theme/i.test(file),
+        );
+        if (themeMatch) {
+            return resolve(projectRootDir, themeMatch);
+        }
+    }
+
+    return null;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Plugins                                                            */
 /* ------------------------------------------------------------------ */
@@ -59,6 +109,7 @@ function copyManifest(): Plugin {
                         "wasm/sql-wasm.wasm",
                         "build-meta.json",
                         "prompts/macro-prompts.json",
+                        "projects/seed-manifest.json",
                         "projects/scripts/*/*",
                     ],
                     matches: ["<all_urls>"],
@@ -185,13 +236,14 @@ function copyProjectScripts(): Plugin {
 
                 try {
                     const instruction = JSON.parse(readFileSync(instructionPath, "utf-8"));
+                    const projectRootDir = resolve(standaloneDir, folder.name);
+                    const distDir = resolve(projectRootDir, "dist");
 
                     // Per-project subfolder
                     const projectDir = resolve(projectsBaseDir, folder.name);
                     mkdirSync(projectDir, { recursive: true });
 
                     // Copy ALL dist/ artifacts into the project subfolder
-                    const distDir = resolve(standaloneDir, folder.name, "dist");
                     if (existsSync(distDir)) {
                         const distFiles = readdirSync(distDir).filter(
                             (f) => !f.startsWith("."),
@@ -202,6 +254,36 @@ function copyProjectScripts(): Plugin {
                             copyFileSync(src, dest);
                             console.log(`[copy-project-scripts]   + ${folder.name}/${distFile}`);
                         }
+                    }
+
+                    const declaredAssets = [
+                        ...(instruction.assets?.configs ?? []),
+                        ...(instruction.assets?.templates ?? []),
+                        ...(instruction.assets?.prompts ?? []),
+                        ...(instruction.assets?.css ?? []),
+                        ...(instruction.assets?.scripts ?? []),
+                    ] as Array<{ file: string; key?: string }>;
+
+                    for (const asset of declaredAssets) {
+                        const dest = resolve(projectDir, asset.file);
+                        if (existsSync(dest)) {
+                            continue;
+                        }
+
+                        const source = resolveDeclaredAssetSource(
+                            projectRootDir,
+                            distDir,
+                            asset.file,
+                            asset.key,
+                        );
+
+                        if (!source) {
+                            console.warn(`[copy-project-scripts] Missing declared asset for ${folder.name}: ${asset.file}`);
+                            continue;
+                        }
+
+                        copyFileSync(source, dest);
+                        console.log(`[copy-project-scripts]   + ${folder.name}/${asset.file} (declared asset)`);
                     }
 
                     // Copy instruction.json itself
