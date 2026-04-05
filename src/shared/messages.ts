@@ -147,6 +147,9 @@ export enum MessageType {
     GET_SESSION_LOGS = "GET_SESSION_LOGS",
     GET_SESSION_REPORT = "GET_SESSION_REPORT",
 
+    // ─── Injection Chain Diagnostics ───
+    GET_INJECTION_CHAIN = "GET_INJECTION_CHAIN",
+
     // ─── Storage Browser (Options page) ───
     STORAGE_LIST_TABLES = "STORAGE_LIST_TABLES",
     STORAGE_QUERY_TABLE = "STORAGE_QUERY_TABLE",

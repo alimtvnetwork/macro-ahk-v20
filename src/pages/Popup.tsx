@@ -15,6 +15,7 @@ const InjectionStatusPanel = lazy(() => import("@/components/popup/InjectionStat
 const InjectionErrorPanel = lazy(() => import("@/components/popup/InjectionErrorPanel").then(m => ({ default: m.InjectionErrorPanel })));
 const InjectionModeToggle = lazy(() => import("@/components/popup/InjectionModeToggle").then(m => ({ default: m.InjectionModeToggle })));
 const InjectionDiagnosticsPanel = lazy(() => import("@/components/popup/InjectionDiagnosticsPanel").then(m => ({ default: m.InjectionDiagnosticsPanel })));
+const DependencyChainPanel = lazy(() => import("@/components/popup/DependencyChainPanel").then(m => ({ default: m.DependencyChainPanel })));
 const ScriptToggleList = lazy(() => import("@/components/popup/ScriptToggleList").then(m => ({ default: m.ScriptToggleList })));
 const ImportPreviewDialog = lazy(() => import("@/components/popup/ImportPreviewDialog").then(m => ({ default: m.ImportPreviewDialog })));
 import { Separator } from "@/components/ui/separator";
@@ -164,6 +165,7 @@ const PopupPage = () => {
             <InjectionModeToggle />
             <InjectionErrorPanel />
             <InjectionDiagnosticsPanel />
+            <DependencyChainPanel />
           </Suspense>
           <Separator />
           <Suspense fallback={null}>
