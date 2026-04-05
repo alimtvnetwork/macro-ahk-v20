@@ -15,6 +15,12 @@
 
 All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.9.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, and hover micro-interactions. ESLint zero errors/warnings. All immediate workstream items complete.
 
+### 2026-04-05 Hotfix
+
+- Fixed click-injection ordering bug: if any script in the resolved chain has CSS, the injector now preserves full dependency order sequentially instead of executing non-CSS deps out of order.
+- Added marco-sdk as an explicit macro-controller dependency so `window.marco` toast/auth APIs are guaranteed on manual inject.
+- Improved session log read failures to print the exact missing OPFS path: `session-logs/session-<id>`.
+
 ---
 
 ## Remaining Backlog

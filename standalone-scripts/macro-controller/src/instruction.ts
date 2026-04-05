@@ -79,7 +79,7 @@ const instruction: ProjectInstruction = {
     version: "2.9.0",
     description: "Macro Controller for workspace and credit management",
     world: "MAIN",
-    dependencies: ["xpath"],
+    dependencies: ["marco-sdk", "xpath"],
     loadOrder: 2,
     seed: {
         id: "default-macro-looping",

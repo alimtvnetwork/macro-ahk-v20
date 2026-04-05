@@ -223,6 +223,8 @@ export async function buildSessionReport(sid?: string): Promise<string> {
         return "[session-log-writer] No active session.";
     }
 
+    const sessionDirPath = `${LOGS_DIR_NAME}/${SESSION_PREFIX}${targetSid}`;
+
     try {
         const root = await navigator.storage.getDirectory();
         const logsRoot = await root.getDirectoryHandle(LOGS_DIR_NAME);
@@ -261,7 +263,7 @@ export async function buildSessionReport(sid?: string): Promise<string> {
 
         return header + sections.join("\n\n");
     } catch (err) {
-        return `[session-log-writer] Failed to read session #${targetSid}: ${err}`;
+        return `[session-log-writer] Failed to read session #${targetSid} at OPFS path "${sessionDirPath}": ${err}`;
     }
 }
 
