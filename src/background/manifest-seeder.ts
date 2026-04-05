@@ -185,16 +185,16 @@ async function seedScriptsFromManifest(
                     // Insert new
                     console.log("[manifest-seeder:scripts] + INSERT %s (seedId=%s, filePath=%s)",
                         scriptDef.file, scriptDef.seedId, scriptDef.filePath);
-                    stored.push(buildStoredScript(scriptDef, project));
+                    stored.push(buildStoredScript(scriptDef, project, manifest));
                     changed = true;
                     seeded++;
                 } else {
                     // Refresh if stale
                     const current = stored[idx];
-                    if (isScriptStale(current, scriptDef, project)) {
+                    if (isScriptStale(current, scriptDef, project, manifest)) {
                         console.log("[manifest-seeder:scripts] ↻ REFRESH %s (seedId=%s, was stale)",
                             scriptDef.file, scriptDef.seedId);
-                        stored[idx] = refreshStoredScript(current, scriptDef, project);
+                        stored[idx] = refreshStoredScript(current, scriptDef, project, manifest);
                         changed = true;
                         seeded++;
                     } else {
@@ -217,7 +217,7 @@ async function seedScriptsFromManifest(
     return { seeded, errors };
 }
 
-function buildStoredScript(def: SeedScriptEntry, project: SeedProjectEntry): StoredScript {
+function buildStoredScript(def: SeedScriptEntry, project: SeedProjectEntry, manifest: SeedManifest): StoredScript {
     const now = new Date().toISOString();
     return {
         id: def.seedId,
@@ -231,7 +231,7 @@ function buildStoredScript(def: SeedScriptEntry, project: SeedProjectEntry): Sto
         isIife: def.isIife,
         autoInject: def.autoInject,
         isGlobal: project.isGlobal,
-        dependencies: resolveDependencyIds(project),
+        dependencies: resolveDependencyIds(manifest, project),
         loadOrder: project.loadOrder,
         runAt: def.runAt,
         configBinding: resolveConfigSeedId(def.configBinding, project),
@@ -246,6 +246,7 @@ function refreshStoredScript(
     current: StoredScript,
     def: SeedScriptEntry,
     project: SeedProjectEntry,
+    manifest: SeedManifest,
 ): StoredScript {
     return {
         ...current,
@@ -258,7 +259,7 @@ function refreshStoredScript(
         autoInject: def.autoInject,
         isGlobal: project.isGlobal,
         isEnabled: current.isEnabled, // preserve user toggle
-        dependencies: resolveDependencyIds(project),
+        dependencies: resolveDependencyIds(manifest, project),
         loadOrder: project.loadOrder,
         configBinding: resolveConfigSeedId(def.configBinding, project),
         themeBinding: resolveConfigSeedId(def.themeBinding, project),
@@ -271,6 +272,7 @@ function isScriptStale(
     current: StoredScript,
     def: SeedScriptEntry,
     project: SeedProjectEntry,
+    manifest: SeedManifest,
 ): boolean {
     return (
         current.filePath !== def.filePath ||
@@ -279,7 +281,11 @@ function isScriptStale(
         current.loadOrder !== project.loadOrder ||
         current.isIife !== def.isIife ||
         current.autoInject !== def.autoInject ||
-        current.name !== def.file
+        current.name !== def.file ||
+        current.cookieBinding !== def.cookieBinding ||
+        current.configBinding !== resolveConfigSeedId(def.configBinding, project) ||
+        current.themeBinding !== resolveConfigSeedId(def.themeBinding, project) ||
+        JSON.stringify(current.dependencies ?? []) !== JSON.stringify(resolveDependencyIds(manifest, project))
     );
 }
 
@@ -385,10 +391,21 @@ function resolveConfigSeedId(
  * Convention: dependency project "xpath" → seedId "default-xpath-utils" (from manifest).
  * Falls back to looking up the manifest entry for the dependency name.
  */
-function resolveDependencyIds(project: SeedProjectEntry): string[] {
-    // Dependencies are stored as project names; we need the script seedIds.
-    // The manifest itself has the mapping: each project's scripts[0].seedId
-    // For now we return the dependency project names — the injection resolver
-    // handles name-to-ID mapping at runtime.
-    return project.dependencies.map((dep) => dep);
+function resolveDependencyIds(manifest: SeedManifest, project: SeedProjectEntry): string[] {
+    const resolved = new Set<string>();
+
+    for (const dependencyName of project.dependencies) {
+        const dependencyProject = manifest.projects.find((entry) => entry.name === dependencyName);
+
+        if (!dependencyProject || dependencyProject.scripts.length === 0) {
+            resolved.add(dependencyName);
+            continue;
+        }
+
+        for (const dependencyScript of dependencyProject.scripts) {
+            resolved.add(dependencyScript.seedId);
+        }
+    }
+
+    return [...resolved];
 }

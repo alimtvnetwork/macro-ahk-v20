@@ -14,6 +14,7 @@ export interface ProjectInstruction {
     version: string;
     description: string;
     world: "MAIN" | "ISOLATED";
+    isGlobal?: boolean;
     dependencies: string[];
     loadOrder: number;
     seed: SeedBlock;
@@ -30,9 +31,10 @@ const instruction: ProjectInstruction = {
     schemaVersion: "1.0",
     name: "xpath",
     displayName: "XPath Utilities",
-    version: "2.8.0",
+    version: "2.9.0",
     description: "Global XPath utility library (getByXPath, findElement, reactClick)",
     world: "MAIN",
+    isGlobal: true,
     dependencies: [],
     loadOrder: 1,
     seed: {

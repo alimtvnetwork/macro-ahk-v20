@@ -48,6 +48,7 @@ export interface ProjectInstruction {
     version: string;
     description: string;
     world: "MAIN" | "ISOLATED";
+    isGlobal?: boolean;
     dependencies: string[];
     loadOrder: number;
     seed: SeedBlock;
@@ -66,9 +67,10 @@ const instruction: ProjectInstruction = {
     schemaVersion: "1.0",
     name: "marco-sdk",
     displayName: "Rise Up Macro SDK",
-    version: "2.8.0",
+    version: "2.9.0",
     description: "Core SDK — creates and freezes window.marco namespace",
     world: "MAIN",
+    isGlobal: true,
     dependencies: [],
     loadOrder: 0,
     seed: {

@@ -399,7 +399,10 @@ function isProjectEquivalent(a: StoredProject, b: StoredProject): boolean {
         && JSON.stringify(a.configs ?? []) === JSON.stringify(b.configs ?? [])
         && JSON.stringify(a.cookies ?? []) === JSON.stringify(b.cookies ?? [])
         && JSON.stringify(a.targetUrls ?? []) === JSON.stringify(b.targetUrls ?? [])
-        && JSON.stringify(a.settings ?? {}) === JSON.stringify(b.settings ?? {});
+        && JSON.stringify(a.settings ?? {}) === JSON.stringify(b.settings ?? {})
+        && JSON.stringify(a.dependencies ?? []) === JSON.stringify(b.dependencies ?? [])
+        && (a.isGlobal ?? false) === (b.isGlobal ?? false)
+        && (a.isRemovable ?? true) === (b.isRemovable ?? true);
 }
 
 /** Marks that the extension has been installed. */

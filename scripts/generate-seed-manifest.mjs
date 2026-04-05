@@ -92,7 +92,7 @@ function buildProjectEntry(name, instruction) {
     const description = instruction.description || "";
     const world = instruction.world || "MAIN";
     const loadOrder = instruction.loadOrder ?? 99;
-    const isGlobal = instruction.isGlobal ?? false;
+    const isGlobal = instruction.isGlobal === true;
     const dependencies = instruction.dependencies || [];
 
     // Build script entries from instruction.assets.scripts
