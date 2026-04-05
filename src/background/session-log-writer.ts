@@ -269,7 +269,16 @@ export async function buildSessionReport(sid?: string): Promise<string> {
 
         return header + sections.join("\n\n");
     } catch (err) {
-        return `[session-log-writer] Failed to read session #${targetSid} at OPFS path "${sessionDirPath}": ${err}`;
+        const errName = err instanceof DOMException ? err.name : "UnknownError";
+        const errMsg = err instanceof Error ? err.message : String(err);
+        const expected = ["events.log", "errors.log", "scripts.log"].join(", ");
+        return [
+            `[session-log-writer] Failed to read session #${targetSid}`,
+            `  OPFS path: ${sessionDirPath}`,
+            `  Error: ${errName}: ${errMsg}`,
+            `  Expected files: ${expected}`,
+            `  Cause: The session directory was likely pruned or never created.`,
+        ].join("\n");
     }
 }
 
