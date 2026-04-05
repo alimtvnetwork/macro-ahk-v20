@@ -374,6 +374,7 @@ export type MessageRequest =
     | { type: MessageType.GET_RECENT_MESSAGES; limit?: number }
     | { type: MessageType.GET_SESSION_LOGS }
     | { type: MessageType.GET_SESSION_REPORT; sessionId?: string }
+    | { type: MessageType.BROWSE_OPFS_SESSIONS }
     | { type: MessageType.RECORD_CYCLE_METRIC; cycleNumber: number; startTime: string; endTime: string; status: "success" | "error" | "skipped"; errorMessage?: string }
     | { type: MessageType.GET_RUN_STATS }
     | { type: MessageType.CLEAR_RUN_STATS }
