@@ -62,8 +62,8 @@ export async function handleFileSave(msg: unknown): Promise<{ isOk: true; id: st
     const result = db.exec("SELECT last_insert_rowid()");
     const id = String(result[0].values[0][0]);
     markDirty();
-    // ✅ 15.8: Invalidate namespace cache when files change
-    invalidateNamespaceCache(projectId).catch(() => {});
+    // Notify listeners (e.g. namespace cache) without circular import
+    onFilesChanged?.(projectId);
     return { isOk: true, id };
 }
 
