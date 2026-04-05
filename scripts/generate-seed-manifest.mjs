@@ -16,8 +16,9 @@
  * Also writes to: standalone-scripts/_generated/seed-manifest.json (for reference)
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const STANDALONE_DIR = join(ROOT, "standalone-scripts");
@@ -43,7 +44,11 @@ function main() {
 
     for (const folder of folders) {
         const name = folder.name;
+        const projectDir = join(STANDALONE_DIR, name);
+        const sourceInstructionPath = join(projectDir, "src", "instruction.ts");
         const instructionPath = join(STANDALONE_DIR, name, "dist", "instruction.json");
+
+        ensureFreshInstructionJson(name, projectDir, sourceInstructionPath, instructionPath);
 
         if (!existsSync(instructionPath)) {
             console.warn(`⚠ Skipping ${name}: no dist/instruction.json (run compile-instruction first)`);
@@ -75,6 +80,27 @@ function main() {
     const refDir = join(STANDALONE_DIR, "_generated");
     mkdirSync(refDir, { recursive: true });
     writeFileSync(join(refDir, "seed-manifest.json"), json, "utf-8");
+}
+
+function ensureFreshInstructionJson(name, projectDir, sourceInstructionPath, instructionPath) {
+    const sourceExists = existsSync(sourceInstructionPath);
+    const distExists = existsSync(instructionPath);
+
+    if (!sourceExists) {
+        return;
+    }
+
+    const shouldCompile = !distExists || statSync(sourceInstructionPath).mtimeMs > statSync(instructionPath).mtimeMs;
+    if (!shouldCompile) {
+        return;
+    }
+
+    const relativeProjectDir = projectDir.replace(ROOT + "/", "");
+    console.log(`↻ Refreshing stale instruction.json for ${name}`);
+    execFileSync(process.execPath, [join(ROOT, "scripts", "compile-instruction.mjs"), relativeProjectDir], {
+        cwd: ROOT,
+        stdio: "inherit",
+    });
 }
 
 /* ------------------------------------------------------------------ */
