@@ -16,7 +16,7 @@ import { bindErrorDbManager } from "./handlers/error-handler";
 import { bindPromptDbManager, reseedPrompts } from "./handlers/prompt-handler";
 import { bindKvDbManager } from "./handlers/kv-handler";
 import { bindGroupedKvDbManager } from "./handlers/grouped-kv-handler";
-import { bindFileStorageDbManager } from "./handlers/file-storage-handler";
+import { bindFileStorageDbManager, onFileStorageChange } from "./handlers/file-storage-handler";
 import { bindStorageBrowserDbManager } from "./handlers/storage-browser-handler";
 import { bindUpdaterDbManager } from "./handlers/updater-handler";
 import {
