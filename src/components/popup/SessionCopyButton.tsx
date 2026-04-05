@@ -62,8 +62,13 @@ function formatAge(iso: string): string {
   const days = Math.floor(hrs / 24);
   return `${days}d ago`;
 }
+interface SessionLogsResponse {
+  sessionId: string;
+  logs: SessionLog[];
+  errors: SessionLog[];
+}
 
-function formatLogEntry(entry: SessionLog): string {
+
   const ts = entry.timestamp ?? entry.Timestamp ?? "";
   const level = ((entry.level ?? entry.Level ?? "info") as string).toUpperCase().padEnd(5);
   const source = entry.source ?? entry.Source ?? "—";
