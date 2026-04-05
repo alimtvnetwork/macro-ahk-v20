@@ -1,10 +1,17 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ClipboardCopy, Check, Loader2 } from "lucide-react";
 import { sendMessage } from "@/lib/message-client";
 import { toast } from "sonner";
@@ -34,6 +41,12 @@ interface SessionLogsResponse {
   sessionId: string;
   logs: SessionLog[];
   errors: SessionLog[];
+}
+
+interface SessionReportResponse {
+  report: string;
+  sessionId: string;
+  sessions: string[];
 }
 
 function formatLogEntry(entry: SessionLog): string {
@@ -95,23 +108,56 @@ function buildReport(data: SessionLogsResponse): string {
   return header + logsSection + errorsSection + "\n";
 }
 
-// eslint-disable-next-line max-lines-per-function -- button with loading/copied states + report fetch
+const CURRENT_SESSION_VALUE = "__current__";
+
+// eslint-disable-next-line max-lines-per-function -- session selector + copy button with loading/copied states
 export function SessionCopyButton() {
   const [state, setState] = useState<"idle" | "loading" | "copied">("idle");
+  const [sessions, setSessions] = useState<string[]>([]);
+  const [selectedSession, setSelectedSession] = useState<string>(CURRENT_SESSION_VALUE);
+  const [loadingSessions, setLoadingSessions] = useState(false);
+
+  // Fetch available sessions on mount
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingSessions(true);
+
+    sendMessage<SessionReportResponse>({ type: "GET_SESSION_REPORT" })
+      .then((res) => {
+        if (cancelled) return;
+        const available = res.sessions ?? [];
+        setSessions(available);
+        // Default to current session
+        if (res.sessionId && res.sessionId !== "none") {
+          setSelectedSession(res.sessionId);
+        }
+      })
+      .catch(() => {
+        // Silently fail — dropdown just won't show sessions
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingSessions(false);
+      });
+
+    return () => { cancelled = true; };
+  }, []);
 
   const handleCopy = useCallback(async () => {
     setState("loading");
 
     try {
-      // Try the new file-based session report first
       let report: string;
+      const isCurrentSession = selectedSession === CURRENT_SESSION_VALUE;
+      const sessionIdParam = isCurrentSession ? undefined : selectedSession;
+
       try {
-        const fileReport = await sendMessage<{ report: string; sessionId: string }>({
+        const fileReport = await sendMessage<SessionReportResponse>({
           type: "GET_SESSION_REPORT",
+          ...(sessionIdParam ? { sessionId: sessionIdParam } : {}),
         });
         report = fileReport.report;
       } catch {
-        // Fallback to legacy SQLite-only report
+        // Fallback to legacy SQLite-only report (no session selection)
         const data = await sendMessage<SessionLogsResponse>({
           type: "GET_SESSION_LOGS",
         });
@@ -121,7 +167,8 @@ export function SessionCopyButton() {
       await navigator.clipboard.writeText(report);
 
       setState("copied");
-      toast.success("Session report copied to clipboard");
+      const label = isCurrentSession ? "current session" : `session #${selectedSession}`;
+      toast.success(`Report for ${label} copied to clipboard`);
 
       setTimeout(() => setState("idle"), 2000);
     } catch (copyError) {
@@ -129,33 +176,58 @@ export function SessionCopyButton() {
       const msg = copyError instanceof Error ? copyError.message : "Copy failed";
       toast.error(msg);
     }
-  }, []);
+  }, [selectedSession]);
 
   const isLoading = state === "loading";
   const isCopied = state === "copied";
   const isIdle = state === "idle";
+  const hasSessions = sessions.length > 0;
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-7 text-[10px] gap-1.5 hover:bg-primary/15 hover:text-primary"
-          onClick={handleCopy}
+    <div className="flex items-center gap-1.5">
+      {hasSessions && (
+        <Select
+          value={selectedSession}
+          onValueChange={setSelectedSession}
           disabled={isLoading}
         >
-          {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
-          {isCopied && <Check className="h-3 w-3 text-primary" />}
-          {isIdle && <ClipboardCopy className="h-3 w-3" />}
-          {isCopied ? "Copied!" : "Copy Session Logs"}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent side="top">
-        <p className="text-xs max-w-[200px]">
-          Copy all logs and errors from the current session (since injection) to clipboard with full stack traces
-        </p>
-      </TooltipContent>
-    </Tooltip>
+          <SelectTrigger className="h-7 text-[10px] w-[100px] px-2">
+            <SelectValue placeholder={loadingSessions ? "…" : "Session"} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={CURRENT_SESSION_VALUE} className="text-[10px]">
+              Current
+            </SelectItem>
+            {sessions.map((sid) => (
+              <SelectItem key={sid} value={sid} className="text-[10px]">
+                #{sid}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-[10px] gap-1.5 hover:bg-primary/15 hover:text-primary"
+            onClick={handleCopy}
+            disabled={isLoading}
+          >
+            {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+            {isCopied && <Check className="h-3 w-3 text-primary" />}
+            {isIdle && <ClipboardCopy className="h-3 w-3" />}
+            {isCopied ? "Copied!" : "Copy Logs"}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top">
+          <p className="text-xs max-w-[200px]">
+            Copy all logs and errors from the selected session to clipboard with full stack traces
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </div>
   );
 }
