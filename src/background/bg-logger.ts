@@ -147,19 +147,18 @@ export function logCaughtError(
 }
 
 /**
- * Logs a warning-level error (non-fatal, degraded functionality).
- * Still persists to DB as ERROR level but with a WARN-prefixed code.
+ * Logs a warning-level event (non-fatal, degraded functionality).
+ * Warnings go to console.warn only and MUST NOT be persisted to the Errors table,
+ * otherwise transient/non-fatal issues poison health/error counts.
  */
 export function logBgWarnError(
     tag: string,
     message: string,
     error?: unknown,
-    context?: BgErrorContext,
 ): void {
-    const errorCode = tag
-        .replace(/[\[\]:]/g, "")
-        .replace(/[^a-zA-Z0-9-]/g, "_")
-        .toUpperCase() + "_WARN";
-
-    logBgError(tag, errorCode, message, error, context);
+    if (error !== undefined) {
+        console.warn(`${tag} ${message}`, error);
+    } else {
+        console.warn(`${tag} ${message}`);
+    }
 }

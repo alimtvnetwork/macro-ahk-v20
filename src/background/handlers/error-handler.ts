@@ -64,7 +64,7 @@ export async function handleGetActiveErrors(): Promise<{ errors: unknown[] }> {
     return { errors };
 }
 
-/** Queries all unresolved error rows, newest first. */
+/** Queries unresolved error rows for the current session, newest first. */
 function queryUnresolvedErrors(db: ReturnType<typeof getErrorsDb>): unknown[] {
     const stmt = db.prepare(
         `SELECT
@@ -85,6 +85,7 @@ function queryUnresolvedErrors(db: ReturnType<typeof getErrorsDb>): unknown[] {
             Resolved as resolved
          FROM Errors
          WHERE Resolved = 0
+           AND SessionId = (SELECT Id FROM Sessions ORDER BY StartedAt DESC LIMIT 1)
          ORDER BY Timestamp DESC
          LIMIT 100`,
     );

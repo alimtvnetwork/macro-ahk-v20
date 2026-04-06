@@ -120,10 +120,19 @@ function checkStorageQuota(): "ok" | "warning" | "critical" {
     }
 }
 
-/** Checks recent error rate for health degradation. */
+/** Checks recent error rate for the CURRENT session only. */
 function checkErrorRate(): "ok" | "degraded" | "error" {
     try {
-        const errorCount = countTable(getErrorsDb(), "Errors");
+        const db = getErrorsDb();
+        const stmt = db.prepare("SELECT COUNT(*) as cnt FROM Errors WHERE SessionId = (SELECT Id FROM Sessions ORDER BY StartedAt DESC LIMIT 1)");
+        let errorCount = 0;
+
+        if (stmt.step()) {
+            const row = stmt.getAsObject() as { cnt?: number };
+            errorCount = Number(row.cnt ?? 0);
+        }
+        stmt.free();
+
         const isError = errorCount >= ERROR_RATE_ERROR;
         const isDegraded = errorCount >= ERROR_RATE_DEGRADED;
 
