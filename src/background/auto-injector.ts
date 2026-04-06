@@ -19,6 +19,7 @@ import { resolveScriptBindings, type ResolvedScript } from "./script-resolver";
 import { evaluateConditions } from "./condition-evaluator";
 import { wrapWithIsolation } from "./handlers/injection-wrapper";
 import {
+import { logCaughtError, logBgWarnError } from "./bg-logger";
     setTabInjection,
     getActiveProjectId,
 } from "./state-manager";

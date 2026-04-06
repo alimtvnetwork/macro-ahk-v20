@@ -13,6 +13,7 @@
 
 import { MessageType } from "../shared/messages";
 import { handleMessage } from "./message-router";
+import { logCaughtError } from "./bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Menu IDs                                                           */
@@ -292,7 +293,7 @@ async function handleCopyLogs(tabId: number): Promise<void> {
                 args: [logText],
             });
         } catch {
-            console.error("[Marco] Could not inject clipboard script");
+            logCaughtError("[Marco]", "Could not inject clipboard script", new Error("injection failed"));
         }
     }
 }
@@ -316,7 +317,7 @@ async function handleShowStatus(tabId: number): Promise<void> {
                 args: [statusText],
             });
         } catch {
-            console.error("[Marco] Could not show status");
+            logCaughtError("[Marco]", "Could not show status", new Error("injection failed"));
         }
     }
 }

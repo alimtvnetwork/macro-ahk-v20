@@ -67,7 +67,7 @@ function openDb(): Promise<IDBDatabase> {
 
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => {
-            console.error("[injection-cache] IndexedDB open failed:", request.error);
+            logCaughtError("[injection-cache]", "IndexedDB open failed", request.error);
             reject(request.error);
         };
     });
@@ -110,7 +110,7 @@ export async function cacheGet<T>(category: CacheCategory, subKey = ""): Promise
             };
 
             request.onerror = () => {
-                console.error("[injection-cache] Get failed for %s:", key, request.error);
+                logCaughtError("[injection-cache]", `Get failed for ${key}`, request.error);
                 resolve(null);
             };
         });
@@ -140,7 +140,7 @@ export async function cacheSet<T>(category: CacheCategory, value: T, subKey = ""
 
             request.onsuccess = () => resolve();
             request.onerror = () => {
-                console.error("[injection-cache] Set failed for %s:", key, request.error);
+                logCaughtError("[injection-cache]", `Set failed for ${key}`, request.error);
                 reject(request.error);
             };
         });
