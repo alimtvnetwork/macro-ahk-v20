@@ -46,6 +46,13 @@ interface StatusData {
   bootStep?: string;
 }
 
+interface OpfsStatusData {
+  sessionId: string | null;
+  dirExists: boolean;
+  files: Array<{ name: string; absolutePath: string; sizeBytes: number; exists: boolean }>;
+  healthy: boolean;
+}
+
 interface HealthData {
   state: string;
   details: string[];
