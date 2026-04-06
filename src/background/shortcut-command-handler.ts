@@ -38,7 +38,7 @@ export function registerShortcutCommands(): void {
             if (shortcut) {
                 console.log("[Marco] ✅ Shortcut registered: %s → %s", RUN_SCRIPTS_COMMAND, shortcut);
             } else {
-                console.warn("[Marco] ⚠️ Shortcut '%s' exists but has NO key binding assigned! Go to chrome://extensions/shortcuts to assign one.", RUN_SCRIPTS_COMMAND);
+                console.error("[Marco] ⚠️ Shortcut '%s' exists but has NO key binding assigned! Go to chrome://extensions/shortcuts to assign one.", RUN_SCRIPTS_COMMAND);
             }
         } else {
             console.error("[Marco] ❌ Shortcut '%s' not found in manifest commands — check manifest.json", RUN_SCRIPTS_COMMAND);
@@ -58,7 +58,7 @@ async function runScriptsFromShortcut(): Promise<void> {
         const activeTabId = await getActiveTabId();
 
         if (activeTabId === null) {
-            console.warn("[Marco] Shortcut: no active tab found — aborting");
+            console.error("[Marco] Shortcut: no active tab found — aborting");
             return;
         }
 
@@ -67,7 +67,7 @@ async function runScriptsFromShortcut(): Promise<void> {
         const scripts = await getActiveProjectScripts();
 
         if (scripts.length === 0) {
-            console.warn("[Marco] Shortcut: no scripts in active project — aborting");
+            console.error("[Marco] Shortcut: no scripts in active project — aborting");
             return;
         }
 
@@ -102,7 +102,7 @@ async function getActiveTabId(): Promise<number | null> {
 
         return typeof tabId === "number" ? tabId : null;
     } catch (err) {
-        console.warn("[Marco] Shortcut: chrome.tabs.query failed: %s",
+        console.error("[Marco] Shortcut: chrome.tabs.query failed: %s",
             err instanceof Error ? err.message : String(err));
 
         return null;
@@ -117,7 +117,7 @@ async function getActiveProjectScripts(): Promise<unknown[]> {
 
     const project = response?.activeProject;
     if (!project) {
-        console.warn("[Marco] Shortcut: GET_ACTIVE_PROJECT returned no active project");
+        console.error("[Marco] Shortcut: GET_ACTIVE_PROJECT returned no active project");
         return [];
     }
 

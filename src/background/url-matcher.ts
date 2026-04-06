@@ -137,7 +137,7 @@ function checkExcludePattern(
 
         return regex.test(pathname);
     } catch {
-        console.warn(`[url-matcher] Invalid excludePattern: ${excludePattern}`);
+        console.error(`[url-matcher] Invalid excludePattern: ${excludePattern}`);
         return false;
     }
 }

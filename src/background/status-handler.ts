@@ -130,7 +130,7 @@ function logCookieWarning(error: unknown): void {
         ? error.message
         : String(error);
 
-    console.warn(`[Marco] Token check failed: ${errorMessage}`);
+    console.error(`[Marco] Token check failed: ${errorMessage}`);
 }
 
 /** Resolves the current config loading state. */

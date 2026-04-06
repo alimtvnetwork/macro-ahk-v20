@@ -66,7 +66,7 @@ function openDb(): Promise<IDBDatabase> {
 
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => {
-            console.warn("[injection-cache] IndexedDB open failed:", request.error);
+            console.error("[injection-cache] IndexedDB open failed:", request.error);
             reject(request.error);
         };
     });
@@ -109,7 +109,7 @@ export async function cacheGet<T>(category: CacheCategory, subKey = ""): Promise
             };
 
             request.onerror = () => {
-                console.warn("[injection-cache] Get failed for %s:", key, request.error);
+                console.error("[injection-cache] Get failed for %s:", key, request.error);
                 resolve(null);
             };
         });
@@ -139,12 +139,12 @@ export async function cacheSet<T>(category: CacheCategory, value: T, subKey = ""
 
             request.onsuccess = () => resolve();
             request.onerror = () => {
-                console.warn("[injection-cache] Set failed for %s:", key, request.error);
+                console.error("[injection-cache] Set failed for %s:", key, request.error);
                 reject(request.error);
             };
         });
     } catch (err) {
-        console.warn("[injection-cache] cacheSet error:", err);
+        console.error("[injection-cache] cacheSet error:", err);
     }
 }
 
@@ -283,7 +283,7 @@ export async function syncCacheWithBuildId(
 
         return { changed: true, cleared: clearResult.cleared };
     } catch (err) {
-        console.warn("[injection-cache] Build sync failed:", err);
+        console.error("[injection-cache] Build sync failed:", err);
         return { changed: false, cleared: 0 };
     }
 }

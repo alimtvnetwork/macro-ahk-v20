@@ -42,7 +42,7 @@ export async function seedFromManifest(): Promise<SeedResult> {
     console.log("[manifest-seeder] Fetching seed-manifest.json from extension dist...");
     const manifest = await fetchManifest();
     if (!manifest) {
-        console.warn("[manifest-seeder::seedFromManifest] ❌ seed-manifest.json not found or invalid — skipping. " +
+        console.error("[manifest-seeder::seedFromManifest] ❌ seed-manifest.json not found or invalid — skipping. " +
             "This means built-in scripts cannot be seeded from the manifest. " +
             "Ensure the build pipeline runs compile-instruction + generate-seed-manifest.");
         return { scripts: 0, configs: 0, projects: 0, errors: ["seed-manifest.json not found or invalid"] };
@@ -63,7 +63,7 @@ export async function seedFromManifest(): Promise<SeedResult> {
         return { scripts: 0, configs: 0, projects: 0, errors: [`Unsupported schemaVersion ${sv} (max supported: ${SUPPORTED_SCHEMA_VERSIONS.max})`] };
     }
     if (sv < SUPPORTED_SCHEMA_VERSIONS.min) {
-        console.warn(
+        console.error(
             "[manifest-seeder::seedFromManifest] ⚠ schemaVersion %d is older than min (%d) — proceeding with best-effort seeding",
             sv,
             SUPPORTED_SCHEMA_VERSIONS.min,
@@ -102,7 +102,7 @@ export async function seedFromManifest(): Promise<SeedResult> {
     );
 
     if (scriptResult.errors.length > 0 || configResult.errors.length > 0) {
-        console.warn("[manifest-seeder::seedFromManifest] Seed errors:", [...scriptResult.errors, ...configResult.errors]);
+        console.error("[manifest-seeder::seedFromManifest] Seed errors:", [...scriptResult.errors, ...configResult.errors]);
     }
 
     return {
@@ -137,7 +137,7 @@ async function fetchManifest(): Promise<SeedManifest | null> {
     try {
         const resp = await fetch(url);
         if (!resp.ok) {
-            console.warn("[manifest-seeder::fetchManifest] ❌ Fetch failed: HTTP %d for %s — file does not exist in extension dist", resp.status, url);
+            console.error("[manifest-seeder::fetchManifest] ❌ Fetch failed: HTTP %d for %s — file does not exist in extension dist", resp.status, url);
             return null;
         }
         const raw = await resp.text();
@@ -205,7 +205,7 @@ async function seedScriptsFromManifest(
             } catch (err) {
                 const msg = `[seedScriptsFromManifest] Failed to seed script ${scriptDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                console.warn("[manifest-seeder]", msg);
+                console.error("[manifest-seeder]", msg);
             }
         }
     }
@@ -336,7 +336,7 @@ async function seedConfigsFromManifest(
             } catch (err) {
                 const msg = `[seedConfigsFromManifest→fetchConfigJson] Failed to seed config ${configDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                console.warn("[manifest-seeder]", msg);
+                console.error("[manifest-seeder]", msg);
             }
         }
     }

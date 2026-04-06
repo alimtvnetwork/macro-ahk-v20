@@ -224,7 +224,7 @@ function logMarkersIntact(tabId: number): void {
 
 /** Logs that markers were lost after SPA navigation. */
 function logMarkersLost(tabId: number): void {
-    console.warn(
+    console.error(
         `[spa-reinject] Markers lost in tab ${tabId} after SPA navigation, re-injecting`,
     );
 

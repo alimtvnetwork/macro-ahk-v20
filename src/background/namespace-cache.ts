@@ -69,7 +69,7 @@ export async function rebuildNamespaceCache(project: StoredProject): Promise<voi
         await chrome.storage.local.set({ [nsCacheKey(project.id)]: entry });
         console.log("[ns-cache] Rebuilt namespace cache for \"%s\" (%d chars)", project.name, nsScript.length);
     } catch (err) {
-        console.warn("[ns-cache] Failed to rebuild cache for %s: %s",
+        console.error("[ns-cache] Failed to rebuild cache for %s: %s",
             project.id, err instanceof Error ? err.message : String(err));
     }
 }

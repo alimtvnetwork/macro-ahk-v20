@@ -199,7 +199,7 @@ export async function handleSaveProject(
 
     // ✅ Seed bound configs into project SQLite DB (moved off injection hot path)
     seedBoundConfigs(saved).catch((e) =>
-        console.warn("[project-save:config-seed] %s", e instanceof Error ? e.message : String(e)),
+        console.error("[project-save:config-seed] %s", e instanceof Error ? e.message : String(e)),
     );
 
     return { isOk: true, project: saved };

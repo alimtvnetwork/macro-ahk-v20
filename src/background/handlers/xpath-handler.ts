@@ -98,7 +98,7 @@ function logInjectionError(action: string, error: unknown): void {
         ? error.message
         : String(error);
 
-    console.warn(`[xpath] Failed to ${action} recorder: ${errorMessage}`);
+    console.error(`[xpath] Failed to ${action} recorder: ${errorMessage}`);
 }
 
 /* ------------------------------------------------------------------ */

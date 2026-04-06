@@ -51,7 +51,7 @@ export async function buildHealthResponse(): Promise<HealthStatusResponse> {
         if (computedState === "HEALTHY") {
             console.log("[health] %s → HEALTHY (recovered)", previousState);
         } else {
-            console.warn("[health] %s → %s: %s", previousState, computedState, details.join("; "));
+            console.error("[health] %s → %s: %s", previousState, computedState, details.join("; "));
         }
     } else {
         setHealthState(computedState);
@@ -70,7 +70,7 @@ export function transitionHealth(
 
     if (isDowngrade) {
         setHealthState(newState);
-        console.warn(
+        console.error(
             `[health] ${currentState} → ${newState}: ${reason}`,
         );
     }
@@ -98,7 +98,7 @@ async function checkStorageAvailability(): Promise<boolean> {
             ? storageError.message
             : String(storageError);
 
-        console.warn(`[health] Storage check failed: ${errorMessage}`);
+        console.error(`[health] Storage check failed: ${errorMessage}`);
         return false;
     }
 }

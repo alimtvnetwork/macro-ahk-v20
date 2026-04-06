@@ -75,7 +75,7 @@ async function resolveScriptCode(script: StoredScript): Promise<ResolvedCode> {
             const fetchT0 = performance.now();
             const response = await fetch(url);
             if (!response.ok) {
-                console.warn("[script-resolver] filePath fetch failed (%s %s)",
+                console.error("[script-resolver] filePath fetch failed (%s %s)",
                     response.status, candidate.path);
                 continue;
             }
@@ -84,7 +84,7 @@ async function resolveScriptCode(script: StoredScript): Promise<ResolvedCode> {
             const totalMs = (performance.now() - t0).toFixed(1);
 
             if (!code || code.length < 10) {
-                console.warn("[script-resolver] filePath returned empty/tiny response for %s", candidate.path);
+                console.error("[script-resolver] filePath returned empty/tiny response for %s", candidate.path);
                 continue;
             }
 
@@ -95,18 +95,18 @@ async function resolveScriptCode(script: StoredScript): Promise<ResolvedCode> {
 
             cacheScriptCode(candidate.path, code).catch(() => {});
             if (candidate.path !== script.filePath) {
-                console.warn("[script-resolver] Recovered %s via bundled fallback %s", script.filePath, candidate.path);
+                console.error("[script-resolver] Recovered %s via bundled fallback %s", script.filePath, candidate.path);
                 cacheScriptCode(script.filePath, code).catch(() => {});
             }
 
             return { code, source: "fetch" };
         } catch (err) {
-            console.warn("[script-resolver] filePath fetch error for %s: %s",
+            console.error("[script-resolver] filePath fetch error for %s: %s",
                 candidate.path, err instanceof Error ? err.message : String(err));
         }
     }
 
-    console.warn("[script-resolver] All filePath fetches failed for %s, falling back to embedded code", script.filePath);
+    console.error("[script-resolver] All filePath fetches failed for %s, falling back to embedded code", script.filePath);
     return { code: script.code, source: "embedded" };
 }
 
@@ -187,11 +187,11 @@ async function resolveDependencies(
 
             const depScript = findScript(allScripts, depId);
             if (!depScript) {
-                console.warn("[script-resolver] Dependency not found: %s (required by %s)", depId, script.name);
+                console.error("[script-resolver] Dependency not found: %s (required by %s)", depId, script.name);
                 continue;
             }
             if (depScript.isEnabled === false) {
-                console.warn("[script-resolver] Dependency disabled: %s (required by %s)", depScript.name, script.name);
+                console.error("[script-resolver] Dependency disabled: %s (required by %s)", depScript.name, script.name);
                 continue;
             }
 
@@ -250,7 +250,7 @@ async function resolveOneBinding(
     const isMissingScript = script === null;
 
     if (isMissingScript) {
-        console.warn("[injection:resolve] ⚠ Script not found: %s (store has %d scripts)", binding.scriptId, scripts.length);
+        console.error("[injection:resolve] ⚠ Script not found: %s (store has %d scripts)", binding.scriptId, scripts.length);
         logMissingScript(binding.scriptId);
         void persistInjectionWarn(
             "SCRIPT_SKIPPED_MISSING",
@@ -283,7 +283,7 @@ async function resolveOneBinding(
     const { code, source: codeSource } = await resolveScriptCode(script!);
 
     if (!code || code.trim().length === 0) {
-        console.warn("[injection:resolve] ⚠ Script '%s' (id=%s) resolved with EMPTY code — skipping. filePath=%s, source=%s. Check IndexedDB cache or script store.",
+        console.error("[injection:resolve] ⚠ Script '%s' (id=%s) resolved with EMPTY code — skipping. filePath=%s, source=%s. Check IndexedDB cache or script store.",
             script!.name, script!.id, script!.filePath ?? "(none)", codeSource);
         void persistInjectionWarn(
             "SCRIPT_SKIPPED_EMPTY_CODE",
@@ -480,7 +480,7 @@ async function readConfigStore(): Promise<StoredConfig[]> {
 
 /** Logs a warning for a missing script reference. */
 function logMissingScript(scriptId: string): void {
-    console.warn(
+    console.error(
         `[script-resolver] Script not found in store: ${scriptId}`,
     );
 }
