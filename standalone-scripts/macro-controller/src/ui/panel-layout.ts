@@ -200,6 +200,10 @@ export function disableFloating(ctx: PanelLayoutCtx): void {
   if (!ctx.isFloating) return;
   log('Switching MacroLoop panel from floating to docked mode', 'info');
   ctx.isFloating = false;
+
+  // Remove backdrop when docking
+  const backdrop = document.getElementById('marco-panel-backdrop');
+  if (backdrop) backdrop.remove();
   ctx.ui.style.position = 'relative';
   ctx.ui.style.zIndex = '';
   ctx.ui.style.margin = '8px 0';
