@@ -242,7 +242,7 @@ async function seedMissingBuiltinsDirectly(
                 console.log("[builtin-guard:fallback] ✅ Read instruction.json for %s: v%s (from %s)",
                     scriptName, version, instrAbsUrl);
             } else {
-                console.warn("[builtin-guard:fallback] ❌ instruction.json HTTP %d for %s — URL: %s",
+                console.error("[builtin-guard:fallback] ❌ instruction.json HTTP %d for %s — URL: %s",
                     instrResp.status, scriptName, instrAbsUrl);
                 void persistInjectionWarn(
                     "BUILTIN_GUARD_INSTRUCTION_MISSING",
