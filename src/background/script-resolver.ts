@@ -249,7 +249,7 @@ async function resolveOneBinding(
     const isMissingScript = script === null;
 
     if (isMissingScript) {
-        console.error("[injection:resolve] ⚠ Script not found: %s (store has %d scripts)", binding.scriptId, scripts.length);
+        logBgWarnError("[injection:resolve]", `Script not found: ${binding.scriptId} (store has ${scripts.length} scripts)`);
         logMissingScript(binding.scriptId);
         void persistInjectionWarn(
             "SCRIPT_SKIPPED_MISSING",
