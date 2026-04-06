@@ -1,0 +1,114 @@
+# ──────────────────────────────────────────────────────────────
+# Marco Extension — Release Pipeline
+#
+# Triggers on push to any branch matching  release/*
+# (e.g.  release/v2.6.0).
+#
+# Produces a GitHub Release with these assets:
+#   • marco-extension-v{VER}.zip   — Chrome extension dist contents
+#   • prompts-v{VER}.zip           — standalone-scripts/prompts/**
+#   • macro-controller-v{VER}.zip  — standalone-scripts/macro-controller/**
+#   • marco-sdk-v{VER}.zip         — standalone-scripts/marco-sdk/**
+#   • xpath-v{VER}.zip             — standalone-scripts/xpath/**
+# ──────────────────────────────────────────────────────────────
+
+name: Release Build
+
+on:
+  push:
+    branches:
+      - "release/*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Extract version from branch name ──────────────────
+      - name: Extract version
+        id: version
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/release/}"
+          echo "tag=${BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "Releasing version: ${BRANCH}"
+
+      # ── Setup Node.js ─────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ── Install root dependencies ─────────────────────────
+      - name: Install root dependencies
+        run: npm ci
+
+      # ── Install Chrome extension dependencies ─────────────
+      - name: Install extension dependencies
+        working-directory: chrome-extension
+        run: npm ci
+
+      # ── Build Chrome extension ────────────────────────────
+      - name: Build Chrome extension
+        working-directory: chrome-extension
+        run: npm run build
+
+      # ── Package assets ────────────────────────────────────
+      - name: Package release assets
+        env:
+          VER: ${{ steps.version.outputs.tag }}
+        run: |
+          mkdir -p release-assets
+
+          # Chrome extension — zip contents of dist/ (no dist/ prefix inside zip)
+          cd chrome-extension/dist
+          zip -r "../../release-assets/marco-extension-${VER}.zip" .
+          cd ../..
+
+          # Prompts
+          cd standalone-scripts/prompts
+          zip -r "../../release-assets/prompts-${VER}.zip" .
+          cd ../..
+
+          # Macro Controller
+          cd standalone-scripts/macro-controller
+          zip -r "../../release-assets/macro-controller-${VER}.zip" .
+          cd ../..
+
+          # Marco SDK
+          cd standalone-scripts/marco-sdk
+          zip -r "../../release-assets/marco-sdk-${VER}.zip" .
+          cd ../..
+
+          # XPath
+          cd standalone-scripts/xpath
+          zip -r "../../release-assets/xpath-${VER}.zip" .
+          cd ../..
+
+          echo "=== Release assets ==="
+          ls -lh release-assets/
+
+      # ── Create GitHub Release ─────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "Marco Extension ${{ steps.version.outputs.tag }}"
+          body: |
+            ## Marco Extension ${{ steps.version.outputs.tag }}
+
+            ### Assets
+            - **marco-extension** — Chrome extension (load unpacked in `chrome://extensions`)
+            - **prompts** — AI prompt templates
+            - **macro-controller** — Standalone macro controller scripts
+            - **marco-sdk** — Marco SDK
+            - **xpath** — XPath utility scripts
+          files: release-assets/*
+          draft: false
+          prerelease: false
