@@ -16,7 +16,7 @@ import { logCaughtError, BgLogTag} from "../bg-logger";
 /*  PURGE_LOGS                                                         */
 /* ------------------------------------------------------------------ */
 
-/** Purges log entries older than the specified days. */
+/** Purges log entries older than the specified days. Pass 0 to clear ALL. */
 export async function handlePurgeLogs(
     message: MessageRequest,
 ): Promise<{ purged: number }> {
@@ -28,15 +28,19 @@ export async function handlePurgeLogs(
     return { purged };
 }
 
-/** Deletes logs older than N days and returns count deleted. */
+/** Deletes logs older than N days (0 = all) and returns count deleted. */
 function purgeOldLogs(days: number): number {
     const db = getLogsDb();
-    const cutoff = new Date(Date.now() - days * 86400000).toISOString();
-
     const before = countTable(db, "Logs");
-    db.run("DELETE FROM Logs WHERE Timestamp < ?", [cutoff]);
-    const after = countTable(db, "Logs");
 
+    if (days === 0) {
+        db.run("DELETE FROM Logs");
+    } else {
+        const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+        db.run("DELETE FROM Logs WHERE Timestamp < ?", [cutoff]);
+    }
+
+    const after = countTable(db, "Logs");
     return before - after;
 }
 

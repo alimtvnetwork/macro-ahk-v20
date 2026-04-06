@@ -525,6 +525,26 @@ export function ActivityLogTimeline() {
             {exportLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
             Export ZIP
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-destructive hover:bg-destructive/10"
+            onClick={async () => {
+              try {
+                await Promise.all([
+                  sendMessage({ type: "CLEAR_ERRORS" }),
+                  sendMessage({ type: "PURGE_LOGS", olderThanDays: 0 }),
+                ]);
+                toast.success("All logs and errors cleared");
+                refresh();
+              } catch {
+                toast.error("Failed to clear logs");
+              }
+            }}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Clear All
+          </Button>
           <Button variant="outline" size="sm" onClick={refresh} disabled={loading} className="gap-1.5">
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             Refresh

@@ -150,7 +150,7 @@ export async function handleClearErrors(): Promise<OkResponse> {
     const db = getErrorsDb();
     db.run("UPDATE Errors SET Resolved = 1 WHERE Resolved = 0");
     dbManager!.markDirty();
-    setHealthState("OK");
+    setHealthState("HEALTHY");
     broadcastErrorCountChange();
     return { isOk: true };
 }
