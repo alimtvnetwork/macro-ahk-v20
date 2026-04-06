@@ -224,9 +224,9 @@ export async function handleInjectScripts(
         budgetMs = settings.injectionBudgetMs ?? 500;
     } catch { /* use default */ }
     if (totalMs > budgetMs) {
-        console.error(
-            "[injection] ⚠️ PERFORMANCE BUDGET EXCEEDED — %.1fms (budget: %dms) breakdown=%s",
-            totalMs, budgetMs, JSON.stringify(timings),
+        logBgWarnError(
+            "[injection]",
+            `PERFORMANCE BUDGET EXCEEDED — ${totalMs}ms (budget: ${budgetMs}ms) breakdown=${JSON.stringify(timings)}`,
         );
         void mirrorDiagnosticToTab(
             msg.tabId,
