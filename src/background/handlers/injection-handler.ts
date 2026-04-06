@@ -804,8 +804,7 @@ async function injectProjectNamespaces(tabId: number, allProjects: StoredProject
                     await injectWithCspFallback(tabId, nsScriptParts[i], "MAIN");
                     console.log("[injection:ns] Registered namespace for %s (sequential fallback)", nsProjectNames[i]);
                 } catch (seqErr) {
-                    console.error("[injection:ns] ❌ Failed: %s — %s",
-                        nsProjectNames[i], seqErr instanceof Error ? seqErr.message : String(seqErr));
+                    logCaughtError("[injection:ns]", `Failed: ${nsProjectNames[i]}`, seqErr);
                 }
             }
         }
