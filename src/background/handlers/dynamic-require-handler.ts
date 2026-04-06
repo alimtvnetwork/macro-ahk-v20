@@ -114,7 +114,7 @@ export async function handleDynamicRequire(
     } catch (err) {
         const errMsg = err instanceof Error ? err.message : String(err);
         logDynamicLoad(requesterProjectId, target, "error", errMsg);
-        console.error("[dynamic-require] ❌ %s → %s failed: %s", requester.name, target, errMsg);
+        logCaughtError("[dynamic-require]", `${requester.name} → ${target} failed`, err);
         return { isOk: false, errorMessage: errMsg };
     }
 }
