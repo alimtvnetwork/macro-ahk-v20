@@ -354,6 +354,7 @@ export const HANDLER_REGISTRY = new Map<MessageType, MessageHandler>([
     [MessageType.GET_SESSION_LOGS, async () => handleGetSessionLogs()],
     [MessageType.GET_SESSION_REPORT, async (msg) => handleGetSessionReport(msg)],
     [MessageType.BROWSE_OPFS_SESSIONS, async () => handleBrowseOpfsSessions()],
+    [MessageType.GET_OPFS_STATUS, async () => handleGetOpfsStatus()],
     [MessageType.GET_SETTINGS, async () => handleGetSettings()],
     [MessageType.SAVE_SETTINGS, async (msg) => handleSaveSettings(msg)],
     [MessageType.GET_PROMPT_VARIABLES, async () => handleGetPromptVariables()],
