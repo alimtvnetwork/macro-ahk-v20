@@ -31,6 +31,7 @@ vi.mock('../auth', () => ({
   getSessionCookieNames: vi.fn(() => []),
   getLastBridgeOutcome: vi.fn(() => null),
   setRecordRefreshOutcome: vi.fn(),
+  getLastTokenSource: vi.fn(() => 'test'),
   LAST_TOKEN_SOURCE: 'test',
 }));
 
