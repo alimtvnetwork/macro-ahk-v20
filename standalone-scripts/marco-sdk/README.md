@@ -26,4 +26,4 @@ Compiled by the extension build pipeline. Output: `dist/marco-sdk.js`
 
 ## Spec
 
-See `spec/07-devtools-and-injection/sdk-convention.md` for full API reference.
+See `spec/09-devtools-and-injection/sdk-convention.md` for full API reference.

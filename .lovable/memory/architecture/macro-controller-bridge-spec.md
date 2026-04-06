@@ -19,9 +19,9 @@ Response flow is reversed. The `window.marco` SDK (injected before user scripts)
 
 ### Key Files
 
-- `spec/05-chrome-extension/43-macro-controller-extension-bridge.md` — Full bridge API spec
-- `spec/05-chrome-extension/42-user-script-logging-and-data-bridge.md` — `window.marco` SDK spec
-- `spec/05-chrome-extension/18-message-protocol.md` — Message type registry
+- `spec/07-chrome-extension/43-macro-controller-extension-bridge.md` — Full bridge API spec
+- `spec/07-chrome-extension/42-user-script-logging-and-data-bridge.md` — `window.marco` SDK spec
+- `spec/07-chrome-extension/18-message-protocol.md` — Message type registry
 - `src/background/handlers/data-bridge-handler.ts` — Storage handler implementation
 - `src/background/message-router.ts` — Message routing
 

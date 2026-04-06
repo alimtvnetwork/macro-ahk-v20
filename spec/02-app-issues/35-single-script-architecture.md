@@ -47,7 +47,7 @@ Consolidated the Chrome Extension from a 3-script architecture (combo-switch.js,
 9. **Manifest** (`manifest.json`):
    - Added `commands` section with `Ctrl+Shift+R` for "Run scripts"
 
-10. **Spec**: Created `spec/05-chrome-extension/35-single-script-architecture.md`
+10. **Spec**: Created `spec/07-chrome-extension/35-single-script-architecture.md`
 
 ---
 

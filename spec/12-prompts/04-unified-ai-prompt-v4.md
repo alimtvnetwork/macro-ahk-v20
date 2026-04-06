@@ -168,7 +168,7 @@ update spec properly so that the mistake doesn't appear and update memory and al
 
 ### Required folder structure
 
-- All application spec files: `/spec/04-macro-controller/`
+- All application spec files: `/spec/06-macro-controller/`
 - All issue write-ups: `/spec/02-app/issues/`
 - File naming format: `{seq}-{issueSlugName}.md` (sequential numbering: 01, 02, 03…)
 
@@ -240,7 +240,7 @@ The file must include these sections in this exact order:
 
 **Done checklist**
 
-- [ ] Spec updated under /spec/04-macro-controller/
+- [ ] Spec updated under /spec/06-macro-controller/
 - [ ] Issue write-up created under /spec/02-app/issues/
 - [ ] Memory updated with summary and prevention rule
 - [ ] Acceptance criteria updated or added
@@ -249,7 +249,7 @@ The file must include these sections in this exact order:
 
 ### Spec update requirements
 
-Update the relevant spec files under /spec/04-macro-controller/ to include:
+Update the relevant spec files under /spec/06-macro-controller/ to include:
 
 1. Corrected behavior
 2. Explicit constraints to prevent the old mistake
@@ -286,7 +286,7 @@ Return the following in this order:
 
 1. A concise process checklist to follow after every fix.
 2. A copy-paste template for `/spec/02-app/issues/{seq}-{issueSlugName}.md`
-3. A brief note stating all specs live under `/spec/04-macro-controller/`
+3. A brief note stating all specs live under `/spec/06-macro-controller/`
 
 **Formatting rule:** ensure there is a blank line after every Markdown header.
 
@@ -331,7 +331,7 @@ The specification is the source of truth for system behavior.
 
 **Priority order (highest to lowest):**
 
-1. Specification files under `/spec/04-macro-controller/`
+1. Specification files under `/spec/06-macro-controller/`
 2. Issue corrections under `/spec/02-app/issues/`
 3. Failing test documentation under `/spec/05-failing-tests/`
 4. Memory and decision logs

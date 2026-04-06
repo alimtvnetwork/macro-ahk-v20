@@ -122,7 +122,7 @@ All notable changes to the Automator project are documented in this file.
 - **Code Style Standards renumbered** to #22–#26
 
 ### Files
-- `MacroLoop/Routing.ahk` (v7.0 + v7.32), `macro-looping.js`, `spec/06-coding-guidelines/engineering-standards.md`, `spec/01-app-issues/19-*.md`, `spec/01-app-issues/20-*.md`
+- `MacroLoop/Routing.ahk` (v7.0 + v7.32), `macro-looping.js`, `spec/08-coding-guidelines/engineering-standards.md`, `spec/02-app-issues/19-*.md`, `spec/02-app-issues/20-*.md`
 
 ---
 
@@ -138,7 +138,7 @@ All notable changes to the Automator project are documented in this file.
 - **Anti-patterns table expanded** — generic WinActivate, negative conditions, large functions, copy-pasted code
 
 ### Files
-- `MacroLoop/Routing.ahk` (v7.0 + v7.32), `spec/06-coding-guidelines/engineering-standards.md`, `spec/01-app-issues/19-*.md`, `Automator.ahk`, `GeneralDefaults.ahk`, `config.ini`
+- `MacroLoop/Routing.ahk` (v7.0 + v7.32), `spec/08-coding-guidelines/engineering-standards.md`, `spec/02-app-issues/19-*.md`, `Automator.ahk`, `GeneralDefaults.ahk`, `config.ini`
 
 ---
 
@@ -307,7 +307,7 @@ All notable changes to the Automator project are documented in this file.
 
 ### Files
 - `macro-looping.js`, `GeneralDefaults.ahk`, `config.ini`, `Automator.ahk`
-- `spec/04-macro-controller/workspace-detection.md`
+- `spec/06-macro-controller/workspace-detection.md`
 
 ---
 
@@ -319,7 +319,7 @@ All notable changes to the Automator project are documented in this file.
 - **Empty body handling improved logging** — When mark-viewed returns empty body, logs now include status code and content-type for diagnostic clarity.
 
 ### Added
-- **Issue #07 RCA document** — `spec/01-app-issues/07-mark-viewed-empty-body-vague-logging.md` documenting the empty body root cause and the new logging standard.
+- **Issue #07 RCA document** — `spec/02-app-issues/07-mark-viewed-empty-body-vague-logging.md` documenting the empty body root cause and the new logging standard.
 
 ### Engineering Standards
 - **Rule**: Every `fetch()` MUST use `resp.text()` + `JSON.parse()`, never `resp.json()` directly.
@@ -328,7 +328,7 @@ All notable changes to the Automator project are documented in this file.
 
 ### Files
 - `macro-looping.js`, `combo.js`, `GeneralDefaults.ahk`, `config.ini`
-- `spec/01-app-issues/07-mark-viewed-empty-body-vague-logging.md`
+- `spec/02-app-issues/07-mark-viewed-empty-body-vague-logging.md`
 
 ---
 

@@ -59,7 +59,7 @@ The spec (`SPEC.md`) did not include any rule requiring DOM-discovered names to 
 
 ### What was changed in the spec
 
-1. Created `/spec/04-macro-controller/workspace-detection.md` with explicit rules for workspace name detection.
+1. Created `/spec/06-macro-controller/workspace-detection.md` with explicit rules for workspace name detection.
 2. Added **Critical Rule**: "DOM-Discovered Names Must Be Validated" — any name from DOM scraping must pass `isKnownWorkspaceName()` before being accepted.
 3. Added acceptance criteria that the status bar MUST show a workspace name from the workspace list, never a project name.
 
@@ -106,8 +106,8 @@ None. The fix is entirely in JS logic.
 
 ### References to spec sections updated
 
-- `/spec/04-macro-controller/workspace-detection.md` — "Critical Rule: DOM-Discovered Names Must Be Validated"
-- `/spec/04-macro-controller/workspace-detection.md` — "Known Pitfalls and Prevention" table
+- `/spec/06-macro-controller/workspace-detection.md` — "Critical Rule: DOM-Discovered Names Must Be Validated"
+- `/spec/06-macro-controller/workspace-detection.md` — "Known Pitfalls and Prevention" table
 
 ---
 
@@ -120,8 +120,8 @@ None. The fix is entirely in JS logic.
 
 ## Done Checklist
 
-- [x] Spec updated under `/spec/04-macro-controller/workspace-detection.md`
-- [x] Issue write-up created under `/spec/01-app-issues/01-workspace-name-shows-project-name.md`
+- [x] Spec updated under `/spec/06-macro-controller/workspace-detection.md`
+- [x] Issue write-up created under `/spec/02-app-issues/01-workspace-name-shows-project-name.md`
 - [x] Memory updated with summary and prevention rule
 - [x] Acceptance criteria updated
 - [x] Iterations recorded (single iteration)

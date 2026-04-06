@@ -19,9 +19,9 @@ Two databases exist:
 
 > **Note**: The project does **not** use Prisma. All schemas are raw SQL managed in `src/background/db-schemas.ts`. The models below are written in a Prisma-like notation for readability.
 
-> **Naming Convention**: All database entities (tables, columns, indexes) use **PascalCase**. Underscores are strictly forbidden. See `spec/06-coding-guidelines/coding-guidelines/database-naming.md`.
+> **Naming Convention**: All database entities (tables, columns, indexes) use **PascalCase**. Underscores are strictly forbidden. See `spec/08-coding-guidelines/coding-guidelines/database-naming.md`.
 
-> **ID Convention**: All primary key `id` columns use **INTEGER PRIMARY KEY AUTOINCREMENT**. TEXT/GUID identifiers are **never** used as primary keys. See `spec/06-coding-guidelines/coding-guidelines/database-id-convention.md`.
+> **ID Convention**: All primary key `id` columns use **INTEGER PRIMARY KEY AUTOINCREMENT**. TEXT/GUID identifiers are **never** used as primary keys. See `spec/08-coding-guidelines/coding-guidelines/database-id-convention.md`.
 
 ---
 
@@ -231,7 +231,7 @@ model UpdaterInfo {
 }
 ```
 
-See: `spec/05-chrome-extension/58-updater-system.md`
+See: `spec/07-chrome-extension/58-updater-system.md`
 
 ---
 
@@ -326,7 +326,7 @@ model UpdaterStep {
 
 ### 13. UpdaterDetails (View)
 
-Aggregates UpdaterInfo with category names via `GROUP_CONCAT`. See `spec/02-data-and-api/db-join-specs/01-category-join-pattern.md`.
+Aggregates UpdaterInfo with category names via `GROUP_CONCAT`. See `spec/03-data-and-api/db-join-specs/01-category-join-pattern.md`.
 
 ---
 

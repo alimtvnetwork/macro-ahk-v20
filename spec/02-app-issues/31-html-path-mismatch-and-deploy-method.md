@@ -142,13 +142,13 @@ Start-Process chrome.exe "--load-extension=`"$distPath`""
 ### References
 - `chrome-extension/vite.config.ts` — manifest path rewriting
 - `run.ps1` — Deploy-Extension function
-- `spec/01-app-issues/30-esm-dynamic-require-build-failure.md` — related build issue
+- `spec/02-app-issues/30-esm-dynamic-require-build-failure.md` — related build issue
 
 ---
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root cause and prevention rules documented
 - [x] Anti-pattern reference included
 - [x] Both build and deploy fixes applied

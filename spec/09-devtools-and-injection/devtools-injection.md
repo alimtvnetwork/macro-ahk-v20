@@ -126,4 +126,4 @@ The AHK DevTools injection method above is **legacy** (archived in `skipped/`). 
 4. ISOLATED (Indirect Eval)
 5. **CDP (`chrome.debugger`)** — last resort
 
-See **`spec/05-chrome-extension/47-cdp-injection-fallback.md`** for full CDP architecture, `chrome.debugger` vs WebSocket approaches, security considerations, and implementation plan.
+See **`spec/07-chrome-extension/47-cdp-injection-fallback.md`** for full CDP architecture, `chrome.debugger` vs WebSocket approaches, security considerations, and implementation plan.

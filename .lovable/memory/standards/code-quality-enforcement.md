@@ -32,5 +32,5 @@ The following rules are turned **off** to avoid false positives from the project
 - Complexity: cognitive complexity over threshold, functions over 25 lines
 
 ## Related
-- Code quality rules: `spec/06-coding-guidelines/01-code-quality-improvement.md`
+- Code quality rules: `spec/08-coding-guidelines/01-code-quality-improvement.md`
 - Memory: `.lovable/memory/standards/code-quality-improvement.md`

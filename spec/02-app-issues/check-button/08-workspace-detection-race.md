@@ -106,7 +106,7 @@ Regardless of whether the loop is running, the progress bar XPath check updates
 ## Cross-References
 
 - [Check Button Master Overview](01-overview.md)
-- [Chrome Extension Check Button Spec](../../../spec/05-chrome-extension/60-check-button-spec.md)
+- [Chrome Extension Check Button Spec](../../../spec/07-chrome-extension/60-check-button-spec.md)
 - [Wrong Detection Path (Issue #28)](04-wrong-detection-path.md)
 - [Guard Regression (Issue #32)](05-guard-regression.md)
 - [Auth Bridge Stall (Issue #46)](07-auth-bridge-stall.md)

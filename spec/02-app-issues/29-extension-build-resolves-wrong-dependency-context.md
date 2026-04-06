@@ -108,6 +108,6 @@ Preflight now prints the effective build command, making command scope visible (
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root cause and prevention rule documented
 - [x] Iterations history included

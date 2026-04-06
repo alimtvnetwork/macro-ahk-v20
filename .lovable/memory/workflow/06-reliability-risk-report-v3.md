@@ -92,7 +92,7 @@
 | **P3** | P Store backend API definition | New server or mock | +5% for P Store module | ⬜ Blocked (owner spec) |
 | **P4** | React component test expansion (target 900+) | `src/__tests__/` | +1% | ⬜ Ready |
 | **P5** | Prompt click E2E verification | Live Chrome environment | +0.5% | ⬜ Blocked (manual) |
-| **P6** | Cross-project sync spec maturation | `spec/08-features/cross-project-sync.md` | +3% for sync module | ⬜ Draft |
+| **P6** | Cross-project sync spec maturation | `spec/10-features/cross-project-sync.md` | +3% for sync module | ⬜ Draft |
 
 ---
 
@@ -110,7 +110,7 @@
 6. **TS Migration V2 complete** (all 6 phases) — class-based modules, DI, performance logging
 7. **Comprehensive memory system** — 40+ memory files covering architecture, features, workflow
 8. **Version sync** validated via automated check-version-sync.mjs
-9. **Developer guide** — 10-chapter AI-ready guide in `spec/07-devtools-and-injection/developer-guide/`
+9. **Developer guide** — 10-chapter AI-ready guide in `spec/09-devtools-and-injection/developer-guide/`
 10. **Prompt management** — dual-cache IndexedDB, manual-load model
 
 ### What Reduces AI Success ⚠️

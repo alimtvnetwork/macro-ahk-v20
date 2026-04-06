@@ -116,7 +116,7 @@ All notable changes to the Automator project are documented in this file.
 
 ### Files
 - `macro-looping.js`, `GeneralDefaults.ahk`, `config.ini`, `Automator.ahk`
-- `spec/04-macro-controller/workspace-detection.md`
+- `spec/06-macro-controller/workspace-detection.md`
 
 ---
 
@@ -128,7 +128,7 @@ All notable changes to the Automator project are documented in this file.
 - **Empty body handling improved logging** — When mark-viewed returns empty body, logs now include status code and content-type for diagnostic clarity.
 
 ### Added
-- **Issue #07 RCA document** — `spec/01-app-issues/07-mark-viewed-empty-body-vague-logging.md` documenting the empty body root cause and the new logging standard.
+- **Issue #07 RCA document** — `spec/02-app-issues/07-mark-viewed-empty-body-vague-logging.md` documenting the empty body root cause and the new logging standard.
 
 ### Engineering Standards
 - **Rule**: Every `fetch()` MUST use `resp.text()` + `JSON.parse()`, never `resp.json()` directly.
@@ -137,7 +137,7 @@ All notable changes to the Automator project are documented in this file.
 
 ### Files
 - `macro-looping.js`, `combo.js`, `GeneralDefaults.ahk`, `config.ini`
-- `spec/01-app-issues/07-mark-viewed-empty-body-vague-logging.md`
+- `spec/02-app-issues/07-mark-viewed-empty-body-vague-logging.md`
 
 ---
 

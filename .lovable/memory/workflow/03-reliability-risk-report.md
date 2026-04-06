@@ -83,7 +83,7 @@ All previously high-risk failures (F-002 through F-019) resolved. See previous r
 | **P7** | Complete React UI unification (Steps 6, 10-11) | `src/content-scripts/`, build configs | +2% overall (eliminates F-021) | 🔄 In Progress |
 | **P8** | Extension build verification (S-027) | `vite.config.extension.ts` | +1% overall (confirms build pipeline) | ⬜ Open |
 | **P9** | Add React component tests for Options/Popup | `tests/` | +1% overall (catches regression in 14 React components) | ⬜ Open |
-| **P10** | Document DevTools injection alternatives | `spec/07-devtools-and-injection/devtools-injection.md` | +3% for F-001 (CDP protocol fallback path) | ⬜ Open |
+| **P10** | Document DevTools injection alternatives | `spec/09-devtools-and-injection/devtools-injection.md` | +3% for F-001 (CDP protocol fallback path) | ⬜ Open |
 
 ---
 

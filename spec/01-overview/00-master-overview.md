@@ -52,18 +52,18 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 | # | File | Description |
 |---|------|-------------|
 | **00** | `00-master-overview.md` | **This file** — project overview, architecture, and spec index |
-| **01** | `02-data-and-api/` | API schemas, data models, DB join specs, axios policy |
-| **02** | `01-app-issues/` | Issue write-ups with RCA for every major bug fix |
+| **01** | `03-data-and-api/` | API schemas, data models, DB join specs, axios policy |
+| **02** | `02-app-issues/` | Issue write-ups with RCA for every major bug fix |
 | **03** | `03-architecture.md` | System architecture (AHK legacy + extension) |
-| **04** | `02-data-and-api/data-schema.md` | API response schema, internal data models, credit formulas |
-| **05** | `06-coding-guidelines/engineering-standards.md` | All engineering rules and principles (27 rules) |
-| **06** | `04-macro-controller/credit-system.md` | Credit calculation, progress bar spec, segment colors and order |
-| **07** | `04-macro-controller/workspace-management.md` | Workspace detection hierarchy, switching, history, move API |
-| **08** | `07-devtools-and-injection/devtools-injection.md` | DevTools console injection (AHK legacy) |
-| **09** | `04-macro-controller/ui-controllers.md` | ComboSwitch and MacroLoop UI features, shortcuts, layout |
+| **04** | `03-data-and-api/data-schema.md` | API response schema, internal data models, credit formulas |
+| **05** | `08-coding-guidelines/engineering-standards.md` | All engineering rules and principles (27 rules) |
+| **06** | `06-macro-controller/credit-system.md` | Credit calculation, progress bar spec, segment colors and order |
+| **07** | `06-macro-controller/workspace-management.md` | Workspace detection hierarchy, switching, history, move API |
+| **08** | `09-devtools-and-injection/devtools-injection.md` | DevTools console injection (AHK legacy) |
+| **09** | `06-macro-controller/ui-controllers.md` | ComboSwitch and MacroLoop UI features, shortcuts, layout |
 | **10** | `10-version-history-summary.md` | Condensed version history with key milestones |
 | **11** | `11-folder-policy.md` | Folder policy: active vs skipped folders |
-| **12** | `05-chrome-extension/` | Chrome extension specs (43 documents) |
+| **12** | `07-chrome-extension/` | Chrome extension specs (43 documents) |
 
 ### Key Chrome Extension Specs
 
@@ -112,7 +112,7 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 
 ### Step 2: Read the Engineering Standards
 
-- [ ] Read `/spec/06-coding-guidelines/engineering-standards.md` (all 26 rules)
+- [ ] Read `/spec/08-coding-guidelines/engineering-standards.md` (all 26 rules)
 - [ ] Key rules to internalize:
   - **Rule 1**: Root Cause Analysis First — no fix without documented RCA
   - **Rule 2**: Known-Good State Wins — user-action state > background poll
@@ -123,22 +123,22 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 ### Step 3: Read the Architecture
 
 - [ ] Read this file (`spec/00-master-overview.md`) — you're here
-- [ ] Read `/spec/05-chrome-extension/01-overview.md` — extension architecture
-- [ ] Read `/spec/05-chrome-extension/18-message-protocol.md` — message types
-- [ ] Read `/spec/02-data-and-api/data-schema.md` — API response shapes and credit formulas
+- [ ] Read `/spec/07-chrome-extension/01-overview.md` — extension architecture
+- [ ] Read `/spec/07-chrome-extension/18-message-protocol.md` — message types
+- [ ] Read `/spec/03-data-and-api/data-schema.md` — API response shapes and credit formulas
 - [ ] **Failure risk if skipped**: AI misunderstands data flow → breaks credit calculations or messaging
 
 ### Step 4: Read the Domain-Specific Specs (as needed)
 
 | If you're working on... | Read these |
 |------------------------|-----------|
-| Credit display / progress bars | `04-macro-controller/credit-system.md` |
-| Workspace detection / switching | `04-macro-controller/workspace-management.md`, `04-macro-controller/workspace-detection.md` |
-| Controller UI (macro panel) | `04-macro-controller/ui-controllers.md` |
-| Chrome extension architecture | `spec/05-chrome-extension/01-overview.md` through `23-coding-guidelines.md` |
-| Macro ↔ extension bridge | `spec/05-chrome-extension/43-macro-controller-extension-bridge.md` |
-| Message protocol | `spec/05-chrome-extension/18-message-protocol.md` |
-| Logging & data bridge | `spec/05-chrome-extension/42-user-script-logging-and-data-bridge.md` |
+| Credit display / progress bars | `06-macro-controller/credit-system.md` |
+| Workspace detection / switching | `06-macro-controller/workspace-management.md`, `06-macro-controller/workspace-detection.md` |
+| Controller UI (macro panel) | `06-macro-controller/ui-controllers.md` |
+| Chrome extension architecture | `spec/07-chrome-extension/01-overview.md` through `23-coding-guidelines.md` |
+| Macro ↔ extension bridge | `spec/07-chrome-extension/43-macro-controller-extension-bridge.md` |
+| Message protocol | `spec/07-chrome-extension/18-message-protocol.md` |
+| Logging & data bridge | `spec/07-chrome-extension/42-user-script-logging-and-data-bridge.md` |
 
 ### Step 5: Check Current State
 
@@ -150,13 +150,13 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 ### Step 6: Verify Before Changing
 
 - [ ] Confirm the file you're editing is in the active codebase (`chrome-extension/`, `src/`, or `standalone-scripts/`)
-- [ ] Check if an issue write-up already exists for the problem at `/spec/01-app-issues/`
+- [ ] Check if an issue write-up already exists for the problem at `/spec/02-app-issues/`
 - [ ] If modifying credit formulas, verify against shared helper functions
 - [ ] **NEVER change code without discussing with the user first** (Engineering Standard)
 
 ### Step 7: After Making Changes
 
-- [ ] If fixing a bug: create issue write-up at `/spec/01-app-issues/NN-{slug}.md` using `TEMPLATE.md`
+- [ ] If fixing a bug: create issue write-up at `/spec/02-app-issues/NN-{slug}.md` using `TEMPLATE.md`
 - [ ] Update `.lovable/memory/suggestions/01-suggestions-tracker.md` if completing a suggestion
 - [ ] Update `.lovable/plan.md` if completing a planned task
 - [ ] Run build verification: `run.ps1 -d` (auto-builds standalone scripts + extension)
@@ -195,7 +195,7 @@ When credit API returns 401/403, the UI immediately shows "Bearer Token 🔴 EXP
 - Uses `window.marco` SDK for structured logging and persistent storage via the extension bridge.
 
 ### 5. Engineering Standards
-The most important rules (see `06-coding-guidelines/engineering-standards.md` for all):
+The most important rules (see `08-coding-guidelines/engineering-standards.md` for all):
 - **Known-Good State Wins**: User-action state > background poll state
 - **API-First, DOM-Fallback**: Prefer API data; DOM only when API fails
 - **Issue Write-Up Mandatory**: Every fix needs RCA documentation
@@ -241,7 +241,7 @@ standalone-scripts/             # Standalone JS scripts
 spec/                           # Project specifications
 ├── 00-master-overview.md       # This file
 ├── 11-folder-policy.md         # Folder policy
-└── 05-chrome-extension/        # Extension specs (43 documents)
+└── 07-chrome-extension/        # Extension specs (43 documents)
 │
 skipped/                        # ⛔ ARCHIVED — DO NOT TOUCH
 ├── marco-script-ahk-v7.latest/ # Former AHK codebase

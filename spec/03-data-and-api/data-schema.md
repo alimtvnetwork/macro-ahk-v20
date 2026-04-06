@@ -38,7 +38,7 @@ Moves project to another workspace. Body: `{ "workspace_id": "target-id" }`
 
 ### ~~3. POST /projects/{projectId}/mark-viewed~~ (REMOVED in v7.17)
 ~~Returns `{ "workspace_id": "owner-ws-id" }`. Used for workspace detection.~~
-**Removed**: Workspace detection now uses XPath-only via Project Dialog. See `04-macro-controller/workspace-management.md`.
+**Removed**: Workspace detection now uses XPath-only via Project Dialog. See `06-macro-controller/workspace-management.md`.
 
 ---
 

@@ -1,7 +1,7 @@
 # Seeding Default Values — Reference
 
 **Date**: 2026-03-25  
-**Referenced from**: `spec/03-tasks/master-task-breakdown.md`
+**Referenced from**: `spec/04-tasks/master-task-breakdown.md`
 
 ---
 

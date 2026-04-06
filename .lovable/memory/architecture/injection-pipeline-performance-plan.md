@@ -16,4 +16,4 @@ The injection pipeline takes 7-8s due to sequential file reads, redundant storag
 
 Key constraint: sql.js is single-threaded WASM — `Promise.all` on SQLite reads provides no parallelism. Must reduce NUMBER of queries, not parallelize them.
 
-Spec: `spec/01-app-issues/87-injection-pipeline-performance/`
+Spec: `spec/02-app-issues/87-injection-pipeline-performance/`

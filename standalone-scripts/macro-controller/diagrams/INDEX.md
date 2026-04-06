@@ -1,6 +1,6 @@
 # Diagram Index — Macro Controller Architecture
 
-> All diagrams follow the [XMind-inspired dark-mode standard](../../../spec/00-standards/diagram-standards.md).  
+> All diagrams follow the [XMind-inspired dark-mode standard](../../../spec/05-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/diagram-standards.md).  
 > Source `.mmd` files live alongside this index; rendered PNGs are in `images/`.
 
 ## Table of Contents

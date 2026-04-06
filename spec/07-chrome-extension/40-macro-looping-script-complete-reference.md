@@ -228,7 +228,7 @@ function calcSegmentPercents(totalCredits, freeRemaining, billingAvailable, roll
 }
 ```
 
-**Note**: Unlike spec/04-macro-controller/credit-system.md's "minimum 2%" rule, the actual implementation does NOT enforce a 2% minimum — it uses proportional scaling with overflow normalization instead.
+**Note**: Unlike spec/06-macro-controller/credit-system.md's "minimum 2%" rule, the actual implementation does NOT enforce a 2% minimum — it uses proportional scaling with overflow normalization instead.
 
 ### Segment Rendering Rules
 
@@ -281,7 +281,7 @@ var fillPct = maxTc > 0 ? Math.min(100, (tc / maxTc) * 100) : 100;
 
 - **Workspace list**: MUST pass `maxTotalCredits` — provides accurate visual comparison.
 - **Status bar** (single workspace): does NOT pass `maxTotalCredits` — renders at full width.
-- See `spec/01-app-issues/38-progress-bar-relative-scaling.md` for root cause and prevention rules.
+- See `spec/02-app-issues/38-progress-bar-relative-scaling.md` for root cause and prevention rules.
 
 ### Rendering Sites (all 3 MUST use `renderCreditBar()`)
 
@@ -478,11 +478,11 @@ See [Spec 42](42-user-script-logging-and-data-bridge.md) for SDK details and [Sp
 | `standalone-scripts/macro-controller/01-macro-looping.js` | **Source of truth** — macro controller script |
 | `standalone-scripts/macro-controller/02-macro-controller-config.json` | Default JSON config (XPaths, timing, element IDs) |
 | `standalone-scripts/macro-controller/03-macro-prompts.json` | Prompt chains for automation |
-| `spec/04-macro-controller/credit-system.md` | Credit pool definitions and formulas |
-| `spec/05-chrome-extension/36-cookie-only-bearer.md` | Session bridge auth spec |
-| `spec/05-chrome-extension/42-user-script-logging-and-data-bridge.md` | `window.marco` SDK spec |
-| `spec/05-chrome-extension/43-macro-controller-extension-bridge.md` | Controller ↔ extension bridge architecture |
-| `spec/01-app-issues/37-compact-mode-bar-missing-segments.md` | Compact mode fix history |
+| `spec/06-macro-controller/credit-system.md` | Credit pool definitions and formulas |
+| `spec/07-chrome-extension/36-cookie-only-bearer.md` | Session bridge auth spec |
+| `spec/07-chrome-extension/42-user-script-logging-and-data-bridge.md` | `window.marco` SDK spec |
+| `spec/07-chrome-extension/43-macro-controller-extension-bridge.md` | Controller ↔ extension bridge architecture |
+| `spec/02-app-issues/37-compact-mode-bar-missing-segments.md` | Compact mode fix history |
 
 > **Archived**: `marco-script-ahk-v7.latest/` (AHK version) and `scripts/sync-check-macro-looping.mjs` (sync validator) have been moved to `skipped/`.
 

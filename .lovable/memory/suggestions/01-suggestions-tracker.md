@@ -70,7 +70,7 @@ When a suggestion is completed:
 ### S-055: P Store Backend API Implementation
 - **createdAt**: 2026-04-05
 - **source**: Risk report v3
-- **affectedProject**: P Store (`spec/08-features/pstore-marketplace.md`)
+- **affectedProject**: P Store (`spec/10-features/pstore-marketplace.md`)
 - **description**: P Store frontend spec exists but no backend API. Need to define and implement the server-side API or mock service.
 - **rationale**: F-025 — 100% failure until backend exists. Highest-impact corrective action for new features.
 - **status**: open
@@ -79,7 +79,7 @@ When a suggestion is completed:
 ### S-056: Cross-Project Sync Spec Maturation
 - **createdAt**: 2026-04-05
 - **source**: Risk report v3
-- **affectedProject**: Cross-project sync (`spec/08-features/cross-project-sync.md`)
+- **affectedProject**: Cross-project sync (`spec/10-features/cross-project-sync.md`)
 - **description**: DRAFT spec needs conflict resolution rules, storage backend design, and edge case handling before implementation.
 - **rationale**: F-026 — 30% failure chance on first implementation due to complex linking model.
 - **status**: open
@@ -164,4 +164,4 @@ When a suggestion is completed:
 
 ## Engineering Principles Reference
 
-See `/spec/06-coding-guidelines/engineering-standards.md` for all 26 standards.
+See `/spec/08-coding-guidelines/engineering-standards.md` for all 26 standards.

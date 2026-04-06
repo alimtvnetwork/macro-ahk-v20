@@ -32,7 +32,7 @@ Debugging workspace detection failures (issues #04–#07) was severely hampered 
 
 ## Files Changed
 - `macro-looping.js` (all fetch calls), `combo.js` (all fetch calls)
-- `spec/01-app-issues/07-mark-viewed-empty-body-vague-logging.md` (RCA document)
+- `spec/02-app-issues/07-mark-viewed-empty-body-vague-logging.md` (RCA document)
 
 ## Principle Established
 **Comprehensive Fetch Logging**: No fetch call may exist without full before/after logging. Bearer tokens must be sanitized. This is non-negotiable for remote debugging.

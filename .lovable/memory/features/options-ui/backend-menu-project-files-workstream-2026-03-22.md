@@ -12,4 +12,4 @@ User requested a prioritized one-by-one implementation workstream:
 
 Execution requirement from user: create tasks first, update memory + plan, then execute one task at a time.
 
-Tracking spec: `spec/01-app-issues/62-backend-menu-swagger-storage-files-and-zip-workflow.md`
+Tracking spec: `spec/02-app-issues/62-backend-menu-swagger-storage-files-and-zip-workflow.md`

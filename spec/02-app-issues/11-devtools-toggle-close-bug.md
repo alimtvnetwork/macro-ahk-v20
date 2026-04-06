@@ -141,7 +141,7 @@ This matches the original v6.55 approach (`Send("^+j")` → `Send("{F6}")` → `
 ### References to spec sections updated
 
 - `specs/CHANGELOG.md` — v7.9.45 entry
-- This file — `/spec/01-app-issues/11-devtools-toggle-close-bug.md`
+- This file — `/spec/02-app-issues/11-devtools-toggle-close-bug.md`
 
 ---
 
@@ -150,14 +150,14 @@ This matches the original v6.55 approach (`Send("^+j")` → `Send("{F6}")` → `
 1. [x] Remove F12 from injection sequence
 2. [x] Update version markers to v7.9.45
 3. [x] Document issue with full RCA and iterations
-4. [ ] Update `/spec/04-macro-controller/` with injection rules (RULE-INJ-1 through RULE-INJ-4)
+4. [ ] Update `/spec/06-macro-controller/` with injection rules (RULE-INJ-1 through RULE-INJ-4)
 
 ---
 
 ## Done Checklist
 
-- [ ] Spec updated under `/spec/04-macro-controller/`
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [ ] Spec updated under `/spec/06-macro-controller/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Memory updated with summary and prevention rule
 - [x] Acceptance criteria updated or added
 - [x] Iterations recorded (4 iterations documented)

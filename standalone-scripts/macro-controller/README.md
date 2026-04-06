@@ -123,11 +123,11 @@ window.MacroController     // MacroController singleton (kept on window as a pro
 ```
 
 > **Note**: Legacy `window.__loop*` globals were removed in v1.71.0 (Issue 79, Phase 9D).
-> See `spec/01-app-issues/79-migrate-window-globals-to-namespace.md` for migration details.
+> See `spec/02-app-issues/79-migrate-window-globals-to-namespace.md` for migration details.
 
 ## TypeScript Migration
 
-See [Migration Spec](../../spec/04-macro-controller/js-to-ts-migration/README.md) for the full migration plan.
+See [Migration Spec](../../spec/06-macro-controller/js-to-ts-migration/README.md) for the full migration plan.
 
 | Step | Description | Status |
 |------|-------------|--------|
@@ -139,8 +139,8 @@ See [Migration Spec](../../spec/04-macro-controller/js-to-ts-migration/README.md
 
 | Spec | Topic |
 |------|-------|
-| [40 — Macro Looping Reference](../../spec/05-chrome-extension/40-macro-looping-script-complete-reference.md) | Script internals |
-| [42 — Data Bridge](../../spec/05-chrome-extension/42-user-script-logging-and-data-bridge.md) | `window.marco` SDK |
-| [48 — TS Migration](../../spec/01-app-issues/48-typescript-migration-standalone-scripts.md) | Migration spec |
-| [79 — Namespace Migration](../../spec/01-app-issues/79-migrate-window-globals-to-namespace.md) | `window.__*` → namespace |
-| [80 — Auth Bridge Fix](../../spec/01-app-issues/80-auth-token-bridge-null-on-preview.md) | Token resolution hardening |
+| [40 — Macro Looping Reference](../../spec/07-chrome-extension/40-macro-looping-script-complete-reference.md) | Script internals |
+| [42 — Data Bridge](../../spec/07-chrome-extension/42-user-script-logging-and-data-bridge.md) | `window.marco` SDK |
+| [48 — TS Migration](../../spec/02-app-issues/48-typescript-migration-standalone-scripts.md) | Migration spec |
+| [79 — Namespace Migration](../../spec/02-app-issues/79-migrate-window-globals-to-namespace.md) | `window.__*` → namespace |
+| [80 — Auth Bridge Fix](../../spec/02-app-issues/80-auth-token-bridge-null-on-preview.md) | Token resolution hardening |

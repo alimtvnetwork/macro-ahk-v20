@@ -109,7 +109,7 @@ All top-bar buttons share:
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root-cause + code fix log added
 - [x] Token fallback verified (already implemented)
 - [x] Button alignment fixed

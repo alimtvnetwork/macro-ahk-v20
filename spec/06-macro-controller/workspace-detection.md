@@ -63,8 +63,8 @@ When the credit API (`GET /user/workspaces`) returns 401 or 403:
 
 | Pitfall | Prevention | Issue Reference |
 |---------|-----------|-----------------|
-| DOM observer picks up project name instead of workspace name | `isKnownWorkspaceName()` validation on all DOM-sourced names | [`/spec/01-app-issues/01`](../01-app-issues/01-workspace-name-shows-project-name.md) |
-| API detection fallback preserves invalid workspace name | `isKnownWorkspaceName()` validation on all "keep existing" fallback paths | [`/spec/01-app-issues/03`](../01-app-issues/03-progress-bar-missing-granted-stale-workspace.md) |
+| DOM observer picks up project name instead of workspace name | `isKnownWorkspaceName()` validation on all DOM-sourced names | [`/spec/02-app-issues/01`](../02-app-issues/01-workspace-name-shows-project-name.md) |
+| API detection fallback preserves invalid workspace name | `isKnownWorkspaceName()` validation on all "keep existing" fallback paths | [`/spec/02-app-issues/03`](../02-app-issues/03-progress-bar-missing-granted-stale-workspace.md) |
 | Credit API returns 401 → detection aborts | `runCheck()` falls through to XPath regardless of API status (v7.17 fix) | plan.md v7.17 RCA |
 | Reverse DOM lookup matches random body text (e.g., "Preview") | Replaced with explicit project dialog click → XPath read | v7.9.25 |
 | `LoopControlsXPath` points to wrong DOM node | Controller injection fails silently; updated from `div[2]` to `div[3]` (v7.17) | plan.md v7.17 RCA |
@@ -79,7 +79,7 @@ When the credit API (`GET /user/workspaces`) returns 401 or 403:
 4. Project dialog MUST be opened and workspace name read from XPath before defaulting.
 5. DOM observer mutations that don't match any known workspace MUST be silently ignored with a debug log.
 6. Check button MUST work even when credit API returns 401/403 (token expired).
-7. **V2 Phase 01**: The workspace name set by API response (via `fetchLoopCredits` → `syncCreditStateFromApi` → `autoDetectLoopCurrentWorkspace` Tier 1 match) is **authoritative**. DOM detection (`detectWorkspaceViaProjectDialog`) and `perWs[0]` fallback MUST NOT override an API-sourced name when `state.workspaceFromApi === true`. Ref: `spec/04-macro-controller/ts-migration-v2/01-initialization-fix.md`.
+7. **V2 Phase 01**: The workspace name set by API response (via `fetchLoopCredits` → `syncCreditStateFromApi` → `autoDetectLoopCurrentWorkspace` Tier 1 match) is **authoritative**. DOM detection (`detectWorkspaceViaProjectDialog`) and `perWs[0]` fallback MUST NOT override an API-sourced name when `state.workspaceFromApi === true`. Ref: `spec/06-macro-controller/ts-migration-v2/01-initialization-fix.md`.
 8. **V2 Phase 01**: UI (`createUI()`) MUST NOT render before workspace data has been fetched or a 5s timeout has elapsed. Ref: `startup.ts` bootstrap flow.
 9. **V2 Phase 01**: `ensureProjectDialogOpen()` MUST return `false` if `loopCreditState.perWorkspace` is empty (workspaces not yet loaded).
 

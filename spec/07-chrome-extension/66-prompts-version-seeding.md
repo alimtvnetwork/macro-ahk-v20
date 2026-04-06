@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-23  
 **Status**: Implemented  
-**Spec**: `spec/05-chrome-extension/66-prompts-version-seeding.md`
+**Spec**: `spec/07-chrome-extension/66-prompts-version-seeding.md`
 
 ---
 
@@ -61,5 +61,5 @@ Shortcuts detect both shifted digit symbols (`!@#$%^&*()`) and unshifted digits 
 | `standalone-scripts/macro-controller/src/ui/task-next-ui.ts` | Task Next execution |
 
 ## Related Specs
-- Spec 45: Prompt Manager CRUD (`spec/05-chrome-extension/45-prompt-manager-crud.md`)
-- Spec 52: Prompt Caching (`spec/05-chrome-extension/52-prompt-caching-indexeddb.md`)
+- Spec 45: Prompt Manager CRUD (`spec/07-chrome-extension/45-prompt-manager-crud.md`)
+- Spec 52: Prompt Caching (`spec/07-chrome-extension/52-prompt-caching-indexeddb.md`)

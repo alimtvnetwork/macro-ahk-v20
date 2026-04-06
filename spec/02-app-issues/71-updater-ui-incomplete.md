@@ -9,7 +9,7 @@
 
 ## Issue Summary
 
-The UpdaterPanel component (`src/components/options/UpdaterPanel.tsx`) only exposes 3 fields in the "Add Source" form: Name, Script URL, and Version Info URL. The spec (`spec/05-chrome-extension/58-updater-system.md`) and data model (`spec/02-data-and-api/data-models.md`) define **20+ fields** on UpdaterInfo that are not represented in the UI.
+The UpdaterPanel component (`src/components/options/UpdaterPanel.tsx`) only exposes 3 fields in the "Add Source" form: Name, Script URL, and Version Info URL. The spec (`spec/07-chrome-extension/58-updater-system.md`) and data model (`spec/03-data-and-api/data-models.md`) define **20+ fields** on UpdaterInfo that are not represented in the UI.
 
 ## Missing Fields
 

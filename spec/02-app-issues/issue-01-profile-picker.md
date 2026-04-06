@@ -141,7 +141,7 @@ The deploy output should indicate which strategy was used:
 
 ### References to spec sections updated
 
-- `spec/01-app-issues/issue-01-profile-picker.md` — this document
+- `spec/02-app-issues/issue-01-profile-picker.md` — this document
 
 ---
 
@@ -155,7 +155,7 @@ The deploy output should indicate which strategy was used:
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Fix applied to `run.ps1`
 - [x] Memory updated with prevention rule
 - [x] Acceptance criteria verified

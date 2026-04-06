@@ -84,6 +84,6 @@ Key design decisions:
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root-cause fix applied
 - [ ] End-to-end verification on lovable.dev

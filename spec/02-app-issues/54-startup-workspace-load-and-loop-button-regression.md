@@ -105,7 +105,7 @@ User report during live extension usage and repeated regression feedback.
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root cause documented
 - [x] Fix plan documented
 - [x] Non-regression rules added

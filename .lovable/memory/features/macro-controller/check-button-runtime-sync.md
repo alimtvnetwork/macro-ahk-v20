@@ -23,5 +23,5 @@ This regenerates and syncs `01-macro-looping.js` from `dist/macro-looping.js`.
 
 ## Related docs
 
-- `spec/05-chrome-extension/60-check-button-spec.md`
-- `spec/01-app-issues/check-button/10-runtime-seed-drift.md`
+- `spec/07-chrome-extension/60-check-button-spec.md`
+- `spec/02-app-issues/check-button/10-runtime-seed-drift.md`

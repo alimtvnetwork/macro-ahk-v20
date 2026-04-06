@@ -1,6 +1,6 @@
 # App Issues — Index
 
-> Complete index of all tracked issues in `spec/01-app-issues/`.
+> Complete index of all tracked issues in `spec/02-app-issues/`.
 > Status legend: ✅ Fixed · 🔧 In Progress · 📋 Open
 > Severity: P0 = blocking/data-loss · P1 = major functionality broken · P2 = UX/polish · P3 = enhancement/feature
 

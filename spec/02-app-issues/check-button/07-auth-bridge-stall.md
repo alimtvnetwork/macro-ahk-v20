@@ -109,7 +109,7 @@ Specs covered cookie strategy and check behavior, but lacked explicit guardrails
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root cause documented
 - [x] Startup auth sequence fixed (v7.27): extension bridge → localStorage → cookie → error
 - [x] Detailed error logging on API failures (URL, auth source, retry state)

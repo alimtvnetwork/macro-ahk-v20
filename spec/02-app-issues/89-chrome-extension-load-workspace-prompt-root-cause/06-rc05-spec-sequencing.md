@@ -43,19 +43,19 @@ The spec folder numbering is inconsistent. `02-issues` contains bug reports but 
 
 ## Impact Analysis: Cross-Reference Changes
 
-### Files referencing `spec/01-app-issues/`
+### Files referencing `spec/02-app-issues/`
 - All 80+ issue files use relative paths to each other (unaffected since they move together)
-- External references from `spec/05-chrome-extension/`, `spec/04-macro-controller/`, `.lovable/memory/` files
+- External references from `spec/07-chrome-extension/`, `spec/06-macro-controller/`, `.lovable/memory/` files
 
-### Files referencing `spec/02-data-and-api/`
+### Files referencing `spec/03-data-and-api/`
 - `spec/README.md` — needs updating
 - `.lovable/memory/project/documentation-hierarchy.md` — needs updating
 - Any `@see` comments in source code
 
 ### Migration Steps
 
-1. Rename `spec/01-app-issues/` → `spec/01-app-issues/`
-2. Rename `spec/02-data-and-api/` → `spec/02-data-and-api/`
+1. Rename `spec/02-app-issues/` → `spec/02-app-issues/`
+2. Rename `spec/03-data-and-api/` → `spec/03-data-and-api/`
 3. Update `spec/README.md`
 4. Update `.lovable/memory/project/documentation-hierarchy.md`
 5. Search all source files for `spec/01-` and `spec/02-` references
@@ -64,7 +64,7 @@ The spec folder numbering is inconsistent. `02-issues` contains bug reports but 
 
 ## Risk Assessment
 
-**High risk** — 80+ files reference `spec/01-app-issues/` paths. All internal relative links within the issues folder will continue to work (relative paths), but any ABSOLUTE paths or references FROM other folders will break.
+**High risk** — 80+ files reference `spec/02-app-issues/` paths. All internal relative links within the issues folder will continue to work (relative paths), but any ABSOLUTE paths or references FROM other folders will break.
 
 **Recommendation:** This should be done as a dedicated task with a find-and-replace audit, NOT mixed with implementation work.
 

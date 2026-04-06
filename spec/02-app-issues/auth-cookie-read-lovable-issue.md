@@ -105,7 +105,7 @@ Extension injects token-seeder.ts before user scripts:
 - Uses `document.cookie` which cannot read HttpOnly cookies
 - Lovable sets `lovable-session-id.id` with HttpOnly flag
 - This function will ALWAYS fail in production — it's only useful as diagnostic
-- Already documented in spec/01-app-issues/36-bearer-token-removal-broke-credit-bar.md
+- Already documented in spec/02-app-issues/36-bearer-token-removal-broke-credit-bar.md
 
 ### 5b. Extension bridge timeout too short for cold-start
 **File**: `standalone-scripts/macro-controller/src/auth.ts:207-209`
@@ -180,7 +180,7 @@ Extension injects token-seeder.ts before user scripts:
 
 ## 9. Related Issues
 
-- spec/01-app-issues/36-bearer-token-removal-broke-credit-bar.md
-- spec/01-app-issues/check-button/07-auth-bridge-stall.md
-- spec/01-app-issues/42-macro-controller-button-bar-and-cookie-auth.md
+- spec/02-app-issues/36-bearer-token-removal-broke-credit-bar.md
+- spec/02-app-issues/check-button/07-auth-bridge-stall.md
+- spec/02-app-issues/42-macro-controller-button-bar-and-cookie-auth.md
 - .lovable/memory/features/macro-controller/token-fallback-auth.md

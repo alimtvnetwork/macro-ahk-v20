@@ -44,4 +44,4 @@ After each fresh render, `prompt-dropdown.ts` saves the rendered HTML as HtmlCop
 - `src/ui/prompt-loader.ts` — Loading strategy, `forceLoadFromDb()`, `saveHtmlCopy()`
 - `src/ui/prompt-dropdown.ts` — Render + Load button + HtmlCopy save
 
-Spec: `spec/05-chrome-extension/52-prompt-caching-indexeddb.md`
+Spec: `spec/07-chrome-extension/52-prompt-caching-indexeddb.md`

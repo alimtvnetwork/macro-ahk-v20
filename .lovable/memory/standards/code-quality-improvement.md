@@ -2,7 +2,7 @@
 Updated: now
 
 **Process Name**: Code Quality Improvement  
-**Spec file**: `spec/06-coding-guidelines/01-code-quality-improvement.md`
+**Spec file**: `spec/08-coding-guidelines/01-code-quality-improvement.md`
 
 ## Rules (apply to ALL languages)
 

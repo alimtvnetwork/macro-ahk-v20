@@ -29,7 +29,7 @@ The macro controller now renders UI **immediately at t=0** before any auth or wo
 
 - `standalone-scripts/macro-controller/src/startup.ts` — bootstrap implementation
 - `.lovable/fixes/macro-controller-toast-crash-and-slow-startup.md` — root cause analysis
-- `spec/04-macro-controller/ts-migration-v2/01-initialization-fix.md` — spec
+- `spec/06-macro-controller/ts-migration-v2/01-initialization-fix.md` — spec
 - `.lovable/memory/features/macro-controller/initialization-flow-v2.md` — v2 flow details
 
 ### Previous Behavior (v7.36-v7.41)

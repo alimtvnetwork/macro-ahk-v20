@@ -75,7 +75,7 @@ Timeline (FIXED):
 
 ## Cross-References
 
-- [Check Button Spec](../../05-chrome-extension/60-check-button-spec.md)
+- [Check Button Spec](../../07-chrome-extension/60-check-button-spec.md)
 - [Issue #08: workspaceFromApi Race](08-workspace-detection-race.md)
 - [Check Button Overview](01-overview.md)
 

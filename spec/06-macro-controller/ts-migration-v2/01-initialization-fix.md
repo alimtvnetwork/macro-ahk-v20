@@ -2,7 +2,7 @@
 
 **Priority**: Critical (Bug Fix)
 **Status**: Planning
-**Related Issues**: spec/01-app-issues/23-workspace-name-wrong-initial-load.md, spec/01-app-issues/check-button/07-auth-bridge-stall.md
+**Related Issues**: spec/02-app-issues/23-workspace-name-wrong-initial-load.md, spec/02-app-issues/check-button/07-auth-bridge-stall.md
 **Memory**: `.lovable/memory/features/macro-controller/startup-initialization.md`
 
 ---
@@ -96,7 +96,7 @@ if (!loopCreditState.perWorkspace || loopCreditState.perWorkspace.length === 0) 
 ### Task 01.3: Fix workspace name binding permanently
 
 **Root cause**: `autoDetectLoopCurrentWorkspace()` sometimes falls back to `perWs[0]` even when the API returned a valid `workspace_id`. This was documented in:
-- `spec/01-app-issues/23-workspace-name-wrong-initial-load.md` (Tier 1 mark-viewed fix)
+- `spec/02-app-issues/23-workspace-name-wrong-initial-load.md` (Tier 1 mark-viewed fix)
 - `skipped/marco-script-ahk-v7.9.32/specs/spec-issues-v7.9-workspace-state-clobber.md` (poll overwrites)
 
 **Fix**: In `workspace-detection.ts`, the `autoDetectLoopCurrentWorkspace()` function must:
@@ -107,7 +107,7 @@ if (!loopCreditState.perWorkspace || loopCreditState.perWorkspace.length === 0) 
 
 ### Task 01.4: Document fix in spec to prevent regression
 
-Add non-regression rule to `spec/04-macro-controller/workspace-detection.md`:
+Add non-regression rule to `spec/06-macro-controller/workspace-detection.md`:
 ```
 RULE: The workspace name set by API response (via fetchLoopCredits → syncCreditStateFromApi)
 is authoritative. DOM detection and perWs[0] fallback MUST NOT override an API-sourced name.

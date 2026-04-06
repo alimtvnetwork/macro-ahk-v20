@@ -10,7 +10,7 @@ These rules were established through bug fixes and lessons learned. Every AI and
 ## Standards
 
 ### 1. Root Cause Analysis First
-No fix attempted without documented RCA. Every significant bug fix gets an issue write-up in `/spec/01-app-issues/NN-{slug}.md` with RCA, fix description, and prevention rules.
+No fix attempted without documented RCA. Every significant bug fix gets an issue write-up in `/spec/02-app-issues/NN-{slug}.md` with RCA, fix description, and prevention rules.
 
 ### 2. Known-Good State Wins
 When a user action (API move, combo switch) deterministically sets state, no background poll or fallback may override it. The authoritative state from a successful operation always takes priority over subsequent DOM observations or refresh cycles.
@@ -37,7 +37,7 @@ Every `fetch()` call MUST log: full URL, auth method, sanitized bearer token (fi
 Always use `resp.text()` + `JSON.parse()` instead of `resp.json()`. This prevents crashes on empty response bodies (HTTP 200 with no content) and enables logging the raw response text for debugging.
 
 ### 10. Issue Write-Up Mandatory
-Every bug fix MUST get a dedicated issue file at `/spec/01-app-issues/NN-{slug}.md` following the template: Summary, Root Cause Analysis, Fix Description, Iterations, Prevention, Done Checklist.
+Every bug fix MUST get a dedicated issue file at `/spec/02-app-issues/NN-{slug}.md` following the template: Summary, Root Cause Analysis, Fix Description, Iterations, Prevention, Done Checklist.
 
 ### 11. Post-Mutation No DOM Re-Detect
 After a successful API mutation (move-to-workspace, transfer), do NOT run DOM-based workspace detection. Trust the API response. The credit refresh that follows the mutation must respect the authoritative state set by the mutation, not re-trigger XPath detection.

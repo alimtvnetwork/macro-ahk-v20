@@ -8,4 +8,4 @@ Updated: 2026-03-26
 3. **User clicks Credits button** — triggers API fetch (no dialog needed)
 4. **User manually invokes via console** — explicit API calls
 
-`refreshStatus()` when loop is stopped ONLY performs passive checks: reading workspace name from the nav element and updating UI. See: `spec/01-app-issues/82-project-dialog-auto-click-when-stopped.md`
+`refreshStatus()` when loop is stopped ONLY performs passive checks: reading workspace name from the nav element and updating UI. See: `spec/02-app-issues/82-project-dialog-auto-click-when-stopped.md`

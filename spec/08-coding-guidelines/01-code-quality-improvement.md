@@ -219,7 +219,7 @@ When refactoring code to follow these rules, include a **before/after example** 
 /**
  * Resolves workspace tier from plan and billing data.
  *
- * @see spec/06-coding-guidelines/01-code-quality-improvement.md — Rule CQ1, CQ2, CQ3
+ * @see spec/08-coding-guidelines/01-code-quality-improvement.md — Rule CQ1, CQ2, CQ3
  *
  * Conversion example:
  *   Before: export const WS_TIER_LABELS: Record<string, { label: string; bg: string; fg: string }> = { ... }
@@ -257,11 +257,11 @@ When refactoring code to follow these rules, include a **before/after example** 
 ## Cross-References
 
 - [TypeScript Immutability Standards (CQ11–CQ18)](02-typescript-immutability-standards.md)
-- [Naming Conventions](../05-chrome-extension/coding-guidelines/01-naming-conventions.md)
-- [Boolean Logic](../05-chrome-extension/coding-guidelines/03-boolean-logic.md)
-- [Function Standards](../05-chrome-extension/coding-guidelines/02-function-standards.md)
+- [Naming Conventions](../07-chrome-extension/coding-guidelines/01-naming-conventions.md)
+- [Boolean Logic](../07-chrome-extension/coding-guidelines/03-boolean-logic.md)
+- [Function Standards](../07-chrome-extension/coding-guidelines/02-function-standards.md)
 - [TypeScript Standards](../typescript-standards/readme.md)
-- [No Negatives](../06-coding-guidelines/coding-guidelines/no-negatives.md)
-- [Cyclomatic Complexity](../06-coding-guidelines/coding-guidelines/cyclomatic-complexity.md)
+- [No Negatives](../08-coding-guidelines/coding-guidelines/no-negatives.md)
+- [Cyclomatic Complexity](../08-coding-guidelines/coding-guidelines/cyclomatic-complexity.md)
 
 *Code Quality Improvement v1.1.0 — 2026-03-31*

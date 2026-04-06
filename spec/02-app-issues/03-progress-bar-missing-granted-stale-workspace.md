@@ -114,8 +114,8 @@ None.
 
 ### References to spec sections updated
 
-- `/spec/01-app-issues/03-progress-bar-missing-granted-stale-workspace.md` (this file)
-- `/spec/04-macro-controller/workspace-detection.md` — Validation rule extended to API fallbacks
+- `/spec/02-app-issues/03-progress-bar-missing-granted-stale-workspace.md` (this file)
+- `/spec/06-macro-controller/workspace-detection.md` — Validation rule extended to API fallbacks
 
 ---
 
@@ -129,7 +129,7 @@ None.
 ## Done Checklist
 
 - [x] Spec updated (issue write-up documents segment completeness rule)
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Memory updated with summary and prevention rule
 - [x] Acceptance criteria updated
 - [x] Iterations recorded (2 iterations: v7.9.17 partial, v7.9.18 complete)

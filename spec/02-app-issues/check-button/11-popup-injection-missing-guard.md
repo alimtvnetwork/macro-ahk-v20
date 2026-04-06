@@ -75,5 +75,5 @@
 - [x] Fix applied to `auto-injector.ts`
 - [x] Fix applied to `spa-reinject.ts`
 - [x] Full audit of all `resolveScriptBindings` callers completed
-- [x] Issue write-up created and updated under `spec/01-app-issues/check-button/`
+- [x] Issue write-up created and updated under `spec/02-app-issues/check-button/`
 - [x] Non-regression rules documented

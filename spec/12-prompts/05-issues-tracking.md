@@ -27,7 +27,7 @@ Do not implement any code changes. Update specifications and documentation only.
 ### Required folder structure
 
 1. All application spec files must be located under:
-   1. /spec/04-macro-controller/
+   1. /spec/06-macro-controller/
 
 2. All issue write-ups must be located under:
    1. /spec/02-app/issues/
@@ -92,7 +92,7 @@ Include this section only if multiple attempts occurred.
 
 #### Done checklist
 
-1. [ ] Spec updated under /spec/04-macro-controller/
+1. [ ] Spec updated under /spec/06-macro-controller/
 2. [ ] Issue write-up created under /spec/02-app/issues/
 3. [ ] Memory updated with summary and prevention rule
 4. [ ] Acceptance criteria updated or added
@@ -100,7 +100,7 @@ Include this section only if multiple attempts occurred.
 
 ### Spec update requirements
 
-1. Update the relevant spec file(s) under /spec/04-macro-controller/ to include:
+1. Update the relevant spec file(s) under /spec/06-macro-controller/ to include:
    1. Corrected behavior
    2. Explicit constraints to prevent the old mistake
    3. Failure modes and debugging guidance
@@ -123,6 +123,6 @@ Return the following, in this order:
 
 1. A concise process checklist to follow after every fix.
 2. A copy-paste template for /spec/02-app/issues/01-{issueSlugName}.md
-3. A brief note stating all specs live under /spec/04-macro-controller/
+3. A brief note stating all specs live under /spec/06-macro-controller/
 
 Formatting rule: ensure there is a blank line after every Markdown header.

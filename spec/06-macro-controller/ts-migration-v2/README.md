@@ -77,8 +77,8 @@ __delegateComplete, __setProjectButtonXPath, __setProgressXPath, ...
 
 ## Dependencies
 
-- Spec `04-macro-controller/js-to-ts-migration/` — V1 migration (completed Steps 1-5b)
-- Spec `05-chrome-extension/50-script-dependency-system.md` — Script injection order
+- Spec `06-macro-controller/js-to-ts-migration/` — V1 migration (completed Steps 1-5b)
+- Spec `07-chrome-extension/50-script-dependency-system.md` — Script injection order
 - Memory `architecture/standalone-scripts/modularization-strategy` — Context Object + Registry patterns
 
 ---

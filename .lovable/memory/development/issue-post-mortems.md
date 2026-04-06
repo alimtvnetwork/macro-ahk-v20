@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-03-16
 
-Post-mortems for critical bugs, stored as issue write-ups in `spec/01-app-issues/`.
+Post-mortems for critical bugs, stored as issue write-ups in `spec/02-app-issues/`.
 
 ## Documented Post-Mortems
 

@@ -28,7 +28,7 @@ standalone-scripts/macro-controller/
 - **Step 1** ✅: Entire JS copied into `src/macro-looping.ts` with `@ts-nocheck`
 - **Step 2** 🔲: Split functions into individual files (~500 lines each)
 - **Step 3** 🔲: Extract UI logic into `src/ui/` folder
-- Migration docs: `spec/04-macro-controller/js-to-ts-migration/`
+- Migration docs: `spec/06-macro-controller/js-to-ts-migration/`
 
 ## Coding Standards
 - PascalCase for constants

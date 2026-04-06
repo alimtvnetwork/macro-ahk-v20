@@ -216,7 +216,7 @@ Run the **full plan** before any release. Run **individual suites** after change
 
 **Files**: `macro-looping.js`, `macro-controller.js`
 **When to run**: After changes to auth panel controls or interactivity
-**Reference**: `spec/01-app-issues/33-regression-checklist-check-button-auth-panel.md`
+**Reference**: `spec/02-app-issues/33-regression-checklist-check-button-auth-panel.md`
 
 | # | Test | Steps | Expected | Pass? |
 |---|------|-------|----------|-------|
@@ -455,8 +455,8 @@ Run the **full plan** before any release. Run **individual suites** after change
 
 | Document | Purpose |
 |----------|---------|
-| `spec/01-app-issues/33-regression-checklist-check-button-auth-panel.md` | Detailed regression checklist for Check/Force Move/Auth Panel |
-| `spec/05-chrome-extension/11-testing-strategy.md` | Chrome extension testing strategy |
-| `spec/05-chrome-extension/42-user-script-logging-and-data-bridge.md` | Spec 42 — User Script Logging & Data Bridge |
+| `spec/02-app-issues/33-regression-checklist-check-button-auth-panel.md` | Detailed regression checklist for Check/Force Move/Auth Panel |
+| `spec/07-chrome-extension/11-testing-strategy.md` | Chrome extension testing strategy |
+| `spec/07-chrome-extension/42-user-script-logging-and-data-bridge.md` | Spec 42 — User Script Logging & Data Bridge |
 | `.lovable/memory/testing/chrome-extension-e2e-specification` | E2E test specification (20 flows) |
 | `.lovable/memory/testing/chrome-extension-smoke-test` | Smoke test for build validation |

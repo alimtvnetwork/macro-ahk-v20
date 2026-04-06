@@ -152,13 +152,13 @@ import pkg from './package.json' assert { type: 'json' };
 ### References
 - `chrome-extension/vite.config.ts` — fixed file
 - `run.ps1` — preflight ESM compatibility check
-- `spec/01-app-issues/29-extension-build-resolves-wrong-dependency-context.md` — related build issue
+- `spec/02-app-issues/29-extension-build-resolves-wrong-dependency-context.md` — related build issue
 
 ---
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/01-app-issues/`
+- [x] Issue write-up created under `/spec/02-app-issues/`
 - [x] Root cause and prevention rule documented
 - [x] Anti-pattern reference included
 - [x] Preflight guardrail implemented and documented

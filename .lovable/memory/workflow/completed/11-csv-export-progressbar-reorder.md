@@ -13,7 +13,7 @@ Fixed InjectJSQuick focus-stealing bug, added CSV export for workspace credits, 
 - **Root Cause**: `InjectJSQuick` called `ActivateBrowserPage()` which stole focus from detached DevTools console back to the browser page, causing script paste to go to the address bar → 413 errors
 - **Fix**: Removed `ActivateBrowserPage()` from `InjectJSQuick`; it now assumes Console is already focused
 - **Files**: `JsInject.ahk`, `GeneralDefaults.ahk`
-- **Issue**: `/spec/01-app-issues/13-devtools-window-activation.md`
+- **Issue**: `/spec/02-app-issues/13-devtools-window-activation.md`
 
 ### 2. CSV Export for Workspaces (v7.9.52)
 - **Feature**: 📋 CSV button in MacroLoop controller exports all workspace credit data
