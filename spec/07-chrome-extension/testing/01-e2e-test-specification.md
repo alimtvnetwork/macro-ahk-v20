@@ -774,8 +774,8 @@ NO MATCH:                          MATCHED:
 ## Cross-References
 
 - [Chrome Extension Overview](00-overview.md) — Specification directory
-- [Readable Conditions (RC1–RC4)](../05-golang-standards/03-readable-conditions.md) — Code style for Go test helpers
-- [Error Management](../07-error-manage/06-apperror-package/readme.md) — Error handling patterns
+- [Readable Conditions (RC1–RC4)](../../08-coding-guidelines/golang-standards/03-readable-conditions.md) — Code style for Go test helpers
+- [Error Management](../../11-imported/error-management/06-apperror-package/readme.md) — Error handling patterns
 
 ---
 

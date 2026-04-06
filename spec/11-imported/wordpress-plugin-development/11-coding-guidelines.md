@@ -84,7 +84,7 @@ Sensitive directories must receive `.htaccess` (`Deny from all`) and `index.php`
 
 ## 4. Boolean Helpers — No Raw Negations
 
-> **Canonical source:** [No Raw Negations spec](../01-coding-guidelines/no-negatives.md)
+> **Canonical source:** [No Raw Negations spec](../../08-coding-guidelines/coding-guidelines/no-negatives.md)
 
 **Never use `!` on a function call in a condition.** All boolean logic must use positively named guard functions instead of raw negations.
 

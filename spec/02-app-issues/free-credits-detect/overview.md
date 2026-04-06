@@ -273,9 +273,9 @@ See: [Workspace Name API Spec](../../06-macro-controller/workspace-name/overview
 ## Cross-References
 
 - [Check Button Spec](../../07-chrome-extension/60-check-button-spec.md)
-- [Credit Refresh Behavior](../../../.lovable/memory/features/macro-controller/credit-refresh-behavior.md)
+- [Credit Refresh Behavior](../../.lovable/memory/features/macro-controller/credit-refresh-behavior.md)
 - [Credit System Spec](../../06-macro-controller/credit-system.md)
-- [Bearer Token Policy](../../../.lovable/memory/features/macro-controller/workspace-api-bearer-token-policy.md)
+- [Bearer Token Policy](../../.lovable/memory/features/macro-controller/workspace-api-bearer-token-policy.md)
 - [Issue #36: Bearer Token Removal](../36-bearer-token-removal-broke-credit-bar.md)
 - [Sample Response](./sample-response.json)
 

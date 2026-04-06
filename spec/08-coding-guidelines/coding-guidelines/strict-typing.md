@@ -69,7 +69,7 @@ PHP does not support type declarations on local variables. Types apply to parame
 
 Already enforced by the generics-first rule and `strict: true` in tsconfig. Key reinforcements:
 
-- `any` is **prohibited** everywhere (see [TypeScript Standards](../02-typescript-standards/readme.md))
+- `any` is **prohibited** everywhere (see [TypeScript Standards](../typescript-standards/readme.md))
 - `unknown` only at parse boundaries with immediate narrowing
 - All function signatures must have explicit parameter and return types
 
@@ -79,7 +79,7 @@ Already enforced by the generics-first rule and `strict: true` in tsconfig. Key 
 
 Already statically typed. Key reinforcements:
 
-- `interface{}` / `any` is **prohibited** in exported APIs (see [Go Standards](../03-golang-standards/readme.md))
+- `interface{}` / `any` is **prohibited** in exported APIs (see [Go Standards](../golang-standards/readme.md))
 - Use concrete types or constrained generics (`[T any]` in generic signatures is acceptable)
 - All struct fields must use concrete types, not `map[string]interface{}`
 
@@ -284,7 +284,7 @@ func (a *Adapter) GetById(ctx context.Context, id int64) (*models.Plugin, error)
 }
 ```
 
-> **Full examples with PHP/Go/TypeScript:** see [apperror § Result Guard Rule](../05-error-manage/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
+> **Full examples with PHP/Go/TypeScript:** see [apperror § Result Guard Rule](../../11-imported/error-management/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
 
 ### Enforcement Checklist
 
@@ -299,12 +299,12 @@ func (a *Adapter) GetById(ctx context.Context, id int64) (*models.Plugin, error)
 
 ## Cross-References
 
-- [PHP Standards](../04-php-standards/readme.md)
-- [TypeScript Standards](../02-typescript-standards/readme.md)
-- [Go Standards](../03-golang-standards/readme.md)
+- [PHP Standards](../php-standards/readme.md)
+- [TypeScript Standards](../typescript-standards/readme.md)
+- [Go Standards](../golang-standards/readme.md)
 - [Function Naming](./function-naming.md)
-- [Generic Enforce](../12-generic-enforce/readme.md)
-- [apperror Package — Result Guard Rule](../05-error-manage/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
+- [Generic Enforce](../../11-imported/generic-enforce/readme.md)
+- [apperror Package — Result Guard Rule](../../11-imported/error-management/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
 - [Master Guidelines — Section 6.1](./00-master-coding-guidelines.md#61--result-guard-rule-zero-silent-failures)
 
 ---

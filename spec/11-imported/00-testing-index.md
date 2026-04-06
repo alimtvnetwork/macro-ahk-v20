@@ -17,8 +17,8 @@ This document cross-references all E2E test specifications, regression checklist
 
 | Document | Path |
 |----------|------|
-| E2E Test Specification | [`spec/07-chrome-extension/testing/01-e2e-test-specification.md`](spec/07-chrome-extension/testing/01-e2e-test-specification.md) |
-| Pre-Release Regression Checklist | [`spec/07-chrome-extension/testing/02-pre-release-regression-checklist.md`](spec/07-chrome-extension/testing/02-pre-release-regression-checklist.md) |
+| E2E Test Specification | [`spec/07-chrome-extension/testing/01-e2e-test-specification.md`](../07-chrome-extension/testing/01-e2e-test-specification.md) |
+| Pre-Release Regression Checklist | [`spec/07-chrome-extension/testing/02-pre-release-regression-checklist.md`](../07-chrome-extension/testing/02-pre-release-regression-checklist.md) |
 
 ### Playwright Config
 
@@ -65,8 +65,8 @@ This document cross-references all E2E test specifications, regression checklist
 
 | Document | Path |
 |----------|------|
-| E2E Test Specification | [`spec/11-imported/10-wp-plugin-publish/04-testing/40-e2e-test-spec.md`](spec/11-imported/10-wp-plugin-publish/04-testing/40-e2e-test-spec.md) |
-| Pre-Release Regression Checklist | [`spec/11-imported/10-wp-plugin-publish/04-testing/41-pre-release-regression-checklist.md`](spec/11-imported/10-wp-plugin-publish/04-testing/41-pre-release-regression-checklist.md) |
+| E2E Test Specification | [`spec/11-imported/10-wp-plugin-publish/04-testing/40-e2e-test-spec.md`](10-wp-plugin-publish/04-testing/40-e2e-test-spec.md) |
+| Pre-Release Regression Checklist | [`spec/11-imported/10-wp-plugin-publish/04-testing/41-pre-release-regression-checklist.md`](10-wp-plugin-publish/04-testing/41-pre-release-regression-checklist.md) |
 
 ### Test Matrix (20 tests)
 
@@ -93,7 +93,7 @@ This document cross-references all E2E test specifications, regression checklist
 | Publish Flow | TC-PUBLISH-004 | Restore From Backup |
 | Publish Flow | TC-PUBLISH-005 | Publish All Sites |
 
-> **Note**: WP Plugin Publish E2E tests are implemented as a Go test service (`backend/internal/services/e2e/`), not Playwright. See the [E2E Test Spec](spec/11-imported/10-wp-plugin-publish/04-testing/40-e2e-test-spec.md) for API endpoints and schemas.
+> **Note**: WP Plugin Publish E2E tests are implemented as a Go test service (`backend/internal/services/e2e/`), not Playwright. See the [E2E Test Spec](10-wp-plugin-publish/04-testing/40-e2e-test-spec.md) for API endpoints and schemas.
 
 ---
 

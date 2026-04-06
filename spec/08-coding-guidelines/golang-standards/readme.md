@@ -21,7 +21,7 @@ Every `.go` file targets **300 lines**. Up to **400 lines is acceptable** but mu
 
 ## Function Size — Max 15 Lines
 
-> **Canonical source:** [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Rule 6
+> **Canonical source:** [Cross-Language Code Style](../coding-guidelines/code-style.md) — Rule 6
 
 Every function body must be **15 lines or fewer**. Extract logic into small, well-named helpers.
 
@@ -50,7 +50,7 @@ func ProcessUpload(ctx context.Context, req UploadRequest) error {
 
 ## Zero Nested `if` — Absolute Ban
 
-> **Canonical source:** [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Rule 2 & 7
+> **Canonical source:** [Cross-Language Code Style](../coding-guidelines/code-style.md) — Rule 2 & 7
 
 Nested `if` blocks are **absolutely forbidden** — zero tolerance. Flatten with combined conditions or early returns.
 
@@ -323,7 +323,7 @@ func (h *Handler) GetPlugin(w http.ResponseWriter, r *http.Request) {
 
 ## Database Naming Convention — PascalCase
 
-> **Canonical source:** [Database Naming Convention](../01-coding-guidelines/database-naming.md)
+> **Canonical source:** [Database Naming Convention](../coding-guidelines/database-naming.md)
 
 All custom SQLite table names, column names, and index names MUST use **PascalCase**. Go struct `db` and `json` tags must match.
 
@@ -483,7 +483,7 @@ config.go           → Config + ServerConfig + WatcherConfig + BackupConfig
 
 ## No Raw Negations — Use Positive Guard Functions
 
-> **Canonical source:** [No Raw Negations](../01-coding-guidelines/no-negatives.md)
+> **Canonical source:** [No Raw Negations](../coding-guidelines/no-negatives.md)
 
 ```go
 // ❌ FORBIDDEN
@@ -733,18 +733,18 @@ if isBuildMissing {
 
 ## Cross-References
 
-- [No Raw Negations](../01-coding-guidelines/no-negatives.md) — Positive guard functions (all languages)
-- [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Braces, nesting & spacing rules
-- [Function Naming](../01-coding-guidelines/function-naming.md) — No boolean flag parameters
-- [Strict Typing](../01-coding-guidelines/strict-typing.md) — Type declarations & docblock rules
-- [DRY Principles](../01-coding-guidelines/dry-principles.md)
+- [No Raw Negations](../coding-guidelines/no-negatives.md) — Positive guard functions (all languages)
+- [Cross-Language Code Style](../coding-guidelines/code-style.md) — Braces, nesting & spacing rules
+- [Function Naming](../coding-guidelines/function-naming.md) — No boolean flag parameters
+- [Strict Typing](../coding-guidelines/strict-typing.md) — Type declarations & docblock rules
+- [DRY Principles](../coding-guidelines/dry-principles.md)
 - [Boolean Standards](02-boolean-standards.md) — Go-specific positive logic rules and exemptions
 - [Readable Conditions](03-readable-conditions.md) — Named booleans, decomposed comparisons, whitespace rules
-- [apperror Package Spec](../05-error-manage/06-apperror-package/readme.md) — Full StackTrace, AppError, Result types specification
+- [apperror Package Spec](../../11-imported/error-management/06-apperror-package/readme.md) — Full StackTrace, AppError, Result types specification
 - [Enum Specification](01-enum-specification/00-overview.md) — Byte-based enum pattern, required methods, folder structure
 - [RC1–RC4 Compliance Report](04-rc-compliance-report.md) — Audit of all spec files for readable conditions compliance
-- [Master Coding Guidelines](../01-coding-guidelines/00-master-coding-guidelines.md) — Consolidated cross-language reference
-- [Issues & Fixes Log](../01-coding-guidelines/01-issues-and-fixes-log.md) — Full historical fixes
+- [Master Coding Guidelines](../coding-guidelines/00-master-coding-guidelines.md) — Consolidated cross-language reference
+- [Issues & Fixes Log](../coding-guidelines/01-issues-and-fixes-log.md) — Full historical fixes
 
 ---
 

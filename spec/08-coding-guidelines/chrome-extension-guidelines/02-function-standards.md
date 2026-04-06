@@ -471,6 +471,6 @@ export function createProject(name: string): Project { ... }
 - [Naming Conventions](01-naming-conventions.md) — Verb-led function names
 - [Formatting Rules](04-formatting-rules.md) — Line-per-argument details
 - [File Organization](05-file-organization.md) — 200-line file limits
-- [Error Recovery (Spec 09)](../09-error-recovery.md) — Health state machine and recovery flows
+- [Error Recovery (Spec 09)](../../07-chrome-extension/09-error-recovery.md) — Health state machine and recovery flows
 
 *Function standards v1.2.0 — 2026-02-28*

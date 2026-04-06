@@ -255,12 +255,12 @@ Raw negation is **only** acceptable for:
 
 ## Cross-References
 
-- [PHP Boolean Logic](../04-php-standards/readme.md#boolean-logic) — PHP-specific helpers
-- [PHP Forbidden Patterns](../04-php-standards/forbidden-patterns.md) — Pattern 4.x
+- [PHP Boolean Logic](../php-standards/readme.md#boolean-logic) — PHP-specific helpers
+- [PHP Forbidden Patterns](../php-standards/forbidden-patterns.md) — Pattern 4.x
 - [Cross-Language Code Style](./code-style.md) — Braces, nesting, spacing
-- [TypeScript Standards](../02-typescript-standards/readme.md)
-- [Golang Standards](../05-golang-standards/readme.md)
-- [Go Readable Conditions (RC1–RC4)](../05-golang-standards/03-readable-conditions.md) — Named booleans, decomposed comparisons, compound conditions & whitespace rules
+- [TypeScript Standards](../typescript-standards/readme.md)
+- [Golang Standards](../golang-standards/readme.md)
+- [Go Readable Conditions (RC1–RC4)](../golang-standards/03-readable-conditions.md) — Named booleans, decomposed comparisons, compound conditions & whitespace rules
 
 ---
 

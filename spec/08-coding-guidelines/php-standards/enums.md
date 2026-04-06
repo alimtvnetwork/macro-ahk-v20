@@ -458,7 +458,7 @@ enum ActionType: string
 
 ### TableType — SQLite Table Names (PascalCase)
 
-All custom SQLite table names use **PascalCase** values. This aligns with the [cross-language database naming convention](../01-coding-guidelines/database-naming.md).
+All custom SQLite table names use **PascalCase** values. This aligns with the [cross-language database naming convention](../coding-guidelines/database-naming.md).
 
 ```php
 enum TableType: string
@@ -754,7 +754,7 @@ final class ErrorType
 
 - [PHP Coding Standards](./readme.md) — Parent spec with forbidden patterns
 - [Naming Conventions](./naming-conventions.md) — PascalCase for enums, camelCase for methods
-- [Golang Standards](../03-golang-standards/readme.md) — Go equivalent patterns
+- [Golang Standards](../golang-standards/readme.md) — Go equivalent patterns
 
 ## Log Context Array Keys — camelCase
 

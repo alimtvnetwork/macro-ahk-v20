@@ -455,4 +455,4 @@ pnpm remove <package>
 - [Overview](./00-overview.md) - Architecture and quick start
 - [Configuration Schema](./01-configuration-schema.md) - JSON config format
 - [Error Codes](./04-error-codes.md) - Detailed error handling
-- [Upload Scripts](../09-upload-scripts/readme.md) - WordPress plugin deployment scripts
+- [Upload Scripts](../upload-scripts/readme.md) - WordPress plugin deployment scripts

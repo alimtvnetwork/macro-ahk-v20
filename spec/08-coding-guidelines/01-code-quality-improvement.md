@@ -257,10 +257,10 @@ When refactoring code to follow these rules, include a **before/after example** 
 ## Cross-References
 
 - [TypeScript Immutability Standards (CQ11–CQ18)](02-typescript-immutability-standards.md)
-- [Naming Conventions](../07-chrome-extension/coding-guidelines/01-naming-conventions.md)
-- [Boolean Logic](../07-chrome-extension/coding-guidelines/03-boolean-logic.md)
-- [Function Standards](../07-chrome-extension/coding-guidelines/02-function-standards.md)
-- [TypeScript Standards](../typescript-standards/readme.md)
+- [Naming Conventions](chrome-extension-guidelines/01-naming-conventions.md)
+- [Boolean Logic](chrome-extension-guidelines/03-boolean-logic.md)
+- [Function Standards](chrome-extension-guidelines/02-function-standards.md)
+- [TypeScript Standards](typescript-standards/readme.md)
 - [No Negatives](../08-coding-guidelines/coding-guidelines/no-negatives.md)
 - [Cyclomatic Complexity](../08-coding-guidelines/coding-guidelines/cyclomatic-complexity.md)
 

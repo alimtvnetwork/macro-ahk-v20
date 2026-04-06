@@ -88,6 +88,6 @@ to the old `Id` TEXT column for backward compatibility with v3 bundles.
 
 ## Cross-References
 
-- [Data Models Spec](../../../03-data-and-api/data-models.md)
+- [Data Models Spec](../../03-data-and-api/data-models.md)
 - [Database Naming Convention](database-naming.md)
-- [SQL Security Standards](../../memory: sql-security-standards)
+- [SQL Security Standards](#sql-security-standards)

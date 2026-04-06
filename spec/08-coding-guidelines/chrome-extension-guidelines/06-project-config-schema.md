@@ -389,8 +389,8 @@ interface ProjectSettings {
 
 ## Cross-References
 
-- [Project Model (Spec 12)](../12-project-model-and-url-rules.md) — Internal Project/UrlRule data model
-- [Script & Config Management (Spec 13)](../13-script-and-config-management.md) — Storage and binding details
+- [Project Model (Spec 12)](../../07-chrome-extension/12-project-model-and-url-rules.md) — Internal Project/UrlRule data model
+- [Script & Config Management (Spec 13)](../../07-chrome-extension/13-script-and-config-management.md) — Storage and binding details
 - [Function Standards](02-function-standards.md) — Async/await and error handling rules
 - [Naming Conventions](01-naming-conventions.md) — Variable naming rules for implementation
 

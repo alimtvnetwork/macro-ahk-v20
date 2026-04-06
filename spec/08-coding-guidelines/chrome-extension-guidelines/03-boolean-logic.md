@@ -361,8 +361,8 @@ while (queue.length > 0) { ... }
 ## Cross-References
 
 - [Naming Conventions](01-naming-conventions.md) — Positive counterpart pairs table
-- [Go Boolean Standards](../../golang-standards/02-boolean-standards.md) — Parallel Go rules
-- [Go Readable Conditions](../../golang-standards/03-readable-conditions.md) — RC1–RC4 rules (same philosophy)
+- [Go Boolean Standards](../golang-standards/02-boolean-standards.md) — Parallel Go rules
+- [Go Readable Conditions](../golang-standards/03-readable-conditions.md) — RC1–RC4 rules (same philosophy)
 - [Engineering Standards §24](../../08-coding-guidelines/engineering-standards.md) — Positive conditions mandate
 
 *Boolean & condition logic v1.2.0 — 2026-02-28*

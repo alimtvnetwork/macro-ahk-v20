@@ -52,7 +52,7 @@ $this->fileLogger->warn('Upload conflict', array('duplicateDir' => $path));
 - `IncrementalBackup.php`: `master_dir` → `masterDir`
 - `UploadInstallExtractTrait.php`: `target_dir` → `targetDir`
 
-**Prevention:** All log context array keys must use camelCase. See [naming-conventions.md § Array Key Conventions](../04-php-standards/naming-conventions.md#array-key-conventions).
+**Prevention:** All log context array keys must use camelCase. See [naming-conventions.md § Array Key Conventions](../php-standards/naming-conventions.md#array-key-conventions).
 
 ---
 
@@ -252,7 +252,7 @@ $isBaseDirFailed = !self::makeDirectory($dir);
 if ($isBaseDirFailed) { throw new Exception('...'); }
 ```
 
-**Prevention:** Use `PathHelper` and `BooleanHelpers` guard functions. See [no-negatives.md](../01-coding-guidelines/no-negatives.md).
+**Prevention:** Use `PathHelper` and `BooleanHelpers` guard functions. See [no-negatives.md](../coding-guidelines/no-negatives.md).
 
 ---
 
@@ -407,7 +407,7 @@ $result = $this->compute($data);
 return $result;
 ```
 
-**Prevention:** Rule 4 in [code-style.md](../01-coding-guidelines/code-style.md). Exception: if `return`/`throw` is the only statement, no blank line needed.
+**Prevention:** Rule 4 in [code-style.md](../coding-guidelines/code-style.md). Exception: if `return`/`throw` is the only statement, no blank line needed.
 
 ---
 

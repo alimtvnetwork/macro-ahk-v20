@@ -19,7 +19,7 @@ It NEVER calls any API for workspace detection — it reads the DOM directly.
 - TS modules (`src/loop-engine.ts`, `src/workspace-detection.ts`) are source-level authoring files
 - **After any Check-flow change, run:** `npm run build:macro-controller`
 - Without this sync, runtime can execute stale Check logic even when TS source looks fixed
-- See: [Issue #10](../../02-app-issues/check-button/10-runtime-seed-drift.md)
+- See: [Issue #10](../02-app-issues/check-button/10-runtime-seed-drift.md)
 
 ---
 
@@ -70,7 +70,7 @@ Config: CONFIG.PROGRESS_XPATH
 **CRITICAL**: This XPath targets an element inside the project dialog's portal
 overlay (`div[6]`). The dialog MUST still be open when this step executes.
 If the dialog was closed after Step 2, this element would not exist in the DOM.
-See: [Issue #09](../../02-app-issues/check-button/09-dialog-close-before-progress-read.md)
+See: [Issue #09](../02-app-issues/check-button/09-dialog-close-before-progress-read.md)
 
 - Search for the Progress Bar element using `findElement(ML_ELEMENTS.PROGRESS)`
 - If FOUND → system is **BUSY** → `state.isIdle = false`
@@ -174,9 +174,9 @@ See: [Issue #09](../../02-app-issues/check-button/09-dialog-close-before-progres
 
 ## Cross-References
 
-- [Check Button Issue Bundle](../../02-app-issues/check-button/)
-- [Issue #08: workspaceFromApi Race](../../02-app-issues/check-button/08-workspace-detection-race.md)
-- [Issue #10: Runtime Seed Drift](../../02-app-issues/check-button/10-runtime-seed-drift.md)
+- [Check Button Issue Bundle](../02-app-issues/check-button/)
+- [Issue #08: workspaceFromApi Race](../02-app-issues/check-button/08-workspace-detection-race.md)
+- [Issue #10: Runtime Seed Drift](../02-app-issues/check-button/10-runtime-seed-drift.md)
 - [Macro Controller Extension Bridge](43-macro-controller-extension-bridge.md)
 - [Cookie-Only Bearer](36-cookie-only-bearer.md)
 

@@ -557,12 +557,12 @@ Boolean query methods on the **same classes** — such as `isEmpty()`, `isDefine
 - [No Raw Negations](./no-negatives.md) — Full guard function inventory
 - [Code Style — Rule 3](./code-style.md) — Complex condition extraction
 - [Function Naming](./function-naming.md) — No boolean flag parameters
-- [PHP Boolean Guard Inventory](../04-php-standards/readme.md) — PHP-specific helpers
-- [Go Boolean Standards](../05-golang-standards/02-boolean-standards.md) — Go-specific rules and exemptions
-- [Go Readable Conditions (RC1–RC4)](../05-golang-standards/03-readable-conditions.md) — Named booleans, decomposed comparisons, compound conditions & whitespace rules
+- [PHP Boolean Guard Inventory](../php-standards/readme.md) — PHP-specific helpers
+- [Go Boolean Standards](../golang-standards/02-boolean-standards.md) — Go-specific rules and exemptions
+- [Go Readable Conditions (RC1–RC4)](../golang-standards/03-readable-conditions.md) — Named booleans, decomposed comparisons, compound conditions & whitespace rules
 - [Master Coding Guidelines](./00-master-coding-guidelines.md) — Consolidated reference
 - [Issues & Fixes Log](./01-issues-and-fixes-log.md) — Historical fixes
-- [apperror Package — Result Guard Rule](../07-error-manage/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
+- [apperror Package — Result Guard Rule](../../11-imported/error-management/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
 
 ---
 

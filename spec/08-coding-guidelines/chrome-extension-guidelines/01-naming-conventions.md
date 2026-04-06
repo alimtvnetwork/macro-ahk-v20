@@ -191,6 +191,6 @@ src/
 
 - [Boolean & Condition Logic](03-boolean-logic.md) — Positive condition rules
 - [Function Standards](02-function-standards.md) — Size and parameter rules
-- [Go Boolean Standards](../../golang-standards/02-boolean-standards.md) — Parallel Go naming rules
+- [Go Boolean Standards](../golang-standards/02-boolean-standards.md) — Parallel Go naming rules
 
 *Naming conventions v1.1.0 — 2026-02-28*

@@ -250,7 +250,7 @@ const matchedProject = await chrome.runtime.sendMessage({
 
 - [Function Standards](02-function-standards.md) — 15-line function limit
 - [Formatting Rules](04-formatting-rules.md) — One-per-line formatting (don't compress to save lines)
-- [Build System (Spec 17)](../17-build-system.md) — Canonical directory structure
-- [Message Protocol (Spec 18)](../18-message-protocol.md) — Cross-layer message types
+- [Build System (Spec 17)](../../07-chrome-extension/17-build-system.md) — Canonical directory structure
+- [Message Protocol (Spec 18)](../../07-chrome-extension/18-message-protocol.md) — Cross-layer message types
 
 *File organization v1.2.0 — 2026-02-28*

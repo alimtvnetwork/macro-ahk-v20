@@ -245,9 +245,9 @@ if !requireService(w, Services.SyncService, "Sync service") {
 
 - [Boolean Standards](02-boolean-standards.md) — Positive logic & `Is`/`Has` naming rules
 - [RC1–RC4 Compliance Report](04-rc-compliance-report.md) — Audit of all spec files for readable conditions compliance
-- [No Raw Negations](../03-coding-guidelines/no-negatives.md) — Cross-language positive guard functions
-- [Boolean Principles](../03-coding-guidelines/boolean-principles.md) — P1–P6 boolean logic rules
-- [Cross-Language Code Style](../03-coding-guidelines/code-style.md) — Braces, nesting & spacing rules
+- [No Raw Negations](../coding-guidelines/no-negatives.md) — Cross-language positive guard functions
+- [Boolean Principles](../coding-guidelines/boolean-principles.md) — P1–P6 boolean logic rules
+- [Cross-Language Code Style](../coding-guidelines/code-style.md) — Braces, nesting & spacing rules
 - [RC1–RC4 + P1–P2 Lint Script](scripts/lint-readable-conditions.sh) — Automated pre-commit/CI linter
 
 ---

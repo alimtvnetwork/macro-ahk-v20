@@ -345,8 +345,8 @@ When touching any file, check for:
 ## Cross-References
 
 - [Code Quality Improvement (CQ1–CQ10)](01-code-quality-improvement.md)
-- [Naming Conventions](../07-chrome-extension/coding-guidelines/01-naming-conventions.md)
-- [Function Standards](../07-chrome-extension/coding-guidelines/02-function-standards.md)
+- [Naming Conventions](chrome-extension-guidelines/01-naming-conventions.md)
+- [Function Standards](chrome-extension-guidelines/02-function-standards.md)
 - [DRY Principles](coding-guidelines/dry-principles.md)
 - [Cyclomatic Complexity](coding-guidelines/cyclomatic-complexity.md)
 - [Strict Typing](coding-guidelines/strict-typing.md)

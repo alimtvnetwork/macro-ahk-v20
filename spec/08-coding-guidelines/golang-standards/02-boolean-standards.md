@@ -169,8 +169,8 @@ if isNonApiRoute {
 - [Readable Conditions (RC1–RC4)](03-readable-conditions.md) — Named booleans, decomposed comparisons, compound conditions & whitespace rules
 - [RC1–RC4 Compliance Report](04-rc-compliance-report.md) — Audit of all spec files for readable conditions compliance
 - [RC1–RC4 + P1–P2 Lint Script](scripts/lint-readable-conditions.sh) — Automated pre-commit/CI linter
-- [No Raw Negations](../03-coding-guidelines/no-negatives.md) — Cross-language positive guard functions
-- [Boolean Principles (P1–P6)](../03-coding-guidelines/boolean-principles.md) — Cross-language boolean logic rules
+- [No Raw Negations](../coding-guidelines/no-negatives.md) — Cross-language positive guard functions
+- [Boolean Principles (P1–P6)](../coding-guidelines/boolean-principles.md) — Cross-language boolean logic rules
 
 ## 7. Cross-Language Alignment
 

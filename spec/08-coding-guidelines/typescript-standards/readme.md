@@ -238,7 +238,7 @@ type ActivityMetadata = PublishMetadata | SnapshotMetadata | PluginMetadata | Co
 
 ## 5. Function Size — Max 15 Lines
 
-> **Canonical source:** [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Rule 6
+> **Canonical source:** [Cross-Language Code Style](../coding-guidelines/code-style.md) — Rule 6
 
 Every function/method body must be **15 lines or fewer**. Extract logic into small, well-named helper functions.
 
@@ -261,7 +261,7 @@ const handleSubmit = async (data: FormData) => {
 
 ## 6. Zero Nested `if` — Absolute Ban
 
-> **Canonical source:** [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Rule 2 & 7
+> **Canonical source:** [Cross-Language Code Style](../coding-guidelines/code-style.md) — Rule 2 & 7
 
 Nested `if` blocks are **absolutely forbidden** — zero tolerance, no exceptions. Flatten with early returns or combined conditions.
 
@@ -314,7 +314,7 @@ if (response.status >= 400) {
 
 ## 8. No Raw Negations — Use Positive Guard Functions
 
-> **Canonical source:** [No Raw Negations](../01-coding-guidelines/no-negatives.md)
+> **Canonical source:** [No Raw Negations](../coding-guidelines/no-negatives.md)
 
 **Never use `!` on a function call in a condition.** Wrap every negative check in a positively named guard function.
 
@@ -336,13 +336,13 @@ if (isFileMissing(path)) { throw new Error('Missing'); }
 
 ## Cross-References
 
-- [No Raw Negations](../01-coding-guidelines/no-negatives.md) — Positive guard functions (all languages)
-- [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Braces, nesting & spacing rules (canonical)
-- [Function Naming](../01-coding-guidelines/function-naming.md) — No boolean flag parameters (all languages)
-- [Strict Typing](../01-coding-guidelines/strict-typing.md) — Type declarations & docblock rules (all languages)
-- [DRY Principles](../01-coding-guidelines/dry-principles.md)
-- [Golang Standards](../03-golang-standards/readme.md)
-- [Response Envelope Spec](../05-error-manage/05-response-envelope/envelope.schema.json)
+- [No Raw Negations](../coding-guidelines/no-negatives.md) — Positive guard functions (all languages)
+- [Cross-Language Code Style](../coding-guidelines/code-style.md) — Braces, nesting & spacing rules (canonical)
+- [Function Naming](../coding-guidelines/function-naming.md) — No boolean flag parameters (all languages)
+- [Strict Typing](../coding-guidelines/strict-typing.md) — Type declarations & docblock rules (all languages)
+- [DRY Principles](../coding-guidelines/dry-principles.md)
+- [Golang Standards](../golang-standards/readme.md)
+- [Response Envelope Spec](../../11-imported/error-management/05-response-envelope/envelope.schema.json)
 
 ---
 

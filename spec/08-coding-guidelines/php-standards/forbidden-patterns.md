@@ -2,7 +2,7 @@
 
 > **Version:** 4.0.0  
 > **Updated:** 2026-02-20  
-> **Consolidates:** [readme.md](./readme.md), [enums.md](./enums.md), [WP Error Handling](../07-wordpress-plugin-development/07-error-handling.md)
+> **Consolidates:** [readme.md](./readme.md), [enums.md](./enums.md), [WP Error Handling](../../11-imported/wordpress-plugin-development/07-error-handling.md)
 
 ---
 
@@ -64,7 +64,7 @@ Every pattern below is **forbidden** in production code. The ✅ column shows th
 
 ## 4. Boolean Logic & No Raw Negations
 
-> **Canonical source:** [No Raw Negations](../01-coding-guidelines/no-negatives.md)
+> **Canonical source:** [No Raw Negations](../coding-guidelines/no-negatives.md)
 
 | # | ❌ Forbidden | ✅ Required | Why |
 |---|-------------|------------|-----|
@@ -355,10 +355,10 @@ PHPDoc `@package` headers and file-level doc block comments (e.g., `* Riseup Asi
 
 - [PHP Coding Standards](./readme.md) — Full spec with examples
 - [PHP Enum Classes](./enums.md) — `HookType`, `CapabilityType`, `HttpMethodType`, Path enums, `ErrorType`, `ErrorChecker`
-- [Cross-Language Code Style](../01-coding-guidelines/code-style.md) — Rules 1-9 (braces, nesting, spacing, function size, Throwable, multi-line params)
-- [WordPress Error Handling](../07-wordpress-plugin-development/07-error-handling.md) — Complete error handling patterns
-- [WordPress Initialization](../07-wordpress-plugin-development/01-initialization-patterns.md) — Bootstrap patterns
-- [WordPress API Design](../07-wordpress-plugin-development/04-api-design.md) — REST endpoint patterns
+- [Cross-Language Code Style](../coding-guidelines/code-style.md) — Rules 1-9 (braces, nesting, spacing, function size, Throwable, multi-line params)
+- [WordPress Error Handling](../../11-imported/wordpress-plugin-development/07-error-handling.md) — Complete error handling patterns
+- [WordPress Initialization](../../11-imported/wordpress-plugin-development/01-initialization-patterns.md) — Bootstrap patterns
+- [WordPress API Design](../../11-imported/wordpress-plugin-development/04-api-design.md) — REST endpoint patterns
 
 ---
 

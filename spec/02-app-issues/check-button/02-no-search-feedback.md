@@ -54,4 +54,4 @@ Even if `fetchLoopCredits` were awaited, the `else` branch never calls `detectWo
 
 ## Related Issues
 - [Issue #24: Workspace State Clobber](../24-macro-loop-workspace-name-clobber-on-cycle.md) — Same `perWs[0]` default pattern
-- [v7.11.1 Workspace Detection Fix](../../../.lovable/memory/workflow/completed/07-workspace-detection-overhaul.md) — Tier 1 cookie auth fix
+- [v7.11.1 Workspace Detection Fix](../../.lovable/memory/workflow/completed/07-workspace-detection-overhaul.md) — Tier 1 cookie auth fix

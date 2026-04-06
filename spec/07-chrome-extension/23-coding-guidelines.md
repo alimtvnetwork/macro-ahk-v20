@@ -15,12 +15,12 @@ This document indexes all coding guideline sub-specs for the Chrome Extension. E
 
 | # | File | Scope |
 |---|------|-------|
-| 01 | [Naming Conventions](coding-guidelines/01-naming-conventions.md) | Variables, functions, constants, files |
-| 02 | [Function Standards](coding-guidelines/02-function-standards.md) | Size limits, parameter rules, single responsibility |
-| 03 | [Boolean & Condition Logic](coding-guidelines/03-boolean-logic.md) | Positive-only conditions, named booleans, no negation in `if` |
-| 04 | [Formatting Rules](coding-guidelines/04-formatting-rules.md) | Line-per-argument, object formatting, line length |
-| 05 | [File Organization](coding-guidelines/05-file-organization.md) | 200-line limit, module splitting, folder structure |
-| 06 | [Project Config Schema](coding-guidelines/06-project-config-schema.md) | JSON manifest for script loading order and config bindings |
+| 01 | [Naming Conventions](../08-coding-guidelines/chrome-extension-guidelines/01-naming-conventions.md) | Variables, functions, constants, files |
+| 02 | [Function Standards](../08-coding-guidelines/chrome-extension-guidelines/02-function-standards.md) | Size limits, parameter rules, single responsibility |
+| 03 | [Boolean & Condition Logic](../08-coding-guidelines/chrome-extension-guidelines/03-boolean-logic.md) | Positive-only conditions, named booleans, no negation in `if` |
+| 04 | [Formatting Rules](../08-coding-guidelines/chrome-extension-guidelines/04-formatting-rules.md) | Line-per-argument, object formatting, line length |
+| 05 | [File Organization](../08-coding-guidelines/chrome-extension-guidelines/05-file-organization.md) | 200-line limit, module splitting, folder structure |
+| 06 | [Project Config Schema](../08-coding-guidelines/chrome-extension-guidelines/06-project-config-schema.md) | JSON manifest for script loading order and config bindings |
 
 ---
 

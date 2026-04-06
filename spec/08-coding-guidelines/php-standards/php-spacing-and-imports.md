@@ -8,7 +8,7 @@
 
 ## Overview
 
-This document codifies three critical PHP formatting rules that are frequently violated. Each rule includes a **wrong** example, the **correct** version, and the rationale. These rules are derived from the [cross-language code-style spec](../03-coding-guidelines/code-style.md) (Rules 4, 8, 10) but are presented here with **PHP-specific examples** for maximum clarity.
+This document codifies three critical PHP formatting rules that are frequently violated. Each rule includes a **wrong** example, the **correct** version, and the rationale. These rules are derived from the [cross-language code-style spec](../coding-guidelines/code-style.md) (Rules 4, 8, 10) but are presented here with **PHP-specific examples** for maximum clarity.
 
 ---
 
@@ -189,6 +189,6 @@ if ($existingRunning !== null) {
 
 ## Cross-References
 
-- [Cross-Language Code Style](../03-coding-guidelines/code-style.md) — Rules 4, 8, 10
+- [Cross-Language Code Style](../coding-guidelines/code-style.md) — Rules 4, 8, 10
 - [PHP Naming Conventions](./naming-conventions.md) — Array key casing rules
 - [PHP Forbidden Patterns](./forbidden-patterns.md) — Banned patterns checklist

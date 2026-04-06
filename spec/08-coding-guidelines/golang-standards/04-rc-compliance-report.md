@@ -219,9 +219,9 @@ if isEnabled {
 
 - [Readable Conditions (RC1–RC4)](03-readable-conditions.md) — Full rule definitions
 - [Boolean Standards](02-boolean-standards.md) — Positive logic & `Is`/`Has` naming
-- [Boolean Principles (P1–P6)](../03-coding-guidelines/boolean-principles.md) — Cross-language boolean rules
-- [No Raw Negations](../03-coding-guidelines/no-negatives.md) — Guard function requirements
-- [Master Coding Guidelines](../03-coding-guidelines/00-master-coding-guidelines.md) — Consolidated reference
+- [Boolean Principles (P1–P6)](../coding-guidelines/boolean-principles.md) — Cross-language boolean rules
+- [No Raw Negations](../coding-guidelines/no-negatives.md) — Guard function requirements
+- [Master Coding Guidelines](../coding-guidelines/00-master-coding-guidelines.md) — Consolidated reference
 - [RC1–RC4 + P1–P2 Lint Script](scripts/lint-readable-conditions.sh) — Automated pre-commit/CI linter
 
 ---

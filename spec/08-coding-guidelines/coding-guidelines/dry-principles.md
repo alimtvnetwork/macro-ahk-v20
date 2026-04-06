@@ -131,11 +131,11 @@ Ask these questions:
 
 ## Cross-References
 
-- [DRY Refactoring Summary](../dry-refactoring-summary.md) — Complete 10-phase history
-- [Response Envelope Schema](../05-error-manage/05-response-envelope/envelope.schema.json) — Cross-stack type contract
-- [TypeScript Standards](../02-typescript-standards/readme.md) — TS-specific rules
-- [Golang Standards](../03-golang-standards/readme.md) — Go-specific rules
-- [PHP Standards](../04-php-standards/readme.md) — PHP-specific rules
+- [DRY Refactoring Summary](../../11-imported/dry-refactoring-summary.md) — Complete 10-phase history
+- [Response Envelope Schema](../../11-imported/error-management/05-response-envelope/envelope.schema.json) — Cross-stack type contract
+- [TypeScript Standards](../typescript-standards/readme.md) — TS-specific rules
+- [Golang Standards](../golang-standards/readme.md) — Go-specific rules
+- [PHP Standards](../php-standards/readme.md) — PHP-specific rules
 
 ---
 

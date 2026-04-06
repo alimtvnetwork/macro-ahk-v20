@@ -10,9 +10,9 @@
 ## How to Use This Document
 
 This is the **master reference**. Every rule here is enforced across all languages. Language-specific details are in:
-- [PHP Standards](../04-php-standards/naming-conventions.md)
-- [Go Standards](../03-golang-standards/readme.md)
-- [TypeScript Standards](../02-typescript-standards/readme.md)
+- [PHP Standards](../php-standards/naming-conventions.md)
+- [Go Standards](../golang-standards/readme.md)
+- [TypeScript Standards](../typescript-standards/readme.md)
 - [Database Naming](./database-naming.md)
 - [Boolean Principles](./boolean-principles.md)
 - [No-Negatives](./no-negatives.md)
@@ -188,7 +188,7 @@ These Go patterns are **exempt** from the no-negation rule:
 
 ### Go Readable Conditions (RC1–RC4)
 
-> Full reference: [readable-conditions.md](../05-golang-standards/03-readable-conditions.md)
+> Full reference: [readable-conditions.md](../golang-standards/03-readable-conditions.md)
 
 Every Go `if` condition must read like plain English. Raw comparisons and inline negations are prohibited at the `if` site.
 
@@ -432,7 +432,7 @@ func (a *Adapter) GetById(ctx context.Context, id int64) (*models.Plugin, error)
 }
 ```
 
-> **Full examples with PHP/Go/TypeScript:** see [apperror § Result Guard Rule](../05-error-manage/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
+> **Full examples with PHP/Go/TypeScript:** see [apperror § Result Guard Rule](../../11-imported/error-management/06-apperror-package/readme.md#12-result-guard-rule--mandatory-error-check-before-value-access)
 
 #### Enforcement Checklist
 
@@ -561,7 +561,7 @@ $this->db->insert(TableType::Transactions->value, array('PluginSlug' => $slug));
 
 ## 12. Cross-Language Enum Synchronization
 
-Any modification to an enum must follow the [enum-consumer-checklist.md](../01-app/enum-consumer-checklist.md):
+Any modification to an enum must follow the [enum-consumer-checklist.md](../../11-imported/error-management/01-error-handling/readme.md):
 1. Update PHP enum file
 2. Update Go enum file (if mirrored)
 3. Update TypeScript constants/types

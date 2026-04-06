@@ -9,7 +9,7 @@
 
 | # | Document | Purpose |
 |---|----------|---------|
-| 00 | [Unified Testing Index](../00-testing-index.md) | Cross-reference of all E2E tests across Chrome Extension and WP Plugin Publish |
+| 00 | [Unified Testing Index](../../11-imported/00-testing-index.md) | Cross-reference of all E2E tests across Chrome Extension and WP Plugin Publish |
 | 01 | [E2E Test Specification](01-e2e-test-specification.md) | Comprehensive end-to-end test plan with summary matrix, detailed flows, UI wireframes, and pass/fail criteria |
 | 02 | [Pre-Release Regression Checklist](02-pre-release-regression-checklist.md) | Manual QA sign-off checklist mapping all 20 E2E tests by priority (P0/P1/P2) |
 | 03 | [Context Menu Specification](03-context-menu-spec.md) | Right-click context menu with project selection, script execution, and log actions |

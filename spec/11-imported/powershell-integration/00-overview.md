@@ -333,12 +333,12 @@ Tell the AI:
 | [Integration Guide](./03-integration-guide.md) | Step-by-step setup |
 | [Error Codes](./04-error-codes.md) | Exit codes 9500-9599 |
 | [Firewall Rules](./05-firewall-rules.md) | Windows firewall setup |
-| **[Upload Scripts Spec](../09-upload-scripts/readme.md)** | WordPress plugin upload scripts (V1, V2, V3) |
-| [Upload V1](../09-upload-scripts/01-upload-plugin-v1.md) | Single-file upload via Invoke-RestMethod |
-| [Upload V2](../09-upload-scripts/02-upload-plugin-v2.md) | Envelope-aware upload with unwrapping |
-| [Upload V3](../09-upload-scripts/03-upload-plugin-v3.md) | Parallel multi-plugin deployment via Start-Job |
-| [Upload Custom](../09-upload-scripts/04-upload-plugin-custom.md) | Custom path deployments via `run.ps1 -u -pp` |
-| [Upload Config](../09-upload-scripts/05-configuration.md) | Authentication, headers, and fallback config |
+| **[Upload Scripts Spec](../upload-scripts/readme.md)** | WordPress plugin upload scripts (V1, V2, V3) |
+| [Upload V1](../upload-scripts/01-upload-plugin-v1.md) | Single-file upload via Invoke-RestMethod |
+| [Upload V2](../upload-scripts/02-upload-plugin-v2.md) | Envelope-aware upload with unwrapping |
+| [Upload V3](../upload-scripts/03-upload-plugin-v3.md) | Parallel multi-plugin deployment via Start-Job |
+| [Upload Custom](../upload-scripts/04-upload-plugin-custom.md) | Custom path deployments via `run.ps1 -u -pp` |
+| [Upload Config](../upload-scripts/05-configuration.md) | Authentication, headers, and fallback config |
 
 ---
 
