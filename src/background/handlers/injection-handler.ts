@@ -296,7 +296,7 @@ async function injectAllScripts(
             }
 
             const combinedCode = wrappedParts.join("\n;\n");
-            console.log("[injection] 3/4 BATCH    — %d scripts combined (%d chars)", batchable.length, combinedCode.length);
+            console.log("[injection] 3/4 BATCH    — %d scripts combined (%d chars)", orderedScripts.length, combinedCode.length);
 
             const execResult = await executeInTab(tabId, combinedCode);
             const durationMs = Date.now() - startTime;

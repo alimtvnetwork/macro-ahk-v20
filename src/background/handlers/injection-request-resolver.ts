@@ -22,6 +22,8 @@ export interface PreparedInjectionScript {
     injectable: InjectableScript;
     configJson: string | null;
     themeJson: string | null;
+    /** Where the script code came from — for injection diagnostics. */
+    codeSource: string | null;
 }
 
 /** Full resolution result from the request resolver. */
