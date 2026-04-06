@@ -27,7 +27,7 @@ import { registerShortcutCommands } from "./shortcut-command-handler";
 import { registerSpaReinject } from "./spa-reinject";
 import { startHotReload } from "./hot-reload";
 import { MessageType } from "../shared/messages";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 const BOOT_FAST_PATH_TYPES = new Set<string>([
     MessageType.GET_CONFIG,

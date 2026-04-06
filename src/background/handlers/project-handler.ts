@@ -10,7 +10,7 @@
  */
 
 import type { MessageRequest, OkResponse } from "../../shared/messages";
-import { logCaughtError } from "../bg-logger";
+import { logCaughtError, BgLogTag} from "../bg-logger";
 import type { StoredProject } from "../../shared/project-types";
 import { rebuildNamespaceCache } from "../namespace-cache";
 import { slugify, toCodeName } from "../../lib/slug-utils";

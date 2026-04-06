@@ -19,7 +19,7 @@ import {
     persistInjectionInfo,
     persistInjectionWarn,
 } from "./injection-diagnostics";
-import { logBgWarnError, logCaughtError } from "./bg-logger";
+import { logBgWarnError, logCaughtError, BgLogTag} from "./bg-logger";
 
 /** Known built-in script filenames that must always exist in the store. */
 const BUILTIN_SCRIPT_NAMES = new Set([

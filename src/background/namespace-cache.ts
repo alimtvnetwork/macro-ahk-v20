@@ -15,7 +15,7 @@ import type { StoredProject } from "../shared/project-types";
 import { buildProjectNamespaceScript } from "./project-namespace-builder";
 import { getFilesByProject } from "./handlers/file-storage-handler";
 import { toCodeName, slugify } from "../lib/slug-utils";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 const NS_CACHE_PREFIX = "ns_cache_";
 

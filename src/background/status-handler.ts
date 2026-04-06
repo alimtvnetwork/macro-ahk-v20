@@ -10,7 +10,7 @@ import { getHealthState } from "./state-manager";
 import { getBootStep, getBootPersistenceMode, getBootTimings, getTotalBootMs } from "./boot-diagnostics";
 import { getConfigFetchStatus } from "./handlers/config-auth-handler";
 import { readCookieFromCandidates, type ChromeCookie } from "./cookie-helpers";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _chr = globalThis.chrome as any;

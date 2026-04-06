@@ -13,7 +13,7 @@
 
 import { MessageType } from "../shared/messages";
 import { handleMessage } from "./message-router";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Menu IDs                                                           */

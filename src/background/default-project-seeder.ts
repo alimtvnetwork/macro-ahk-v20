@@ -25,7 +25,7 @@ import {
     handleCreateUpdater,
     linkUpdaterToCategory,
 } from "./handlers/updater-handler";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 const DEFAULT_LOOPING_SCRIPT_PATH = "macro-looping.js";
 const DEFAULT_LOOPING_CONFIG_PATH = "macro-looping-config.json";

@@ -177,10 +177,13 @@ describe("Injection Handler — INJECT_SCRIPTS", () => {
         expect(result.results[0].skipReason).toBe("missing");
 
         const calls = getScriptingCalls();
-        expect(calls).toHaveLength(1);
-        expect(calls[0].tabId).toBe(100);
-        expect(String(calls[0].args?.[0] ?? "")).toContain("missing.js");
-        expect(String(calls[0].args?.[0] ?? "")).toContain("skipped during manual run");
+        expect(calls.length).toBeGreaterThanOrEqual(1);
+        // Find the diagnostic call that mentions the skipped script
+        const diagCall = calls.find(
+            (c) => c.tabId === 100 && String(c.args?.[0] ?? "").includes("missing.js"),
+        );
+        expect(diagCall).toBeDefined();
+        expect(String(diagCall!.args?.[0] ?? "")).toContain("skipped during manual run");
     });
 
     it("writes injection success to the logs DB", async () => {

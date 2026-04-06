@@ -8,7 +8,7 @@
 
 import { transitionHealth } from "./health-handler";
 import { handleGetSettings } from "./handlers/settings-handler";
-import { logBgWarnError, logCaughtError } from "./bg-logger";
+import { logBgWarnError, logCaughtError, BgLogTag} from "./bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */

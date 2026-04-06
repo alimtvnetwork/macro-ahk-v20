@@ -14,7 +14,7 @@
 import { MessageType } from "../shared/messages";
 import { handleGetToken, handleRefreshToken } from "./handlers/config-auth-handler";
 import { seedTokensIntoTab } from "./handlers/token-seeder";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */

@@ -17,7 +17,7 @@
 
 import type { Database as SqlJsDatabase } from "sql.js";
 import type { DbManager } from "../db-manager";
-import { logCaughtError } from "../bg-logger";
+import { logCaughtError, BgLogTag} from "../bg-logger";
 
 const LEGACY_STORAGE_KEY = "marco_custom_prompts";
 

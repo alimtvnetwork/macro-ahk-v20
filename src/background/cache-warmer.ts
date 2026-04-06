@@ -14,7 +14,7 @@
 import type { StoredScript } from "../shared/script-config-types";
 import { STORAGE_KEY_ALL_SCRIPTS } from "../shared/constants";
 import { cacheScriptCode } from "./injection-cache";
-import { logCaughtError } from "./bg-logger";
+import { logCaughtError, BgLogTag} from "./bg-logger";
 
 /**
  * Reads all scripts from chrome.storage.local, finds those with a filePath,

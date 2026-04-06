@@ -18,8 +18,8 @@ import { evaluateUrlMatches, deduplicateScripts } from "./project-matcher";
 import { resolveScriptBindings, type ResolvedScript } from "./script-resolver";
 import { evaluateConditions } from "./condition-evaluator";
 import { wrapWithIsolation } from "./handlers/injection-wrapper";
+import { logCaughtError, logBgWarnError, BgLogTag } from "./bg-logger";
 import {
-import { logCaughtError, logBgWarnError } from "./bg-logger";
     setTabInjection,
     getActiveProjectId,
 } from "./state-manager";

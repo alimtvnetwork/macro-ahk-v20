@@ -9,7 +9,7 @@
  */
 
 import type { MessageRequest } from "../../shared/messages";
-import { logBgWarnError } from "../bg-logger";
+import { logBgWarnError, BgLogTag} from "../bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */

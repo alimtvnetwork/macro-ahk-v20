@@ -7,7 +7,7 @@
  */
 
 import type { UrlRule } from "../shared/project-types";
-import { logBgWarnError } from "./bg-logger";
+import { logBgWarnError, BgLogTag} from "./bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Public API                                                         */
