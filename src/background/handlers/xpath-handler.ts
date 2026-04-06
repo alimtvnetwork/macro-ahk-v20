@@ -11,6 +11,7 @@
 
 import type { MessageRequest, OkResponse } from "../../shared/messages";
 import type { RecordedXPath } from "../../shared/xpath-types";
+import { logCaughtError } from "../bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  Module State                                                       */

@@ -10,6 +10,7 @@
 import type { MessageRequest } from "../../shared/messages";
 import { getLogsDb, getErrorsDb, markLoggingDirty, countTable } from "./logging-handler";
 import JSZip from "jszip";
+import { logCaughtError } from "../bg-logger";
 
 /* ------------------------------------------------------------------ */
 /*  PURGE_LOGS                                                         */
