@@ -5,8 +5,14 @@
  * registry to actual handler functions, verifying real responses.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { installChromeMock, resetMockStorage, setMockCookie } from "../mocks/chrome-storage";
+
+// Mock seeder to prevent auto-seeding default projects
+vi.mock("../../src/background/default-project-seeder", () => ({
+    ensureDefaultProjectSingleScript: vi.fn(async () => {}),
+    registerInstallListener: vi.fn(),
+}));
 
 installChromeMock();
 

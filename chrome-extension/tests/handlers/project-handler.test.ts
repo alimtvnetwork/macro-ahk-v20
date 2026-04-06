@@ -6,13 +6,19 @@
  * against a mocked chrome.storage.local.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
     installChromeMock,
     resetMockStorage,
     getMockStoreSnapshot,
 } from "../mocks/chrome-storage";
 import { MessageType } from "../../src/shared/messages";
+
+// Mock seeder to prevent auto-seeding default projects
+vi.mock("../../src/background/default-project-seeder", () => ({
+    ensureDefaultProjectSingleScript: vi.fn(async () => {}),
+    registerInstallListener: vi.fn(),
+}));
 
 installChromeMock();
 
