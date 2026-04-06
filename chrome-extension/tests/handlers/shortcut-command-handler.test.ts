@@ -46,6 +46,7 @@ describe("Shortcut Command — Registration", () => {
             onCommand: {
                 addListener: (l: any) => { commandListeners.push(l); },
             },
+            getAll: vi.fn((cb: any) => cb([])),
         };
 
         const { registerShortcutCommands } = await import("../../../src/background/shortcut-command-handler");
