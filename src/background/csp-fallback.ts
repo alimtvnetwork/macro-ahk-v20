@@ -228,7 +228,30 @@ async function executeInMainWorld(code: string): Promise<string> {
             reject(new Error("MAIN blob script failed to parse/execute"));
         }, { once: true });
 
-        const appendNode = (node: Node) => appendNodeToTarget(target, node);
+        // CRITICAL: appendNodeToTarget must be inlined here because this function
+        // is serialized by chrome.scripting.executeScript — outer-scope references
+        // are NOT available in the target page context. See spec/02-app-issues/92-*.md
+        const appendNode = (node: Node): boolean => {
+            try {
+                Node.prototype.appendChild.call(target, node);
+                return true;
+            } catch {
+                try {
+                    Node.prototype.insertBefore.call(target, node, null);
+                    return true;
+                } catch {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        try {
+                            Element.prototype.insertAdjacentElement.call(target, "beforeend", node as Element);
+                            return true;
+                        } catch {
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            }
+        };
 
         const commentOk = appendNode(markerComment);
         const scriptOk = appendNode(script);
