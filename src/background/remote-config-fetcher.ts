@@ -151,7 +151,7 @@ function handleFailedFetch(
     status: number,
 ): Record<string, unknown> | null {
     lastFetchError = `HTTP ${status}`;
-    console.warn(`[remote-config] Fetch failed: HTTP ${status}`);
+    console.error(`[remote-config] Fetch failed: HTTP ${status}`);
 
     return getCachedConfig();
 }
@@ -165,7 +165,7 @@ function handleFetchException(
         : String(error);
 
     lastFetchError = errorMessage;
-    console.warn(`[remote-config] Fetch error: ${errorMessage}`);
+    console.error(`[remote-config] Fetch error: ${errorMessage}`);
 
     return getCachedConfig();
 }

@@ -105,7 +105,7 @@ export async function configureUserScriptWorld(): Promise<void> {
             console.log("[injection:csp] ✅ userScripts world '%s' configured", USER_SCRIPT_WORLD_ID);
             return;
         } catch (namedWorldError) {
-            console.warn("[injection:csp] Named userScripts world failed, retrying default world:", namedWorldError);
+            console.error("[injection:csp] Named userScripts world failed, retrying default world:", namedWorldError);
         }
 
         await chrome.userScripts.configureWorld({
@@ -118,7 +118,7 @@ export async function configureUserScriptWorld(): Promise<void> {
     } catch (configError) {
         userScriptsWorldConfigured = false;
         userScriptsWorldIdEnabled = false;
-        console.warn("[injection:csp] Failed to configure userScripts world:", configError);
+        console.error("[injection:csp] Failed to configure userScripts world:", configError);
     }
 }
 
@@ -141,7 +141,7 @@ export async function injectWithCspFallback(
         return buildResult(true, preferredWorld, false, undefined, mainResult.domTarget as CspInjectionResult["domTarget"]);
     }
 
-    console.warn("[injection:csp] ❌ %s world failed: %s", preferredWorld, mainResult.errorMessage);
+    console.error("[injection:csp] ❌ %s world failed: %s", preferredWorld, mainResult.errorMessage);
 
     const errorMessage = mainResult.errorMessage ?? "";
     const isMainWorld = preferredWorld === "MAIN";
@@ -154,7 +154,7 @@ export async function injectWithCspFallback(
             : isMainWorldBlock
                 ? "MAIN world injector interference detected"
                 : "MAIN world injection failed (generic)";
-        console.warn("[injection:csp] %s — falling back to userScripts API", reason);
+        console.error("[injection:csp] %s — falling back to userScripts API", reason);
         return attemptUserScriptFallback(tabId, code, errorMessage);
     }
 
@@ -321,15 +321,15 @@ async function attemptUserScriptFallback(
                     ? userScriptError.message
                     : String(userScriptError);
                 userScriptTierLabel = "failed";
-                console.warn("[injection:csp] ❌ userScripts.execute() failed: %s — falling back to legacy ISOLATED chain", userScriptTierError);
+                console.error("[injection:csp] ❌ userScripts.execute() failed: %s — falling back to legacy ISOLATED chain", userScriptTierError);
             }
         } else {
             userScriptTierLabel = "unavailable";
-            console.warn("[injection:csp] userScripts.execute() not available, using legacy ISOLATED chain");
+            console.error("[injection:csp] userScripts.execute() not available, using legacy ISOLATED chain");
         }
     } else {
         userScriptTierLabel = "skipped(forceLegacyInjection=true)";
-        console.warn("[injection:csp] forceLegacyInjection enabled — skipping userScripts and using legacy ISOLATED chain");
+        console.error("[injection:csp] forceLegacyInjection enabled — skipping userScripts and using legacy ISOLATED chain");
     }
 
     // Legacy tier 1: ISOLATED blob script tag
@@ -544,7 +544,7 @@ function buildResult(
 
 /** Logs a CSP fallback event. */
 function logCspFallback(tabId: number): void {
-    console.warn(
+    console.error(
         `[csp-fallback] MAIN world blocked in tab ${tabId}, switching to userScripts fallback`,
     );
 }

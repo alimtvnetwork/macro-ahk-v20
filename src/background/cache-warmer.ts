@@ -57,7 +57,7 @@ export async function warmScriptCache(): Promise<{ warmed: number; failed: numbe
 
         console.log("[cache-warmer] ✅ Warmed %d scripts, %d failed", warmed, failed);
     } catch (err) {
-        console.warn("[cache-warmer] Warming aborted:", err);
+        console.error("[cache-warmer] Warming aborted:", err);
     }
 
     return { warmed, failed };
@@ -74,13 +74,13 @@ async function warmOneScript(script: StoredScript): Promise<boolean> {
         const response = await fetch(url);
 
         if (!response.ok) {
-            console.warn("[cache-warmer] Fetch failed for %s: HTTP %d", filePath, response.status);
+            console.error("[cache-warmer] Fetch failed for %s: HTTP %d", filePath, response.status);
             return false;
         }
 
         const code = await response.text();
         if (!code || code.length < 10) {
-            console.warn("[cache-warmer] Empty/tiny response for %s (%d chars)", filePath, code?.length ?? 0);
+            console.error("[cache-warmer] Empty/tiny response for %s (%d chars)", filePath, code?.length ?? 0);
             return false;
         }
 
@@ -88,8 +88,7 @@ async function warmOneScript(script: StoredScript): Promise<boolean> {
         console.log("[cache-warmer] Cached %s (%d chars)", filePath, code.length);
         return true;
     } catch (err) {
-        console.warn("[cache-warmer] Error warming %s: %s", filePath,
-            err instanceof Error ? err.message : String(err));
+        console.error("[cache-warmer] Error warming %s:", filePath, err);
         return false;
     }
 }

@@ -179,11 +179,7 @@ async function attemptProactiveRefresh(): Promise<string | null> {
 
         return null;
     } catch (refreshError) {
-        const errorMessage = refreshError instanceof Error
-            ? refreshError.message
-            : String(refreshError);
-
-        console.warn(`[cookie-watcher] Proactive refresh failed: ${errorMessage}`);
+        console.error("[cookie-watcher] Proactive refresh failed:", refreshError);
         return null;
     }
 }
@@ -214,11 +210,7 @@ async function reseedAllTargetTabs(): Promise<void> {
             console.log("[cookie-watcher] Reseeded tokens into %d tab(s)", tabs.length);
         }
     } catch (reseedError) {
-        const errorMessage = reseedError instanceof Error
-            ? reseedError.message
-            : String(reseedError);
-
-        console.warn(`[cookie-watcher] Reseed failed: ${errorMessage}`);
+        console.error("[cookie-watcher] Reseed failed:", reseedError);
     }
 }
 
@@ -255,11 +247,7 @@ async function broadcastToTargetTabs(
 
         console.log(`[cookie-watcher] Broadcast ${type} to ${tabs.length} tab(s)`);
     } catch (broadcastError) {
-        const errorMessage = broadcastError instanceof Error
-            ? broadcastError.message
-            : String(broadcastError);
-
-        console.warn(`[cookie-watcher] Broadcast failed: ${errorMessage}`);
+        console.error("[cookie-watcher] Broadcast failed:", broadcastError);
     }
 }
 

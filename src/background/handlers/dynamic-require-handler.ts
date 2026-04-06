@@ -212,6 +212,6 @@ function logDynamicLoad(
         );
         markLoggingDirty();
     } catch (err) {
-        console.warn("[dynamic-require] Failed to log dynamic load:", err);
+        console.error("[dynamic-require] Failed to log dynamic load:", err);
     }
 }

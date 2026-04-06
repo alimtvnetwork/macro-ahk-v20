@@ -352,7 +352,7 @@ function logInjectionError(
 
 /** Logs a CSP fallback event. */
 function logCspFallbackUsed(scriptId: string, tabId: number): void {
-    console.warn(
+    console.error(
         `[auto-injector] CSP fallback used for ${scriptId} in tab ${tabId}`,
     );
 

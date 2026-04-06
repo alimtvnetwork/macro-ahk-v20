@@ -278,7 +278,7 @@ function attemptRollback(
 ): void {
     try {
         migration.down(logsDb, errorsDb);
-        console.warn(`[migration] Rolled back v${migration.version}`);
+        console.error(`[migration] Rolled back v${migration.version}`);
     } catch (rollbackErr) {
         console.error(`[migration] Rollback of v${migration.version} also failed:`, rollbackErr);
     }

@@ -94,7 +94,7 @@ async function handleInstalled(
         const { invalidateCacheOnDeploy } = await import("./injection-cache");
         await invalidateCacheOnDeploy(details.reason);
     } catch (err) {
-        console.warn("[seeder] Cache invalidation failed:", err);
+        console.error("[seeder] Cache invalidation failed:", err);
     }
 
     // ✅ Manifest-driven seeder (reads seed-manifest.json from dist)
@@ -105,7 +105,7 @@ async function handleInstalled(
             manifestResult.scripts, manifestResult.configs, manifestResult.projects,
         );
     } catch (err) {
-        console.warn("[seeder] Manifest seeder failed (non-fatal):", err);
+        console.error("[seeder] Manifest seeder failed (non-fatal):", err);
     }
 
     await ensureDefaultProjectSingleScript();
@@ -117,7 +117,7 @@ async function handleInstalled(
         const result = await warmScriptCache();
         console.log("[seeder] Cache warm complete: %d warmed, %d failed", result.warmed, result.failed);
     } catch (err) {
-        console.warn("[seeder] Cache warming failed (non-fatal):", err);
+        console.error("[seeder] Cache warming failed (non-fatal):", err);
     }
 
     if (details.reason === "install") {
@@ -162,7 +162,7 @@ function ensureSdkUpdaterEntry(): void {
 
         console.log("[seeder] Seeded Riseup Macro SDK updater entry (id=%d)", updaterId);
     } catch (err) {
-        console.warn("[seeder] Failed to seed SDK updater entry:", err);
+        console.error("[seeder] Failed to seed SDK updater entry:", err);
     }
 }
 

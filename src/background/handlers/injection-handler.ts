@@ -223,7 +223,7 @@ export async function handleInjectScripts(
         budgetMs = settings.injectionBudgetMs ?? 500;
     } catch { /* use default */ }
     if (totalMs > budgetMs) {
-        console.warn(
+        console.error(
             "[injection] ⚠️ PERFORMANCE BUDGET EXCEEDED — %.1fms (budget: %dms) breakdown=%s",
             totalMs, budgetMs, JSON.stringify(timings),
         );
@@ -322,7 +322,7 @@ async function injectAllScripts(
                 scriptMeta.length, execResult.path, durationMs);
         } catch (batchError) {
             // Fallback to sequential on batch failure
-            console.warn("[injection] Batch injection failed, falling back to sequential: %s",
+            console.error("[injection] Batch injection failed, falling back to sequential: %s",
                 batchError instanceof Error ? batchError.message : String(batchError));
             for (const script of orderedScripts) {
                 const result = await injectSingleScript(tabId, script.injectable, script.configJson, script.themeJson, script.codeSource);
@@ -362,7 +362,7 @@ async function injectSingleScript(
                 script.name, script.assets.css, tabId);
         } catch (cssError) {
             // CSS injection failure is non-fatal — log and continue with JS
-            console.warn("[injection] CSS      — \"%s\" failed to inject %s: %s",
+            console.error("[injection] CSS      — \"%s\" failed to inject %s: %s",
                 script.name, script.assets.css,
                 cssError instanceof Error ? cssError.message : String(cssError));
         }
@@ -422,7 +422,7 @@ async function logInjectionSuccess(
             ? loggingError.message
             : String(loggingError);
 
-        console.warn("[injection] logInjectionSuccess skipped: %s", reason);
+        console.error("[injection] logInjectionSuccess skipped: %s", reason);
     }
 }
 
@@ -454,7 +454,7 @@ async function logInjectionFailure(
             ? loggingError.message
             : String(loggingError);
 
-        console.warn("[injection] logInjectionFailure skipped: %s", reason);
+        console.error("[injection] logInjectionFailure skipped: %s", reason);
     }
 }
 
@@ -490,7 +490,7 @@ async function executeInTab(tabId: number, code: string): Promise<{ path: string
     }
 
     if (result.isFallback) {
-        console.warn(
+        console.error(
             "[injection] ⚠️ Script executed via %s fallback (tab %d) — window.marco created in non-MAIN world, " +
             "RiseupAsiaMacroExt.Projects.* may not be accessible from the page console.",
             result.world, tabId,
@@ -689,7 +689,7 @@ async function injectSettingsNamespace(tabId: number, allProjects: StoredProject
             console.log("[injection:settings] Registered RiseupAsiaMacroExt.Settings + docs (port=%d)", settings.broadcastPort);
         }
     } catch (err) {
-        console.warn("[injection:settings] Failed to register settings namespace: %s",
+        console.error("[injection:settings] Failed to register settings namespace: %s",
             err instanceof Error ? err.message : String(err));
     }
 }
@@ -1006,7 +1006,7 @@ async function ensureRelayInjected(tabId: number): Promise<void> {
         console.log("[injection] Message relay injected into tab %d (safety net)", tabId);
     } catch (relayError) {
         const reason = relayError instanceof Error ? relayError.message : String(relayError);
-        console.warn("[injection] Failed to inject message relay: %s", reason);
+        console.error("[injection] Failed to inject message relay: %s", reason);
     }
 }
 

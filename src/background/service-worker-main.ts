@@ -98,7 +98,7 @@ for (const [label, register] of registrations) {
     try {
         register();
     } catch (err) {
-        console.warn(
+        console.error(
             "[Marco] ⚠ Registration '%s' failed (non-fatal): %s",
             label,
             err instanceof Error ? err.message : String(err),
@@ -115,7 +115,7 @@ try {
         removeTabInjection(tabId);
     });
 } catch (err) {
-    console.warn("[Marco] ⚠ tabs.onRemoved registration failed:", err);
+    console.error("[Marco] ⚠ tabs.onRemoved registration failed:", err);
 }
 
 /* ------------------------------------------------------------------ */
