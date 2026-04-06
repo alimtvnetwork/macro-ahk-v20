@@ -28,11 +28,13 @@ vi.mock("@/hooks/use-popup-data", () => ({
       latencyMs: 12,
     },
     health: { state: "HEALTHY", details: [] },
+    opfsStatus: { sessionId: "test-session", dirExists: true, files: [], healthy: true },
     injections: { scriptIds: ["s1"], timestamp: "2026-03-18T00:00:00Z", projectId: "proj-1" },
     scripts: [
       { id: "s1", name: "macro-looping.js", order: 1, isEnabled: true, runAt: "document_idle" },
     ],
     loading: false,
+    debugMode: false,
     refresh: vi.fn(),
     setActiveProject: vi.fn(),
     toggleScript: vi.fn(),
