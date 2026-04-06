@@ -105,7 +105,7 @@ async function handleInstalled(
             manifestResult.scripts, manifestResult.configs, manifestResult.projects,
         );
     } catch (err) {
-        console.warn("[seeder] Manifest seeder failed (non-fatal):", err);
+        console.error("[seeder] Manifest seeder failed (non-fatal):", err);
     }
 
     await ensureDefaultProjectSingleScript();
