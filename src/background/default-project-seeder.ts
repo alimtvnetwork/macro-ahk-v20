@@ -162,7 +162,7 @@ function ensureSdkUpdaterEntry(): void {
 
         console.log("[seeder] Seeded Riseup Macro SDK updater entry (id=%d)", updaterId);
     } catch (err) {
-        console.warn("[seeder] Failed to seed SDK updater entry:", err);
+        console.error("[seeder] Failed to seed SDK updater entry:", err);
     }
 }
 

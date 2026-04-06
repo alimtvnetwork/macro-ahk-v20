@@ -121,7 +121,7 @@ async function tryStorageInit(): Promise<boolean> {
         console.log("[db-manager] storage.local persistence active");
         return true;
     } catch (err) {
-        console.warn("[db-manager] storage.local failed:", err);
+        console.error("[db-manager] storage.local failed:", err);
         return false;
     }
 }
