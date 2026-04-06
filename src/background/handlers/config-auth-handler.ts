@@ -254,7 +254,7 @@ export async function handleGetToken(
     }
 
     if (sessionLookup.value !== null) {
-        console.warn("[config-auth] GET_TOKEN: session cookie exists but no JWT could be derived");
+        console.error("[config-auth] GET_TOKEN: session cookie exists but no JWT could be derived");
         return {
             token: null,
             refreshed: false,
@@ -393,7 +393,7 @@ async function attemptAutoRefresh(
             return authToken;
         }
 
-        console.warn("[config-auth] Auto-refresh returned no token");
+        console.error("[config-auth] Auto-refresh returned no token");
         return null;
     } catch (refreshError) {
         logRefreshError(refreshError);
@@ -436,7 +436,7 @@ export async function fetchAuthToken(
     }
 
     if (sessionCookieLookup.value !== null) {
-        console.warn("[config-auth] Session cookie exists but auth-token exchange is disabled because the cookie is not a JWT");
+        console.error("[config-auth] Session cookie exists but auth-token exchange is disabled because the cookie is not a JWT");
     }
 
     return null;
@@ -688,7 +688,7 @@ async function readCookieValueByNameCandidates(
             const errorMessage = cookieError instanceof Error
                 ? cookieError.message
                 : String(cookieError);
-            console.warn(`[config-auth] Cookie read failed (${cookieName}): ${errorMessage}`);
+            console.error(`[config-auth] Cookie read failed (${cookieName}): ${errorMessage}`);
         }
 
         if (value !== null) {
@@ -760,5 +760,5 @@ function logRefreshError(error: unknown): void {
         ? error.message
         : String(error);
 
-    console.warn(`[config-auth] Token refresh failed: ${errorMessage}`);
+    console.error(`[config-auth] Token refresh failed: ${errorMessage}`);
 }

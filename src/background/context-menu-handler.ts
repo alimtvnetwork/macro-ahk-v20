@@ -286,13 +286,13 @@ async function handleCopyLogs(tabId: number): Promise<void> {
                 target: { tabId },
                 func: (text: string) => {
                     navigator.clipboard.writeText(text).catch(() => {
-                        console.warn("[Marco] Clipboard write failed");
+                        console.error("[Marco] Clipboard write failed");
                     });
                 },
                 args: [logText],
             });
         } catch {
-            console.warn("[Marco] Could not inject clipboard script");
+            console.error("[Marco] Could not inject clipboard script");
         }
     }
 }
@@ -316,7 +316,7 @@ async function handleShowStatus(tabId: number): Promise<void> {
                 args: [statusText],
             });
         } catch {
-            console.warn("[Marco] Could not show status");
+            console.error("[Marco] Could not show status");
         }
     }
 }

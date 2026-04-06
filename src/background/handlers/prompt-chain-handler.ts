@@ -128,7 +128,7 @@ export async function handleExecuteChainStep(msg: MessageRequest): Promise<{ isO
         }
 
         if (!result.verified) {
-            console.warn(`[Marco] Step ${step.stepIndex + 1}: prompt may be truncated`);
+            console.error(`[Marco] Step ${step.stepIndex + 1}: prompt may be truncated`);
         }
 
         console.log(`[Marco] Step ${step.stepIndex + 1}/${step.totalSteps} complete`);
