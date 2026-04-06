@@ -17,6 +17,7 @@
  */
 
 import type { MessageRequest, OkResponse } from "../../shared/messages";
+import { logBgWarnError, logCaughtError } from "../bg-logger";
 import type { InjectableScript, InjectionResult, SkipReason } from "../../shared/injection-types";
 import type { StoredProject } from "../../shared/project-types";
 import { handleLogEntry, handleLogError } from "./logging-handler";

@@ -15,6 +15,7 @@ import type {
     SeedConfigEntry,
 } from "../shared/seed-manifest-types";
 import { STORAGE_KEY_ALL_SCRIPTS, STORAGE_KEY_ALL_CONFIGS } from "../shared/constants";
+import { logBgWarnError, logCaughtError } from "./bg-logger";
 
 const MANIFEST_PATH = "projects/seed-manifest.json";
 

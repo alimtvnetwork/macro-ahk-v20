@@ -15,6 +15,7 @@
 import { readCookieValueFromCandidates } from "../cookie-helpers";
 import { readAllProjects } from "./project-helpers";
 import type { CookieBinding } from "../../shared/project-types";
+import { logBgWarnError, logCaughtError } from "../bg-logger";
 
 const SESSION_COOKIE_NAME_FALLBACKS = [
     "lovable-session-id-v2",

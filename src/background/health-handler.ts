@@ -13,6 +13,7 @@ import {
     type TransientState,
 } from "./state-manager";
 import { countTable, getLogsDb, getErrorsDb } from "./handlers/logging-handler";
+import { logBgWarnError, logCaughtError } from "./bg-logger";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _chr = globalThis.chrome as any;
