@@ -167,7 +167,7 @@ function handleFetchException(
         : String(error);
 
     lastFetchError = errorMessage;
-    console.error(`[remote-config] Fetch error: ${errorMessage}`);
+    logCaughtError("[remote-config]", "Fetch error", error);
 
     return getCachedConfig();
 }

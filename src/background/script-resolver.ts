@@ -478,7 +478,5 @@ async function readConfigStore(): Promise<StoredConfig[]> {
 
 /** Logs a warning for a missing script reference. */
 function logMissingScript(scriptId: string): void {
-    console.error(
-        `[script-resolver] Script not found in store: ${scriptId}`,
-    );
+    logBgWarnError("[script-resolver]", `Script not found in store: ${scriptId}`);
 }

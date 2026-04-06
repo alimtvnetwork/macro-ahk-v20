@@ -138,8 +138,7 @@ function sendInternalMessage<T>(message: Record<string, unknown>): Promise<T> {
         handleMessage(message, sender, (response: unknown) => {
             resolve(response as T);
         }).catch((err: unknown) => {
-            console.error("[Marco] Shortcut: internal message dispatch error: %s",
-                err instanceof Error ? err.message : String(err));
+            logCaughtError("[shortcut]", "Internal message dispatch error", err);
             reject(err);
         });
     });
