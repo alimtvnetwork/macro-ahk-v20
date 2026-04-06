@@ -101,10 +101,11 @@ async function resolveProjectEntryScripts(
 
     return {
         prepared: sortPreparedScripts(
-            resolved.map(({ injectable, configJson, themeJson }) => ({
+            resolved.map(({ injectable, configJson, themeJson, codeSource }) => ({
                 injectable,
                 configJson,
                 themeJson,
+                codeSource: codeSource ?? null,
             })),
         ),
         skipped,
