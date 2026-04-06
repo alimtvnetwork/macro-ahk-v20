@@ -52,7 +52,7 @@ export async function buildHealthResponse(): Promise<HealthStatusResponse> {
         if (computedState === "HEALTHY") {
             console.log("[health] %s → HEALTHY (recovered)", previousState);
         } else {
-            logBgWarnError("[health]", `${previousState} → ${computedState}: ${details.join("; ")}`);
+            logBgWarnError(BgLogTag.HEALTH, `${previousState} → ${computedState}: ${details.join("; ")}`);
         }
     } else {
         setHealthState(computedState);
@@ -71,7 +71,7 @@ export function transitionHealth(
 
     if (isDowngrade) {
         setHealthState(newState);
-        logBgWarnError("[health]", `${currentState} → ${newState}: ${reason}`);
+        logBgWarnError(BgLogTag.HEALTH, `${currentState} → ${newState}: ${reason}`);
     }
 }
 
@@ -97,7 +97,7 @@ async function checkStorageAvailability(): Promise<boolean> {
             ? storageError.message
             : String(storageError);
 
-        logCaughtError("[health]", "Storage check failed", storageError);
+        logCaughtError(BgLogTag.HEALTH, "Storage check failed", storageError);
         return false;
     }
 }

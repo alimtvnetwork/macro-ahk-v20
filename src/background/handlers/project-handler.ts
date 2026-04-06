@@ -200,7 +200,7 @@ export async function handleSaveProject(
 
     // ✅ Seed bound configs into project SQLite DB (moved off injection hot path)
     seedBoundConfigs(saved).catch((e) =>
-        logCaughtError("[project-save:config-seed]", "Config seeding failed", e),
+        logCaughtError(BgLogTag.PROJECT_SAVE_CONFIG_SEED, "Config seeding failed", e),
     );
 
     return { isOk: true, project: saved };

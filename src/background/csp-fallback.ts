@@ -106,7 +106,7 @@ export async function configureUserScriptWorld(): Promise<void> {
             console.log("[injection:csp] ✅ userScripts world '%s' configured", USER_SCRIPT_WORLD_ID);
             return;
         } catch (namedWorldError) {
-            logCaughtError("[injection:csp]", "Named userScripts world failed, retrying default world", namedWorldError);
+            logCaughtError(BgLogTag.INJECTION_CSP, "Named userScripts world failed, retrying default world", namedWorldError);
         }
 
         await chrome.userScripts.configureWorld({
@@ -119,7 +119,7 @@ export async function configureUserScriptWorld(): Promise<void> {
     } catch (configError) {
         userScriptsWorldConfigured = false;
         userScriptsWorldIdEnabled = false;
-        logCaughtError("[injection:csp]", "Failed to configure userScripts world", configError);
+        logCaughtError(BgLogTag.INJECTION_CSP, "Failed to configure userScripts world", configError);
     }
 }
 
@@ -142,7 +142,7 @@ export async function injectWithCspFallback(
         return buildResult(true, preferredWorld, false, undefined, mainResult.domTarget as CspInjectionResult["domTarget"]);
     }
 
-    logBgWarnError("[injection:csp]", `${preferredWorld} world failed: ${mainResult.errorMessage}`);
+    logBgWarnError(BgLogTag.INJECTION_CSP, `${preferredWorld} world failed: ${mainResult.errorMessage}`);
 
     const errorMessage = mainResult.errorMessage ?? "";
     const isMainWorld = preferredWorld === "MAIN";
@@ -155,7 +155,7 @@ export async function injectWithCspFallback(
             : isMainWorldBlock
                 ? "MAIN world injector interference detected"
                 : "MAIN world injection failed (generic)";
-        logBgWarnError("[injection:csp]", `${reason} — falling back to userScripts API`);
+        logBgWarnError(BgLogTag.INJECTION_CSP, `${reason} — falling back to userScripts API`);
         return attemptUserScriptFallback(tabId, code, errorMessage);
     }
 
@@ -322,15 +322,15 @@ async function attemptUserScriptFallback(
                     ? userScriptError.message
                     : String(userScriptError);
                 userScriptTierLabel = "failed";
-                logCaughtError("[injection:csp]", "userScripts.execute() failed — falling back to legacy ISOLATED chain", userScriptError);
+                logCaughtError(BgLogTag.INJECTION_CSP, "userScripts.execute() failed — falling back to legacy ISOLATED chain", userScriptError);
             }
         } else {
             userScriptTierLabel = "unavailable";
-            logBgWarnError("[injection:csp]", "userScripts.execute() not available, using legacy ISOLATED chain");
+            logBgWarnError(BgLogTag.INJECTION_CSP, "userScripts.execute() not available, using legacy ISOLATED chain");
         }
     } else {
         userScriptTierLabel = "skipped(forceLegacyInjection=true)";
-        logBgWarnError("[injection:csp]", "forceLegacyInjection enabled — skipping userScripts and using legacy ISOLATED chain");
+        logBgWarnError(BgLogTag.INJECTION_CSP, "forceLegacyInjection enabled — skipping userScripts and using legacy ISOLATED chain");
     }
 
     // Legacy tier 1: ISOLATED blob script tag
@@ -363,7 +363,7 @@ async function attemptUserScriptFallback(
         : userScriptTierLabel;
 
     const combinedError = `All injection tiers failed | MAIN: ${mainErrorMessage ?? "unknown"} | USER_SCRIPT: ${userScriptReason} | ISOLATED_BLOB: ${blobResult.errorMessage ?? "unknown"} | ISOLATED_EVAL: ${evalResult.errorMessage ?? "unknown"}`;
-    logBgWarnError("[injection:csp]", combinedError);
+    logBgWarnError(BgLogTag.INJECTION_CSP, combinedError);
     return buildResult(false, "ISOLATED", true, combinedError);
 }
 
@@ -545,5 +545,5 @@ function buildResult(
 
 /** Logs a CSP fallback event. */
 function logCspFallback(tabId: number): void {
-    logBgWarnError("[csp-fallback]", `MAIN world blocked in tab ${tabId}, switching to userScripts fallback`);
+    logBgWarnError(BgLogTag.CSP_FALLBACK, `MAIN world blocked in tab ${tabId}, switching to userScripts fallback`);
 }

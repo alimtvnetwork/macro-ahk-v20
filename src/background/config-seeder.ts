@@ -148,7 +148,7 @@ export async function seedConfigToDb(
     try {
         parsed = JSON.parse(configJson);
     } catch (e) {
-        logCaughtError("[config-seeder]", `Invalid JSON for "${configName}"`, e);
+        logCaughtError(BgLogTag.CONFIG_SEEDER, `Invalid JSON for "${configName}"`, e);
         return false;
     }
 
@@ -248,7 +248,7 @@ export function updateConfigValue(
         manager.markDirty();
         return true;
     } catch (e) {
-        logCaughtError("[config-seeder]", "Update failed", e);
+        logCaughtError(BgLogTag.CONFIG_SEEDER, "Update failed", e);
         return false;
     }
 }

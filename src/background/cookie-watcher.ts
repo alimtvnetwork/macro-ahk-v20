@@ -180,7 +180,7 @@ async function attemptProactiveRefresh(): Promise<string | null> {
 
         return null;
     } catch (refreshError) {
-        logCaughtError("[cookie-watcher]", "Proactive refresh failed", refreshError);
+        logCaughtError(BgLogTag.COOKIE_WATCHER, "Proactive refresh failed", refreshError);
         return null;
     }
 }
@@ -211,7 +211,7 @@ async function reseedAllTargetTabs(): Promise<void> {
             console.log("[cookie-watcher] Reseeded tokens into %d tab(s)", tabs.length);
         }
     } catch (reseedError) {
-        logCaughtError("[cookie-watcher]", "Reseed failed", reseedError);
+        logCaughtError(BgLogTag.COOKIE_WATCHER, "Reseed failed", reseedError);
     }
 }
 
@@ -248,7 +248,7 @@ async function broadcastToTargetTabs(
 
         console.log(`[cookie-watcher] Broadcast ${type} to ${tabs.length} tab(s)`);
     } catch (broadcastError) {
-        logCaughtError("[cookie-watcher]", "Broadcast failed", broadcastError);
+        logCaughtError(BgLogTag.COOKIE_WATCHER, "Broadcast failed", broadcastError);
     }
 }
 

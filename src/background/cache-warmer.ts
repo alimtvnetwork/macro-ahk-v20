@@ -58,7 +58,7 @@ export async function warmScriptCache(): Promise<{ warmed: number; failed: numbe
 
         console.log("[cache-warmer] ✅ Warmed %d scripts, %d failed", warmed, failed);
     } catch (err) {
-        logCaughtError("[cache-warmer]", "Warming aborted", err);
+        logCaughtError(BgLogTag.CACHE_WARMER, "Warming aborted", err);
     }
 
     return { warmed, failed };
@@ -75,13 +75,13 @@ async function warmOneScript(script: StoredScript): Promise<boolean> {
         const response = await fetch(url);
 
         if (!response.ok) {
-            logCaughtError("[cache-warmer]", `Fetch failed for ${filePath}: HTTP ${response.status}`, new Error(`HTTP ${response.status}`));
+            logCaughtError(BgLogTag.CACHE_WARMER, `Fetch failed for ${filePath}: HTTP ${response.status}`, new Error(`HTTP ${response.status}`));
             return false;
         }
 
         const code = await response.text();
         if (!code || code.length < 10) {
-            logCaughtError("[cache-warmer]", `Empty/tiny response for ${filePath} (${code?.length ?? 0} chars)`, new Error("Empty response"));
+            logCaughtError(BgLogTag.CACHE_WARMER, `Empty/tiny response for ${filePath} (${code?.length ?? 0} chars)`, new Error("Empty response"));
             return false;
         }
 
@@ -89,7 +89,7 @@ async function warmOneScript(script: StoredScript): Promise<boolean> {
         console.log("[cache-warmer] Cached %s (%d chars)", filePath, code.length);
         return true;
     } catch (err) {
-        logCaughtError("[cache-warmer]", `Error warming ${filePath}`, err);
+        logCaughtError(BgLogTag.CACHE_WARMER, `Error warming ${filePath}`, err);
         return false;
     }
 }

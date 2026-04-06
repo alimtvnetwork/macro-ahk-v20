@@ -43,7 +43,7 @@ export async function seedFromManifest(): Promise<SeedResult> {
     console.log("[manifest-seeder] Fetching seed-manifest.json from extension dist...");
     const manifest = await fetchManifest();
     if (!manifest) {
-        logBgWarnError("[manifest-seeder]", "seed-manifest.json not found or invalid — skipping. " +
+        logBgWarnError(BgLogTag.MANIFEST_SEEDER, "seed-manifest.json not found or invalid — skipping. " +
             "Ensure the build pipeline runs compile-instruction + generate-seed-manifest.");
         return { scripts: 0, configs: 0, projects: 0, errors: ["seed-manifest.json not found or invalid"] };
     }
@@ -51,15 +51,15 @@ export async function seedFromManifest(): Promise<SeedResult> {
     // Schema version validation
     const sv = manifest.schemaVersion;
     if (typeof sv !== "number" || !Number.isFinite(sv)) {
-        logBgWarnError("[manifest-seeder]", `Invalid schemaVersion: ${sv} — aborting seed`);
+        logBgWarnError(BgLogTag.MANIFEST_SEEDER, `Invalid schemaVersion: ${sv} — aborting seed`);
         return { scripts: 0, configs: 0, projects: 0, errors: [`Invalid schemaVersion: ${sv}`] };
     }
     if (sv > SUPPORTED_SCHEMA_VERSIONS.max) {
-        logBgWarnError("[manifest-seeder]", `schemaVersion ${sv} is newer than supported max (${SUPPORTED_SCHEMA_VERSIONS.max}) — aborting. Update the extension.`);
+        logBgWarnError(BgLogTag.MANIFEST_SEEDER, `schemaVersion ${sv} is newer than supported max (${SUPPORTED_SCHEMA_VERSIONS.max}) — aborting. Update the extension.`);
         return { scripts: 0, configs: 0, projects: 0, errors: [`Unsupported schemaVersion ${sv} (max supported: ${SUPPORTED_SCHEMA_VERSIONS.max})`] };
     }
     if (sv < SUPPORTED_SCHEMA_VERSIONS.min) {
-        logBgWarnError("[manifest-seeder]", `schemaVersion ${sv} is older than min (${SUPPORTED_SCHEMA_VERSIONS.min}) — proceeding with best-effort seeding`);
+        logBgWarnError(BgLogTag.MANIFEST_SEEDER, `schemaVersion ${sv} is older than min (${SUPPORTED_SCHEMA_VERSIONS.min}) — proceeding with best-effort seeding`);
     }
 
     const projectNames = manifest.projects.map((p) => `${p.name}(${p.scripts.length}s/${p.configs.length}c)`);
@@ -94,7 +94,7 @@ export async function seedFromManifest(): Promise<SeedResult> {
     );
 
     if (scriptResult.errors.length > 0 || configResult.errors.length > 0) {
-        logBgWarnError("[manifest-seeder]", `Seed errors: ${JSON.stringify([...scriptResult.errors, ...configResult.errors])}`);
+        logBgWarnError(BgLogTag.MANIFEST_SEEDER, `Seed errors: ${JSON.stringify([...scriptResult.errors, ...configResult.errors])}`);
     }
 
     return {
@@ -121,14 +121,14 @@ async function fetchManifest(): Promise<SeedManifest | null> {
     try {
         url = chrome.runtime.getURL(MANIFEST_PATH);
     } catch (err) {
-        logCaughtError("[manifest-seeder]", `chrome.runtime.getURL() failed for '${MANIFEST_PATH}'`, err);
+        logCaughtError(BgLogTag.MANIFEST_SEEDER, `chrome.runtime.getURL() failed for '${MANIFEST_PATH}'`, err);
         return null;
     }
     console.log("[manifest-seeder] Fetching seed-manifest.json — relative: '%s', absolute: %s", MANIFEST_PATH, url);
     try {
         const resp = await fetch(url);
         if (!resp.ok) {
-            logBgWarnError("[manifest-seeder]", `Fetch failed: HTTP ${resp.status} for ${url} — file does not exist in extension dist`);
+            logBgWarnError(BgLogTag.MANIFEST_SEEDER, `Fetch failed: HTTP ${resp.status} for ${url} — file does not exist in extension dist`);
             return null;
         }
         const raw = await resp.text();
@@ -138,7 +138,7 @@ async function fetchManifest(): Promise<SeedManifest | null> {
             manifest.projects?.length ?? 0, manifest.schemaVersion, url);
         return manifest;
     } catch (err) {
-        logCaughtError("[manifest-seeder]", `Fetch/parse error for ${url}`, err);
+        logCaughtError(BgLogTag.MANIFEST_SEEDER, `Fetch/parse error for ${url}`, err);
         return null;
     }
 }
@@ -196,7 +196,7 @@ async function seedScriptsFromManifest(
             } catch (err) {
                 const msg = `[seedScriptsFromManifest] Failed to seed script ${scriptDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                logCaughtError("[manifest-seeder]", msg, err);
+                logCaughtError(BgLogTag.MANIFEST_SEEDER, msg, err);
             }
         }
     }
@@ -327,7 +327,7 @@ async function seedConfigsFromManifest(
             } catch (err) {
                 const msg = `[seedConfigsFromManifest→fetchConfigJson] Failed to seed config ${configDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                logCaughtError("[manifest-seeder]", msg, err);
+                logCaughtError(BgLogTag.MANIFEST_SEEDER, msg, err);
             }
         }
     }

@@ -87,7 +87,7 @@ export async function boot(): Promise<void> {
             const result = await seedFromManifest();
             console.log("[Marco] ✓ Manifest seeder: %d scripts, %d configs across %d projects", result.scripts, result.configs, result.projects);
         } catch (err) {
-            logCaughtError("[boot]", "Manifest seeder failed (non-fatal)", err);
+            logCaughtError(BgLogTag.BOOT, "Manifest seeder failed (non-fatal)", err);
         }
 
         step = "reseed-prompts";
@@ -96,7 +96,7 @@ export async function boot(): Promise<void> {
             await reseedPrompts();
             console.log("[Marco] ✓ Prompts reseeded from dist");
         } catch (err) {
-            logCaughtError("[boot]", "Prompt reseed failed (non-fatal)", err);
+            logCaughtError(BgLogTag.BOOT, "Prompt reseed failed (non-fatal)", err);
         }
 
         step = "normalize-default-project";
@@ -105,7 +105,7 @@ export async function boot(): Promise<void> {
             await ensureDefaultProjectSingleScript();
             console.log("[Marco] ✓ Default project normalized");
         } catch (err) {
-            logCaughtError("[boot]", "Default project normalization failed (non-fatal)", err);
+            logCaughtError(BgLogTag.BOOT, "Default project normalization failed (non-fatal)", err);
         }
 
         step = "purge-stale-cache";
@@ -113,7 +113,7 @@ export async function boot(): Promise<void> {
         try {
             await purgeStaleEntries();
         } catch (err) {
-            logCaughtError("[boot]", "Cache purge failed (non-fatal)", err);
+            logCaughtError(BgLogTag.BOOT, "Cache purge failed (non-fatal)", err);
         }
 
         step = "precache-scripts";
@@ -122,7 +122,7 @@ export async function boot(): Promise<void> {
             await precacheStableScripts();
             console.log("[Marco] Pre-cached stable scripts into IndexedDB");
         } catch (err) {
-            logCaughtError("[boot]", "Script pre-cache failed (non-fatal)", err);
+            logCaughtError(BgLogTag.BOOT, "Script pre-cache failed (non-fatal)", err);
         }
 
         step = "ready";
@@ -136,7 +136,7 @@ export async function boot(): Promise<void> {
 
         setBootStep(`failed:${step}`);
         finalizeBoot();
-        logCaughtError("[boot]", `Boot failed at step '${step}'`, err);
+        logCaughtError(BgLogTag.BOOT, `Boot failed at step '${step}'`, err);
 
         if (manager === null) {
             bindAllHandlers(createUnavailableDbManager(bootErrorMessage));

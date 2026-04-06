@@ -101,7 +101,7 @@ function buildErrorResponse(error: unknown): {
         ? error.message
         : String(error);
 
-    logCaughtError("[message-router]", `Message handler failed: ${errorMessage}`, error);
+    logCaughtError(BgLogTag.MESSAGE_ROUTER, `Message handler failed: ${errorMessage}`, error);
 
     return {
         isOk: false,

@@ -71,7 +71,7 @@ export async function seedTokensIntoTab(tabId: number): Promise<void> {
 
     // Step 3: Check if session cookie exists (for diagnostics only)
     if (sessionLookup.value !== null) {
-        logBgWarnError("[token-seeder]", `Session cookie exists for project ${projectId ?? "unknown"} but no JWT is available — NOT seeding raw cookie`);
+        logBgWarnError(BgLogTag.TOKEN_SEEDER, `Session cookie exists for project ${projectId ?? "unknown"} but no JWT is available — NOT seeding raw cookie`);
     } else {
         console.log("[token-seeder] No session cookies found — skipping seed");
     }
@@ -98,7 +98,7 @@ async function injectJwtIntoTab(tabId: number, jwt: string): Promise<void> {
 
         console.log("[token-seeder] Seeded JWT into tab %d localStorage", tabId);
     } catch (seedError) {
-        logCaughtError("[token-seeder]", "Failed to seed JWT", seedError);
+        logCaughtError(BgLogTag.TOKEN_SEEDER, "Failed to seed JWT", seedError);
     }
 }
 

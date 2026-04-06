@@ -67,7 +67,7 @@ function openDb(): Promise<IDBDatabase> {
 
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => {
-            logCaughtError("[injection-cache]", "IndexedDB open failed", request.error);
+            logCaughtError(BgLogTag.INJECTION_CACHE, "IndexedDB open failed", request.error);
             reject(request.error);
         };
     });
@@ -110,7 +110,7 @@ export async function cacheGet<T>(category: CacheCategory, subKey = ""): Promise
             };
 
             request.onerror = () => {
-                logCaughtError("[injection-cache]", `Get failed for ${key}`, request.error);
+                logCaughtError(BgLogTag.INJECTION_CACHE, `Get failed for ${key}`, request.error);
                 resolve(null);
             };
         });
@@ -140,12 +140,12 @@ export async function cacheSet<T>(category: CacheCategory, value: T, subKey = ""
 
             request.onsuccess = () => resolve();
             request.onerror = () => {
-                logCaughtError("[injection-cache]", `Set failed for ${key}`, request.error);
+                logCaughtError(BgLogTag.INJECTION_CACHE, `Set failed for ${key}`, request.error);
                 reject(request.error);
             };
         });
     } catch (err) {
-        logCaughtError("[injection-cache]", "cacheSet error", err);
+        logCaughtError(BgLogTag.INJECTION_CACHE, "cacheSet error", err);
     }
 }
 
@@ -284,7 +284,7 @@ export async function syncCacheWithBuildId(
 
         return { changed: true, cleared: clearResult.cleared };
     } catch (err) {
-        logCaughtError("[injection-cache]", "Build sync failed", err);
+        logCaughtError(BgLogTag.INJECTION_CACHE, "Build sync failed", err);
         return { changed: false, cleared: 0 };
     }
 }

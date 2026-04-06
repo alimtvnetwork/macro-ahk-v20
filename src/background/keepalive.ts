@@ -49,6 +49,6 @@ async function handleKeepaliveTick(): Promise<void> {
         await checkAndAutoPrune();
         await saveTransientState();
     } catch (tickError) {
-        logCaughtError("[keepalive]", "Keepalive tick skipped", tickError);
+        logCaughtError(BgLogTag.KEEPALIVE, "Keepalive tick skipped", tickError);
     }
 }

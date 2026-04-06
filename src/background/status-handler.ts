@@ -127,7 +127,7 @@ function buildMissingToken(): StatusResponse["token"] {
 
 /** Logs a cookie access error. */
 function logCookieWarning(error: unknown): void {
-    logCaughtError("[status-handler]", "Token check failed", error);
+    logCaughtError(BgLogTag.STATUS_HANDLER, "Token check failed", error);
 }
 
 /** Resolves the current config loading state. */

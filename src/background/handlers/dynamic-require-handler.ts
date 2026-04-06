@@ -114,7 +114,7 @@ export async function handleDynamicRequire(
     } catch (err) {
         const errMsg = err instanceof Error ? err.message : String(err);
         logDynamicLoad(requesterProjectId, target, "error", errMsg);
-        logCaughtError("[dynamic-require]", `${requester.name} → ${target} failed`, err);
+        logCaughtError(BgLogTag.DYNAMIC_REQUIRE, `${requester.name} → ${target} failed`, err);
         return { isOk: false, errorMessage: errMsg };
     }
 }
@@ -213,6 +213,6 @@ function logDynamicLoad(
         );
         markLoggingDirty();
     } catch (err) {
-        logCaughtError("[dynamic-require]", "Failed to log dynamic load", err);
+        logCaughtError(BgLogTag.DYNAMIC_REQUIRE, "Failed to log dynamic load", err);
     }
 }

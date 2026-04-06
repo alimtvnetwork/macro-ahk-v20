@@ -52,7 +52,7 @@ export async function resolveInjectionRequestScripts(
     const skipped: SkippedScript[] = [];
 
     if (mismatched > 0) {
-        logBgWarnError("[injection:resolve]", `${mismatched}/${scripts.length} scripts failed type check (missing 'id', 'code', or 'order'). These scripts will be SKIPPED silently unless fixed.`);
+        logBgWarnError(BgLogTag.INJECTION_RESOLVE, `${mismatched}/${scripts.length} scripts failed type check (missing 'id', 'code', or 'order'). These scripts will be SKIPPED silently unless fixed.`);
         void persistInjectionWarn(
             "REQUEST_RESOLVER_MISMATCH",
             `[injection:resolve] ${mismatched}/${scripts.length} popup script payload(s) failed type check and were skipped`,

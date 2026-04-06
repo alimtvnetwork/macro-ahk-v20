@@ -99,7 +99,7 @@ for (const [label, register] of registrations) {
     try {
         register();
     } catch (err) {
-        logCaughtError("[Marco]", `Registration '${label}' failed (non-fatal)`, err);
+        logCaughtError(BgLogTag.MARCO, `Registration '${label}' failed (non-fatal)`, err);
     }
 }
 
@@ -112,7 +112,7 @@ try {
         removeTabInjection(tabId);
     });
 } catch (err) {
-    logCaughtError("[Marco]", "tabs.onRemoved registration failed", err);
+    logCaughtError(BgLogTag.MARCO, "tabs.onRemoved registration failed", err);
 }
 
 /* ------------------------------------------------------------------ */

@@ -138,7 +138,7 @@ function checkExcludePattern(
 
         return regex.test(pathname);
     } catch {
-        logBgWarnError("[url-matcher]", `Invalid excludePattern: ${excludePattern}`);
+        logBgWarnError(BgLogTag.URL_MATCHER, `Invalid excludePattern: ${excludePattern}`);
         return false;
     }
 }

@@ -39,10 +39,10 @@ export function registerShortcutCommands(): void {
             if (shortcut) {
                 console.log("[Marco] ✅ Shortcut registered: %s → %s", RUN_SCRIPTS_COMMAND, shortcut);
             } else {
-                logBgWarnError("[shortcut]", `Shortcut '${RUN_SCRIPTS_COMMAND}' exists but has NO key binding assigned! Go to chrome://extensions/shortcuts to assign one.`);
+                logBgWarnError(BgLogTag.SHORTCUT, `Shortcut '${RUN_SCRIPTS_COMMAND}' exists but has NO key binding assigned! Go to chrome://extensions/shortcuts to assign one.`);
             }
         } else {
-            logBgWarnError("[shortcut]", `Shortcut '${RUN_SCRIPTS_COMMAND}' not found in manifest commands — check manifest.json`);
+            logBgWarnError(BgLogTag.SHORTCUT, `Shortcut '${RUN_SCRIPTS_COMMAND}' not found in manifest commands — check manifest.json`);
         }
 
         // Log all registered commands for cross-reference
@@ -59,7 +59,7 @@ async function runScriptsFromShortcut(): Promise<void> {
         const activeTabId = await getActiveTabId();
 
         if (activeTabId === null) {
-            logBgWarnError("[shortcut]", "No active tab found — aborting");
+            logBgWarnError(BgLogTag.SHORTCUT, "No active tab found — aborting");
             return;
         }
 
@@ -68,7 +68,7 @@ async function runScriptsFromShortcut(): Promise<void> {
         const scripts = await getActiveProjectScripts();
 
         if (scripts.length === 0) {
-            logBgWarnError("[shortcut]", "No scripts in active project — aborting");
+            logBgWarnError(BgLogTag.SHORTCUT, "No scripts in active project — aborting");
             return;
         }
 
@@ -85,7 +85,7 @@ async function runScriptsFromShortcut(): Promise<void> {
 
         console.log("[Marco] Shortcut: injection complete — %d results in %dms", resultCount, elapsed);
     } catch (runError) {
-        logCaughtError("[shortcut]", "Shortcut run failed", runError);
+        logCaughtError(BgLogTag.SHORTCUT, "Shortcut run failed", runError);
     }
 }
 
@@ -97,7 +97,7 @@ async function getActiveTabId(): Promise<number | null> {
 
         return typeof tabId === "number" ? tabId : null;
     } catch (err) {
-        logCaughtError("[shortcut]", "chrome.tabs.query failed", err);
+        logCaughtError(BgLogTag.SHORTCUT, "chrome.tabs.query failed", err);
 
         return null;
     }
@@ -111,7 +111,7 @@ async function getActiveProjectScripts(): Promise<unknown[]> {
 
     const project = response?.activeProject;
     if (!project) {
-        logBgWarnError("[shortcut]", "GET_ACTIVE_PROJECT returned no active project");
+        logBgWarnError(BgLogTag.SHORTCUT, "GET_ACTIVE_PROJECT returned no active project");
         return [];
     }
 
@@ -135,7 +135,7 @@ function sendInternalMessage<T>(message: Record<string, unknown>): Promise<T> {
         handleMessage(message, sender, (response: unknown) => {
             resolve(response as T);
         }).catch((err: unknown) => {
-            logCaughtError("[shortcut]", "Internal message dispatch error", err);
+            logCaughtError(BgLogTag.SHORTCUT, "Internal message dispatch error", err);
             reject(err);
         });
     });

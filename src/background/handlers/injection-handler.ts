@@ -323,7 +323,7 @@ async function injectAllScripts(
                 scriptMeta.length, execResult.path, durationMs);
         } catch (batchError) {
             // Fallback to sequential on batch failure
-            logCaughtError("[injection]", "Batch injection failed, falling back to sequential", batchError);
+            logCaughtError(BgLogTag.INJECTION, "Batch injection failed, falling back to sequential", batchError);
             for (const script of orderedScripts) {
                 const result = await injectSingleScript(tabId, script.injectable, script.configJson, script.themeJson, script.codeSource);
                 results.push(result);
@@ -362,7 +362,7 @@ async function injectSingleScript(
                 script.name, script.assets.css, tabId);
         } catch (cssError) {
             // CSS injection failure is non-fatal — log and continue with JS
-            logCaughtError("[injection]", `CSS "${script.name}" failed to inject ${script.assets.css}`, cssError);
+            logCaughtError(BgLogTag.INJECTION, `CSS "${script.name}" failed to inject ${script.assets.css}`, cssError);
         }
     }
 
@@ -385,7 +385,7 @@ async function injectSingleScript(
         logInjectionSuccess(script, projectId, resolvedCodeSource).catch(() => {});
         return buildSuccessResult(script.id, startTime, execResult.path, execResult.domTarget);
     } catch (injectionError) {
-        logCaughtError("[injection]", `4/4 EXECUTE — "${script.name}" failed`, injectionError);
+        logCaughtError(BgLogTag.INJECTION, `4/4 EXECUTE — "${script.name}" failed`, injectionError);
 
         // Fire-and-forget: don't block injection for logging
         logInjectionFailure(script, projectId, injectionError).catch(() => {});
@@ -419,7 +419,7 @@ async function logInjectionSuccess(
             ? loggingError.message
             : String(loggingError);
 
-        logCaughtError("[injection]", "logInjectionSuccess skipped", loggingError);
+        logCaughtError(BgLogTag.INJECTION, "logInjectionSuccess skipped", loggingError);
     }
 }
 
@@ -451,7 +451,7 @@ async function logInjectionFailure(
             ? loggingError.message
             : String(loggingError);
 
-        logCaughtError("[injection]", "logInjectionFailure skipped", loggingError);
+        logCaughtError(BgLogTag.INJECTION, "logInjectionFailure skipped", loggingError);
     }
 }
 
@@ -529,7 +529,7 @@ function buildErrorResult(
         ? error.message
         : String(error);
 
-    logBgWarnError("[injection]", `Script ${scriptId} failed: ${errorMessage}`);
+    logBgWarnError(BgLogTag.INJECTION, `Script ${scriptId} failed: ${errorMessage}`);
 
     return {
         scriptId,
@@ -608,7 +608,7 @@ else if(!window.RiseupAsiaMacroExt.Projects){window.RiseupAsiaMacroExt.Projects=
         console.log("[injection:bootstrap] ✅ RiseupAsiaMacroExt root bootstrapped in MAIN world (tab %d)", tabId);
     } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        logCaughtError("[injection:bootstrap]", `CRITICAL — Failed to bootstrap RiseupAsiaMacroExt in MAIN world (tab ${tabId}). Developer Guide console access will NOT work. CSP blocking inline scripts.`, err);
+        logCaughtError(BgLogTag.INJECTION_BOOTSTRAP, `CRITICAL — Failed to bootstrap RiseupAsiaMacroExt in MAIN world (tab ${tabId}). Developer Guide console access will NOT work. CSP blocking inline scripts.`, err);
         transitionHealth("DEGRADED", "RiseupAsiaMacroExt MAIN world bootstrap blocked by CSP");
 
         // Also inject a visible console warning into the page
@@ -669,13 +669,13 @@ async function injectSettingsNamespace(tabId: number, allProjects: StoredProject
         }
         const result = await injectWithCspFallback(tabId, script, "MAIN");
         if (result.isFallback) {
-            logBgWarnError("[injection:settings]", `CRITICAL — Settings namespace injected via ${result.world} fallback (tab ${tabId}). RiseupAsiaMacroExt.Settings will NOT be visible in the page console.`);
+            logBgWarnError(BgLogTag.INJECTION_SETTINGS, `CRITICAL — Settings namespace injected via ${result.world} fallback (tab ${tabId}). RiseupAsiaMacroExt.Settings will NOT be visible in the page console.`);
             transitionHealth("DEGRADED", "Settings namespace fell back to " + result.world + " — not visible in MAIN world");
         } else {
             console.log("[injection:settings] Registered RiseupAsiaMacroExt.Settings + docs (port=%d)", settings.broadcastPort);
         }
     } catch (err) {
-        logCaughtError("[injection:settings]", "Failed to register settings namespace", err);
+        logCaughtError(BgLogTag.INJECTION_SETTINGS, "Failed to register settings namespace", err);
     }
 }
 
@@ -791,20 +791,20 @@ async function injectProjectNamespaces(tabId: number, allProjects: StoredProject
         try {
             const nsResult = await injectWithCspFallback(tabId, combinedNs, "MAIN");
             if (nsResult.isFallback) {
-                logBgWarnError("[injection:ns]", `CRITICAL — ${nsScriptParts.length} namespaces injected via ${nsResult.world} fallback (tab ${tabId}). RiseupAsiaMacroExt.Projects.* will NOT be visible in page console.`);
+                logBgWarnError(BgLogTag.INJECTION_NS, `CRITICAL — ${nsScriptParts.length} namespaces injected via ${nsResult.world} fallback (tab ${tabId}). RiseupAsiaMacroExt.Projects.* will NOT be visible in page console.`);
                 transitionHealth("DEGRADED", `Project namespaces fell back to ${nsResult.world} — not visible in MAIN world`);
             } else {
                 console.log("[injection:ns] ✅ Registered %d namespaces in single IPC call", nsScriptParts.length);
             }
         } catch (err) {
-            logCaughtError("[injection:ns]", "Batch namespace injection failed, falling back to sequential", err);
+            logCaughtError(BgLogTag.INJECTION_NS, "Batch namespace injection failed, falling back to sequential", err);
             // Sequential fallback
             for (let i = 0; i < nsScriptParts.length; i++) {
                 try {
                     await injectWithCspFallback(tabId, nsScriptParts[i], "MAIN");
                     console.log("[injection:ns] Registered namespace for %s (sequential fallback)", nsProjectNames[i]);
                 } catch (seqErr) {
-                    logCaughtError("[injection:ns]", `Failed: ${nsProjectNames[i]}`, seqErr);
+                    logCaughtError(BgLogTag.INJECTION_NS, `Failed: ${nsProjectNames[i]}`, seqErr);
                 }
             }
         }
@@ -881,7 +881,7 @@ async function prependDependencyScripts(callerScripts: unknown[], allProjects: S
     const resolution = resolveInjectionOrder(nodes);
 
     if (!resolution.isSuccess) {
-        logBgWarnError("[injection:deps]", `Dependency resolution failed: ${resolution.errorMessage}`);
+        logBgWarnError(BgLogTag.INJECTION_DEPS, `Dependency resolution failed: ${resolution.errorMessage}`);
         // Even on failure, still prepend global project scripts
         return [...collectGlobalScripts(globalProjects), ...callerScripts];
     }
@@ -983,7 +983,7 @@ async function ensureRelayInjected(tabId: number): Promise<void> {
         relayInjectedTabs.add(tabId);
         console.log("[injection] Message relay injected into tab %d (safety net)", tabId);
     } catch (relayError) {
-        logCaughtError("[injection]", "Failed to inject message relay", relayError);
+        logCaughtError(BgLogTag.INJECTION, "Failed to inject message relay", relayError);
     }
 }
 

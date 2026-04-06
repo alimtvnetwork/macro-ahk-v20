@@ -153,7 +153,7 @@ function handleFailedFetch(
     status: number,
 ): Record<string, unknown> | null {
     lastFetchError = `HTTP ${status}`;
-    logBgWarnError("[remote-config]", `Fetch failed: HTTP ${status}`);
+    logBgWarnError(BgLogTag.REMOTE_CONFIG, `Fetch failed: HTTP ${status}`);
 
     return getCachedConfig();
 }
@@ -167,7 +167,7 @@ function handleFetchException(
         : String(error);
 
     lastFetchError = errorMessage;
-    logCaughtError("[remote-config]", "Fetch error", error);
+    logCaughtError(BgLogTag.REMOTE_CONFIG, "Fetch error", error);
 
     return getCachedConfig();
 }

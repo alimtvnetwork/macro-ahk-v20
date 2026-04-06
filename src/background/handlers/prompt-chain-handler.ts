@@ -129,13 +129,13 @@ export async function handleExecuteChainStep(msg: MessageRequest): Promise<{ isO
         }
 
         if (!result.verified) {
-            logBgWarnError("[Marco]", `Step ${step.stepIndex + 1}: prompt may be truncated`);
+            logBgWarnError(BgLogTag.MARCO, `Step ${step.stepIndex + 1}: prompt may be truncated`);
         }
 
         console.log(`[Marco] Step ${step.stepIndex + 1}/${step.totalSteps} complete`);
     } catch (err) {
         const reason = err instanceof Error ? err.message : String(err);
-        logCaughtError("[Marco]", `Chain step ${step.stepIndex + 1} failed`, err);
+        logCaughtError(BgLogTag.MARCO, `Chain step ${step.stepIndex + 1} failed`, err);
         throw new Error(`Step ${step.stepIndex + 1} failed: ${reason}`);
     }
 

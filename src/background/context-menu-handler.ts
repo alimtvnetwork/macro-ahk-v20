@@ -293,7 +293,7 @@ async function handleCopyLogs(tabId: number): Promise<void> {
                 args: [logText],
             });
         } catch {
-            logCaughtError("[Marco]", "Could not inject clipboard script", new Error("injection failed"));
+            logCaughtError(BgLogTag.MARCO, "Could not inject clipboard script", new Error("injection failed"));
         }
     }
 }
@@ -317,7 +317,7 @@ async function handleShowStatus(tabId: number): Promise<void> {
                 args: [statusText],
             });
         } catch {
-            logCaughtError("[Marco]", "Could not show status", new Error("injection failed"));
+            logCaughtError(BgLogTag.MARCO, "Could not show status", new Error("injection failed"));
         }
     }
 }
