@@ -155,7 +155,7 @@ export async function injectWithCspFallback(
             : isMainWorldBlock
                 ? "MAIN world injector interference detected"
                 : "MAIN world injection failed (generic)";
-        console.error("[injection:csp] %s — falling back to userScripts API", reason);
+        logBgWarnError("[injection:csp]", `${reason} — falling back to userScripts API`);
         return attemptUserScriptFallback(tabId, code, errorMessage);
     }
 
