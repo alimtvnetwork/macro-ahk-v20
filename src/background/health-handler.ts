@@ -52,7 +52,7 @@ export async function buildHealthResponse(): Promise<HealthStatusResponse> {
         if (computedState === "HEALTHY") {
             console.log("[health] %s → HEALTHY (recovered)", previousState);
         } else {
-            console.error("[health] %s → %s: %s", previousState, computedState, details.join("; "));
+            logBgWarnError("[health]", `${previousState} → ${computedState}: ${details.join("; ")}`);
         }
     } else {
         setHealthState(computedState);
