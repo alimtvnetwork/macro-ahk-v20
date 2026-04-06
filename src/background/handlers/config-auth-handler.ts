@@ -255,7 +255,7 @@ export async function handleGetToken(
     }
 
     if (sessionLookup.value !== null) {
-        console.error("[config-auth] GET_TOKEN: session cookie exists but no JWT could be derived");
+        logBgWarnError("[config-auth]", "GET_TOKEN: session cookie exists but no JWT could be derived");
         return {
             token: null,
             refreshed: false,
