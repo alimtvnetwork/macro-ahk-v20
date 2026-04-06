@@ -196,7 +196,7 @@ async function seedScriptsFromManifest(
             } catch (err) {
                 const msg = `[seedScriptsFromManifest] Failed to seed script ${scriptDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                logCaughtError(BgLogTag.MANIFEST_SEEDER, msg, err);
+                logBgWarnError(BgLogTag.MANIFEST_SEEDER, msg);
             }
         }
     }
