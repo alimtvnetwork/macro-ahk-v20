@@ -57,7 +57,7 @@ export async function warmScriptCache(): Promise<{ warmed: number; failed: numbe
 
         console.log("[cache-warmer] ✅ Warmed %d scripts, %d failed", warmed, failed);
     } catch (err) {
-        console.warn("[cache-warmer] Warming aborted:", err);
+        console.error("[cache-warmer] Warming aborted:", err);
     }
 
     return { warmed, failed };

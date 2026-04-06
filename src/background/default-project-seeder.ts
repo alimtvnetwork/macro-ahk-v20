@@ -117,7 +117,7 @@ async function handleInstalled(
         const result = await warmScriptCache();
         console.log("[seeder] Cache warm complete: %d warmed, %d failed", result.warmed, result.failed);
     } catch (err) {
-        console.warn("[seeder] Cache warming failed (non-fatal):", err);
+        console.error("[seeder] Cache warming failed (non-fatal):", err);
     }
 
     if (details.reason === "install") {
