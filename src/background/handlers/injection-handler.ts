@@ -362,9 +362,7 @@ async function injectSingleScript(
                 script.name, script.assets.css, tabId);
         } catch (cssError) {
             // CSS injection failure is non-fatal — log and continue with JS
-            console.error("[injection] CSS      — \"%s\" failed to inject %s: %s",
-                script.name, script.assets.css,
-                cssError instanceof Error ? cssError.message : String(cssError));
+            logCaughtError("[injection]", `CSS "${script.name}" failed to inject ${script.assets.css}`, cssError);
         }
     }
 
