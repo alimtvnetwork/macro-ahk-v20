@@ -119,7 +119,7 @@ export async function configureUserScriptWorld(): Promise<void> {
     } catch (configError) {
         userScriptsWorldConfigured = false;
         userScriptsWorldIdEnabled = false;
-        console.error("[injection:csp] Failed to configure userScripts world:", configError);
+        logCaughtError("[injection:csp]", "Failed to configure userScripts world", configError);
     }
 }
 
