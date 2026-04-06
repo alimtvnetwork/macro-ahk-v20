@@ -40,8 +40,8 @@ describe("Schema Migration Runner", () => {
         const result = await migrateSchema(logsDb, errorsDb);
 
         expect(result.fromVersion).toBe(1);
-        expect(result.toVersion).toBe(4);
-        expect(result.applied).toBe(3);
+        expect(result.toVersion).toBe(6);
+        expect(result.applied).toBe(5);
         expect(result.failed).toBe(false);
     });
 
