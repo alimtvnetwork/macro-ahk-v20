@@ -196,7 +196,7 @@ async function seedScriptsFromManifest(
             } catch (err) {
                 const msg = `[seedScriptsFromManifest] Failed to seed script ${scriptDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                logCaughtError(BgLogTag.MANIFEST_SEEDER, msg, err);
+                logBgWarnError(BgLogTag.MANIFEST_SEEDER, msg);
             }
         }
     }
@@ -327,7 +327,9 @@ async function seedConfigsFromManifest(
             } catch (err) {
                 const msg = `[seedConfigsFromManifest→fetchConfigJson] Failed to seed config ${configDef.file} for ${project.name}: ${err}`;
                 errors.push(msg);
-                logCaughtError(BgLogTag.MANIFEST_SEEDER, msg, err);
+                // Use warn instead of error — config fetch failures are non-fatal
+                // (hardcoded defaults are used) and should not inflate the error table
+                logBgWarnError(BgLogTag.MANIFEST_SEEDER, msg);
             }
         }
     }
