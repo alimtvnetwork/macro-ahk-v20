@@ -79,6 +79,7 @@ describe("Shortcut Command — Run Scripts", () => {
                 onCommand: {
                     addListener: (l: any) => { commandListeners.push(l); },
                 },
+                getAll: vi.fn((cb: any) => cb([])),
             },
             tabs: {
                 query: vi.fn().mockResolvedValue([{ id: 42 }]),
