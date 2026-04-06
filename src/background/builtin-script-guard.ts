@@ -271,7 +271,7 @@ async function seedMissingBuiltinsDirectly(
                     console.log("[builtin-guard:fallback] ✅ Loaded %s directly (%d chars) from %s",
                         scriptName, code.length, scriptAbsUrl);
                 } else {
-                    console.warn("[builtin-guard:fallback] ⚠ Script file %s returned empty/tiny response (%d chars) from %s",
+                    console.error("[builtin-guard:fallback] ⚠ Script file %s returned empty/tiny response (%d chars) from %s",
                         scriptName, code?.length ?? 0, scriptAbsUrl);
                 }
             } else {
