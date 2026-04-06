@@ -11,6 +11,11 @@ import {
     resetMockStorage,
 } from "../mocks/chrome-storage";
 
+// Mock injection-cache to avoid SQLite/storage dependencies
+vi.mock("../../src/background/injection-cache", () => ({
+    syncCacheWithBuildId: vi.fn(async () => ({ cleared: 0 })),
+}));
+
 /* ------------------------------------------------------------------ */
 /*  Setup                                                              */
 /* ------------------------------------------------------------------ */
