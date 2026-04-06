@@ -241,6 +241,11 @@ describe("Hot Reload — pollBuildMeta", () => {
         (globalThis as any).chrome.runtime.reload = () => {
             reloadCalled = true;
         };
+        vi.doMock("../../src/background/injection-cache", () => ({
+            syncCacheWithBuildId: vi.fn(async () => ({ cleared: 0 })),
+        }));
+        fetchMock = vi.fn();
+        (globalThis as any).fetch = fetchMock;
 
         mockFetchOk({ buildId: "once" });
 
