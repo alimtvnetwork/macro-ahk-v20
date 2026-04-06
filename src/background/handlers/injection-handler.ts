@@ -393,6 +393,13 @@ async function injectSingleScript(
     }
 }
 
+/** Extracts the VERSION constant from macro-looping script code. */
+function extractMacroVersion(code: string): string | null {
+    // Match patterns like: VERSION = '2.94.0' or VERSION="1.72.0"
+    const match = code.match(/VERSION\s*=\s*['"](\d+\.\d+\.\d+)['"]/);
+    return match?.[1] ?? null;
+}
+
 /** Logs a successful script injection to the logs DB. */
 async function logInjectionSuccess(
     script: InjectableScript,
@@ -401,6 +408,24 @@ async function logInjectionSuccess(
 ): Promise<void> {
     const codeSnippet = script.code.slice(0, 200);
     const sourceTag = codeSource ? ` [source: ${codeSource}]` : "";
+
+    // Legacy version detection for macro-looping
+    const isMacroLooping = script.name.includes("macro-looping") || script.id.includes("macro-looping");
+    if (isMacroLooping) {
+        const injectedVersion = extractMacroVersion(script.code);
+        if (injectedVersion && injectedVersion !== EXTENSION_VERSION) {
+            const legacyMsg = `⚠️ LEGACY SCRIPT DETECTED: macro-looping.js v${injectedVersion} injected but extension is v${EXTENSION_VERSION}. Source: ${codeSource ?? "unknown"}. The injected script is OUTDATED — stale cache or embedded code fallback.`;
+            console.error("[injection] " + legacyMsg);
+            try {
+                await handleLogError({
+                    type: "LOG_ERROR",
+                    code: "LEGACY_SCRIPT_INJECTED",
+                    message: legacyMsg,
+                    stack: `Injected version: ${injectedVersion}, Expected: ${EXTENSION_VERSION}, Source: ${codeSource ?? "unknown"}, Code length: ${script.code.length}`,
+                } as MessageRequest);
+            } catch { /* best effort */ }
+        }
+    }
 
     try {
         await handleLogEntry({
@@ -415,10 +440,6 @@ async function logInjectionSuccess(
             configId: script.configBinding,
         } as MessageRequest);
     } catch (loggingError) {
-        const reason = loggingError instanceof Error
-            ? loggingError.message
-            : String(loggingError);
-
         logCaughtError(BgLogTag.INJECTION, "logInjectionSuccess skipped", loggingError);
     }
 }
