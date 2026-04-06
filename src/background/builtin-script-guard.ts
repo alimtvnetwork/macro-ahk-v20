@@ -145,8 +145,7 @@ export async function ensureBuiltinScriptsExist(
             `[builtin-guard] seed-manifest.json returned 0 scripts (projects=${seedResult.projects}, errors=${seedResult.errors.length}). Falling back to instruction.json.`,
         );
     } catch (err) {
-        const reason = err instanceof Error ? err.message : String(err);
-        console.error("[builtin-guard] ❌ Manifest reseed failed:", reason);
+        logCaughtError("[builtin-guard]", "Manifest reseed failed", err);
         void persistInjectionError(
             "BUILTIN_GUARD_MANIFEST_RESEED_FAILED",
             `[builtin-guard] Manifest reseed failed: ${reason}`,
