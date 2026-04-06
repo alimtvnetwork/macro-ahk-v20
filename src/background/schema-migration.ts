@@ -261,7 +261,7 @@ async function applySingleMigration(
         console.log(`[migration] v${migration.version}: ${migration.description}`);
         return true;
     } catch (err) {
-        console.error(`[migration] v${migration.version} failed:`, err);
+        console.error(`[migration] v${migration.version} failed:`, err);  // Keep bare console.error — DB may be mid-migration
         attemptRollback(migration, logsDb, errorsDb);
         return false;
     }

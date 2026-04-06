@@ -125,13 +125,9 @@ function buildMissingToken(): StatusResponse["token"] {
     };
 }
 
-/** Logs a cookie access warning. */
+/** Logs a cookie access error. */
 function logCookieWarning(error: unknown): void {
-    const errorMessage = error instanceof Error
-        ? error.message
-        : String(error);
-
-    console.error(`[Marco] Token check failed: ${errorMessage}`);
+    logCaughtError("[status-handler]", "Token check failed", error);
 }
 
 /** Resolves the current config loading state. */

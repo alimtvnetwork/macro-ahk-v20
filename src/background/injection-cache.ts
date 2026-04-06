@@ -284,7 +284,7 @@ export async function syncCacheWithBuildId(
 
         return { changed: true, cleared: clearResult.cleared };
     } catch (err) {
-        console.error("[injection-cache] Build sync failed:", err);
+        logCaughtError("[injection-cache]", "Build sync failed", err);
         return { changed: false, cleared: 0 };
     }
 }
