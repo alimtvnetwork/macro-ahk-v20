@@ -14,6 +14,7 @@ describe("buildMarcoSdkScript", () => {
             scriptId: "script-1",
             configId: "cfg-1",
             urlRuleId: "rule-1",
+            version: "1.0.0",
         });
 
         expect(result).toContain("(function(){");
