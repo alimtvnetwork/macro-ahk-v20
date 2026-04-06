@@ -99,10 +99,11 @@ describe("Integration: Config & Auth flow", () => {
     });
 
     it("GET_TOKEN returns token from cookie", async () => {
-        setMockCookie("lovable-session-id.id", "my-jwt-token");
+        // Token must look like a JWT (starts with eyJ, 3 dot-separated parts)
+        setMockCookie("lovable-session-id.id", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.test-sig");
 
         const res = await send({ type: "GET_TOKEN" });
-        expect(res.token).toBe("my-jwt-token");
+        expect(res.token).toBe("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.test-sig");
     });
 
     it("REFRESH_TOKEN forces re-read of cookie", async () => {
