@@ -71,9 +71,7 @@ export function transitionHealth(
 
     if (isDowngrade) {
         setHealthState(newState);
-        console.error(
-            `[health] ${currentState} → ${newState}: ${reason}`,
-        );
+        logBgWarnError("[health]", `${currentState} → ${newState}: ${reason}`);
     }
 }
 
