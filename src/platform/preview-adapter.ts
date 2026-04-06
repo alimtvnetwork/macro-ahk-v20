@@ -641,6 +641,16 @@ function getMockResponse(message: MessagePayload): unknown {
                 },
             ],
         },
+        GET_OPFS_STATUS: {
+            sessionId: "29",
+            dirExists: true,
+            files: [
+                { name: "events.log", absolutePath: "opfs-root/session-logs/session-29/events.log", sizeBytes: 3200, exists: true },
+                { name: "errors.log", absolutePath: "opfs-root/session-logs/session-29/errors.log", sizeBytes: 512, exists: true },
+                { name: "scripts.log", absolutePath: "opfs-root/session-logs/session-29/scripts.log", sizeBytes: 1100, exists: true },
+            ],
+            healthy: true,
+        },
     };
 
     return mocks[message.type] ?? { isOk: true };

@@ -58,7 +58,7 @@ interface HealthData {
   details: string[];
 }
 
-export type { ActiveProjectData, InjectionStatus, PopupScript, StatusData, HealthData };
+export type { ActiveProjectData, InjectionStatus, PopupScript, StatusData, HealthData, OpfsStatusData };
 
 // eslint-disable-next-line max-lines-per-function
 export function usePopupData() {
