@@ -35,6 +35,7 @@ const PopupPage = () => {
     projectData,
     status,
     health,
+    opfsStatus,
     injections,
     scripts,
     loading,
