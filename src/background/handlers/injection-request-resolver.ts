@@ -15,7 +15,7 @@ import { resolveScriptBindings, type SkippedScript } from "../script-resolver";
 import { ensureBuiltinScriptsExist } from "../builtin-script-guard";
 import { persistInjectionWarn } from "../injection-diagnostics";
 import { readAllProjects } from "./project-helpers";
-import { logBgWarnError } from "../bg-logger";
+import { logBgWarnError, BgLogTag } from "../bg-logger";
 
 /** Executable script plus its resolved config and theme JSON payloads. */
 export interface PreparedInjectionScript {
