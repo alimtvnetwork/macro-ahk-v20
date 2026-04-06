@@ -323,8 +323,7 @@ async function injectAllScripts(
                 scriptMeta.length, execResult.path, durationMs);
         } catch (batchError) {
             // Fallback to sequential on batch failure
-            console.error("[injection] Batch injection failed, falling back to sequential: %s",
-                batchError instanceof Error ? batchError.message : String(batchError));
+            logCaughtError("[injection]", "Batch injection failed, falling back to sequential", batchError);
             for (const script of orderedScripts) {
                 const result = await injectSingleScript(tabId, script.injectable, script.configJson, script.themeJson, script.codeSource);
                 results.push(result);
