@@ -275,7 +275,7 @@ async function seedMissingBuiltinsDirectly(
                         scriptName, code?.length ?? 0, scriptAbsUrl);
                 }
             } else {
-                console.warn("[builtin-guard:fallback] ❌ Script file HTTP %d for %s — URL: %s",
+                console.error("[builtin-guard:fallback] ❌ Script file HTTP %d for %s — URL: %s",
                     scriptResp.status, scriptName, scriptAbsUrl);
                 void persistInjectionWarn(
                     "BUILTIN_GUARD_SCRIPT_FILE_MISSING",
