@@ -86,7 +86,7 @@ export async function boot(): Promise<void> {
             const result = await seedFromManifest();
             console.log("[Marco] ✓ Manifest seeder: %d scripts, %d configs across %d projects", result.scripts, result.configs, result.projects);
         } catch (err) {
-            console.warn("[Marco] Manifest seeder failed (non-fatal):", err);
+            console.error("[Marco] Manifest seeder failed (non-fatal):", err);
         }
 
         step = "reseed-prompts";
@@ -95,7 +95,7 @@ export async function boot(): Promise<void> {
             await reseedPrompts();
             console.log("[Marco] ✓ Prompts reseeded from dist");
         } catch (err) {
-            console.warn("[Marco] Prompt reseed failed (non-fatal):", err);
+            console.error("[Marco] Prompt reseed failed (non-fatal):", err);
         }
 
         step = "normalize-default-project";
@@ -104,7 +104,7 @@ export async function boot(): Promise<void> {
             await ensureDefaultProjectSingleScript();
             console.log("[Marco] ✓ Default project normalized");
         } catch (err) {
-            console.warn("[Marco] Default project normalization failed (non-fatal):", err);
+            console.error("[Marco] Default project normalization failed (non-fatal):", err);
         }
 
         step = "purge-stale-cache";
@@ -112,7 +112,7 @@ export async function boot(): Promise<void> {
         try {
             await purgeStaleEntries();
         } catch (err) {
-            console.warn("[Marco] Cache purge failed (non-fatal):", err);
+            console.error("[Marco] Cache purge failed (non-fatal):", err);
         }
 
         step = "precache-scripts";
@@ -121,7 +121,7 @@ export async function boot(): Promise<void> {
             await precacheStableScripts();
             console.log("[Marco] Pre-cached stable scripts into IndexedDB");
         } catch (err) {
-            console.warn("[Marco] Script pre-cache failed (non-fatal):", err);
+            console.error("[Marco] Script pre-cache failed (non-fatal):", err);
         }
 
         step = "ready";

@@ -74,7 +74,7 @@ async function warmOneScript(script: StoredScript): Promise<boolean> {
         const response = await fetch(url);
 
         if (!response.ok) {
-            console.warn("[cache-warmer] Fetch failed for %s: HTTP %d", filePath, response.status);
+            console.error("[cache-warmer] Fetch failed for %s: HTTP %d", filePath, response.status);
             return false;
         }
 
