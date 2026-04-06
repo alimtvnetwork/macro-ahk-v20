@@ -41,6 +41,8 @@ import { UIManager } from './core/UIManager';
 import { startLoop, stopLoop } from './loop-engine';
 import type { MarkViewedResponse } from './types';
 import { ensureTokenReady } from './startup-token-gate';
+import { setupPersistenceObserver } from './startup-persistence';
+import { setupGlobalErrorHandlers, setupDiagnosticDump } from './startup-global-handlers';
 
 const PROMPT_PREWARM = 'prompt-prewarm';
 const WS_PREFETCH = 'ws-prefetch';
@@ -73,6 +75,15 @@ export function bootstrap(deps: {
   hasXPathUtils: boolean;
 }): void {
   timingStart('bootstrap', 'Bootstrap');
+
+  setupPersistenceObserver(function () {
+    const mc = MacroController.getInstance();
+    if (tryCreateUiNow(mc)) {
+      updateUI();
+    }
+  });
+  setupGlobalErrorHandlers();
+  setupDiagnosticDump();
 
   // ── T2 (RC-02): Show standalone DOM toast IMMEDIATELY ──
   // This renders before the SDK is available, giving instant user feedback.

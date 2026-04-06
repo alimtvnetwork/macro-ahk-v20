@@ -12,6 +12,7 @@
 import type { MessageRequest, OkResponse } from "../../shared/messages";
 import type { DbManager } from "../db-manager";
 import { setHealthState } from "../state-manager";
+import { getCurrentSessionId } from "./logging-handler";
 
 let dbManager: DbManager | null = null;
 
@@ -66,6 +67,12 @@ export async function handleGetActiveErrors(): Promise<{ errors: unknown[] }> {
 
 /** Queries unresolved error rows for the current session, newest first. */
 function queryUnresolvedErrors(db: ReturnType<typeof getErrorsDb>): unknown[] {
+    const currentSessionId = getCurrentSessionId();
+
+    if (currentSessionId === null) {
+        return [];
+    }
+
     const stmt = db.prepare(
         `SELECT
             Id as id,
@@ -85,10 +92,11 @@ function queryUnresolvedErrors(db: ReturnType<typeof getErrorsDb>): unknown[] {
             Resolved as resolved
          FROM Errors
          WHERE Resolved = 0
-           AND SessionId = (SELECT Id FROM Sessions ORDER BY StartedAt DESC LIMIT 1)
+           AND SessionId = ?
          ORDER BY Timestamp DESC
          LIMIT 100`,
     );
+    stmt.bind([currentSessionId]);
     return collectRows(stmt);
 }
 

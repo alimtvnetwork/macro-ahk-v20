@@ -34,7 +34,7 @@ const marco = Object.freeze({
     utils: Object.freeze(createUtilsApi()),
     prompts: Object.freeze(createPromptsApi()),
     api: Object.freeze(createApiModule()),
-    version: "2.94.0",
+    version: "2.95.0",
 });
 
 /* ------------------------------------------------------------------ */
@@ -77,4 +77,4 @@ initXPathCache().catch(() => {
     /* silent — cache will be empty until first explicit call */
 });
 
-console.log("[marco-sdk] Riseup Macro SDK v2.21.0 initialized (RiseupAsiaMacroExt root created, api + utils + prompts modules loaded)");
+console.log("[marco-sdk] Riseup Macro SDK v2.95.0 initialized (RiseupAsiaMacroExt root created, api + utils + prompts modules loaded)");

@@ -11,7 +11,7 @@
  */
 
 import type { MessageRequest, OkResponse } from "../../shared/messages";
-import { getLogsDb, getErrorsDb, markLoggingDirty } from "./logging-handler";
+import { getLogsDb, getErrorsDb, getCurrentSessionId, markLoggingDirty, startSession } from "./logging-handler";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -81,12 +81,12 @@ export async function handleUserScriptLog(
     const payload = msg.payload;
     const sanitizedMetadata = redactSensitiveMetadata(payload.metadata);
 
-    insertUserScriptLogRow(payload, sanitizedMetadata);
+    await insertUserScriptLogRow(payload, sanitizedMetadata);
 
     const isErrorLevel = payload.level === "ERROR";
 
     if (isErrorLevel) {
-        insertUserScriptErrorRow(payload, sanitizedMetadata);
+        await insertUserScriptErrorRow(payload, sanitizedMetadata);
     }
 
     markLoggingDirty();
@@ -101,53 +101,70 @@ export async function handleUserScriptLog(
 function insertUserScriptLogRow(
     payload: UserScriptLogPayload,
     sanitizedMetadata: string | null,
-): void {
+): Promise<void> {
     const db = getLogsDb();
     const version = chrome.runtime.getManifest().version;
 
-    db.run(
-        `INSERT INTO Logs (SessionId, Timestamp, Level, Source, Category, Action, Detail, Metadata, ProjectId, UrlRuleId, ScriptId, ConfigId, ExtVersion)
-         VALUES ((SELECT Id FROM Sessions ORDER BY StartedAt DESC LIMIT 1), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-            payload.timestamp,
-            payload.level,
-            "user-script",
-            payload.category || "USER",
-            payload.action || "log",
-            payload.detail,
-            sanitizedMetadata,
-            payload.projectId,
-            payload.urlRuleId,
-            payload.scriptId,
-            payload.configId,
-            version,
-        ],
-    );
+    return resolveCurrentSessionId(version).then((sessionId) => {
+        db.run(
+            `INSERT INTO Logs (SessionId, Timestamp, Level, Source, Category, Action, Detail, Metadata, ProjectId, UrlRuleId, ScriptId, ConfigId, ExtVersion)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                sessionId,
+                payload.timestamp,
+                payload.level,
+                "user-script",
+                payload.category || "USER",
+                payload.action || "log",
+                payload.detail,
+                sanitizedMetadata,
+                payload.projectId,
+                payload.urlRuleId,
+                payload.scriptId,
+                payload.configId,
+                version,
+            ],
+        );
+    });
 }
 
 /** Inserts a corresponding error row when user script logs at ERROR level. */
 function insertUserScriptErrorRow(
     payload: UserScriptLogPayload,
     sanitizedMetadata: string | null,
-): void {
+): Promise<void> {
     const db = getErrorsDb();
     const version = chrome.runtime.getManifest().version;
 
-    db.run(
-        `INSERT INTO Errors (SessionId, Timestamp, Level, Source, Category, ErrorCode, Message, Context, ProjectId, UrlRuleId, ScriptId, ConfigId, ExtVersion)
-         VALUES ((SELECT Id FROM Sessions ORDER BY StartedAt DESC LIMIT 1), ?, 'ERROR', 'user-script', ?, 'USER_SCRIPT_LOG_ERROR', ?, ?, ?, ?, ?, ?, ?)`,
-        [
-            payload.timestamp,
-            payload.category || "USER",
-            payload.detail,
-            sanitizedMetadata,
-            payload.projectId,
-            payload.urlRuleId,
-            payload.scriptId,
-            payload.configId,
-            version,
-        ],
-    );
+    return resolveCurrentSessionId(version).then((sessionId) => {
+        db.run(
+            `INSERT INTO Errors (SessionId, Timestamp, Level, Source, Category, ErrorCode, Message, Context, ProjectId, UrlRuleId, ScriptId, ConfigId, ExtVersion)
+             VALUES (?, ?, 'ERROR', 'user-script', ?, 'USER_SCRIPT_LOG_ERROR', ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                sessionId,
+                payload.timestamp,
+                payload.category || "USER",
+                payload.detail,
+                sanitizedMetadata,
+                payload.projectId,
+                payload.urlRuleId,
+                payload.scriptId,
+                payload.configId,
+                version,
+            ],
+        );
+    });
+}
+
+async function resolveCurrentSessionId(version: string): Promise<number> {
+    const currentSessionId = getCurrentSessionId();
+
+    if (currentSessionId !== null) {
+        return Number(currentSessionId);
+    }
+
+    const newSessionId = await startSession(version);
+    return Number(newSessionId);
 }
 
 /* ------------------------------------------------------------------ */

@@ -12,7 +12,7 @@ import {
     setHealthState,
     type TransientState,
 } from "./state-manager";
-import { countTable, getLogsDb, getErrorsDb } from "./handlers/logging-handler";
+import { countTable, getLogsDb, getErrorsDb, getCurrentSessionId } from "./handlers/logging-handler";
 import { logBgWarnError, logCaughtError, BgLogTag} from "./bg-logger";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -123,8 +123,14 @@ function checkStorageQuota(): "ok" | "warning" | "critical" {
 /** Checks recent error rate for the CURRENT session only. */
 function checkErrorRate(): "ok" | "degraded" | "error" {
     try {
+        const currentSessionId = getCurrentSessionId();
+        if (currentSessionId === null) {
+            return "ok";
+        }
+
         const db = getErrorsDb();
-        const stmt = db.prepare("SELECT COUNT(*) as cnt FROM Errors WHERE SessionId = (SELECT Id FROM Sessions ORDER BY StartedAt DESC LIMIT 1)");
+        const stmt = db.prepare("SELECT COUNT(*) as cnt FROM Errors WHERE SessionId = ?");
+        stmt.bind([currentSessionId]);
         let errorCount = 0;
 
         if (stmt.step()) {
