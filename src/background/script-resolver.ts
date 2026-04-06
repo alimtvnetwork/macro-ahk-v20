@@ -294,7 +294,26 @@ async function resolveOneBinding(
 
     const configJson = resolveConfig(binding.configId, configs);
     const themeJson = resolveConfig(script!.themeBinding ?? null, configs);
-    const { code, source: codeSource } = await resolveScriptCode(script!);
+
+    let code: string;
+    let codeSource: ScriptCodeSource;
+    try {
+        const resolvedCode = await resolveScriptCode(script!);
+        code = resolvedCode.code;
+        codeSource = resolvedCode.source;
+    } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        logBgWarnError(BgLogTag.INJECTION_RESOLVE, `Script '${script!.name}' (id=${script!.id}) failed to resolve: ${reason}`);
+        void persistInjectionWarn(
+            "SCRIPT_SKIPPED_RESOLVE_FAILED",
+            `[injection:resolve] Script '${script!.name}' (id=${script!.id}) failed to resolve and was skipped: ${reason}`,
+            { scriptId: script!.id, configId: binding.configId ?? undefined },
+        );
+        return {
+            kind: "skipped",
+            value: { scriptId: script!.id, scriptName: script!.name, reason: "empty_code" as SkipReason },
+        };
+    }
 
     if (!code || code.trim().length === 0) {
         logBgWarnError(BgLogTag.INJECTION_RESOLVE, `Script '${script!.name}' (id=${script!.id}) resolved with EMPTY code — skipping. filePath=${script!.filePath ?? "(none)"}, source=${codeSource}`);
