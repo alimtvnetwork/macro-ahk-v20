@@ -119,16 +119,16 @@ describe("Token Seeder — Cookie Resolution", () => {
         expect(seedCalls.length).toBe(0);
     });
 
-    it("injects using __lovable_token when cookies are unavailable", async () => {
+    it("does not seed from __lovable_token query param (removed in v2)", async () => {
         const signedUrlToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMiLCJwcm9qZWN0X2lkIjoiNTg0NjAwYjMtMGJiYS00M2EwLWEwOWQtYWI2MzJiZjRiNWFjIn0.sig";
         mockTabs.set(1, { url: `https://584600b3-0bba-43a0-a09d-ab632bf4b5ac.lovableproject.com/?__lovable_token=${signedUrlToken}` });
 
         const { seedTokensIntoTab } = await import("../../src/background/handlers/token-seeder");
         await seedTokensIntoTab(1);
 
+        // __lovable_token from URL is no longer extracted — token seeder only uses cookies and localStorage
         const seedCalls = scriptingCalls.filter((c: any) => c.args && c.args.length > 1);
-        expect(seedCalls.length).toBe(1);
-        expect(seedCalls[0].args?.[0]).toBe(signedUrlToken);
+        expect(seedCalls.length).toBe(0);
     });
 
     it("injects when only session cookie exists", async () => {
