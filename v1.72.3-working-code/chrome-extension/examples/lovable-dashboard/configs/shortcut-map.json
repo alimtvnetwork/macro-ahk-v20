@@ -1,0 +1,19 @@
+{
+    "bindings": [
+        {
+            "keys": "Ctrl+Shift+P",
+            "action": "toggleCommandPalette",
+            "description": "Open the quick command palette"
+        },
+        {
+            "keys": "Ctrl+Shift+S",
+            "action": "saveAllFiles",
+            "description": "Save all modified files"
+        },
+        {
+            "keys": "Alt+1",
+            "action": "focusSidebar",
+            "description": "Focus the sidebar panel"
+        }
+    ]
+}

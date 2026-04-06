@@ -1,0 +1,89 @@
+// MacroLoop Controller — Dialog & Modal Styles
+@import "variables.less";
+
+// ─── Context menu (right-click) ───
+.marco-ctx-menu {
+  position: fixed;
+  z-index: 100001;
+  background: @panel-bg;
+  border: 1px solid @primary;
+  border-radius: @btn-radius;
+  padding: 2px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  min-width: 100px;
+}
+
+.marco-ctx-item {
+  padding: 5px 12px;
+  font-size: @font-size-tiny;
+  color: @panel-fg;
+  cursor: pointer;
+  transition: background @tr-fast ease;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.3);
+  }
+}
+
+// ─── Floating dialog (rename, bulk rename) ───
+.marco-dialog {
+  position: fixed;
+  z-index: 100002;
+  background: @panel-bg;
+  border: 1px solid @primary;
+  border-radius: @btn-radius;
+  padding: 0;
+  min-width: 420px;
+  max-width: 520px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  font-family: @font-mono;
+  resize: both;
+  overflow: hidden;
+}
+
+.marco-dialog-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(124, 58, 237, 0.15);
+  cursor: grab;
+  user-select: none;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+
+  &.is-dragging {
+    cursor: grabbing;
+  }
+}
+
+.marco-dialog-title {
+  font-size: @font-size-sm;
+  color: #c4b5fd;
+  font-weight: 700;
+}
+
+.marco-dialog-close {
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 14px;
+  padding: 0 4px;
+  transition: color @tr-fast ease;
+
+  &:hover {
+    color: @panel-fg;
+  }
+}
+
+.marco-dialog-body {
+  padding: 10px;
+}
+
+// ─── About modal ───
+.marco-modal {
+  font-family: @font-mono;
+  background: @panel-bg;
+  border: 1px solid @panel-border;
+  border-radius: @panel-radius;
+  padding: @panel-padding;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}

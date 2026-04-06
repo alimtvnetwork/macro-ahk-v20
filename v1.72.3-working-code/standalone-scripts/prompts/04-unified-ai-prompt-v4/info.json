@@ -1,0 +1,12 @@
+{
+  "id": "default-unified",
+  "title": "Unified AI Prompt v4",
+  "slug": "unified-ai-prompt-v4",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [],
+  "isDefault": true,
+  "order": 3,
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "xpath",
+  "version": "1.0.0",
+  "outputFile": "xpath.js",
+  "world": "MAIN",
+  "isGlobal": true,
+  "dependencies": [],
+  "loadOrder": 1,
+  "assets": {},
+  "description": "Global XPath utility library. Exposes window.XPathUtils with getByXPath, getAllByXPath, findElement, and reactClick."
+}

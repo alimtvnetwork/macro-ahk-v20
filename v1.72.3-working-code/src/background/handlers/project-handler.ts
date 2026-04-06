@@ -1,0 +1,247 @@
+/**
+ * Marco Extension — Project Handler
+ *
+ * Handles project CRUD operations with chrome.storage.local.
+ */
+
+import type { MessageRequest, OkResponse } from "../../shared/messages";
+import type { StoredProject } from "../../shared/project-types";
+import { slugify, toCodeName } from "../../lib/slug-utils";
+import type { StoredScript } from "../../shared/script-config-types";
+import { STORAGE_KEY_ACTIVE_PROJECT, STORAGE_KEY_ALL_SCRIPTS } from "../../shared/constants";
+import { setActiveProjectId } from "../state-manager";
+import { ensureDefaultProjectSingleScript } from "../default-project-seeder";
+import {
+    generateId,
+    nowTimestamp,
+    readActiveProjectId,
+    readAllProjects,
+    writeAllProjects,
+} from "./project-helpers";
+import { buildInjectedScriptStatus } from "./project-injection-status";
+
+export {
+    handleDuplicateProject,
+    handleExportProject,
+    handleImportProject,
+} from "./project-export-handler";
+
+/* ------------------------------------------------------------------ */
+/*  Script state helpers                                               */
+/* ------------------------------------------------------------------ */
+
+type ScriptStateMap = Record<string, { id: string; isEnabled: boolean }>;
+
+/** Builds a popup-facing map of script IDs and enabled flags by project path. */
+async function buildProjectScriptState(
+    project: StoredProject | null,
+): Promise<ScriptStateMap> {
+    if (project === null) {
+        return {};
+    }
+
+    const storedScripts = await readStoredScripts();
+    const state: ScriptStateMap = {};
+
+    for (const entry of project.scripts) {
+        const matched = findStoredScriptByProjectPath(storedScripts, entry.path);
+
+        if (matched !== null) {
+            state[entry.path] = {
+                id: matched.id,
+                isEnabled: matched.isEnabled !== false,
+            };
+        }
+    }
+
+    return state;
+}
+
+/** Reads all stored scripts from local storage. */
+async function readStoredScripts(): Promise<StoredScript[]> {
+    const result = await chrome.storage.local.get(STORAGE_KEY_ALL_SCRIPTS);
+    const scripts = result[STORAGE_KEY_ALL_SCRIPTS];
+    return Array.isArray(scripts) ? scripts : [];
+}
+
+/** Finds the stored script that corresponds to a project script path. */
+function findStoredScriptByProjectPath(
+    scripts: StoredScript[],
+    projectPath: string,
+): StoredScript | null {
+    const direct = scripts.find((script) => script.name === projectPath);
+
+    if (direct !== undefined) {
+        return direct;
+    }
+
+    const normalizedPath = normalizeScriptKey(projectPath);
+    const normalized = scripts.find((script) => normalizeScriptKey(script.name) === normalizedPath);
+
+    return normalized ?? null;
+}
+
+/** Normalizes a script path for robust filename-only matching. */
+function normalizeScriptKey(path: string): string {
+    const normalized = path.trim().toLowerCase().replace(/\\/g, "/");
+    const fileName = normalized.split("/").pop() ?? normalized;
+    return fileName.split(/[?#]/)[0] ?? fileName;
+}
+
+/** Sorts project options so runnable (non-global) projects appear first. */
+function sortProjectOptions(projects: StoredProject[]): StoredProject[] {
+    return [...projects].sort((a, b) => {
+        const aGlobal = a.isGlobal === true ? 1 : 0;
+        const bGlobal = b.isGlobal === true ? 1 : 0;
+        if (aGlobal !== bGlobal) return aGlobal - bGlobal;
+        return a.name.localeCompare(b.name);
+    });
+}
+
+/** Chooses the preferred active project, avoiding global SDK projects when possible. */
+function selectPreferredActiveProject(
+    projects: StoredProject[],
+    activeId: string | null,
+): { activeProject: StoredProject | null; nextActiveId: string | null } {
+    const runnableProjects = projects.filter((project) => project.isGlobal !== true);
+    const candidates = runnableProjects.length > 0 ? runnableProjects : projects;
+
+    const activeProject = (activeId
+        ? candidates.find((project) => project.id === activeId)
+        : null) ?? candidates[0] ?? null;
+
+    return {
+        activeProject,
+        nextActiveId: activeProject?.id ?? null,
+    };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Public handlers                                                    */
+/* ------------------------------------------------------------------ */
+
+/** Returns the active project for the current tab. */
+export async function handleGetActiveProject(
+    sender: chrome.runtime.MessageSender,
+): Promise<unknown> {
+    const activeId = await readActiveProjectId();
+    await ensureDefaultProjectSingleScript();
+    const projects = await readAllProjects();
+    const { activeProject, nextActiveId } = selectPreferredActiveProject(projects, activeId);
+    const [injectedScripts, scriptStates] = await Promise.all([
+        buildInjectedScriptStatus(activeProject),
+        buildProjectScriptState(activeProject),
+    ]);
+
+    if (nextActiveId !== null && nextActiveId !== activeId) {
+        await chrome.storage.local.set({
+            [STORAGE_KEY_ACTIVE_PROJECT]: nextActiveId,
+        });
+        setActiveProjectId(nextActiveId);
+    }
+
+    return {
+        activeProject,
+        matchedRule: null,
+        allProjects: sortProjectOptions(projects),
+        injectedScripts,
+        scriptStates,
+    };
+}
+
+/** Sets the active project by ID. */
+export async function handleSetActiveProject(
+    message: MessageRequest,
+    sender: chrome.runtime.MessageSender,
+): Promise<unknown> {
+    const { projectId } = message as { projectId: string };
+
+    await chrome.storage.local.set({
+        [STORAGE_KEY_ACTIVE_PROJECT]: projectId,
+    });
+    setActiveProjectId(projectId);
+
+    return { matchedRule: null, injectedScripts: {} };
+}
+
+/** Returns all stored projects. */
+export async function handleGetAllProjects(): Promise<{
+    projects: StoredProject[];
+}> {
+    await ensureDefaultProjectSingleScript();
+    const projects = await readAllProjects();
+    return { projects: sortProjectOptions(projects) };
+}
+
+/** Creates or updates a project. */
+export async function handleSaveProject(
+    message: MessageRequest,
+): Promise<OkResponse & { project: StoredProject }> {
+    const { project } = message as { project: StoredProject };
+    const projects = await readAllProjects();
+
+    const saved = upsertProject(projects, project);
+
+    await writeAllProjects(projects);
+    return { isOk: true, project: saved };
+}
+
+/** Auto-derives slug and codeName from project name if not already set. */
+function ensureDerivedIdentifiers(project: StoredProject): StoredProject {
+    const slug = project.slug || slugify(project.name);
+    const codeName = project.codeName || toCodeName(slug);
+    return { ...project, slug, codeName };
+}
+
+/** Inserts or replaces a project in the list, returns saved record. */
+function upsertProject(
+    projects: StoredProject[],
+    project: StoredProject,
+): StoredProject {
+    const now = nowTimestamp();
+    const enriched = ensureDerivedIdentifiers(project);
+    const existingIndex = projects.findIndex((p) => p.id === enriched.id);
+    const isExisting = existingIndex >= 0;
+
+    if (isExisting) {
+        const updated = { ...enriched, updatedAt: now };
+        projects[existingIndex] = updated;
+        return updated;
+    }
+
+    const created: StoredProject = {
+        ...enriched,
+        id: enriched.id || generateId(),
+        createdAt: now,
+        updatedAt: now,
+    };
+
+    projects.push(created);
+    return created;
+}
+
+/** Deletes a project and clears active if it matches. */
+export async function handleDeleteProject(
+    message: MessageRequest,
+): Promise<OkResponse> {
+    const { projectId } = message as { projectId: string };
+    const projects = await readAllProjects();
+    const filtered = projects.filter((p) => p.id !== projectId);
+
+    await writeAllProjects(filtered);
+    await clearActiveIfDeleted(projectId);
+
+    return { isOk: true };
+}
+
+/** Clears active project if the deleted ID was active. */
+async function clearActiveIfDeleted(
+    deletedId: string,
+): Promise<void> {
+    const activeId = await readActiveProjectId();
+    const isActiveDeleted = activeId === deletedId;
+
+    if (isActiveDeleted) {
+        await chrome.storage.local.remove(STORAGE_KEY_ACTIVE_PROJECT);
+    }
+}

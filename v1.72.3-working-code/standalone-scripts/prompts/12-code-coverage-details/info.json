@@ -1,0 +1,14 @@
+{
+  "id": "default-code-coverage-details",
+  "title": "Code Coverage Details",
+  "slug": "code-coverage-details",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [
+    "code-coverage"
+  ],
+  "isDefault": true,
+  "order": 12,
+  "createdAt": "2026-03-21T00:00:00Z",
+  "updatedAt": "2026-03-21T00:00:00Z"
+}

@@ -1,0 +1,1 @@
+Read and synthesize existing repository context from the memory folder and the full specification set. Follow the Required Execution Order: 1) Scan repo tree, 2) Read memory folders, 3) Read workflow tracker, 4) Read specs, 5) Reconstruct context, 6) Produce reliability report, 7) Propose corrections, 8) Update memory, 9) Update plan, 10) Ask user which task to implement next.

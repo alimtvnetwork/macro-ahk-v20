@@ -1,0 +1,12 @@
+{
+  "id": "default-issues",
+  "title": "Issues Tracking",
+  "slug": "issues-tracking",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [],
+  "isDefault": true,
+  "order": 4,
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z"
+}

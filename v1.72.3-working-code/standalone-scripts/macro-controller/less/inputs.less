@@ -1,0 +1,62 @@
+// MacroLoop Controller — Input & Form Styles
+@import "variables.less";
+
+.marco-input {
+  width: 100%;
+  padding: 1px 3px;
+  border: 1px solid @primary-light;
+  border-radius: 2px;
+  background: @panel-bg;
+  color: @panel-fg;
+  font-size: @font-size-sm;
+  font-family: @font-mono;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color @tr-fast ease, box-shadow @tr-fast ease;
+
+  &:focus {
+    border-color: #0072FF;
+    box-shadow: 0 0 6px rgba(0, 114, 255, 0.25);
+  }
+}
+
+.marco-checkbox {
+  width: 12px;
+  height: 12px;
+  accent-color: @primary-light;
+}
+
+.marco-select {
+  background: @panel-bg;
+  color: @panel-fg;
+  border: 1px solid @panel-border;
+  border-radius: 4px;
+  font-size: @font-size-sm;
+  font-family: @font-mono;
+  padding: 2px 4px;
+  outline: none;
+
+  &:focus {
+    border-color: #0072FF;
+    box-shadow: 0 0 6px rgba(0, 114, 255, 0.25);
+  }
+}
+
+// ─── Search box ───
+.marco-search {
+  .marco-input();
+  padding: 4px 8px;
+  border-radius: @btn-radius;
+
+  &:focus {
+    border-color: #0072FF;
+    box-shadow: 0 0 8px rgba(0, 114, 255, 0.25);
+  }
+}
+
+// ─── Label ───
+.marco-label {
+  font-size: @font-size-micro;
+  color: #94a3b8;
+  min-width: 40px;
+}

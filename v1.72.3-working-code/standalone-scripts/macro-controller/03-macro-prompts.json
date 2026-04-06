@@ -1,0 +1,138 @@
+{
+  "prompts": [
+    {
+      "name": "Start Prompt",
+      "text": "Write a readme.txt text file with 3 words with no context at all \"let's start now {date:dd-MMM-YYYY} {time:12 hr clock format exact time now for malaysia}\"",
+      "id": "default-start",
+      "slug": "start-prompt",
+      "version": "1.0.0",
+      "order": 0,
+      "isDefault": true
+    },
+    {
+      "name": "Start Prompt v2",
+      "text": "Write a readme.txt text file with 3 words with no context at all \"let's start now {date:dd-MMM-YYYY} {time:12 hr clock format exact time now for malaysia}\"\n\nUh, try to write a file to the Git system. I'm not sure what you are doing. I'm asking you to write the text file in the read.txt file, readme.txt file with the date and time, and you are not doing it. You are not doing a Git, uh, update. Are you stupid?",
+      "id": "default-start-v2",
+      "slug": "start-prompt-v2",
+      "version": "1.0.0",
+      "order": 1,
+      "isDefault": true
+    },
+    {
+      "name": "Rejog the Memory v1",
+      "text": "Read and synthesize existing repository context from the memory folder and the full specification set, then produce a reliability risk report before any implementation work begins. Do not implement anything. Only produce a report and specification-side artifacts for memory, suggestions, and planning.",
+      "id": "default-rejog",
+      "slug": "rejog-the-memory-v1",
+      "version": "1.0.0",
+      "order": 2,
+      "isDefault": true
+    },
+    {
+      "name": "Unified AI Prompt v4",
+      "text": "Read and synthesize existing repository context from the memory folder and the full specification set. Follow the Required Execution Order: 1) Scan repo tree, 2) Read memory folders, 3) Read workflow tracker, 4) Read specs, 5) Reconstruct context, 6) Produce reliability report, 7) Propose corrections, 8) Update memory, 9) Update plan, 10) Ask user which task to implement next.",
+      "id": "default-unified",
+      "slug": "unified-ai-prompt-v4",
+      "version": "1.0.0",
+      "order": 3,
+      "isDefault": true
+    },
+    {
+      "name": "Issues Tracking",
+      "text": "Update spec properly so that the mistake doesn't appear and update memory and also write the details how you fixed it. Create issue file at /spec/02-app/issues/{seq}-{issueSlugName}.md with: Issue summary, Root cause analysis, Fix description, Iterations history, Prevention and non-regression, TODO and follow-ups, Done checklist.",
+      "id": "default-issues",
+      "slug": "issues-tracking",
+      "version": "1.0.0",
+      "order": 4,
+      "isDefault": true
+    },
+    {
+      "name": "Unit Test Failing",
+      "text": "Fix failing tests: 1) Check code, 2) Check actual method implementation, 3) Check logical implementation of the test, 4) Check test case, 5) Fix logically either the implementation or the test. Document at /spec/05-failing-tests/{seq}-failing-test-name.md with root cause and solution.",
+      "id": "default-test",
+      "slug": "unit-test-failing",
+      "version": "1.0.0",
+      "order": 5,
+      "isDefault": true
+    },
+    {
+      "name": "Audit Spec v1",
+      "text": "Audit the current specification set against the implemented codebase. For each spec:\n\n1. Check if the spec accurately reflects the current implementation\n2. Identify any drift between spec and code\n3. Flag missing specs for implemented features\n4. Flag specs for features not yet implemented\n5. Score each spec on a 6-dimension rubric:\n   - Completeness (25%): Are all requirements documented?\n   - Consistency (25%): Do specs agree with each other?\n   - Alignment (20%): Does the spec match the code?\n   - Clarity (15%): Is the spec unambiguous?\n   - Maintainability (10%): Is the spec easy to update?\n   - Test Coverage (5%): Are acceptance criteria testable?\n\nOutput a report to `.lovable/memory/audit/` with severity and impact scores for each finding. Propose corrections for any inconsistencies found.",
+      "id": "default-audit-spec",
+      "slug": "audit-spec-v1",
+      "version": "1.0.0",
+      "order": 7,
+      "isDefault": true,
+      "category": "general"
+    },
+    {
+      "name": "Minor Bump",
+      "text": "Bump all Minor versions for all",
+      "id": "default-minor-bump",
+      "slug": "minor-bump",
+      "version": "1.0.0",
+      "order": 8,
+      "isDefault": true,
+      "category": "versioning"
+    },
+    {
+      "name": "Major Bump",
+      "text": "Bump all Major versions for all",
+      "id": "default-major-bump",
+      "slug": "major-bump",
+      "version": "1.0.0",
+      "order": 9,
+      "isDefault": true,
+      "category": "versioning"
+    },
+    {
+      "name": "Patch Bump",
+      "text": "Bump all Patch versions for all",
+      "id": "default-patch-bump",
+      "slug": "patch-bump",
+      "version": "1.0.0",
+      "order": 10,
+      "isDefault": true,
+      "category": "versioning"
+    },
+    {
+      "name": "Code Coverage Basic",
+      "text": "Based on the packages which has, like, low coverage, uh, if it has more than thousand lines, then for that specific package, we have to plan for... We will plan, like, each, uh, two hundred line for one segment or one task. Okay? So you should make plans for per two hundred lines for that package to write coverage test, which would be meaningful, covering the branches, logical segments, and things like that. Uh, so first create the plan, how you're going to do it and w- how many steps you are going to do it. I'm just going to say next, and each time you are going to do subpackages or, uh, packages to make it to a hundred percent code coverage. Do you understand what I'm saying? If you have any confusions, feel free to ask me. You don't have to ask me, like, which package you should do one when, because that's meaningless. You just do each time that you feel right. Okay? And make sure that the tests are, uh, good in terms of buildable code. I know you cannot test the buildable code. That's fine. So use your memory and thinking so that the Go code is, uh, buildable. Okay? Um, things like that. If you have any still confusions how you're going to write the test, you can ask me. So in most cases, you should actually follow the test case, um, test case format, so you could learn from the existing, uh, test how we do it. There is a spec folder which actually explains how the unit test should be written. Um, let me just check. Okay. Testing guideline. I think you can actually, uh, see that folder, uh, and learn, like, how the unit test should be written. And based on that, you should actually use, uh, one of the test cases to write your, uh, test and always follow the AAA format. Uh, also follow the naming convention of the file, use the Should Be methods and things like that. If you have any question and confusion, feel free to ask. Okay, uh, so make a plan. Make a detailed plan first. That's your job. Uh, the plan should contain which package you should do, how a package can be very big that will have A, B, C, D, E, F, many more sub-segment, uh, and we will do it on each time I will just say next. Is it clear?",
+      "id": "default-code-coverage-basic",
+      "slug": "code-coverage-basic",
+      "version": "1.0.0",
+      "order": 11,
+      "isDefault": true,
+      "category": "code-coverage"
+    },
+    {
+      "name": "Code Coverage Details",
+      "text": "Based on the packages which has, like, low coverage, uh, if it has more than thousand lines, then for that specific package, we have to plan for... We will plan, like, each, uh, two hundred line for one segment or one task. Okay? So you should make plans for per two hundred lines for that package to write coverage test, which would be meaningful, covering the branches, logical segments, and things like that. Uh, so first create the plan, how you're going to do it and w- how many steps you are going to do it. I'm just going to say next, and each time you are going to do subpackages or, uh, packages to make it to a hundred percent code coverage. Do you understand what I'm saying? If you have any confusions, feel free to ask me. You don't have to ask me, like, which package you should do one when, because that's meaningless. You just do each time that you feel right. Okay? And make sure that the tests are, uh, good in terms of buildable code. I know you cannot test the buildable code. That's fine. So use your memory and thinking so that the Go code is, uh, buildable. Okay? Um, things like that. If you have any still confusions how you're going to write the test, you can ask me. So in most cases, you should actually follow the test case, um, test case format, so you could learn from the existing, uh, test how we do it. There is a spec folder which actually explains how the unit test should be written. Um, let me just check. Okay. Testing guideline. I think you can actually, uh, see that folder, uh, and learn, like, how the unit test should be written. And based on that, you should actually use, uh, one of the test cases to write your, uh, test and always follow the AAA format. Uh, also follow the naming convention of the file, use the Should Be methods and things like that. If you have any question and confusion, feel free to ask. Okay, uh, so make a plan. Make a detailed plan first. That's your job. Uh, the plan should contain which package you should do, how a package can be very big that will have A, B, C, D, E, F, many more sub-segment, uh, and we will do it on each time I will just say next. Is it clear?\n\n# Actionable Plan\n\n## 1. Task Breakdown\n\n Step 1: Identify packages with low coverage, especially those with more than 1000 lines of code.\n\n Step 2: Plan testing in segments, where each segment is 200 lines of code.\n\n Step 3: Ensure each segment includes coverage for branches and logical segments.\n\n Step 4: The plan should detail the sub-packages or sub-segments that need to be tested to reach 100% code coverage.\n\n## 2. Detailed Planning\n\n Sub-segmenting large packages: If a package is large, break it down into smaller logical segments (A, B, C, D, etc.), and focus on one segment at a time.\n\n Test Case Structure: Follow the existing test case structure in the spec folder, and refer to the \"Testing Guideline\" document for proper format.\n\n   AAA format: Arrange the test in Arrange, Act, and Assert format.\n\n   Naming Convention: Ensure that the test files follow the prescribed naming convention (e.g., use of 'Should Be' methods).\n\n Test Coverage: Write tests that ensure all paths, branches, and logical flows in each segment are covered.\n\n## 3. Implementation\n\n Memory and Thought Process: Use memory and understanding of Go code to ensure tests are buildable.\n\n Follow Existing Test Examples: Look at existing tests as references for writing the new tests.\n\n Use ORM: Ensure that database operations use ORM rather than direct manipulation.\n\n SQLite Preference: Use SQLite as the default database unless otherwise mentioned.\n\n## 4. Clarification and Communication\n\n Any Confusions: If there is any confusion regarding the test writing, clarification should be sought.\n\n Steps for Multiple Segments: When dealing with multiple segments in large packages, each segment should be planned thoroughly before moving to the next.\n\n## 5. Acceptance Criteria\n\n Test Coverage: Each segment must be fully covered.\n\n Correct Format: All tests should adhere to the AAA format and proper naming conventions.\n\n Functionality: Ensure that all tests are buildable and reflect the logic of the original code.\n\n## 6. Diagram Creation\n\n Database and Data Flow: For database-related tasks, create tables in markdown format to define field names and field types.\n\n   Ensure all relationships (primary key, foreign key) and joins are clearly defined.\n\n   Use ORM and database best practices for creating relationships.",
+      "id": "default-code-coverage-details",
+      "slug": "code-coverage-details",
+      "version": "1.0.0",
+      "order": 12,
+      "isDefault": true,
+      "category": "code-coverage"
+    },
+    {
+      "name": "Next Tasks",
+      "text": "Next,\n\nList out the remaining tasks always, if you finish then in future `next` command, find any remaining tasks from memory and suggest",
+      "id": "default-next-tasks",
+      "slug": "next-tasks",
+      "version": "1.0.0",
+      "order": 13,
+      "isDefault": true,
+      "category": "automation"
+    },
+    {
+      "name": "Unit Test Issues V2 Enhanced",
+      "text": "# Verbatim\n\nBased on the packages that have low coverage, if a package has more than 1000 lines, then for that specific package we should split it into segments of 200 lines per task.\n\nYou should create a plan where each 200-line segment is treated as one task. Each task should focus on writing meaningful test coverage, including:\n- Branch coverage\n- Logical segment coverage\n- Edge cases\n\nFirst, create a detailed plan outlining:\n- Which packages will be handled\n- How many segments each package will be split into\n- The step-by-step execution plan\n\nEach time I say \"next\", you should proceed with the next package or segment and work towards achieving 100% code coverage.\n\nYou do not need to ask which package to prioritize. Choose based on logical ordering.\n\nEnsure that tests are written in a way that they are buildable in Go. Even if you cannot run them, ensure correctness through reasoning.\n\nFollow existing test patterns from the testing guideline spec folder.\n\nTesting requirements:\n- Follow AAA pattern (Arrange, Act, Assert)\n- Follow naming conventions (use \"Should\" style naming)\n- Maintain consistency with existing tests\n\nIf you have any questions or confusion, feel free to ask.\n\nYour task now is to create a detailed execution plan.\n\n\n## Structured Breakdown and Instructions\n\n\n### 1. Scope Definition\n\n1. Objective:\n   a. Achieve 100% code coverage across all packages\n   b. Prioritize packages with <100% coverage\n   c. Segment large packages (>1000 LOC) into 200-line tasks\n   d. Ensure high-quality, deterministic, and buildable Go tests\n\n\n### 2. Package Classification Strategy\n\n1. Identify all packages with <100% coverage\n2. Categorize:\n\n   a. Large Packages:\n      i. LOC > 1000\n      ii. Require segmentation\n\n   b. Medium Packages:\n      i. LOC 300–1000\n      ii. 1–3 tasks\n\n   c. Small Packages:\n      i. LOC < 300\n      ii. Single task\n\n\n### 3. Segmentation Logic (Large Packages)\n\n1. For each large package:\n\n   a. Divide into 200-line segments\n   b. Align segmentation with logical boundaries where possible\n\n2. Example:\n\n   PackageA (1200 LOC)\n      → Segment 01: Lines 1–200\n      → Segment 02: Lines 201–400\n      → Segment 03: Lines 401–600\n      → Segment 04: Lines 601–800\n      → Segment 05: Lines 801–1000\n      → Segment 06: Lines 1001–1200\n\n\n### 4. Test Design Methodology\n\n1. For each segment:\n\n   a. Identify:\n      i. Public functions\n      ii. Internal logic branches\n      iii. Error conditions\n\n   b. Apply AAA Pattern:\n\n      i. Arrange:\n         - Setup inputs, mocks, dependencies\n\n      ii. Act:\n         - Execute function under test\n\n      iii. Assert:\n         - Validate outputs, state, and side effects\n\n\n2. Coverage Targets:\n\n   a. Branch coverage\n   b. Error path coverage\n   c. Boundary conditions\n   d. Negative scenarios\n\n\n### 5. Debugging and Isolation Strategy\n\n1. Use:\n   a. Stack trace reasoning\n   b. Binary isolation of failing logic\n   c. Controlled input reduction\n\n2. Ensure:\n   a. Deterministic tests\n   b. No flaky behavior\n\n\n### 6. Execution Plan (Hierarchical)\n\n#### 1. Package Identification Phase\n\n   a. Extract coverage report\n   b. List packages <100%\n   c. Rank by:\n      i. Lowest coverage\n      ii. Highest LOC\n\n\n#### 2. Large Package Processing (>1000 LOC)\n\n   a. For each package:\n\n      i. Segment Definition\n         A. Divide into 200-line blocks\n         B. Map functions to segments\n\n      ii. Segment Task Execution\n         A. Analyze uncovered lines\n         B. Identify logic branches\n         C. Write tests per function\n\n         Sub-steps:\n            i. Happy path tests\n            ii. Error path tests\n            iii. Edge cases\n            iv. Boundary validation\n\n      iii. Validation\n         A. Ensure buildable Go test code\n         B. Verify naming conventions\n         C. Confirm AAA compliance\n\n\n#### 3. Medium Package Processing (300–1000 LOC)\n\n   a. Break into:\n      i. 2–4 logical segments\n\n   b. Repeat:\n      i. Coverage analysis\n      ii. Test writing\n      iii. Validation\n\n\n#### 4. Small Package Processing (<300 LOC)\n\n   a. Single-pass coverage\n   b. Focus on:\n      i. Missing branches\n      ii. Error handling\n\n\n### 7. Test Naming and Structure Rules\n\n1. File Naming:\n   a. <function>_test.go\n\n2. Function Naming:\n   a. Test<FunctionName>Should<Behavior>\n\n3. Example:\n   a. TestCreateUserShouldReturnErrorWhenInputInvalid\n\n\n### 8. Iteration Flow\n\n1. Each \"next\":\n\n   a. Select:\n      i. Next segment or package\n\n   b. Perform:\n      i. Coverage gap analysis\n      ii. Test implementation\n\n   c. Output:\n      i. Completed segment\n      ii. Remaining segments/packages\n\n\n### 9. Risk Areas\n\n1. Complex dependencies\n2. Hidden side effects\n3. Unhandled error paths\n4. Concurrency (if present)\n\n\n### 10. Ambiguities\n\n1. Exact package list not provided\n2. Coverage tool output format unknown\n3. Existing test depth varies\n\n\n### 11. Important\n\n1. Always follow AAA pattern\n2. Maintain Go build correctness\n3. Avoid modifying production logic unless required\n4. Ensure no regression\n5. Keep tests deterministic and isolated\n\n\n### 12. Acceptance Criteria\n\n1. Each segment achieves full coverage\n2. Tests follow naming and AAA conventions\n3. All packages reach 100% coverage\n4. No failing or flaky tests\n5. Code remains buildable\n\n\n## Remaining Tasks\n\n1. Execute Package Identification Phase\n2. Select first package (<100% coverage)\n3. Begin Segment 01 (first 200 lines)\n4. Continue iterative execution across all packages\n\n\n## Important Instruction for Continuation\n\n1. If tasks span multiple steps:\n   a. Execute sequentially per \"next\" command\n   b. Always continue remaining tasks\n   c. Never skip unfinished tasks\n\nIf you have any questions or confusion, feel free to ask.",
+      "id": "default-unit-test-issues-v2-enhanced",
+      "slug": "unit-test-issues-v2-enhanced",
+      "version": "1.0.0",
+      "order": 14,
+      "isDefault": true,
+      "category": "code-coverage"
+    }
+  ]
+}

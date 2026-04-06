@@ -1,0 +1,142 @@
+/**
+ * Marco Extension — XPath Recorder Handler
+ *
+ * Handles TOGGLE_XPATH_RECORDER, GET_RECORDED_XPATHS,
+ * CLEAR_RECORDED_XPATHS, TEST_XPATH messages.
+ * Uses chrome.scripting to inject/remove recorder content script.
+ * See spec 07-advanced-features §XPath Recorder.
+ */
+
+import type { MessageRequest, OkResponse } from "../../shared/messages";
+import type { RecordedXPath } from "../../shared/xpath-types";
+
+/* ------------------------------------------------------------------ */
+/*  Module State                                                       */
+/* ------------------------------------------------------------------ */
+
+let isRecording = false;
+let recordedXPaths: RecordedXPath[] = [];
+let activeRecordingTabId: number | null = null;
+
+/** Resets XPath handler state (for testing). */
+export function resetXPathState(): void {
+    isRecording = false;
+    recordedXPaths = [];
+    activeRecordingTabId = null;
+}
+
+/* ------------------------------------------------------------------ */
+/*  TOGGLE_XPATH_RECORDER                                              */
+/* ------------------------------------------------------------------ */
+
+/** Toggles the XPath recorder on the sender's tab. */
+export async function handleToggleXPathRecorder(
+    message: MessageRequest,
+    sender: chrome.runtime.MessageSender,
+): Promise<{ isRecording: boolean }> {
+    const tabId = resolveTabId(sender);
+    const isMissingTab = tabId === null;
+
+    if (isMissingTab) {
+        return { isRecording: false };
+    }
+
+    if (isRecording) {
+        await stopRecording(tabId);
+    } else {
+        await startRecording(tabId);
+    }
+
+    return { isRecording };
+}
+
+/** Resolves the tab ID from the sender. */
+function resolveTabId(sender: chrome.runtime.MessageSender): number | null {
+    const hasTabId = sender.tab?.id !== undefined;
+
+    return hasTabId ? sender.tab!.id! : null;
+}
+
+/** Starts recording XPaths in the given tab. */
+async function startRecording(tabId: number): Promise<void> {
+    try {
+        await chrome.scripting.executeScript({
+            target: { tabId },
+            files: ["content-scripts/xpath-recorder.js"],
+        });
+
+        isRecording = true;
+        activeRecordingTabId = tabId;
+        recordedXPaths = [];
+    } catch (err) {
+        logInjectionError("start", err);
+    }
+}
+
+/** Stops recording XPaths in the given tab. */
+async function stopRecording(tabId: number): Promise<void> {
+    try {
+        await chrome.scripting.executeScript({
+            target: { tabId },
+            func: () => {
+                window.dispatchEvent(new CustomEvent("marco-xpath-stop"));
+            },
+        });
+    } catch (err) {
+        logInjectionError("stop", err);
+    }
+
+    isRecording = false;
+    activeRecordingTabId = null;
+}
+
+/** Logs an injection error for recorder start/stop. */
+function logInjectionError(action: string, error: unknown): void {
+    const errorMessage = error instanceof Error
+        ? error.message
+        : String(error);
+
+    console.warn(`[xpath] Failed to ${action} recorder: ${errorMessage}`);
+}
+
+/* ------------------------------------------------------------------ */
+/*  GET_RECORDED_XPATHS                                                */
+/* ------------------------------------------------------------------ */
+
+/** Returns all recorded XPaths from the current session. */
+export async function handleGetRecordedXPaths(
+    _message: MessageRequest,
+    _sender: chrome.runtime.MessageSender,
+): Promise<{ recorded: RecordedXPath[]; isRecording: boolean }> {
+    return {
+        recorded: recordedXPaths,
+        isRecording,
+    };
+}
+
+/* ------------------------------------------------------------------ */
+/*  CLEAR_RECORDED_XPATHS                                              */
+/* ------------------------------------------------------------------ */
+
+/** Clears all recorded XPaths. */
+export async function handleClearRecordedXPaths(
+    _message: MessageRequest,
+    _sender: chrome.runtime.MessageSender,
+): Promise<OkResponse> {
+    recordedXPaths = [];
+    return { isOk: true };
+}
+/* ------------------------------------------------------------------ */
+/*  Re-export TEST_XPATH from split file                               */
+/* ------------------------------------------------------------------ */
+
+export { handleTestXPath } from "./xpath-test-handler";
+
+/* ------------------------------------------------------------------ */
+/*  Incoming XPath Records (from content script)                       */
+/* ------------------------------------------------------------------ */
+
+/** Adds a recorded XPath entry from the content script. */
+export function addRecordedXPath(entry: RecordedXPath): void {
+    recordedXPaths.push(entry);
+}

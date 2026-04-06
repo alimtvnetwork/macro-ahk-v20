@@ -1,0 +1,425 @@
+{
+    "schemaVersion": 2,
+    "description": "Marco Controller theme — VS Code-inspired Dark+ and Light+ presets. Editable via Chrome Extension configs.",
+    "activePreset": "dark",
+
+    "presets": {
+        "dark": {
+            "label": "Dark+ (VS Code)",
+            "colors": {
+                "panel": {
+                    "background": "#1e1e2e",
+                    "backgroundAlt": "#252536",
+                    "border": "#313147",
+                    "foreground": "#e8e8e8",
+                    "foregroundMuted": "#f5e6b8",
+                    "foregroundDim": "#9e9e9e",
+                    "textBody": "#d9d9d9"
+                },
+                "primary": {
+                    "base": "#007acc",
+                    "light": "#3daee9",
+                    "lighter": "#569cd6",
+                    "lightest": "#9cdcfe",
+                    "dark": "#005a9e",
+                    "glow": "rgba(0,122,204,0.2)",
+                    "glowStrong": "rgba(0,122,204,0.35)",
+                    "glowSubtle": "rgba(0,122,204,0.12)",
+                    "borderAlpha": "rgba(0,122,204,0.45)",
+                    "bgAlpha": "rgba(0,122,204,0.15)",
+                    "bgAlphaLight": "rgba(61,174,233,0.25)",
+                    "bgAlphaSubtle": "rgba(61,174,233,0.1)",
+                    "highlight": "rgba(0,122,204,0.12)"
+                },
+                "accent": {
+                    "purple": "#c586c0",
+                    "purpleLight": "#d7b0d4",
+                    "pink": "#d16d9e"
+                },
+                "status": {
+                    "success": "#4ec9b0",
+                    "successLight": "#73e0c8",
+                    "successMuted": "#4ec9b0",
+                    "successDark": "#388e7a",
+                    "successDarkest": "#2b6e5e",
+                    "successBg": "#1a3d33",
+                    "warning": "#dcdcaa",
+                    "warningLight": "#e8e8c0",
+                    "warningPale": "#f0f0d0",
+                    "warningDark": "#c5c58a",
+                    "warningDarkest": "#a0a06a",
+                    "warningBg": "#3d3d1e",
+                    "error": "#f44747",
+                    "errorLight": "#f87171",
+                    "errorPale": "#fca5a5",
+                    "errorDark": "#d32f2f",
+                    "errorDarkest": "#991b1b",
+                    "errorBg": "#4a1515",
+                    "info": "#569cd6",
+                    "infoLight": "#7bb8e6",
+                    "infoPale": "#a3cee8",
+                    "infoDark": "#3a7cbf"
+                },
+                "neutral": {
+                    "50": "#d4d4d4",
+                    "100": "#cccccc",
+                    "200": "#9cdcfe",
+                    "300": "#808080",
+                    "400": "#6a6a6a",
+                    "500": "#505050",
+                    "600": "#3c3c3c",
+                    "700": "#333333",
+                    "800": "#252536",
+                    "900": "#1e1e2e",
+                    "950": "#181825"
+                },
+                "creditBar": {
+                    "bonus": ["#7c3aed", "#a78bfa"],
+                    "billing": ["#22c55e", "#4ade80"],
+                    "rollover": ["#6b7280", "#9ca3af"],
+                    "daily": ["#d97706", "#facc15"],
+                    "available": "#22d3ee",
+                    "emptyTrack": "rgba(239,68,68,0.25)"
+                },
+                "workspace": {
+                    "currentBorder": "#569cd6",
+                    "currentBg": "rgba(0,122,204,0.12)",
+                    "checkedIcon": "#569cd6",
+                    "uncheckedIcon": "#505050",
+                    "nowBadgeBg": "rgba(0,122,204,0.25)",
+                    "nowBadgeText": "#9cdcfe",
+                    "noMatchText": "#9cdcfe"
+                },
+                "log": {
+                    "default": "#e8e8e8",
+                    "error": "#f44747",
+                    "info": "#9e9e9e",
+                    "success": "#4ec9b0",
+                    "debug": "#c586c0",
+                    "warn": "#f5e6b8",
+                    "delegate": "#7bb8e6",
+                    "check": "#d7b0d4",
+                    "skip": "#9e9e9e",
+                    "timestamp": "#6a6a6a"
+                },
+                "countdownBar": {
+                    "low": "#4ec9b0",
+                    "mid": "#dcdcaa",
+                    "high": "#f44747",
+                    "track": "rgba(255,255,255,0.08)"
+                },
+                "orange": "#ce9178",
+                "cyan": "#4ec9b0",
+                "cyanLight": "#73e0c8",
+                "skyLight": "#9cdcfe",
+                "greenBright": "#6a9955",
+
+                "button": {
+                    "check": {
+                        "bg": "#d16d9e", "fg": "#ffffff",
+                        "gradient": "linear-gradient(135deg, #FF5F6D, #FFC371)",
+                        "glow": "0 0 14px rgba(255,95,109,0.35)"
+                    },
+                    "credits": {
+                        "bg": "#005a9e", "fg": "#f5e6b8",
+                        "gradient": "linear-gradient(135deg, #FFB300, #FF6F00)",
+                        "glow": "0 0 14px rgba(255,179,0,0.35)"
+                    },
+                    "prompts": {
+                        "bg": "#264f78", "fg": "#f5e6b8",
+                        "gradient": "linear-gradient(135deg, #00C6FF, #0072FF)",
+                        "glow": "0 0 14px rgba(0,198,255,0.35)"
+                    },
+                    "startStop": {
+                        "gradient": "linear-gradient(135deg, #00E676, #00C853)",
+                        "glow": "0 0 14px rgba(0,230,118,0.35)",
+                        "stopGradient": "linear-gradient(135deg, #FF5252, #D50000)",
+                        "stopGlow": "0 0 14px rgba(255,82,82,0.35)"
+                    },
+                    "menu": { "bg": "#2A2D3A", "fg": "#e8e8e8" },
+                    "menuHover": "#3A3F55",
+                    "utilityBg": "#2A2D3A",
+                    "utilityBorder": "rgba(255,255,255,0.08)"
+                },
+                "input": {
+                    "bg": "#1e1e2e",
+                    "border": "#007acc",
+                    "fg": "#d4d4d4"
+                },
+                "modal": {
+                    "bg": "#1e1e2e",
+                    "border": "#007acc"
+                },
+                "toast": {
+                    "info": { "bg": "#264f78", "border": "#569cd6", "text": "#9cdcfe" }
+                },
+                "section": {
+                    "bg": "rgba(0,0,0,0.2)",
+                    "headerColor": "#f5e6b8",
+                    "toggleColor": "#e8e8e8"
+                },
+                "separator": "#007acc"
+            },
+            "layout": {
+                "panelBorderRadius": "10px",
+                "panelPadding": "12px",
+                "panelMinWidth": "420px",
+                "panelFloatingWidth": "480px",
+                "panelShadow": "0 4px 16px rgba(0,0,0,0.4), 0 0 1px rgba(0,122,204,0.25)",
+                "panelFloatShadow": "0 8px 32px rgba(0,0,0,0.5)",
+                "dropdownBorderRadius": "4px",
+                "dropdownShadow": "0 8px 24px rgba(0,0,0,0.6)",
+                "modalBorderRadius": "12px",
+                "modalShadow": "0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0,122,204,0.1)",
+                "aboutGradient": "linear-gradient(135deg, #1e1e2e 0%, #181825 100%)"
+            },
+            "animations": {
+                "fadeIn": {
+                    "keyframes": "0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}",
+                    "duration": "0.3s",
+                    "easing": "ease-out"
+                },
+                "scaleIn": {
+                    "keyframes": "0%{transform:scale(0.95);opacity:0}100%{transform:scale(1);opacity:1}",
+                    "duration": "0.2s",
+                    "easing": "ease-out"
+                },
+                "pulse": {
+                    "keyframes": "0%,100%{opacity:1}50%{opacity:.5}",
+                    "duration": "1s",
+                    "easing": "infinite"
+                },
+                "glow": {
+                    "keyframes": "0%,100%{box-shadow:0 0 8px rgba(0,122,204,0.15)}50%{box-shadow:0 0 18px rgba(0,122,204,0.35)}",
+                    "duration": "2s",
+                    "easing": "cubic-bezier(0.4,0,0.6,1) infinite"
+                }
+            },
+            "transitions": {
+                "fast": "0.15s",
+                "normal": "0.2s",
+                "slow": "0.3s",
+                "creditBar": "0.3s ease",
+                "countdownBar": "0.8s linear"
+            },
+            "typography": {
+                "fontFamily": "'Cascadia Code', 'Fira Code', 'Consolas', monospace",
+                "fontFamilySystem": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "fontSize": "12px",
+                "fontSizeSmall": "11px",
+                "fontSizeTiny": "10px",
+                "fontSizeMicro": "9px",
+                "fontSizeLabel": "8px"
+            }
+        },
+
+        "light": {
+            "label": "Light+ (VS Code)",
+            "colors": {
+                "panel": {
+                    "background": "#ffffff",
+                    "backgroundAlt": "#f3f3f3",
+                    "border": "#e0e0e0",
+                    "foreground": "#333333",
+                    "foregroundMuted": "#0451a5",
+                    "foregroundDim": "#6a737d",
+                    "textBody": "#444444"
+                },
+                "primary": {
+                    "base": "#0066b8",
+                    "light": "#005fb8",
+                    "lighter": "#0451a5",
+                    "lightest": "#267f99",
+                    "dark": "#004e8c",
+                    "glow": "rgba(0,102,184,0.12)",
+                    "glowStrong": "rgba(0,102,184,0.22)",
+                    "glowSubtle": "rgba(0,102,184,0.06)",
+                    "borderAlpha": "rgba(0,102,184,0.35)",
+                    "bgAlpha": "rgba(0,102,184,0.08)",
+                    "bgAlphaLight": "rgba(0,102,184,0.12)",
+                    "bgAlphaSubtle": "rgba(0,102,184,0.05)",
+                    "highlight": "rgba(0,102,184,0.08)"
+                },
+                "accent": {
+                    "purple": "#af00db",
+                    "purpleLight": "#c678dd",
+                    "pink": "#d16d9e"
+                },
+                "status": {
+                    "success": "#16825d",
+                    "successLight": "#22a06b",
+                    "successMuted": "#16825d",
+                    "successDark": "#0e5c41",
+                    "successDarkest": "#073a28",
+                    "successBg": "#e6f7ef",
+                    "warning": "#795e26",
+                    "warningLight": "#986801",
+                    "warningPale": "#d4a72c",
+                    "warningDark": "#5c4616",
+                    "warningDarkest": "#453614",
+                    "warningBg": "#fef9e7",
+                    "error": "#cd3131",
+                    "errorLight": "#e45454",
+                    "errorPale": "#f5a0a0",
+                    "errorDark": "#a02020",
+                    "errorDarkest": "#7a1414",
+                    "errorBg": "#fde8e8",
+                    "info": "#0451a5",
+                    "infoLight": "#005fb8",
+                    "infoPale": "#b3d4fc",
+                    "infoDark": "#003d82"
+                },
+                "neutral": {
+                    "50": "#333333",
+                    "100": "#444444",
+                    "200": "#0451a5",
+                    "300": "#6a737d",
+                    "400": "#888888",
+                    "500": "#aaaaaa",
+                    "600": "#d0d0d0",
+                    "700": "#e0e0e0",
+                    "800": "#f3f3f3",
+                    "900": "#ffffff",
+                    "950": "#fafafa"
+                },
+                "creditBar": {
+                    "bonus": ["#7c3aed", "#a78bfa"],
+                    "billing": ["#22c55e", "#4ade80"],
+                    "rollover": ["#6b7280", "#9ca3af"],
+                    "daily": ["#d97706", "#facc15"],
+                    "available": "#22d3ee",
+                    "emptyTrack": "rgba(239,68,68,0.2)"
+                },
+                "workspace": {
+                    "currentBorder": "#0066b8",
+                    "currentBg": "rgba(0,102,184,0.08)",
+                    "checkedIcon": "#0066b8",
+                    "uncheckedIcon": "#aaaaaa",
+                    "nowBadgeBg": "rgba(0,102,184,0.12)",
+                    "nowBadgeText": "#0451a5",
+                    "noMatchText": "#0451a5"
+                },
+                "log": {
+                    "default": "#0451a5",
+                    "error": "#cd3131",
+                    "info": "#6a737d",
+                    "success": "#16825d",
+                    "debug": "#af00db",
+                    "warn": "#795e26",
+                    "delegate": "#0451a5",
+                    "check": "#c678dd",
+                    "skip": "#888888",
+                    "timestamp": "#aaaaaa"
+                },
+                "countdownBar": {
+                    "low": "#16825d",
+                    "mid": "#795e26",
+                    "high": "#cd3131",
+                    "track": "rgba(0,0,0,0.08)"
+                },
+                "orange": "#d18616",
+                "cyan": "#267f99",
+                "cyanLight": "#2fa8a0",
+                "skyLight": "#005fb8",
+                "greenBright": "#16825d",
+
+                "button": {
+                    "check": {
+                        "bg": "#d16d9e", "fg": "#ffffff",
+                        "gradient": "linear-gradient(135deg, #FF5F6D, #FFC371)",
+                        "glow": "0 0 14px rgba(255,95,109,0.25)"
+                    },
+                    "credits": {
+                        "bg": "#e8f0fe", "fg": "#0451a5",
+                        "gradient": "linear-gradient(135deg, #FFB300, #FF6F00)",
+                        "glow": "0 0 14px rgba(255,179,0,0.25)"
+                    },
+                    "prompts": {
+                        "bg": "#e8f0fe", "fg": "#0451a5",
+                        "gradient": "linear-gradient(135deg, #00C6FF, #0072FF)",
+                        "glow": "0 0 14px rgba(0,198,255,0.25)"
+                    },
+                    "startStop": {
+                        "gradient": "linear-gradient(135deg, #00E676, #00C853)",
+                        "glow": "0 0 14px rgba(0,230,118,0.25)",
+                        "stopGradient": "linear-gradient(135deg, #FF5252, #D50000)",
+                        "stopGlow": "0 0 14px rgba(255,82,82,0.25)"
+                    },
+                    "menu": { "bg": "#f3f3f3", "fg": "#0451a5" },
+                    "menuHover": "rgba(0,102,184,0.1)",
+                    "utilityBg": "#f3f3f3",
+                    "utilityBorder": "rgba(0,0,0,0.08)"
+                },
+                "input": {
+                    "bg": "#ffffff",
+                    "border": "#0066b8",
+                    "fg": "#333333"
+                },
+                "modal": {
+                    "bg": "#ffffff",
+                    "border": "#0066b8"
+                },
+                "toast": {
+                    "info": { "bg": "#e8f0fe", "border": "#0066b8", "text": "#0451a5" }
+                },
+                "section": {
+                    "bg": "rgba(0,0,0,0.04)",
+                    "headerColor": "#0451a5",
+                    "toggleColor": "#0066b8"
+                },
+                "separator": "#0066b8"
+            },
+            "layout": {
+                "panelBorderRadius": "10px",
+                "panelPadding": "12px",
+                "panelMinWidth": "420px",
+                "panelFloatingWidth": "480px",
+                "panelShadow": "0 2px 12px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.1)",
+                "panelFloatShadow": "0 4px 24px rgba(0,0,0,0.16)",
+                "dropdownBorderRadius": "4px",
+                "dropdownShadow": "0 4px 16px rgba(0,0,0,0.12)",
+                "modalBorderRadius": "12px",
+                "modalShadow": "0 16px 40px rgba(0,0,0,0.15), 0 0 20px rgba(0,0,0,0.05)",
+                "aboutGradient": "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)"
+            },
+            "animations": {
+                "fadeIn": {
+                    "keyframes": "0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}",
+                    "duration": "0.3s",
+                    "easing": "ease-out"
+                },
+                "scaleIn": {
+                    "keyframes": "0%{transform:scale(0.95);opacity:0}100%{transform:scale(1);opacity:1}",
+                    "duration": "0.2s",
+                    "easing": "ease-out"
+                },
+                "pulse": {
+                    "keyframes": "0%,100%{opacity:1}50%{opacity:.5}",
+                    "duration": "1s",
+                    "easing": "infinite"
+                },
+                "glow": {
+                    "keyframes": "0%,100%{box-shadow:0 0 8px rgba(0,102,184,0.1)}50%{box-shadow:0 0 14px rgba(0,102,184,0.22)}",
+                    "duration": "2s",
+                    "easing": "cubic-bezier(0.4,0,0.6,1) infinite"
+                }
+            },
+            "transitions": {
+                "fast": "0.15s",
+                "normal": "0.2s",
+                "slow": "0.3s",
+                "creditBar": "0.3s ease",
+                "countdownBar": "0.8s linear"
+            },
+            "typography": {
+                "fontFamily": "'Cascadia Code', 'Fira Code', 'Consolas', monospace",
+                "fontFamilySystem": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "fontSize": "12px",
+                "fontSizeSmall": "11px",
+                "fontSizeTiny": "10px",
+                "fontSizeMicro": "9px",
+                "fontSizeLabel": "8px"
+            }
+        }
+    }
+}

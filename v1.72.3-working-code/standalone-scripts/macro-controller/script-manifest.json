@@ -1,0 +1,15 @@
+{
+  "name": "macroController",
+  "displayName": "Macro Controller",
+  "version": "1.72.0",
+  "outputFile": "macro-looping.js",
+  "world": "MAIN",
+  "isGlobal": false,
+  "dependencies": ["marco-sdk", "xpath"],
+  "loadOrder": 2,
+  "assets": {
+    "css": "macro-looping.css",
+    "templates": "templates.json"
+  },
+  "description": "Macro Controller automation. Depends on Riseup Macro SDK and xpath.js."
+}

@@ -1,0 +1,53 @@
+// MacroLoop Controller — Status Indicators & Badges
+@import "variables.less";
+
+// ─── Status dots (vibrant) ───
+.marco-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+
+  &.is-success { background: #00E676; }
+  &.is-warning { background: #FFB300; }
+  &.is-error   { background: #FF5252; }
+  &.is-idle    { background: #64748b; }
+}
+
+// ─── Credit bar ───
+.marco-credit-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: @font-size-micro;
+  font-family: @font-mono;
+}
+
+.marco-credit-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  flex: 1;
+
+  &-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: @color-credits;
+    transition: width @tr-normal ease;
+  }
+}
+
+// ─── Workspace badge ───
+.marco-ws-badge {
+  font-size: @font-size-micro;
+  color: @panel-fg-dim;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+// ─── Active section highlight ───
+.marco-section-active {
+  border-top: 2px solid #7A5CFF;
+}

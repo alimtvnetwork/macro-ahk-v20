@@ -1,0 +1,61 @@
+// LESS Variables — Maps theme tokens to LESS variables
+// These use CSS custom properties for runtime theme switching
+// Compiled by: lessc less/index.less dist/macro-looping.css
+
+// ─── Panel ───
+@panel-bg: var(--marco-panel-bg, #1e1e2e);
+@panel-bg-alt: var(--marco-panel-bg-alt, #252536);
+@panel-border: var(--marco-panel-border, #313147);
+@panel-fg: var(--marco-panel-fg, #e8e8e8);
+@panel-fg-muted: var(--marco-panel-fg-muted, #f5e6b8);
+@panel-fg-dim: var(--marco-panel-fg-dim, #9e9e9e);
+
+// ─── Primary ───
+@primary: var(--marco-primary, #007acc);
+@primary-light: var(--marco-primary-light, #3daee9);
+@primary-dark: var(--marco-primary-dark, #005a9e);
+
+// ─── Button dimensions ───
+@btn-radius: 8px;
+@btn-height: 34px;
+@btn-padding-h: 14px;
+@btn-padding-v: 6px;
+@btn-font-weight: 600;
+
+// ─── Button flat colors (no gradients) ───
+@color-check: #E8475F;
+@color-credits: #F59E0B;
+@color-prompts: #6C5CE7;
+@color-start: #00C853;
+@color-stop: #B91C1C;
+
+// ─── Button shadows (subtle inset + drop) ───
+@shadow-check: 0 1px 3px rgba(232, 71, 95, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+@shadow-credits: 0 1px 3px rgba(245, 158, 11, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+@shadow-prompts: 0 1px 3px rgba(108, 92, 231, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+@shadow-start: 0 1px 3px rgba(0, 200, 83, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+@shadow-stop: 0 1px 3px rgba(185, 28, 28, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+// ─── Utility buttons ───
+@utility-bg: #2A2D3A;
+@utility-hover: #3A3F55;
+@utility-border: rgba(255, 255, 255, 0.08);
+
+// ─── Layout ───
+@panel-radius: 10px;
+@panel-padding: 12px;
+@panel-min-width: 420px;
+@panel-float-width: 480px;
+
+// ─── Typography ───
+@font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+@font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+@font-size: 12px;
+@font-size-sm: 11px;
+@font-size-tiny: 10px;
+@font-size-micro: 9px;
+
+// ─── Transitions ───
+@tr-fast: 0.15s;
+@tr-normal: 0.2s;
+@tr-slow: 0.3s;

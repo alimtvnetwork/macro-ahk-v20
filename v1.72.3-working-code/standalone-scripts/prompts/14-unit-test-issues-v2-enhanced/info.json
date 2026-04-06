@@ -1,0 +1,14 @@
+{
+  "id": "default-unit-test-issues-v2-enhanced",
+  "title": "Unit Test Issues V2 Enhanced",
+  "slug": "unit-test-issues-v2-enhanced",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [
+    "code-coverage"
+  ],
+  "isDefault": true,
+  "order": 14,
+  "createdAt": "2026-03-21T00:00:00Z",
+  "updatedAt": "2026-03-21T00:00:00Z"
+}

@@ -1,0 +1,385 @@
+import { useState, lazy, Suspense } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { OptionsSidebar, type SidebarSelection, type SidebarSection } from "@/components/options/OptionsSidebar";
+import { ProjectsListView } from "@/components/options/ProjectsListView";
+import { ProjectCreateForm } from "@/components/options/ProjectCreateForm";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { DraggableOverlay } from "@/components/overlay/DraggableOverlay";
+import { useProjects, useScripts, useConfigs, type StoredProject } from "@/hooks/use-projects-scripts";
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { PanelRightOpen, Loader2 } from "lucide-react";
+
+// Lazy-loaded heavy panels
+const ProjectDetailView = lazy(() => import("@/components/options/ProjectDetailView").then(m => ({ default: m.ProjectDetailView })));
+const GlobalScriptsView = lazy(() => import("@/components/options/GlobalScriptsView").then(m => ({ default: m.GlobalScriptsView })));
+const ScriptBundleDetailView = lazy(() => import("@/components/options/ScriptBundleDetailView").then(m => ({ default: m.ScriptBundleDetailView })));
+const GlobalDiagnosticsView = lazy(() => import("@/components/options/GlobalDiagnosticsView").then(m => ({ default: m.GlobalDiagnosticsView })));
+const GlobalAboutView = lazy(() => import("@/components/options/GlobalAboutView").then(m => ({ default: m.GlobalAboutView })));
+const SettingsView = lazy(() => import("@/components/options/SettingsView").then(m => ({ default: m.SettingsView })));
+const StorageBrowserView = lazy(() => import("@/components/options/StorageBrowserView").then(m => ({ default: m.StorageBrowserView })));
+const ApiExplorerView = lazy(() => import("@/components/options/ApiExplorerView").then(m => ({ default: m.ApiExplorerView })));
+const PromptManagerPanel = lazy(() => import("@/components/options/PromptManagerPanel").then(m => ({ default: m.PromptManagerPanel })));
+const PromptChainPanel = lazy(() => import("@/components/options/PromptChainPanel").then(m => ({ default: m.PromptChainPanel })));
+const UpdaterManagementView = lazy(() => import("@/components/options/UpdaterManagementView").then(m => ({ default: m.UpdaterManagementView })));
+const AutomationView = lazy(() => import("@/components/automation/AutomationView").then(m => ({ default: m.AutomationView })));
+
+function LazyFallback() {
+  return (
+    <div className="flex items-center justify-center py-12 text-muted-foreground gap-2">
+      <Loader2 className="h-5 w-5 animate-spin" />
+      <span className="text-sm">Loading panel…</span>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+interface ChromeRuntimeLike {
+  id?: string;
+  getManifest?: () => { version: string };
+  getURL?: (path: string) => string;
+  openOptionsPage?: () => void;
+}
+
+/** Safe accessor for chrome.runtime that avoids `as any` casts. */
+function getChromeRuntime(): ChromeRuntimeLike | undefined {
+  const win = globalThis as { chrome?: { runtime?: ChromeRuntimeLike } };
+  return win.chrome?.runtime;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
+
+const OptionsPage = () => {
+  const { isComplete, loading: onboardingLoading, completeOnboarding } = useOnboarding();
+  const { projects, loading: pLoading, save: pSave, remove: pRemove } = useProjects();
+  const { scripts, loading: sLoading, save: sSave, remove: sRemove } = useScripts();
+  const { configs, loading: cLoading, save: cSave, remove: cRemove } = useConfigs();
+
+  const [selection, setSelection] = useState<SidebarSelection>({
+    type: "section",
+    section: "projects",
+  });
+  const [isCreating, setIsCreating] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const extensionVersion = getChromeRuntime()?.getManifest?.().version ?? null;
+
+  if (onboardingLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-8 w-8 rounded-lg bg-primary animate-pulse" />
+      </div>
+    );
+  }
+
+  if (isComplete !== true) {
+    return (
+      <>
+        <Toaster />
+        <OnboardingFlow onComplete={completeOnboarding} />
+      </>
+    );
+  }
+
+  const handleNewProject = () => {
+    setIsCreating(true);
+    setSelection({ type: "section", section: "projects" });
+  };
+
+  const handleProjectCreated = async (project: Parameters<typeof pSave>[0]) => {
+    try {
+      await pSave(project);
+      setIsCreating(false);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to save project";
+      toast.error(msg);
+    }
+  };
+
+  const handleEditProject = (projectId: string) => {
+    setIsCreating(false);
+    setSelection({ type: "project", projectId });
+  };
+
+  const handleDuplicateProject = async (project: StoredProject) => {
+    const duplicate: Partial<StoredProject> = {
+      ...project,
+      id: crypto.randomUUID(),
+      name: `${project.name} (Copy)`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await pSave(duplicate);
+    toast.success(`Duplicated "${project.name}"`);
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    await pRemove(id);
+    toast.success("Project deleted");
+    if (selection.type === "project" && selection.projectId === id) {
+      setSelection({ type: "section", section: "projects" });
+    }
+  };
+
+  const handleImportProject = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const manifest = JSON.parse(e.target?.result as string);
+        const newProject = {
+          id: crypto.randomUUID(),
+          schemaVersion: manifest.schemaVersion ?? 1,
+          name: manifest.name ?? file.name.replace(/\.json$/, ""),
+          version: manifest.version ?? "1.0.0",
+          description: manifest.description ?? "",
+          targetUrls: manifest.targetUrls ?? [],
+          scripts: manifest.scripts ?? [],
+          configs: manifest.configs ?? [],
+          variables: manifest.variables ? JSON.stringify(manifest.variables) : "{}",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        await pSave(newProject);
+        toast.success(`Imported "${newProject.name}"`);
+      } catch {
+        toast.error("Failed to parse JSON file");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleSidebarSelect = (s: SidebarSelection) => {
+    setIsCreating(false);
+    setSelection(s);
+  };
+
+  const handleNewScript = () => {
+    // Create a blank script and navigate to it
+    const blankScript = {
+      name: "My Macro Script",
+      code: "// New script\n",
+      order: scripts.length,
+      isEnabled: true,
+    };
+    sSave(blankScript).then(() => {
+      // After saving, the scripts list will refresh — find the new one
+      // For now, stay on scripts section (user will see it in the list)
+      setSelection({ type: "section", section: "scripts" });
+    });
+  };
+
+  const handleEditScript = (scriptId: string) => {
+    setIsCreating(false);
+    setSelection({ type: "script", scriptId });
+  };
+
+  const handleDeleteScript = async (id: string) => {
+    await sRemove(id);
+    if (selection.type === "script" && selection.scriptId === id) {
+      setSelection({ type: "section", section: "scripts" });
+    }
+  };
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <Toaster />
+        <OptionsSidebar selection={selection} onSelect={handleSidebarSelect} />
+
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="h-12 flex items-center border-b border-border bg-card/80 backdrop-blur-xl px-4 gap-3 sticky top-0 z-10 shadow-[0_1px_12px_-2px_hsl(var(--primary)/0.15)]">
+            <SidebarTrigger className="hover:bg-primary/15 hover:text-primary transition-all duration-200" />
+            <h1 className="text-sm font-bold tracking-tight">Marco Extension</h1>
+            <div className="ml-auto flex items-center gap-1">
+              {extensionVersion && (
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                  v{extensionVersion}
+                </Badge>
+              )}
+              {!getChromeRuntime()?.id && (
+                <Badge
+                  variant="outline"
+                  className="text-[10px] px-1.5 py-0 text-amber-500 border-amber-500/40 bg-amber-500/10"
+                >
+                  DEV
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setShowOverlay(v => !v)}
+                title="Toggle overlay panel"
+              >
+                <PanelRightOpen className={`h-4 w-4 ${showOverlay ? "text-primary" : ""}`} />
+              </Button>
+              <ThemeToggle />
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="flex-1 p-6 overflow-auto">
+            <div
+              className="max-w-5xl mx-auto animate-fade-in"
+              key={selection.type === "project" ? selection.projectId : selection.type === "script" ? selection.scriptId : selection.section}
+            >
+              <Suspense fallback={<LazyFallback />}>
+              <ErrorBoundary section={selection.type === "project" ? "Project Detail" : selection.type === "script" ? "Script Detail" : selection.section}>
+              {isCreating ? (
+              <ProjectCreateForm
+                  availableScripts={scripts}
+                  availableConfigs={configs}
+                  onSave={handleProjectCreated}
+                  onCancel={() => setIsCreating(false)}
+                />
+              ) : selection.type === "script" ? (
+                (() => {
+                  const scriptObj = scripts.find((s) => s.id === selection.scriptId);
+                  if (!scriptObj) return <div className="text-sm text-muted-foreground">Script not found</div>;
+                  return (
+                    <ScriptBundleDetailView
+                      script={scriptObj}
+                      configs={configs}
+                      onSave={sSave}
+                      onSaveConfig={cSave}
+                      onDelete={handleDeleteScript}
+                      onBack={() => setSelection({ type: "section", section: "scripts" })}
+                    />
+                  );
+                })()
+              ) : selection.type === "project" ? (
+                <ProjectDetailView
+                  project={projects.find((p) => p.id === selection.projectId)!}
+                  allProjects={projects}
+                  availableScripts={scripts}
+                  availableConfigs={configs}
+                  onSave={pSave}
+                  onDelete={handleDeleteProject}
+                  onBack={() => setSelection({ type: "section", section: "projects" })}
+                />
+              ) : selection.section === "projects" ? (
+                <ProjectsListView
+                  projects={projects}
+                  onEdit={handleEditProject}
+                  onNewProject={handleNewProject}
+                  onDuplicate={handleDuplicateProject}
+                  onDelete={handleDeleteProject}
+                  onImport={handleImportProject}
+                />
+              ) : selection.section === "scripts" ? (
+                <GlobalScriptsView
+                  scripts={scripts}
+                  scriptsLoading={sLoading}
+                  onSaveScript={sSave}
+                  onDeleteScript={handleDeleteScript}
+                  configs={configs}
+                  configsLoading={cLoading}
+                  onSaveConfig={cSave}
+                  onDeleteConfig={cRemove}
+                  onNewScript={handleNewScript}
+                  onEditScript={handleEditScript}
+                />
+              ) : selection.section === "prompts" ? (
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h2 className="text-lg font-bold tracking-tight">Prompts</h2>
+                    <p className="text-xs text-muted-foreground">
+                      Manage prompts for macro injection. Custom prompts sync across Chrome instances.
+                    </p>
+                    <PromptManagerPanel />
+                  </div>
+                  <div className="space-y-4">
+                    <h2 className="text-lg font-bold tracking-tight">Prompt Chains</h2>
+                    <p className="text-xs text-muted-foreground">
+                      Create chains to run multiple prompts in sequence with idle detection between steps.
+                    </p>
+                    <PromptChainPanel />
+                  </div>
+                </div>
+              ) : selection.section === "logging" ? (
+                <GlobalDiagnosticsView />
+              ) : selection.section === "automation" ? (
+                <AutomationView />
+              ) : selection.section === "updaters" ? (
+                <UpdaterManagementView />
+              ) : selection.section === "timing" ? (
+                <div className="space-y-4">
+                  <h2 className="text-lg font-bold tracking-tight">Timing</h2>
+                  <p className="text-xs text-muted-foreground">Performance timing and cycle metrics.</p>
+                  <GlobalDiagnosticsView />
+                </div>
+              ) : selection.section === "data" ? (
+                <div className="space-y-4">
+                  <h2 className="text-lg font-bold tracking-tight">Data</h2>
+                  <p className="text-xs text-muted-foreground">Data flow inspection and payload viewer.</p>
+                  <StorageBrowserView />
+                </div>
+              ) : selection.section === "network" ? (
+                <div className="space-y-4">
+                  <h2 className="text-lg font-bold tracking-tight">Network</h2>
+                  <p className="text-xs text-muted-foreground">Network request logs and API call history.</p>
+                  <GlobalDiagnosticsView />
+                </div>
+              ) : selection.section === "storage" ? (
+                <StorageBrowserView />
+              ) : selection.section === "api" ? (
+                <ApiExplorerView />
+              ) : selection.section === "settings" ? (
+                <SettingsView />
+              ) : selection.section === "about" ? (
+                <GlobalAboutView />
+              ) : null}
+              </ErrorBoundary>
+              </Suspense>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {/* Draggable Overlay (T-5) */}
+      {showOverlay && (
+        <DraggableOverlay
+          title="Marco Controller"
+          headerExtra={
+            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowOverlay(false)}>
+              <span className="text-xs">✕</span>
+            </Button>
+          }
+        >
+          <div className="space-y-3 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="font-medium">Loop: Idle</span>
+            </div>
+            <div className="rounded-md border border-border p-2 bg-muted/30">
+              <p className="text-muted-foreground">Drag the header to move. Resize from the bottom-right corner. Double-click header to reset position.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-md border border-border p-2 text-center">
+                <p className="text-muted-foreground text-[10px]">Cycles</p>
+                <p className="font-bold text-lg">27</p>
+              </div>
+              <div className="rounded-md border border-border p-2 text-center">
+                <p className="text-muted-foreground text-[10px]">Success Rate</p>
+                <p className="font-bold text-lg">85%</p>
+              </div>
+            </div>
+          </div>
+        </DraggableOverlay>
+      )}
+    </SidebarProvider>
+  );
+};
+
+export default OptionsPage;

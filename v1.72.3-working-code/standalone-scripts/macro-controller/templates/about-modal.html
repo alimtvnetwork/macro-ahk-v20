@@ -1,0 +1,35 @@
+<!-- About Modal Template — Full layout -->
+<!-- Variables: version, title, description, authorInitials, authorName, authorTitle, authorBio, year -->
+<!-- Arrays: links (each: { label, url }) -->
+<div class="marco-modal marco-about-modal">
+  <div class="marco-about-header">
+    <div class="marco-about-title">⚡ {{title}}</div>
+    <span class="marco-about-close" data-action="close">✕</span>
+  </div>
+
+  <div class="marco-about-version-badge">v{{version}}</div>
+
+  <p class="marco-about-description">{{description}}</p>
+
+  <div class="marco-about-divider"></div>
+
+  <div class="marco-about-author-label">Created by</div>
+
+  <div class="marco-about-author-row">
+    <div class="marco-about-avatar">{{authorInitials}}</div>
+    <div class="marco-about-author-info">
+      <div class="marco-about-author-name">{{authorName}}</div>
+      <div class="marco-about-author-title">{{authorTitle}}</div>
+    </div>
+  </div>
+
+  <p class="marco-about-author-bio">{{authorBio}}</p>
+
+  <div class="marco-about-links">
+    {{#each links}}
+      <a class="marco-about-link" href="{{this.url}}" target="_blank" rel="noopener noreferrer">{{this.label}}</a>
+    {{/each}}
+  </div>
+
+  <div class="marco-about-footer">© {{year}} {{authorName}}</div>
+</div>

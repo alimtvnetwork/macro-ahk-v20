@@ -1,0 +1,110 @@
+/**
+ * JS Executor — Extracted from macro-looping.ts (Step 2)
+ *
+ * Provides a JS console inside the macro controller overlay.
+ */
+
+import { VERSION, IDS, cPanelFg, cPanelFgDim } from '../shared-state';
+import { log, logSub } from '../logging';
+
+// === Module-level state ===
+const loopJsHistory: Array<{time: string, code: string, success: boolean, result: string}> = [];
+let loopJsHistoryIndex = -1;
+const LOOP_JS_HISTORY_MAX = 20;
+
+export function addLoopJsHistoryEntry(code: string, success: boolean, resultText: string): void {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const entry = { time: timeStr, code: code, success: success, result: resultText };
+  const isDuplicate = loopJsHistory.length > 0 && loopJsHistory[0].code === code;
+  if (!isDuplicate) {
+    loopJsHistory.unshift(entry);
+    if (loopJsHistory.length > LOOP_JS_HISTORY_MAX) loopJsHistory.pop();
+    logSub('JS history updated: ' + loopJsHistory.length + ' entries');
+  }
+  loopJsHistoryIndex = -1;
+  renderLoopJsHistory();
+}
+
+export function renderLoopJsHistory(): void {
+  const el = document.getElementById('loop-js-history');
+  if (!el) return;
+  if (loopJsHistory.length === 0) {
+    el.innerHTML = '<span style="color:#64748b;font-size:10px;">No commands yet</span>';
+    return;
+  }
+  let html = '';
+  for (let i = 0; i < loopJsHistory.length; i++) {
+    const e = loopJsHistory[i];
+    const statusColor = e.success ? '#4ade80' : '#ef4444';
+    const statusIcon = e.success ? '✓' : '✗';
+    html += '<div class="loop-js-hist-item" data-hist-idx="' + i + '" style="display:flex;gap:4px;align-items:flex-start;padding:3px 4px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);font-size:10px;font-family:monospace;"'
+      + ' onmouseover="(this as HTMLElement).style.background=\'rgba(139,92,246,0.15)\'"'
+      + ' onmouseout="(this as HTMLElement).style.background=\'transparent\'">'
+      + '<span style="color:' + statusColor + ';font-size:10px;">' + statusIcon + '</span>'
+      + '<span style="color:' + cPanelFgDim + ';font-size:9px;min-width:40px;">' + e.time + '</span>'
+      + '<span style="color:' + cPanelFg + ';flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + e.code.substring(0, 60) + '</span>'
+      + '</div>';
+  }
+  el.innerHTML = html;
+  // Bind click events for recall
+  const items = el.querySelectorAll('.loop-js-hist-item');
+  for (let j = 0; j < items.length; j++) {
+    (items[j] as HTMLElement).onclick = (function(idx: number) {
+      return function() {
+        const ta = document.getElementById(IDS.JS_EXECUTOR) as HTMLTextAreaElement | null;
+        if (ta && loopJsHistory[idx]) {
+          ta.value = loopJsHistory[idx].code;
+          ta.focus();
+          log('Recalled JS command #' + idx, 'success');
+        }
+      };
+    })(j);
+  }
+}
+
+export function navigateLoopJsHistory(direction: string): void {
+  const ta = document.getElementById(IDS.JS_EXECUTOR) as HTMLTextAreaElement | null;
+  if (!ta || loopJsHistory.length === 0) return;
+  if (direction === 'up') {
+    if (loopJsHistoryIndex < loopJsHistory.length - 1) {
+      loopJsHistoryIndex++;
+      ta.value = loopJsHistory[loopJsHistoryIndex].code;
+    }
+  } else {
+    if (loopJsHistoryIndex > 0) {
+      loopJsHistoryIndex--;
+      ta.value = loopJsHistory[loopJsHistoryIndex].code;
+    } else {
+      loopJsHistoryIndex = -1;
+      ta.value = '';
+    }
+  }
+}
+
+export function executeJs(): void {
+  const textbox = document.getElementById(IDS.JS_EXECUTOR);
+  if (!textbox) {
+    log('JS textbox element not found', 'error');
+    return;
+  }
+  const code = (textbox as HTMLTextAreaElement).value.trim();
+  if (!code) {
+    log('No code to execute', 'warn');
+    return;
+  }
+
+  log('Executing custom JS code...');
+  try {
+    const result = new Function(code)();
+    const resultStr = result !== undefined ? String(result) : '(undefined)';
+    if (result !== undefined) {
+      console.log('[MacroLoop v' + VERSION + '] Result:', result);
+    }
+    log('JS execution completed successfully', 'success');
+    addLoopJsHistoryEntry(code, true, resultStr.substring(0, 100));
+  } catch(e) {
+    log('JS execution error: ' + (e as Error).message, 'error');
+    addLoopJsHistoryEntry(code, false, (e as Error).message);
+  }
+}

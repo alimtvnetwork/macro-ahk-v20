@@ -1,0 +1,14 @@
+{
+  "id": "default-audit-spec",
+  "title": "Audit Spec v1",
+  "slug": "audit-spec-v1",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [
+    "general"
+  ],
+  "isDefault": true,
+  "order": 7,
+  "createdAt": "2026-03-21T00:00:00Z",
+  "updatedAt": "2026-03-22T00:00:00Z"
+}

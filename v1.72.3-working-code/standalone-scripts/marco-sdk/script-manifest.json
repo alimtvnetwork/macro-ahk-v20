@@ -1,0 +1,16 @@
+{
+  "name": "marco-sdk",
+  "displayName": "Riseup Macro SDK",
+  "version": "1.0.0",
+  "outputFile": "marco-sdk.js",
+  "world": "MAIN",
+  "isGlobal": true,
+  "isRemovable": false,
+  "dependencies": [],
+  "loadOrder": 0,
+  "exports": {
+    "namespace": "marco",
+    "frozen": true
+  },
+  "description": "Core SDK for Riseup Macro extension. Provides marco.auth, marco.cookies, marco.config, marco.xpath, marco.kv, marco.files namespaces."
+}

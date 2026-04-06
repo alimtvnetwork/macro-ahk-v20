@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Pre-commit hook — runs ESLint on staged chrome-extension source files.
+# Install: cp chrome-extension/scripts/pre-commit .git/hooks/pre-commit
+set -euo pipefail
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '^chrome-extension/src/.*\.ts$' || true)
+
+if [ -z "$STAGED_FILES" ]; then
+    exit 0
+fi
+
+echo "🔍 Linting staged chrome-extension files..."
+
+cd chrome-extension
+npx eslint --max-warnings 0 $STAGED_FILES
+LINT_EXIT=$?
+
+if [ $LINT_EXIT -ne 0 ]; then
+    echo "❌ ESLint violations found. Fix them before committing."
+    exit 1
+fi
+
+echo "✅ ESLint passed."
+exit 0

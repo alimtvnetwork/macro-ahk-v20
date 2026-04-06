@@ -1,0 +1,12 @@
+{
+  "id": "default-start",
+  "title": "Start Prompt",
+  "slug": "start-prompt",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [],
+  "isDefault": true,
+  "order": 0,
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z"
+}

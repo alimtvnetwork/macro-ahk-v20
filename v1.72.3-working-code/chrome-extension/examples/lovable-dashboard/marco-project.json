@@ -1,0 +1,53 @@
+{
+    "name": "Dashboard Enhancer",
+    "version": "1.0.0",
+    "description": "Adds productivity shortcuts and UI tweaks to the dashboard",
+    "schemaVersion": 1,
+    "targetUrls": [
+        {
+            "pattern": "https://lovable.dev/projects/*",
+            "matchType": "glob"
+        },
+        {
+            "pattern": "https://*.lovable.app/*",
+            "matchType": "glob"
+        }
+    ],
+    "scripts": [
+        {
+            "path": "scripts/setup-namespace.js",
+            "order": 1,
+            "runAt": "document_start",
+            "description": "Creates the global Marco namespace before other scripts load"
+        },
+        {
+            "path": "scripts/sidebar-enhancer.js",
+            "order": 2,
+            "runAt": "document_idle",
+            "configBinding": "configs/sidebar-settings.json",
+            "description": "Adds collapsible sections and quick-nav to the sidebar"
+        },
+        {
+            "path": "scripts/keyboard-shortcuts.js",
+            "order": 3,
+            "runAt": "document_idle",
+            "configBinding": "configs/shortcut-map.json",
+            "description": "Registers custom keyboard shortcuts for common actions"
+        }
+    ],
+    "configs": [
+        {
+            "path": "configs/sidebar-settings.json",
+            "description": "Sidebar layout preferences and section visibility"
+        },
+        {
+            "path": "configs/shortcut-map.json",
+            "description": "Key-to-action mapping for keyboard shortcuts"
+        }
+    ],
+    "settings": {
+        "isolateScripts": true,
+        "logLevel": "info",
+        "retryOnNavigate": true
+    }
+}

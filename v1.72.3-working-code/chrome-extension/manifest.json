@@ -1,0 +1,88 @@
+{
+  "manifest_version": 3,
+  "name": "Macro Controller",
+  "version": "1.72.0.0",
+  "version_name": "1.72.0 (build 0)",
+  "description": "Browser automation for workspace and credit management",
+  "permissions": [
+    "contextMenus",
+    "cookies",
+    "scripting",
+    "storage",
+    "unlimitedStorage",
+    "webNavigation",
+    "downloads",
+    "tabs",
+    "alarms",
+    "activeTab",
+    "userScripts"
+  ],
+  "host_permissions": [
+    "https://lovable.dev/*",
+    "https://*.lovable.dev/*",
+    "https://api.lovable.dev/*",
+    "https://lovable.app/*",
+    "https://*.lovable.app/*",
+    "https://lovableproject.com/*",
+    "https://*.lovableproject.com/*"
+  ],
+  "optional_permissions": [
+    "management"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+  "commands": {
+    "run-scripts": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Down",
+        "mac": "Command+Shift+Down"
+      },
+      "description": "Run all enabled scripts into the active tab"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "src/assets/icons/icon-16.png",
+      "48": "src/assets/icons/icon-48.png",
+      "128": "src/assets/icons/icon-128.png"
+    }
+  },
+  "options_page": "src/options/options.html",
+  "icons": {
+    "16": "src/assets/icons/icon-16.png",
+    "48": "src/assets/icons/icon-48.png",
+    "128": "src/assets/icons/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*",
+        "https://lovable.app/*",
+        "https://*.lovable.app/*",
+        "https://lovableproject.com/*",
+        "https://*.lovableproject.com/*"
+      ],
+      "js": ["src/content-scripts/message-relay.ts"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/assets/wasm/sql-wasm.wasm",
+        "prompts/macro-prompts.json"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

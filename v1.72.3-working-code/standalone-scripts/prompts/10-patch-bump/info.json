@@ -1,0 +1,14 @@
+{
+  "id": "default-patch-bump",
+  "title": "Patch Bump",
+  "slug": "patch-bump",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [
+    "versioning"
+  ],
+  "isDefault": true,
+  "order": 10,
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z"
+}

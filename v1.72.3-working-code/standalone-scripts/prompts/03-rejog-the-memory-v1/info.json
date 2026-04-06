@@ -1,0 +1,12 @@
+{
+  "id": "default-rejog",
+  "title": "Rejog the Memory v1",
+  "slug": "rejog-the-memory-v1",
+  "version": "1.0.0",
+  "author": "marco",
+  "categories": [],
+  "isDefault": true,
+  "order": 2,
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z"
+}

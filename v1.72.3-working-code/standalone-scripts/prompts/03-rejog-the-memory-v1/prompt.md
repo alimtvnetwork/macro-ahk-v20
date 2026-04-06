@@ -1,0 +1,1 @@
+Read and synthesize existing repository context from the memory folder and the full specification set, then produce a reliability risk report before any implementation work begins. Do not implement anything. Only produce a report and specification-side artifacts for memory, suggestions, and planning.
