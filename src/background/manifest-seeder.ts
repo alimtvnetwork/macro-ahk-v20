@@ -138,7 +138,7 @@ async function fetchManifest(): Promise<SeedManifest | null> {
             manifest.projects?.length ?? 0, manifest.schemaVersion, url);
         return manifest;
     } catch (err) {
-        console.error("[manifest-seeder::fetchManifest] ❌ Fetch/parse error for %s: %s", url, err instanceof Error ? err.message : String(err));
+        logCaughtError("[manifest-seeder]", `Fetch/parse error for ${url}`, err);
         return null;
     }
 }

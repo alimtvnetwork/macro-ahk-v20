@@ -545,7 +545,5 @@ function buildResult(
 
 /** Logs a CSP fallback event. */
 function logCspFallback(tabId: number): void {
-    console.error(
-        `[csp-fallback] MAIN world blocked in tab ${tabId}, switching to userScripts fallback`,
-    );
+    logBgWarnError("[csp-fallback]", `MAIN world blocked in tab ${tabId}, switching to userScripts fallback`);
 }
