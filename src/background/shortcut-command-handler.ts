@@ -59,7 +59,7 @@ async function runScriptsFromShortcut(): Promise<void> {
         const activeTabId = await getActiveTabId();
 
         if (activeTabId === null) {
-            console.error("[Marco] Shortcut: no active tab found — aborting");
+            logBgWarnError("[shortcut]", "No active tab found — aborting");
             return;
         }
 
