@@ -311,6 +311,102 @@ export async function handleInjectScripts(
 
 
 /**
+ * Executes a cached wrapped payload, skipping Stages 0–3.
+ * Still runs Stage 2 (env prep) and Stage 5 (namespaces) since those
+ * are tab-specific and cannot be cached across tabs.
+ */
+// eslint-disable-next-line max-lines-per-function
+async function executeCachedPayload(
+    tabId: number,
+    cached: { code: string; scriptMeta: Array<{ id: string; name: string }> },
+    pipelineStart: number,
+    timings: Record<string, number>,
+    time: <T>(label: string, fn: () => Promise<T>) => Promise<T>,
+): Promise<{ results: InjectionResult[] }> {
+    const allProjects = await time("readAllProjects", () =>
+        readAllProjects().catch(() => [] as StoredProject[]));
+
+    // Stage 2: Tab environment prep (always needed per-tab)
+    await time("stage2_env_prep", () => Promise.all([
+        bootstrapNamespaceRoot(tabId),
+        ensureRelayInjected(tabId),
+        seedTokensIntoTab(tabId),
+    ]));
+    console.log("[injection] 2/4 SEED     — bootstrap+relay+token (cached path) in %.1fms", timings["stage2_env_prep"]);
+
+    // Stage 4: Execute cached payload
+    const execStart = performance.now();
+    const execResult = await executeInTab(tabId, cached.code);
+    const execMs = Math.round((performance.now() - execStart) * 10) / 10;
+    timings["stage4_cached_exec"] = execMs;
+
+    const results: InjectionResult[] = cached.scriptMeta.map((meta) => ({
+        scriptId: meta.id,
+        scriptName: meta.name,
+        isSuccess: true,
+        durationMs: execMs,
+        injectionPath: execResult.path,
+        domTarget: execResult.domTarget,
+    }));
+
+    console.log("[injection] 4/4 EXECUTE  — cached batch ✅ %d scripts via %s in %.1fms",
+        cached.scriptMeta.length, execResult.path, execMs);
+
+    // Stage 5: Namespaces (always needed per-tab)
+    const nsStart = performance.now();
+    await time("stage5_namespaces", () => Promise.all([
+        injectSettingsNamespace(tabId, allProjects),
+        injectProjectNamespaces(tabId, allProjects),
+    ]));
+    timings["stage5_ns"] = Math.round((performance.now() - nsStart) * 10) / 10;
+
+    const totalMs = Math.round((performance.now() - pipelineStart) * 10) / 10;
+    const successCount = results.length;
+
+    console.log("[injection] ── PIPELINE END (cached) ── %d/%d succeeded, total=%.1fms breakdown=%s",
+        successCount, results.length, totalMs, JSON.stringify(timings));
+
+    // Post-pipeline: mirror, budget, verification, toast
+    type PipelineLine = { msg: string; level: "log" | "warn" | "error" | "__group__" | "__groupEnd__" };
+    const pipelineLines: PipelineLine[] = [
+        { msg: `📊 Cached Pipeline (${totalMs}ms)`, level: "__group__" },
+        { msg: `CACHE HIT — skipped Stages 0–3`, level: "log" },
+        { msg: `2/4 SEED      ${(timings["stage2_env_prep"] ?? 0)}ms`, level: "log" },
+        { msg: `4/4 EXECUTE   ✅ ${successCount} scripts via ${execResult.path} (${execMs}ms)`, level: "log" },
+        { msg: `5/5 NS        ${(timings["stage5_ns"] ?? 0)}ms`, level: "log" },
+        { msg: `TOTAL ${totalMs}ms`, level: "log" },
+        { msg: "", level: "__groupEnd__" },
+    ];
+    void mirrorPipelineLogsToTab(tabId, pipelineLines, `✅ Marco Injection (cached) — ${successCount} scripts (${totalMs}ms)`);
+
+    let budgetMs = 500;
+    try {
+        const { settings } = await handleGetSettings();
+        budgetMs = settings.injectionBudgetMs ?? 500;
+    } catch { /* use default */ }
+    if (totalMs > budgetMs) {
+        logBgWarnError("[injection]", `PERFORMANCE BUDGET EXCEEDED (cached path) — ${totalMs}ms (budget: ${budgetMs}ms)`);
+    }
+
+    recordInjectionTiming(totalMs, successCount, budgetMs);
+
+    const scripts = cached.scriptMeta.map((m) => ({ id: m.id, name: m.name, code: "" })) as unknown as InjectableScript[];
+    recordInjection(tabId, scripts, execResult.path, execResult.domTarget, totalMs, budgetMs);
+
+    if (successCount > 0) {
+        void verifyPostInjectionGlobals(tabId).catch(() => {});
+    }
+
+    const toastEnabled = await isInjectionToastEnabled();
+    if (toastEnabled && successCount > 0) {
+        void showInjectionToastInTab(tabId, successCount, results.length, totalMs).catch(() => {});
+    }
+
+    return { results };
+}
+
+
+/**
  * ✅ 15.7: Batch script injection — concatenates wrapped scripts into a single
  * executeScript call when possible. Scripts with CSS assets are injected
  * individually (CSS must precede their JS). Falls back to sequential on failure.
