@@ -149,24 +149,25 @@ export function getProjectNameFromDom(): string | null {
 }
 
 export function getDisplayProjectName(): string {
-  const domName = getProjectNameFromDom();
-
-  if (domName) {
-    return domName;
-  }
-
+  // Priority 1: API-resolved project name (source of truth)
   if (state.projectNameFromApi) {
     return state.projectNameFromApi;
   }
 
-  const titleMatch = (document.title || '').match(/^(.+?)\s*[-–—]\s*(?:Lovable|lovable)/);
+  // Priority 2: DOM XPath (legacy fallback only)
+  const domName = getProjectNameFromDom();
+  if (domName) {
+    return domName;
+  }
 
+  // Priority 3: document title parse
+  const titleMatch = (document.title || '').match(/^(.+?)\s*[-–—]\s*(?:Lovable|lovable)/);
   if (titleMatch) {
     return titleMatch[1].trim();
   }
 
+  // Priority 4: truncated project ID
   const pid = getProjectIdFromUrl();
-
   return pid ? pid.substring(0, 8) : 'Unknown Project';
 }
 
