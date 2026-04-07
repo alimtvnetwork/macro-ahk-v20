@@ -1415,6 +1415,23 @@ async function verifyPostInjectionGlobals(tabId: number): Promise<void> {
 
         void mirrorPipelineLogsToTab(tabId, lines, `${status} Post-Injection Verification`);
 
+        // Store verification results on the tab injection record for diagnostics copy
+        const existingRecord = getTabInjections()[tabId];
+        if (existingRecord) {
+            setTabInjection(tabId, {
+                ...existingRecord,
+                verification: {
+                    marcoSdk: r.marcoSdk,
+                    extRoot: r.extRoot,
+                    mcClass: r.mcClass,
+                    mcInstance: r.mcInstance,
+                    uiContainer: r.uiContainer,
+                    markerEl: r.markerEl,
+                    verifiedAt: new Date().toISOString(),
+                },
+            });
+        }
+
         if (!allOk) {
             logBgWarnError(
                 BgLogTag.INJECTION,
@@ -1422,7 +1439,7 @@ async function verifyPostInjectionGlobals(tabId: number): Promise<void> {
                 `sdk=${r.marcoSdk} ext=${r.extRoot} mc=${r.mcClass} instance=${r.mcInstance} ui=${r.uiContainer}\n` +
                 `Verify stack: ${r.verifyStack}`,
             );
-}
+        }
 
 /**
  * Shows a loading spinner toast while injection is in progress.
