@@ -264,7 +264,7 @@ async function resolveOneBinding(
     const isMissingScript = script === null;
 
     if (isMissingScript) {
-        logBgWarnError(BgLogTag.INJECTION_RESOLVE, `Script not found: ${binding.scriptId} (store has ${scripts.length} scripts)`);
+        logBgWarnError(BgLogTag.INJECTION_RESOLVE, `Script not found in store\n  Path: chrome.storage.local["${STORAGE_KEY_ALL_SCRIPTS}"] → lookup by id/name="${binding.scriptId}"\n  Missing: StoredScript matching "${binding.scriptId}" (store has ${scripts.length} scripts)\n  Reason: Script ID from project config does not match any script entry by id, name, or normalized filename`);
         logMissingScript(binding.scriptId);
         void persistInjectionWarn(
             "SCRIPT_SKIPPED_MISSING",
