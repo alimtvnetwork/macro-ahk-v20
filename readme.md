@@ -136,6 +136,60 @@ Build settings are stored in `powershell.json`:
 - Node linker mode
 - Required packages list
 
+## Installation (End Users)
+
+Download the latest release from the [Releases page](../../releases/latest), or use the one-liner installers below.
+
+### Quick Install
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://github.com/riseup-asia/macro-ahk/releases/latest/download/install-extension.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://github.com/riseup-asia/macro-ahk/releases/latest/download/install-extension.ps1 | iex
+```
+
+### Install a Specific Version
+
+```bash
+# Bash
+./install-extension.sh --version v2.107.0 --dir ~/marco-extension
+
+# PowerShell
+.\install-extension.ps1 -Version v2.107.0 -InstallDir "$HOME\marco-extension"
+```
+
+### Manual Install
+
+1. Download `marco-extension-vX.Y.Z.zip` from the [latest release](../../releases/latest)
+2. Extract the ZIP to a folder
+3. Open `chrome://extensions` (or `edge://extensions`)
+4. Enable **Developer mode** (toggle in top-right)
+5. Click **Load unpacked** and select the extracted folder
+
+Works in Chrome, Edge, Brave, Arc, and any Chromium browser.
+
+### Release Assets
+
+Each release includes:
+
+| Asset | Description |
+|-------|-------------|
+| `marco-extension-vX.Y.Z.zip` | Chrome extension (load unpacked) |
+| `prompts-vX.Y.Z.zip` | AI prompt templates |
+| `macro-controller-vX.Y.Z.zip` | Standalone macro controller scripts |
+| `marco-sdk-vX.Y.Z.zip` | Marco SDK |
+| `xpath-vX.Y.Z.zip` | XPath utility scripts |
+| `install-extension.sh` | Bash installer (Linux/macOS) |
+| `install-extension.ps1` | PowerShell installer (Windows) |
+| `VERSION.txt` | Version identifier |
+| `CHANGELOG.md` | Full project changelog |
+
 ## License
 
 Private — all rights reserved.
