@@ -10,6 +10,10 @@
 #   • macro-controller-v{VER}.zip  — standalone-scripts/macro-controller/**
 #   • marco-sdk-v{VER}.zip         — standalone-scripts/marco-sdk/**
 #   • xpath-v{VER}.zip             — standalone-scripts/xpath/**
+#   • install-extension.sh         — Bash install/download helper
+#   • install-extension.ps1        — PowerShell install/download helper
+#   • VERSION.txt                  — Plain-text version identifier
+#   • CHANGELOG.md                 — Project changelog (full)
 # ──────────────────────────────────────────────────────────────
 
 name: Release Build
@@ -72,41 +76,51 @@ jobs:
         run: |
           mkdir -p release-assets
 
-          # Chrome extension — zip contents of dist/ (no dist/ prefix inside zip)
+          # ── Chrome extension — zip dist/ contents (no dist/ prefix) ──
           cd chrome-extension/dist
           zip -r "../../release-assets/marco-extension-${VER}.zip" .
           cd ../..
 
-          # Prompts
+          # ── Standalone scripts ──
           cd standalone-scripts/prompts
           zip -r "../../release-assets/prompts-${VER}.zip" .
           cd ../..
 
-          # Macro Controller
           cd standalone-scripts/macro-controller
           zip -r "../../release-assets/macro-controller-${VER}.zip" .
           cd ../..
 
-          # Marco SDK
           cd standalone-scripts/marco-sdk
           zip -r "../../release-assets/marco-sdk-${VER}.zip" .
           cd ../..
 
-          # XPath
           cd standalone-scripts/xpath
           zip -r "../../release-assets/xpath-${VER}.zip" .
           cd ../..
 
+          # ── Install scripts ──
+          cp scripts/install-extension.sh  release-assets/install-extension.sh
+          cp scripts/install-extension.ps1 release-assets/install-extension.ps1
+          chmod +x release-assets/install-extension.sh
+
+          # ── VERSION.txt ──
+          echo "${VER}" > release-assets/VERSION.txt
+
+          # ── CHANGELOG.md (full project changelog) ──
+          if [ -f CHANGELOG.md ]; then
+            cp CHANGELOG.md release-assets/CHANGELOG.md
+          fi
+
           echo "=== Release assets ==="
           ls -lh release-assets/
 
-      # ── Generate changelog from commit history ───────────
-      - name: Generate changelog
+      # ── Generate release notes from commit history ────────
+      - name: Generate release notes
         id: changelog
         run: |
           VER="${{ steps.version.outputs.tag }}"
 
-          # Find the previous release tag (most recent tag before HEAD)
+          # Find the previous release tag
           PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]' | head -1 2>/dev/null || true)
 
           if [ -n "$PREV_TAG" ]; then
@@ -117,7 +131,7 @@ jobs:
             RANGE=""
           fi
 
-          # Build categorized changelog
+          # Build categorized release notes
           {
             echo "## Marco Extension ${VER}"
             echo ""
@@ -148,7 +162,7 @@ jobs:
               echo ""
             fi
 
-            # Uncategorized (commits not matching conventional prefixes)
+            # Uncategorized
             ALL=$(git log $RANGE --pretty=format:"%s" 2>/dev/null || true)
             UNCATEGORIZED=$(echo "$ALL" | grep -ivE "^(feat|fix|refactor|chore|docs|style|perf|test|ci|build)" || true)
             if [ -n "$UNCATEGORIZED" ]; then
@@ -160,12 +174,35 @@ jobs:
               echo ""
             fi
 
-            echo "### Assets"
-            echo "- **marco-extension** — Chrome extension (load unpacked in \`chrome://extensions\`)"
-            echo "- **prompts** — AI prompt templates"
-            echo "- **macro-controller** — Standalone macro controller scripts"
-            echo "- **marco-sdk** — Marco SDK"
-            echo "- **xpath** — XPath utility scripts"
+            echo "---"
+            echo ""
+            echo "### 📦 Assets"
+            echo ""
+            echo "| Asset | Description |"
+            echo "|-------|-------------|"
+            echo "| \`marco-extension-${VER}.zip\` | Chrome extension — load unpacked in \`chrome://extensions\` |"
+            echo "| \`prompts-${VER}.zip\` | AI prompt templates |"
+            echo "| \`macro-controller-${VER}.zip\` | Standalone macro controller scripts |"
+            echo "| \`marco-sdk-${VER}.zip\` | Marco SDK |"
+            echo "| \`xpath-${VER}.zip\` | XPath utility scripts |"
+            echo "| \`install-extension.sh\` | Bash installer (Linux/macOS) |"
+            echo "| \`install-extension.ps1\` | PowerShell installer (Windows) |"
+            echo "| \`VERSION.txt\` | Version identifier |"
+            echo "| \`CHANGELOG.md\` | Full project changelog |"
+            echo ""
+            echo "### 🚀 Quick Install"
+            echo ""
+            echo "**Linux / macOS:**"
+            echo "\`\`\`bash"
+            echo "curl -fsSL https://github.com/\${GITHUB_REPOSITORY}/releases/download/${VER}/install-extension.sh | bash"
+            echo "\`\`\`"
+            echo ""
+            echo "**Windows (PowerShell):**"
+            echo "\`\`\`powershell"
+            echo "irm https://github.com/\${GITHUB_REPOSITORY}/releases/download/${VER}/install-extension.ps1 | iex"
+            echo "\`\`\`"
+            echo ""
+            echo "Or download the \`marco-extension-${VER}.zip\`, extract, and load manually in \`chrome://extensions\` → Developer mode → Load unpacked."
           } > release-assets/RELEASE_NOTES.md
 
           cat release-assets/RELEASE_NOTES.md
