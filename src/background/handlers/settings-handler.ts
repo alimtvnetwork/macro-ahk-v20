@@ -39,6 +39,8 @@ export interface ExtensionSettings {
     logRetentionDays: number;
     /** Injection pipeline performance budget in ms. Logs a warning when exceeded. */
     injectionBudgetMs: number;
+    /** Whether to show a toast in the target tab after injection. */
+    showInjectionToast: boolean;
 }
 
 const DEFAULT_SETTINGS: ExtensionSettings = {
