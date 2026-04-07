@@ -3,58 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 220 16% 96%;
-    --foreground: 220 25% 10%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
-
-    --primary: 268 70% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 220 14% 90%;
-    --secondary-foreground: 220 25% 10%;
-
-    --muted: 220 14% 92%;
-    --muted-foreground: 220 10% 46%;
-
-    --accent: 170 60% 42%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 14% 86%;
-    --input: 220 14% 86%;
-    --ring: 268 70% 50%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 268 70% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 92%;
-    --sidebar-accent-foreground: 220 25% 10%;
-    --sidebar-border: 220 14% 86%;
-    --sidebar-ring: 268 70% 50%;
-
-    --success: 152 60% 40%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 10%;
-
-    --gradient-bg-from: 268 40% 96%;
-    --gradient-bg-via: 220 20% 97%;
-    --gradient-bg-to: 170 30% 96%;
-    --dot-color: 268 30% 80%;
-    --dot-opacity: 0.3;
-  }
-
+  /* Dark-only theme — :root uses dark values directly so no flash of light */
+  :root,
   .dark {
     --background: 224 28% 8%;
     --foreground: 220 14% 92%;
@@ -83,6 +33,8 @@
     --border: 224 18% 18%;
     --input: 224 18% 18%;
     --ring: 268 70% 60%;
+
+    --radius: 0.5rem;
 
     --sidebar-background: 224 28% 8%;
     --sidebar-foreground: 220 14% 92%;
