@@ -85,15 +85,12 @@ export function bootstrap(deps: {
   setupGlobalErrorHandlers();
   setupDiagnosticDump();
 
-  // ── T2 (RC-02): Show standalone DOM toast IMMEDIATELY ──
-  showStartupToast(VERSION);
+  // Unified notifier: use SDK-backed toast system only (queued until SDK is ready)
+  showToast('MacroLoop v' + VERSION + ' — loading workspace…', 'info', { noStop: true });
 
   _placeScriptMarker();
   _registerGlobals(deps);
   _logWorkspaceCacheStatus();
-
-  // Also queue an SDK toast (will show once SDK loads, or be deduped)
-  showToast('MacroLoop v' + VERSION + ' loading workspace...', 'info', { noStop: true });
 
   // v7.41: Register proactive token broadcast listener
   registerTokenBroadcastListener();
