@@ -12,6 +12,7 @@ import { handleMessage } from "./message-router";
 import { logCaughtError, logBgWarnError, BgLogTag} from "./bg-logger";
 
 const RUN_SCRIPTS_COMMAND = "run-scripts";
+const FORCE_RUN_SCRIPTS_COMMAND = "force-run-scripts";
 
 interface ActiveProjectResponse {
     activeProject?: {
