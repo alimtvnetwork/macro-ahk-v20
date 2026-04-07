@@ -83,8 +83,9 @@ When a suggestion is completed:
 - **affectedProject**: Cross-project sync (`spec/13-features/cross-project-sync.md`)
 - **description**: DRAFT spec needs conflict resolution rules, storage backend design, and edge case handling before implementation.
 - **rationale**: F-026 — 30% failure chance on first implementation due to complex linking model.
-- **status**: open
+- **status**: done
 - **priority**: Medium
+- **completionNotes**: Spec matured from DRAFT v1.0.0 → READY v2.0.0. Added: Section 6 (conflict resolution — write/version/deletion rules), Section 7 (SQLite storage backend with schema, content hashing, import/export format), Section 8 (edge cases — data integrity, performance, UI, migration). 14 acceptance criteria (up from 9).
 
 ### S-057: Version Alignment Audit
 - **createdAt**: 2026-04-05
