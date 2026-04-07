@@ -78,7 +78,7 @@ const PIPELINE_CACHE_CATEGORY: CacheCategory = "scripts";
 /* ------------------------------------------------------------------ */
 
 /** Injects scripts into the specified tab with error isolation. */
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, sonarjs/cognitive-complexity
 export async function handleInjectScripts(
     message: MessageRequest,
 ): Promise<{ results: InjectionResult[] }> {
