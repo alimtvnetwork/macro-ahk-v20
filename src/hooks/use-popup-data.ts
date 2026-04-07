@@ -26,6 +26,15 @@ interface InjectionStatus {
   domTarget?: string;
   pipelineDurationMs?: number;
   budgetMs?: number;
+  verification?: {
+    marcoSdk: boolean;
+    extRoot: boolean;
+    mcClass: boolean;
+    mcInstance: boolean;
+    uiContainer: boolean;
+    markerEl: boolean;
+    verifiedAt: string;
+  };
 }
 
 interface PopupScript {
