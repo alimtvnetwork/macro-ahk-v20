@@ -6,6 +6,23 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v2.108.0] — 2026-04-07
+
+### Fixed
+- **REGRESSION**: "Next Task" flow incorrectly returned Start Prompt instead of the correct Next Tasks prompt — removed dangerous `entries[0]` fallback in `findNextTasksPrompt()` that silently returned the first prompt (Start Prompt) when no match was found
+- **REGRESSION**: `DEFAULT_PROMPTS` fallback array in `prompt-loader.ts` was missing the "Next Tasks" entry entirely — added it with proper `slug: 'next-tasks'` and `id: 'default-next-tasks'` fields
+- Excessive newline insertion in large prompts — enhanced `normalizeNewlines()` to handle Windows `\r\n` line endings and collapse blank-ish lines containing only whitespace between newlines
+- All `DEFAULT_PROMPTS` entries now include `slug` and `id` fields for reliable lookup across all pipeline stages
+
+### Added
+- 6 new regression tests: `findNextTasksPrompt` selection logic (4 tests), Windows `\r\n` normalization, whitespace-between-newlines collapse
+- Root cause analysis spec at `spec/02-app-issues/prompt-next-task-regression-newline-formatting-rca.md`
+
+### Changed
+- Version bump: 2.107.0 → 2.108.0 (all version files synced)
+
+---
+
 ## [v1.77.0] — 2026-04-07
 
 ### Added
