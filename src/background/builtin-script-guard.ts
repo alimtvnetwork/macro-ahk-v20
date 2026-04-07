@@ -268,7 +268,7 @@ async function seedMissingBuiltinsDirectly(
                     console.log("[builtin-guard:fallback] ✅ Loaded %s directly (%d chars) from %s",
                         scriptName, code.length, scriptAbsUrl);
                 } else {
-                    logBgWarnError(BgLogTag.BUILTIN_GUARD_FALLBACK, `Script file ${scriptName} returned empty/tiny response (${code?.length ?? 0} chars) from ${scriptAbsUrl}`);
+                    logBgWarnError(BgLogTag.BUILTIN_GUARD_FALLBACK, `Script file returned empty/tiny response\n  Path: ${scriptAbsUrl}\n  Missing: Valid script code for "${scriptName}" (got ${code?.length ?? 0} chars, minimum 10 required)\n  Reason: Server returned near-empty response — build artifact may be corrupt or a placeholder`);
                 }
             } else {
                 logBgWarnError(BgLogTag.BUILTIN_GUARD_FALLBACK, `Script file HTTP ${scriptResp.status} for ${scriptName} — URL: ${scriptAbsUrl}`);
