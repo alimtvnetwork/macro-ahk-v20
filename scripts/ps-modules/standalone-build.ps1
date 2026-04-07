@@ -24,7 +24,7 @@
 .OUTPUTS
     Hashtable with keys: Name, Success, Output (array of log lines).
 #>
-function Build-StandaloneScript([string]$ScriptDirPath, [string]$ScriptName, [string]$RootDir) {
+function Build-StandaloneScript([string]$ScriptDirPath, [string]$ScriptName, [string]$RootDir, [string]$BuildMode = "production") {
     $output = @()
     $success = $true
 
