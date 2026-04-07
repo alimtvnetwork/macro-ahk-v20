@@ -220,7 +220,7 @@ export function InjectionCopyButton() {
         (async () => {
           const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
           if (!tab?.id) return null;
-          const res = await sendMessage<{ injections: Record<number, unknown> }>({ type: "GET_TAB_INJECTIONS", tabId: tab.id } as MessageRequest & { tabId: number });
+          const res = await sendMessage<{ injections: Record<number, unknown> }>({ type: "GET_TAB_INJECTIONS", tabId: tab.id });
           const record = res?.injections?.[tab.id] as { verification?: VerificationResult } | null;
           return record?.verification ?? null;
         })(),
