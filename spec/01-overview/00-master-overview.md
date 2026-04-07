@@ -123,9 +123,9 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 ### Step 3: Read the Architecture
 
 - [ ] Read this file (`spec/01-overview/00-master-overview.md`) — you're here
-- [ ] Read `/spec/07-chrome-extension/01-overview.md` — extension architecture
-- [ ] Read `/spec/07-chrome-extension/18-message-protocol.md` — message types
-- [ ] Read `/spec/03-data-and-api/data-schema.md` — API response shapes and credit formulas
+- [ ] Read `/spec/11-chrome-extension/01-overview.md` — extension architecture
+- [ ] Read `/spec/11-chrome-extension/18-message-protocol.md` — message types
+- [ ] Read `/spec/07-data-and-api/data-schema.md` — API response shapes and credit formulas
 - [ ] **Failure risk if skipped**: AI misunderstands data flow → breaks credit calculations or messaging
 
 ### Step 4: Read the Domain-Specific Specs (as needed)
@@ -135,10 +135,10 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 | Credit display / progress bars | `06-macro-controller/credit-system.md` |
 | Workspace detection / switching | `06-macro-controller/workspace-management.md`, `06-macro-controller/workspace-detection.md` |
 | Controller UI (macro panel) | `06-macro-controller/ui-controllers.md` |
-| Chrome extension architecture | `spec/07-chrome-extension/01-overview.md` through `23-coding-guidelines.md` |
-| Macro ↔ extension bridge | `spec/07-chrome-extension/43-macro-controller-extension-bridge.md` |
-| Message protocol | `spec/07-chrome-extension/18-message-protocol.md` |
-| Logging & data bridge | `spec/07-chrome-extension/42-user-script-logging-and-data-bridge.md` |
+| Chrome extension architecture | `spec/11-chrome-extension/01-overview.md` through `23-coding-guidelines.md` |
+| Macro ↔ extension bridge | `spec/11-chrome-extension/43-macro-controller-extension-bridge.md` |
+| Message protocol | `spec/11-chrome-extension/18-message-protocol.md` |
+| Logging & data bridge | `spec/11-chrome-extension/42-user-script-logging-and-data-bridge.md` |
 
 ### Step 5: Check Current State
 
@@ -150,13 +150,13 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 ### Step 6: Verify Before Changing
 
 - [ ] Confirm the file you're editing is in the active codebase (`chrome-extension/`, `src/`, or `standalone-scripts/`)
-- [ ] Check if an issue write-up already exists for the problem at `/spec/02-app-issues/`
+- [ ] Check if an issue write-up already exists for the problem at `/spec/17-app-issues/`
 - [ ] If modifying credit formulas, verify against shared helper functions
 - [ ] **NEVER change code without discussing with the user first** (Engineering Standard)
 
 ### Step 7: After Making Changes
 
-- [ ] If fixing a bug: create issue write-up at `/spec/02-app-issues/NN-{slug}.md` using `TEMPLATE.md`
+- [ ] If fixing a bug: create issue write-up at `/spec/17-app-issues/NN-{slug}.md` using `TEMPLATE.md`
 - [ ] Update `.lovable/memory/suggestions/01-suggestions-tracker.md` if completing a suggestion
 - [ ] Update `.lovable/plan.md` if completing a planned task
 - [ ] Run build verification: `run.ps1 -d` (auto-builds standalone scripts + extension)

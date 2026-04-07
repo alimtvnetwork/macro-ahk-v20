@@ -112,6 +112,6 @@ After fix, the following scenarios must work correctly:
 
 ## References
 
-- `spec/06-macro-controller/ts-migration-v2/01-initialization-fix.md` — Phase 01 spec
-- `spec/02-app-issues/authentication-freeze-and-retry-loop.md` — related auth fix
+- `spec/10-macro-controller/ts-migration-v2/01-initialization-fix.md` — Phase 01 spec
+- `spec/17-app-issues/authentication-freeze-and-retry-loop.md` — related auth fix
 - `memory/features/macro-controller/bulk-rename-system` — rename uses workspace IDs, not names

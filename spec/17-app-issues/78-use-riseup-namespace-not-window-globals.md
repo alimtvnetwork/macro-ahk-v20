@@ -46,4 +46,4 @@ root.Projects.MacroController.meta.version  // "1.70.0"
 ## Files Modified
 
 - `standalone-scripts/macro-controller/src/shared-state.ts` — Remove `window.__MARCO_VERSION__`, set version on SDK namespace
-- `spec/02-app-issues/77-live-script-hot-reload.md` — Update references
+- `spec/17-app-issues/77-live-script-hot-reload.md` — Update references

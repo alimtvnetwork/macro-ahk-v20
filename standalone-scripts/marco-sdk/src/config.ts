@@ -4,7 +4,7 @@
  * Provides marco.config.* methods for project configuration.
  * Supports reactivity: set() persists and broadcasts CONFIG_CHANGED.
  *
- * See: spec/07-devtools-and-injection/sdk-convention.md §marco.config
+ * See: spec/12-devtools-and-injection/sdk-convention.md §marco.config
  */
 
 import { sendMessage } from "./bridge";

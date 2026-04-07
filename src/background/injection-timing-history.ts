@@ -6,7 +6,7 @@
  * for diagnostics and the popup performance bar.
  *
  * @see .lovable/memory/architecture/injection-pipeline-optimization.md — Pipeline perf strategy
- * @see spec/01-app-issues/87-injection-pipeline-performance/implementation-plan.md — Perf plan
+ * @see spec/17-app-issues/87-injection-pipeline-performance/implementation-plan.md — Perf plan
  */
 
 const MAX_HISTORY = 100;

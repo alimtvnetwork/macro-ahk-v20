@@ -106,7 +106,7 @@ None.
 
 ### References to spec sections updated
 
-- `spec/02-app-issues/34-version-mismatch-and-missing-toggle.md` — this file
+- `spec/17-app-issues/34-version-mismatch-and-missing-toggle.md` — this file
 
 ---
 
@@ -115,4 +115,4 @@ None.
 - [x] `constants.ts` version synced to `1.0.5`
 - [x] `macro-controller.js` added to `TOGGLEABLE_SCRIPTS`
 - [x] `run.ps1` prints built version at end
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`

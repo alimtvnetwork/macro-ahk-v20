@@ -164,7 +164,7 @@ async function reinjectFromSnapshot(tabId: number): Promise<void> {
 
     try {
         // ✅ Self-heal: reseed missing built-in scripts before resolving
-        // See: spec/01-app-issues/check-button/11-popup-injection-missing-guard.md (NR-11-A)
+        // See: spec/17-app-issues/check-button/11-popup-injection-missing-guard.md (NR-11-A)
         const projects = await readAllProjects();
         await ensureBuiltinScriptsExist(projects);
 

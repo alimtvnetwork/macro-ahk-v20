@@ -1,7 +1,7 @@
 /**
  * Credit Balance API — Free Credit Detection via /workspaces/{id}/credit-balance
  *
- * Spec: spec/01-app-issues/free-credits-detect/overview.md (v1.1.0)
+ * Spec: spec/17-app-issues/free-credits-detect/overview.md (v1.1.0)
  *
  * Primary: API poll every 100s → daily_remaining >= MinDailyCredit
  * Fallback: XPath progress-bar check when API fails

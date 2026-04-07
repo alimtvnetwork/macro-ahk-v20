@@ -12,7 +12,7 @@
  *   - Manually via INVALIDATE_CACHE message from popup
  *   - Per-key invalidation when data changes
  *
- * See: spec/01-app-issues/88-indexeddb-injection-cache.md
+ * See: spec/17-app-issues/88-indexeddb-injection-cache.md
  */
 
 import { EXTENSION_VERSION, STORAGE_KEY_LAST_BUILD_ID } from "../shared/constants";

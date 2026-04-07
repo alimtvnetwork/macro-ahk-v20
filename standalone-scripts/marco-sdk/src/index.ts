@@ -5,7 +5,7 @@
  * This is compiled as an IIFE and injected into the MAIN world
  * before any dependent projects.
  *
- * See: spec/07-devtools-and-injection/sdk-convention.md
+ * See: spec/12-devtools-and-injection/sdk-convention.md
  * See: standalone-scripts/marco-sdk/src/instruction.ts
  */
 
@@ -46,7 +46,7 @@ const marco = Object.freeze({
 /* ------------------------------------------------------------------ */
 /*  RiseupAsiaMacroExt root — extensible container for per-project     */
 /*  namespaces registered by the injection handler at runtime.         */
-/*  See: spec/01-app-issues/66-sdk-global-object-missing.md            */
+/*  See: spec/17-app-issues/66-sdk-global-object-missing.md            */
 /* ------------------------------------------------------------------ */
 
 const win = window as unknown as Record<string, unknown>;

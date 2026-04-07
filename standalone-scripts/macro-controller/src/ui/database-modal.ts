@@ -4,7 +4,7 @@
  * Orchestrates the database browser modal with Data, Schema, and Raw JSON tabs.
  * Sub-modules handle styles (database-modal-styles.ts) and data browsing (database-modal-data.ts).
  *
- * See: spec/01-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md
+ * See: spec/17-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md
  * @see spec/04-macro-controller/ts-migration-v2/05-module-splitting.md
  */
 

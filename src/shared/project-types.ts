@@ -50,7 +50,7 @@ export interface ProjectSettings {
     allowDynamicRequests?: boolean;
 }
 
-/** Dependency on a shared project. See spec/07-devtools-and-injection/sdk-convention.md */
+/** Dependency on a shared project. See spec/12-devtools-and-injection/sdk-convention.md */
 export interface ProjectDependency {
     projectId: string;
     version: string; // exact, ^major, ~minor

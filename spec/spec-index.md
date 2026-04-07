@@ -395,22 +395,22 @@
 
 | File | Title | Version |
 |------|-------|---------|
-| `spec/06-design-system/00-overview.md` | AI-Adaptable Design System | 1.0.0 |
-| `spec/06-design-system/01-design-principles.md` | Design Principles | 1.0.0 |
-| `spec/06-design-system/02-theme-variable-architecture.md` | Theme & Variable Architecture | 1.0.0 |
-| `spec/06-design-system/03-typography.md` | Typography | 1.0.0 |
-| `spec/06-design-system/04-spacing-layout.md` | Spacing & Layout | 1.0.0 |
-| `spec/06-design-system/05-borders-shapes.md` | Borders & Shapes | 1.0.0 |
-| `spec/06-design-system/06-motion-transitions.md` | Motion & Transitions | 1.0.0 |
-| `spec/06-design-system/07-code-blocks.md` | Code Blocks | 1.0.0 |
-| `spec/06-design-system/08-header-navigation.md` | Header & Navigation | 1.0.0 |
-| `spec/06-design-system/09-button-system.md` | Button System | 1.0.0 |
-| `spec/06-design-system/10-sidebar-system.md` | Sidebar System | 1.0.0 |
-| `spec/06-design-system/11-section-patterns.md` | Section Patterns | 1.0.0 |
-| `spec/06-design-system/12-page-creation-rules.md` | Page Creation Rules | 1.0.0 |
-| `spec/06-design-system/13-wordpress-migration.md` | WordPress Migration Compatibility | 1.0.0 |
-| `spec/06-design-system/97-acceptance-criteria.md` | Acceptance Criteria | 1.0.0 |
-| `spec/06-design-system/99-consistency-report.md` | Consistency Report | 1.0.0 |
+| `spec/09-design-system/00-overview.md` | AI-Adaptable Design System | 1.0.0 |
+| `spec/09-design-system/01-design-principles.md` | Design Principles | 1.0.0 |
+| `spec/09-design-system/02-theme-variable-architecture.md` | Theme & Variable Architecture | 1.0.0 |
+| `spec/09-design-system/03-typography.md` | Typography | 1.0.0 |
+| `spec/09-design-system/04-spacing-layout.md` | Spacing & Layout | 1.0.0 |
+| `spec/09-design-system/05-borders-shapes.md` | Borders & Shapes | 1.0.0 |
+| `spec/09-design-system/06-motion-transitions.md` | Motion & Transitions | 1.0.0 |
+| `spec/09-design-system/07-code-blocks.md` | Code Blocks | 1.0.0 |
+| `spec/09-design-system/08-header-navigation.md` | Header & Navigation | 1.0.0 |
+| `spec/09-design-system/09-button-system.md` | Button System | 1.0.0 |
+| `spec/09-design-system/10-sidebar-system.md` | Sidebar System | 1.0.0 |
+| `spec/09-design-system/11-section-patterns.md` | Section Patterns | 1.0.0 |
+| `spec/09-design-system/12-page-creation-rules.md` | Page Creation Rules | 1.0.0 |
+| `spec/09-design-system/13-wordpress-migration.md` | WordPress Migration Compatibility | 1.0.0 |
+| `spec/09-design-system/97-acceptance-criteria.md` | Acceptance Criteria | 1.0.0 |
+| `spec/09-design-system/99-consistency-report.md` | Consistency Report | 1.0.0 |
 
 ## 📖 Docs Viewer UI
 

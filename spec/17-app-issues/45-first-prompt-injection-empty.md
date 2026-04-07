@@ -102,7 +102,7 @@ return result && getEditorLength(editor) > lengthBefore;
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`
 - [x] Root-cause fix applied (v1.47: clearing fix)
 - [x] Remaining fixes applied (v1.48: fallback strategies + verification)
 - [ ] End-to-end verification

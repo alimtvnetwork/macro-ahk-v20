@@ -134,8 +134,8 @@ None.
 
 ### References to spec sections updated
 
-- `/spec/02-app-issues/04-workspace-detection-405-api-failure.md` (this file)
-- `/spec/06-macro-controller/workspace-detection.md` — Detection chain updated with DOM fallback
+- `/spec/17-app-issues/04-workspace-detection-405-api-failure.md` (this file)
+- `/spec/10-macro-controller/workspace-detection.md` — Detection chain updated with DOM fallback
 
 ---
 
@@ -150,7 +150,7 @@ None.
 ## Done Checklist
 
 - [x] Spec updated (detection chain updated with DOM fallback)
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`
 - [x] Both controllers fixed (macro-looping.js + combo.js)
 - [x] Acceptance criteria documented
 - [x] Iterations recorded (3 iterations: v7.9.17, v7.9.18 partial, v7.9.19 complete)

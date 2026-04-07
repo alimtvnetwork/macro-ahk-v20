@@ -62,7 +62,7 @@ const CSS_BORDER_1PX_SOLID_RGBA_255_255_255_0_08 = ';border:1px solid rgba(255,2
 
 // ============================================
 // Helper: focus the current workspace in the workspace list after credit refresh
-// See: spec/01-app-issues/credit-refresh/overview.md
+// See: spec/17-app-issues/credit-refresh/overview.md
 // ============================================
 
 function focusCurrentWorkspaceInList(): void {
@@ -298,7 +298,7 @@ function buildPromptsDropdown(_deps: PanelBuilderDeps, btnStyle: string): Prompt
   setRevalidateContext(promptCtx, taskNextDeps);
 
   // Pre-load prompts on injection so they're warm by first click
-  // See: spec/01-app-issues/64-prompts-loading-when-cached.md
+  // See: spec/17-app-issues/64-prompts-loading-when-cached.md
   loadPromptsFromJson().then(function() {
     log('Prompts pre-loaded on injection', 'success');
   });

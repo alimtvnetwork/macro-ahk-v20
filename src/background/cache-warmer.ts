@@ -8,7 +8,7 @@
  *
  * Called from handleInstalled() after seedFromManifest() completes.
  *
- * See: spec/01-app-issues/88-indexeddb-injection-cache.md
+ * See: spec/17-app-issues/88-indexeddb-injection-cache.md
  */
 
 import type { StoredScript } from "../shared/script-config-types";

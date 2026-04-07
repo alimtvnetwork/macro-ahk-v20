@@ -45,7 +45,7 @@ The entire per-project SDK namespace documented in spec 63 is non-functional.
 | `src/background/marco-sdk-template.ts` | Only creates `window.marco`, not `window.RiseupAsiaMacroExt` |
 | `src/components/options/DevGuideSection.tsx` | All snippets reference non-existent `RiseupAsiaMacroExt.Projects.<X>.*` |
 | `src/lib/slug-utils.ts` | `toSdkNamespace()` generates namespace strings that resolve to nothing |
-| `spec/07-chrome-extension/63-rise-up-macro-sdk.md` | Documents API surface that doesn't exist |
+| `spec/11-chrome-extension/63-rise-up-macro-sdk.md` | Documents API surface that doesn't exist |
 
 ## Solution Direction
 

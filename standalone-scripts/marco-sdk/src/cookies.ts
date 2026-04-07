@@ -3,7 +3,7 @@
  *
  * Provides marco.cookies.* methods for cookie access.
  *
- * See: spec/07-devtools-and-injection/sdk-convention.md §marco.cookies
+ * See: spec/12-devtools-and-injection/sdk-convention.md §marco.cookies
  */
 
 import { sendMessage } from "./bridge";

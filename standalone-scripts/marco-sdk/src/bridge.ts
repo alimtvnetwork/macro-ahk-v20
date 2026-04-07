@@ -4,7 +4,7 @@
  * PostMessage relay between MAIN world and content script (ISOLATED world).
  * All SDK methods use this bridge to communicate with the background service worker.
  *
- * See: spec/07-devtools-and-injection/sdk-convention.md §Bridge Pattern
+ * See: spec/12-devtools-and-injection/sdk-convention.md §Bridge Pattern
  */
 
 const SDK_SOURCE = "marco-sdk";

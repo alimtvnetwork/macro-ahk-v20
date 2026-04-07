@@ -161,7 +161,7 @@ export function createUI(deps: PanelBuilderDeps): void {
   }
 
   // Restore minimized state from localStorage on initial load
-  // See: spec/01-app-issues/63-button-layout-collapse-reload.md
+  // See: spec/17-app-issues/63-button-layout-collapse-reload.md
   if (plCtx.panelState === 'minimized') {
     for (const el of plCtx.bodyElements) {
       el.style.display = 'none';

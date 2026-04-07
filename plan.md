@@ -6,7 +6,7 @@
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
-**Issue Write-Ups**: `/spec/01-app-issues/`
+**Issue Write-Ups**: `/spec/17-app-issues/`
 **Risk Report**: `.lovable/memory/workflow/03-reliability-risk-report.md`
 
 ---

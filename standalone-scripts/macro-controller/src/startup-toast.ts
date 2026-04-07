@@ -11,7 +11,7 @@
  *
  * Design: fixed-position bar at bottom-right, inline styles only (no CSS deps).
  *
- * @see spec/01-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/03-rc02-missing-startup-toast.md
+ * @see spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/03-rc02-missing-startup-toast.md
  */
 
 const TOAST_ID = 'mcl-startup-toast';

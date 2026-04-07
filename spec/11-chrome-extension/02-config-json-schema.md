@@ -308,7 +308,7 @@ async function loadConfig() {
   }
 
   // 3. If remote config is enabled, fetch and merge
-  // See spec/07-chrome-extension/07-advanced-features.md for full implementation
+  // See spec/11-chrome-extension/07-advanced-features.md for full implementation
   if (config.remoteConfig?.enabled) {
     config = await fetchAndMergeRemoteConfig(config);
   }
@@ -338,4 +338,4 @@ The following config sections are defined in `07-advanced-features.md`:
 | `remoteConfig` | Remote config endpoint definitions (URL, headers, refresh interval, merge strategy) |
 | `scriptInjection` | Conditional script injection rules (URL patterns, path regex, conditions, scripts) |
 
-See `spec/07-chrome-extension/07-advanced-features.md` for full schemas.
+See `spec/11-chrome-extension/07-advanced-features.md` for full schemas.

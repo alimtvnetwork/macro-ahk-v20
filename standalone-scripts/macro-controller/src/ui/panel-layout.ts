@@ -11,7 +11,7 @@ import { PANEL_DEFAULT_WIDTH, PANEL_DEFAULT_HEIGHT } from '../shared-state';
 
 // ============================================
 // LocalStorage keys for panel state persistence
-// See: spec/01-app-issues/63-button-layout-collapse-reload.md
+// See: spec/17-app-issues/63-button-layout-collapse-reload.md
 // ============================================
 const LS_PANEL_STATE = 'ml_panel_state';
 const LS_PANEL_GEOMETRY = 'ml_panel_geometry';

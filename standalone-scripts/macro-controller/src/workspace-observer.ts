@@ -31,7 +31,7 @@ function mc() { return MacroController.getInstance(); }
  * v7.9.16: Validate a name against known workspace list.
  * Prevents DOM observer from setting project name as workspace name.
  * v7.39: Tightened matching — exact match on fullName only, no loose partial match.
- * See: spec/01-app-issues/workspace-name-binding-bug.md (RCA-3)
+ * See: spec/17-app-issues/workspace-name-binding-bug.md (RCA-3)
  */
 export function isKnownWorkspaceName(name: string): boolean {
   if (!name) return false;

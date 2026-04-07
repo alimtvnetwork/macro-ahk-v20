@@ -113,6 +113,6 @@ This enables user-saved prompts to load from SQLite even in MAIN world, consiste
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`
 - [x] Root-cause fix applied (3 fixes)
 - [ ] End-to-end verification on lovable.dev

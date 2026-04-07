@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-23  
 **Status**: Implemented  
-**Spec**: `spec/07-chrome-extension/65-developer-docs-and-project-slug.md`
+**Spec**: `spec/11-chrome-extension/65-developer-docs-and-project-slug.md`
 
 ---
 
@@ -62,6 +62,6 @@ A dedicated "Docs" tab in the project detail view containing:
 | Files tab | Added DevGuideSection (files) |
 
 ## Related Specs
-- Spec 63: Rise Up Macro SDK (`spec/07-chrome-extension/63-rise-up-macro-sdk.md`)
-- Spec 12: Project Model (`spec/07-chrome-extension/12-project-model-and-url-rules.md`)
-- Spec 67: Project-Scoped DB & REST API (`spec/07-chrome-extension/67-project-scoped-database-and-rest-api.md`)
+- Spec 63: Rise Up Macro SDK (`spec/11-chrome-extension/63-rise-up-macro-sdk.md`)
+- Spec 12: Project Model (`spec/11-chrome-extension/12-project-model-and-url-rules.md`)
+- Spec 67: Project-Scoped DB & REST API (`spec/11-chrome-extension/67-project-scoped-database-and-rest-api.md`)

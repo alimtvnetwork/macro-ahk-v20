@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-23  
 **Status**: Implemented  
-**Spec**: `spec/07-chrome-extension/64-api-explorer-swagger.md`
+**Spec**: `spec/11-chrome-extension/64-api-explorer-swagger.md`
 
 ---
 
@@ -40,5 +40,5 @@ All displayed field names use PascalCase (Type, DisplayName, Category, Descripti
 | `src/components/options/ApiExplorerView.tsx` | Page wrapper |
 
 ## Related Specs
-- Spec 18: Message Protocol (`spec/07-chrome-extension/18-message-protocol.md`)
-- Issue 62: Backend Menu Swagger (`spec/02-app-issues/62-backend-menu-swagger-storage-files-and-zip-workflow.md`)
+- Spec 18: Message Protocol (`spec/11-chrome-extension/18-message-protocol.md`)
+- Issue 62: Backend Menu Swagger (`spec/17-app-issues/62-backend-menu-swagger-storage-files-and-zip-workflow.md`)

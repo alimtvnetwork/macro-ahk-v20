@@ -4,7 +4,7 @@
  * Orchestrates the schema tab with table creation form, column editors,
  * and existing table list. Sub-modules handle styles, editors, and helpers.
  *
- * See: spec/01-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md §3
+ * See: spec/17-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md §3
  * @see spec/04-macro-controller/ts-migration-v2/05-module-splitting.md
  */
 

@@ -3,7 +3,7 @@
 **Status**: 📝 Draft  
 **Version**: 1.0  
 **Date**: 2026-04-03  
-**Location**: `spec/09-devtools-and-injection/instruction-driven-seeding.md`
+**Location**: `spec/12-devtools-and-injection/instruction-driven-seeding.md`
 
 ---
 
@@ -233,10 +233,10 @@ A set of markdown files that, when combined and fed to any AI agent, provide **e
 
 ### 3.2. Document Structure
 
-All files live in `spec/09-devtools-and-injection/developer-guide/`:
+All files live in `spec/12-devtools-and-injection/developer-guide/`:
 
 ```
-spec/09-devtools-and-injection/developer-guide/
+spec/12-devtools-and-injection/developer-guide/
 ├── 00-guide-overview.md           # Entry point — read this first
 ├── 01-project-structure.md        # Folder layout, file naming, conventions
 ├── 02-instruction-schema.md       # Full instruction.ts schema reference
@@ -362,7 +362,7 @@ Inside each project's detail view in the extension popup/options page, a button 
 
 When clicked:
 
-1. Reads all markdown files from `spec/09-devtools-and-injection/developer-guide/` (bundled into the extension at build time, or fetched from the repo)
+1. Reads all markdown files from `spec/12-devtools-and-injection/developer-guide/` (bundled into the extension at build time, or fetched from the repo)
 2. Concatenates them in order (`00-` through `10-`)
 3. Prepends a header with:
    - Current extension version
@@ -395,7 +395,7 @@ These are served as `web_accessible_resources` so the export feature can `fetch(
 
 | File | Purpose |
 |------|---------|
-| `spec/09-devtools-and-injection/developer-guide/*.md` (11 files) | LLM-ready developer guide |
+| `spec/12-devtools-and-injection/developer-guide/*.md` (11 files) | LLM-ready developer guide |
 | `src/background/instruction-seeder.ts` | New dynamic seeder that reads instruction.json |
 | N/A (build-generated) | `chrome-extension/dist/projects/projects-manifest.json` |
 
@@ -427,7 +427,7 @@ These are served as `web_accessible_resources` so the export feature can `fetch(
 ### Phase 1: Developer Guide Documentation
 **Scope**: Write all 11 markdown files for the developer guide.  
 **Depends on**: Nothing  
-**Output**: `spec/09-devtools-and-injection/developer-guide/` populated  
+**Output**: `spec/12-devtools-and-injection/developer-guide/` populated  
 
 ### Phase 2: Enhance instruction.ts Schema
 **Scope**: Add `seed` block to the `ProjectInstruction` interface. Update each project's `instruction.ts` with seeding metadata. Recompile `instruction.json` files.  

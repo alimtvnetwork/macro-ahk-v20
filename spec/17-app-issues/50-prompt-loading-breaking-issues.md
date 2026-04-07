@@ -73,8 +73,8 @@
 
 ### References
 
-- `spec/07-chrome-extension/45-prompt-manager-crud.md` — CRUD spec
-- `spec/02-app-issues/41-options-ui-and-prompts-critical-issues.md` — Previous Options UI issues
+- `spec/11-chrome-extension/45-prompt-manager-crud.md` — CRUD spec
+- `spec/17-app-issues/41-options-ui-and-prompts-critical-issues.md` — Previous Options UI issues
 - `src/background/handlers/prompt-handler.ts` — SQLite-based prompt handler
 - `standalone-scripts/macro-controller/01-macro-looping.js` — Macro controller prompt injection
 
@@ -98,7 +98,7 @@
 
 ## Done Checklist
 
-- [x] Issue documented under `/spec/02-app-issues/`
+- [x] Issue documented under `/spec/17-app-issues/`
 - [x] Root cause analysis complete for all 4 sub-issues
 - [x] Prevention rules documented
 - [x] Regression test scenarios defined

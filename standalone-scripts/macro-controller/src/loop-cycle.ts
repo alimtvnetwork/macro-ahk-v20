@@ -7,7 +7,7 @@
  * v7.40: Migrated from raw fetch() to httpRequest() (XMLHttpRequest + Promise).
  * v7.50: Migrated to marco.api centralized SDK (Axios + registry).
  *
- * @see spec/01-app-issues/free-credits-detect/overview.md
+ * @see spec/17-app-issues/free-credits-detect/overview.md
  * @see memory/architecture/networking/centralized-api-registry
  */
 

@@ -94,7 +94,7 @@ Tasks are ordered by dependency and severity. Critical issues first, then UX imp
 ## Phase 7: Spec & Memory Updates
 
 ### Task 7.1: Update spec 63 to match implementation
-- **File**: `spec/07-chrome-extension/63-rise-up-macro-sdk.md`
+- **File**: `spec/11-chrome-extension/63-rise-up-macro-sdk.md`
 
 ### Task 7.2: Update naming in all specs and memory files
 - **Files**: All files referencing "Rise Up Macro SDK"

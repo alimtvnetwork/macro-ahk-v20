@@ -6,7 +6,7 @@
  * exists (dev/deploy builds). Production builds without the file
  * are silently ignored.
  *
- * See spec/01-app-issues/15-deploy-no-auto-reload.md
+ * See spec/17-app-issues/15-deploy-no-auto-reload.md
  */
 
 import { syncCacheWithBuildId } from "./injection-cache";

@@ -8,7 +8,7 @@
  * v7.40: Migrated from raw fetch() to httpRequest() (XMLHttpRequest + Promise).
  * v7.50: Migrated to marco.api centralized SDK (Axios + registry).
  *
- * @see spec/01-app-issues/55-workspace-api-missing-bearer-token.md
+ * @see spec/17-app-issues/55-workspace-api-missing-bearer-token.md
  * @see memory/architecture/networking/centralized-api-registry
  */
 

@@ -192,7 +192,7 @@ export function getConfigFetchStatus() {
  * Resolves a JWT from direct cookie access, platform localStorage, or signed URL fallback.
  *
  * Network auth-token exchange is intentionally disabled to avoid noisy 401s.
- * See root-cause: spec/01-app-issues/80-auth-token-bridge-null-on-preview.md
+ * See root-cause: spec/17-app-issues/80-auth-token-bridge-null-on-preview.md
  */
 // eslint-disable-next-line max-lines-per-function
 export async function handleGetToken(

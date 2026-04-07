@@ -5,7 +5,7 @@
  * architecture overview, SDK API reference, data models, REST API,
  * message types, and usage examples.
  *
- * See: spec/01-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md (R3)
+ * See: spec/17-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md (R3)
  */
 
 // eslint-disable-next-line max-lines-per-function

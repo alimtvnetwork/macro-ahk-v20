@@ -8,7 +8,7 @@ Auth Bridge Service provides `getBearerToken(options?)` with TTL-cached localSto
 Additional APIs: `getRawToken()` (sync, no TTL), `getTokenAge()`, `getTokenSavedAt()`.
 
 Root-cause references:
-- `spec/02-app-issues/80-auth-token-bridge-null-on-preview.md`
-- `spec/02-app-issues/81-auth-no-token-stale-macro-bundle.md`
+- `spec/17-app-issues/80-auth-token-bridge-null-on-preview.md`
+- `spec/17-app-issues/81-auth-no-token-stale-macro-bundle.md`
 
-Workflow spec: `spec/07-chrome-extension/36-cookie-only-bearer.md` (v2.0.0)
+Workflow spec: `spec/11-chrome-extension/36-cookie-only-bearer.md` (v2.0.0)

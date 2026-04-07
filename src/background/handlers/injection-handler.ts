@@ -11,7 +11,7 @@
  *
  * @see spec/05-chrome-extension/12-project-model-and-url-rules.md — Project model & URL matching
  * @see spec/05-chrome-extension/20-user-script-error-isolation.md — Error isolation wrappers
- * @see spec/07-devtools-and-injection/per-project-architecture.md — Per-project injection
+ * @see spec/12-devtools-and-injection/per-project-architecture.md — Per-project injection
  * @see .lovable/memory/architecture/injection-pipeline-optimization.md — Pipeline perf strategy
  * @see src/background/dependency-resolver.ts — Topological dependency sort
  */
@@ -383,7 +383,7 @@ async function injectSingleScript(
     const configJson = resolvedConfigJson;
     const projectId = getActiveProjectId() ?? undefined;
 
-    // ── CSS injection (before JS) — see spec/07-devtools-and-injection/standalone-script-assets.md §6 ──
+    // ── CSS injection (before JS) — see spec/12-devtools-and-injection/standalone-script-assets.md §6 ──
     if (script.assets?.css) {
         try {
             // CSS path is now under per-project subfolder

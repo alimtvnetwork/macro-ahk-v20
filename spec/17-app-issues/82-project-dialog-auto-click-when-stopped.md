@@ -89,7 +89,7 @@ if (!state.running) {
 |---|---|
 | `standalone-scripts/macro-controller/src/loop-engine.ts` | Inverted guard in `refreshStatus()`: dialog opening now requires `state.running === true` |
 | `.lovable/memory/features/macro-controller/dialog-interaction-policy.md` | New memory file documenting the non-regression rule |
-| `spec/02-app-issues/82-project-dialog-auto-click-when-stopped.md` | This spec |
+| `spec/17-app-issues/82-project-dialog-auto-click-when-stopped.md` | This spec |
 
 ---
 

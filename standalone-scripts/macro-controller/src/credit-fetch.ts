@@ -9,7 +9,7 @@
  * v7.40: Migrated from raw fetch() to httpRequest() (XMLHttpRequest + Promise).
  * v7.50: Migrated to marco.api centralized SDK (Axios + registry).
  *
- * @see spec/01-app-issues/authentication-freeze-and-retry-loop.md (RCA-1, RCA-2)
+ * @see spec/17-app-issues/authentication-freeze-and-retry-loop.md (RCA-1, RCA-2)
  * @see memory/architecture/networking/centralized-api-registry
  */
 

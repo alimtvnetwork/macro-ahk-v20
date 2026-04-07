@@ -8,9 +8,9 @@
  * Injected after a project's scripts so they can immediately use the
  * documented per-project SDK API.
  *
- * See: spec/01-app-issues/66-sdk-global-object-missing.md
+ * See: spec/17-app-issues/66-sdk-global-object-missing.md
  * See: spec/05-chrome-extension/63-rise-up-macro-sdk.md
- * See: spec/01-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md
+ * See: spec/17-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md
  */
 
 /* ------------------------------------------------------------------ */

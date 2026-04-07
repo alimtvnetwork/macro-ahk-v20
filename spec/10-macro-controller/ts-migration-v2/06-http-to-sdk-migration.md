@@ -122,8 +122,8 @@ All methods return `Promise<ApiResponse<T>>` → `{ ok, status, data, headers }`
 
 ## Dependencies
 
-- **Spec**: `spec/07-chrome-extension/63-rise-up-macro-sdk.md` — SDK architecture
-- **Spec**: `spec/02-app-issues/48-typescript-migration-standalone-scripts.md` — TS migration origin
+- **Spec**: `spec/11-chrome-extension/63-rise-up-macro-sdk.md` — SDK architecture
+- **Spec**: `spec/17-app-issues/48-typescript-migration-standalone-scripts.md` — TS migration origin
 - **Memory**: `architecture/networking/centralized-api-registry` — pattern documentation
 
 ---

@@ -6,7 +6,7 @@
  * This provides proactive token updates without polling —
  * when the cookie changes, the extension broadcasts immediately.
  *
- * See: spec/01-app-issues/auth-cookie-read-lovable-issue.md §Fix 4
+ * See: spec/17-app-issues/auth-cookie-read-lovable-issue.md §Fix 4
  */
 
 import { log } from './logging';

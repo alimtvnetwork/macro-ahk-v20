@@ -7,7 +7,7 @@
  * and enable independent caching.
  *
  * @see spec/06-coding-guidelines/02-typescript-immutability-standards.md — Rule CQ18
- * @see spec/07-devtools-and-injection/sdk-convention.md — SDK convention
+ * @see spec/12-devtools-and-injection/sdk-convention.md — SDK convention
  */
 
 /* ------------------------------------------------------------------ */

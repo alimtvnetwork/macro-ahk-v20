@@ -4,7 +4,7 @@
  * Generates a `.d.ts` file for the Riseup Macro SDK namespace,
  * providing IntelliSense for developers writing project scripts.
  *
- * See: spec/01-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md (R4)
+ * See: spec/17-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md (R4)
  */
 
 // eslint-disable-next-line max-lines-per-function

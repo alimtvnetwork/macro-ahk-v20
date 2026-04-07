@@ -82,7 +82,7 @@ GROUP BY e.Id;
 
 ## Cross-References
 
-- `spec/03-data-and-api/data-models.md` — Full schema reference
-- `spec/06-macro-controller/prompt-relational-structure.md` — First implementation of this pattern
+- `spec/07-data-and-api/data-models.md` — Full schema reference
+- `spec/10-macro-controller/prompt-relational-structure.md` — First implementation of this pattern
 - `.lovable/memory/architecture/storage/relational-views-policy.md` — Policy enforcement
 - `src/background/db-schemas.ts` — Canonical SQL schemas

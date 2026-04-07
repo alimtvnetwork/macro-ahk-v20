@@ -171,7 +171,7 @@ function ensureSdkUpdaterEntry(): void {
 /*  Seeding Logic                                                      */
 /* ------------------------------------------------------------------ */
 
-/** Builds the Riseup Macro SDK global project. See spec/07-devtools-and-injection/sdk-convention.md */
+/** Builds the Riseup Macro SDK global project. See spec/12-devtools-and-injection/sdk-convention.md */
 function buildSdkProject(): StoredProject {
     const now = nowTimestamp();
     return {

@@ -5,7 +5,7 @@
  * PROJECT_CONFIG_RECONSTRUCT messages for reading/writing config
  * from/to the project-scoped SQLite database.
  *
- * @see spec/01-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md — Config seeding overhaul
+ * @see spec/17-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md — Config seeding overhaul
  * @see .lovable/memory/features/projects/configuration-seeding.md — Configuration seeding
  */
 

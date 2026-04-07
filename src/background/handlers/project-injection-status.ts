@@ -5,7 +5,7 @@
  * from background transient injection records.
  *
  * @see spec/05-chrome-extension/12-project-model-and-url-rules.md — Project model & URL matching
- * @see spec/07-devtools-and-injection/per-project-architecture.md — Per-project injection
+ * @see spec/12-devtools-and-injection/per-project-architecture.md — Per-project injection
  */
 
 import type { StoredProject, ScriptEntry } from "../../shared/project-types";

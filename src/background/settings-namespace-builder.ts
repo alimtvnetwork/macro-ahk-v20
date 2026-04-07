@@ -11,7 +11,7 @@
  *   - Limits: maxCycleCount, idleTimeout
  *   - General: autoRun, notifications, theme
  *
- * See: spec/01-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md
+ * See: spec/17-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md
  */
 
 import type { ExtensionSettings } from "./handlers/settings-handler";

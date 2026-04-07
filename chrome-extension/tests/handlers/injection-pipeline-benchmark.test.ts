@@ -5,7 +5,7 @@
  * (the performance budget from Issue 87). Runs against mock chrome
  * APIs so timings reflect handler logic, not real IPC.
  *
- * @see spec/01-app-issues/87-injection-pipeline-performance/implementation-plan.md
+ * @see spec/17-app-issues/87-injection-pipeline-performance/implementation-plan.md
  * @see .lovable/memory/architecture/injection-pipeline-optimization.md
  */
 

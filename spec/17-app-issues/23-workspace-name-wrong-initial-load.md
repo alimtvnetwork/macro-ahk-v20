@@ -49,7 +49,7 @@ In v7.9.30, the `POST /projects/{id}/mark-viewed` API call (Tier 1) was removed 
 
 ### Why the existing spec did not prevent it
 
-The spec at `/spec/06-macro-controller/workspace-management.md` listed mark-viewed as Tier 1 but the implementation had removed it. The spec and code were out of sync.
+The spec at `/spec/10-macro-controller/workspace-management.md` listed mark-viewed as Tier 1 but the implementation had removed it. The spec and code were out of sync.
 
 ---
 

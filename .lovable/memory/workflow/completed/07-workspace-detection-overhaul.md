@@ -55,4 +55,4 @@ Multi-version effort to achieve reliable workspace detection in MacroLoop. Progr
 
 ## Files Changed
 - `macro-looping.js`, `combo.js`, `Automator.ahk`, `GeneralDefaults.ahk`, `config.ini`
-- `spec/06-macro-controller/workspace-detection.md`, `spec/02-app-issues/01-07`
+- `spec/10-macro-controller/workspace-detection.md`, `spec/17-app-issues/01-07`

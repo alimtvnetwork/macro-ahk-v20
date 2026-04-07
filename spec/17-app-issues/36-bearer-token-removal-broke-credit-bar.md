@@ -97,7 +97,7 @@ All values MUST be `Math.round()`'d integers. Segment widths are normalized via 
 ## Files Changed
 
 - `standalone-scripts/macro-controller/macro-looping.js` (v7.20 → v7.22)
-- `spec/07-chrome-extension/36-cookie-only-bearer.md` (updated)
+- `spec/11-chrome-extension/36-cookie-only-bearer.md` (updated)
 - `chrome-extension/src/background/default-scripts-seeder.ts` (legacy pruning)
 
 ---

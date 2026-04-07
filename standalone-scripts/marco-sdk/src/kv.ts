@@ -3,7 +3,7 @@
  *
  * Provides marco.kv.* methods for project-scoped key-value storage.
  *
- * See: spec/07-devtools-and-injection/sdk-convention.md §marco.kv
+ * See: spec/12-devtools-and-injection/sdk-convention.md §marco.kv
  */
 
 import { sendMessage } from "./bridge";

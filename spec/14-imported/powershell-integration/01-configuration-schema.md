@@ -135,7 +135,7 @@ The `powershell.json` configuration file defines project-specific paths and sett
     },
     "standaloneArtifacts": {
       "type": "object",
-      "description": "Pre-build guard: verifies compiled standalone script bundles exist and are not stale before the main build runs. Prevents building against missing or empty dist/ folders. RCA: spec/02-app-issues/81-auth-no-token-stale-macro-bundle.md",
+      "description": "Pre-build guard: verifies compiled standalone script bundles exist and are not stale before the main build runs. Prevents building against missing or empty dist/ folders. RCA: spec/17-app-issues/81-auth-no-token-stale-macro-bundle.md",
       "properties": {
         "baseDir": {
           "type": "string",

@@ -54,16 +54,16 @@ spec/
 | # | Task | Status |
 |---|------|--------|
 | 1 | Create `spec/01-overview/` and move overview docs | ✅ Done |
-| 2 | Create `spec/03-data-and-api/` and consolidate data specs | ✅ Done |
+| 2 | Create `spec/07-data-and-api/` and consolidate data specs | ✅ Done |
 | 3 | Rename app-issues → `02-app-issues/` | ✅ Done |
 | 4 | Rename tasks → `04-tasks/` and absorb standalone files | ✅ Done |
-| 5 | Create `spec/06-macro-controller/` and consolidate macro specs | ✅ Done |
+| 5 | Create `spec/10-macro-controller/` and consolidate macro specs | ✅ Done |
 | 6 | Merge chrome extension specs into `07-chrome-extension/` | ✅ Done |
 | 7 | Create `spec/08-coding-guidelines/` and merge all 3 guideline locations | ✅ Done |
-| 8 | Create `spec/09-devtools-and-injection/` | ✅ Done |
-| 9 | Create `spec/10-features/` | ✅ Done |
-| 10 | Create `spec/11-imported/` and move remaining imported specs | ✅ Done |
-| 11 | Rename prompt-samples → `spec/12-prompts/` | ✅ Done |
+| 8 | Create `spec/12-devtools-and-injection/` | ✅ Done |
+| 9 | Create `spec/13-features/` | ✅ Done |
+| 10 | Create `spec/14-imported/` and move remaining imported specs | ✅ Done |
+| 11 | Rename prompt-samples → `spec/15-prompts/` | ✅ Done |
 | 12 | Archive legacy specs and XMind files | ✅ Done |
 | 13 | Update all cross-references in specs and memory files | ✅ Done |
 | 14 | Write new `spec/README.md` with folder index | ✅ Done |
@@ -77,18 +77,18 @@ spec/
 
 | Old Path | New Path |
 |----------|----------|
-| `spec/00-standards/` | `spec/05-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/` |
+| `spec/00-standards/` | `spec/08-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/` |
 | `spec/00-overview/` | `spec/01-overview/` |
-| `spec/01-app-issues/` | `spec/02-app-issues/` |
-| `spec/02-data-and-api/` | `spec/03-data-and-api/` |
-| `spec/03-tasks/` | `spec/04-tasks/` |
-| `spec/04-macro-controller/` | `spec/06-macro-controller/` |
-| `spec/05-chrome-extension/` | `spec/07-chrome-extension/` |
+| `spec/17-app-issues/` | `spec/17-app-issues/` |
+| `spec/02-data-and-api/` | `spec/07-data-and-api/` |
+| `spec/03-tasks/` | `spec/16-tasks/` |
+| `spec/04-macro-controller/` | `spec/10-macro-controller/` |
+| `spec/05-chrome-extension/` | `spec/11-chrome-extension/` |
 | `spec/06-coding-guidelines/` | `spec/08-coding-guidelines/` |
-| `spec/07-devtools-and-injection/` | `spec/09-devtools-and-injection/` |
-| `spec/08-features/` | `spec/10-features/` |
-| `spec/09-imported/` | `spec/11-imported/` |
-| `spec/10-prompts/` | `spec/12-prompts/` |
+| `spec/12-devtools-and-injection/` | `spec/12-devtools-and-injection/` |
+| `spec/08-features/` | `spec/13-features/` |
+| `spec/09-imported/` | `spec/14-imported/` |
+| `spec/10-prompts/` | `spec/15-prompts/` |
 
 ---
 

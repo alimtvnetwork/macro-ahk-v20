@@ -104,6 +104,6 @@ None — fix is structural (schema alignment).
 ## Done Checklist
 
 - [x] Code fixed in both extension and web app SQLite bundles
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`
 - [x] Memory updated with summary and prevention rule
 - [x] Version bumped to v1.16.0

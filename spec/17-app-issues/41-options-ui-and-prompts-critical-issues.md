@@ -60,6 +60,6 @@ User report during manual end-to-end usage.
 
 ## Done Checklist
 
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`
 - [ ] Root-cause + code fix log per item added after each implementation
 - [ ] End-to-end test evidence captured after each item

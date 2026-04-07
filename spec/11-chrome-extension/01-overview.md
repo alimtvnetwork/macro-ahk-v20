@@ -260,7 +260,7 @@ onClick handler (synchronous, user gesture context):
 
 - Current AHK architecture: `spec/03-architecture.md`
 - Current config.ini schema: `marco-script-ahk-v7.latest/specs/JSON-schema.md`
-- API reference: `spec/03-data-and-api/data-schema.md`
-- Workspace detection: `spec/06-macro-controller/workspace-management.md`
+- API reference: `spec/07-data-and-api/data-schema.md`
+- Workspace detection: `spec/10-macro-controller/workspace-management.md`
 - Cookie diagnostic: `combo.js` → `getBearerTokenFromCookie()` function
-- Gap analysis: `spec/07-chrome-extension/14-gap-analysis-and-phase-plan.md`
+- Gap analysis: `spec/11-chrome-extension/14-gap-analysis-and-phase-plan.md`

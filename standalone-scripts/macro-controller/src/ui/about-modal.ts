@@ -3,7 +3,7 @@
  *
  * Template source: standalone-scripts/macro-controller/templates/about-modal.html
  * Compiled to: standalone-scripts/macro-controller/dist/templates.json
- * Spec: spec/07-devtools-and-injection/standalone-script-assets.md §5
+ * Spec: spec/12-devtools-and-injection/standalone-script-assets.md §5
  */
 
 import { log } from '../logging';

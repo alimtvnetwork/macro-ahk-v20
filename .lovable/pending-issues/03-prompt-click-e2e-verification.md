@@ -1,7 +1,7 @@
 # Pending Issue: Prompt Click E2E Verification (Issues 52/53)
 
 **Priority**: Medium  
-**Spec**: `spec/01-app-issues/52-prompt-click-does-nothing.md`, `spec/01-app-issues/53-prompt-click-simplified-dom-append.md`  
+**Spec**: `spec/17-app-issues/52-prompt-click-does-nothing.md`, `spec/17-app-issues/53-prompt-click-simplified-dom-append.md`  
 **Status**: Open  
 **Created**: 2026-04-01
 

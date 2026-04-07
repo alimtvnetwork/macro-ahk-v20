@@ -41,9 +41,9 @@ Every numbered issue has been resolved or verified as silently fixed.
 
 | # | Feature | Spec | Status |
 |---|---------|------|--------|
-| 20 | P Store Marketplace | `spec/10-features/pstore-marketplace.md` | 📋 Draft |
-| 21 | Advanced Automation (Chains, Scheduling) | `spec/10-features/advanced-automation.md` | ✅ Complete |
-| 22 | Cross-Project Sync & Shared Library | `spec/10-features/cross-project-sync.md` | 📋 Draft |
+| 20 | P Store Marketplace | `spec/13-features/pstore-marketplace.md` | 📋 Draft |
+| 21 | Advanced Automation (Chains, Scheduling) | `spec/13-features/advanced-automation.md` | ✅ Complete |
+| 22 | Cross-Project Sync & Shared Library | `spec/13-features/cross-project-sync.md` | 📋 Draft |
 
 ### Suggested Implementation Order
 

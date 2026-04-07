@@ -1,6 +1,6 @@
 # Diagram Index — Macro Controller Architecture
 
-> All diagrams follow the [XMind-inspired dark-mode standard](../../../spec/05-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/diagram-standards.md).  
+> All diagrams follow the [XMind-inspired dark-mode standard](../../../spec/08-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/diagram-standards.md).  
 > Source `.mmd` files live alongside this index; rendered PNGs are in `images/`.
 
 ## Table of Contents
@@ -126,7 +126,7 @@ How page scripts (MAIN world), the relay content script (ISOLATED world), and th
 **File:** [`injection-pipeline-workflow.mmd`](injection-pipeline-workflow.mmd)  
 **Image:** [`images/injection-pipeline-workflow.png`](images/injection-pipeline-workflow.png)
 
-**Second revision** — Full injection pipeline from "Run Scripts" click with IndexedDB cache decision gate, 6 stages, and right-side annotations. Key corrections from v1: removed auth bridge/JWT waterfall from token seeding (replaced with simple cookie read + timestamp + expiry), explained CSP with concrete HTTP header example, clarified relay as postMessage↔chrome.runtime bridge with script-ID duplicate prevention, explained IIFE try-catch wrapping with before/after examples, simplified Stage 4 to known working blob injection path + ISOLATED last resort only (removed speculative userScripts fallback), added IndexedDB payload caching to skip Stages 0–3 on cache hit, added explicit UI injection flow showing how script enters the page DOM, and added comprehensive logging at every stage mirrored to DevTools + SQLite. Clarification specs: `spec/05-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/injection-pipeline-workflow-clarification-and-correction.md` (v1) and `injection-pipeline-workflow-second-revision-and-correction.md` (v2).
+**Second revision** — Full injection pipeline from "Run Scripts" click with IndexedDB cache decision gate, 6 stages, and right-side annotations. Key corrections from v1: removed auth bridge/JWT waterfall from token seeding (replaced with simple cookie read + timestamp + expiry), explained CSP with concrete HTTP header example, clarified relay as postMessage↔chrome.runtime bridge with script-ID duplicate prevention, explained IIFE try-catch wrapping with before/after examples, simplified Stage 4 to known working blob injection path + ISOLATED last resort only (removed speculative userScripts fallback), added IndexedDB payload caching to skip Stages 0–3 on cache hit, added explicit UI injection flow showing how script enters the page DOM, and added comprehensive logging at every stage mirrored to DevTools + SQLite. Clarification specs: `spec/08-design-diagram/mermaid-design-diagram-spec/01-diagram-spec/injection-pipeline-workflow-clarification-and-correction.md` (v1) and `injection-pipeline-workflow-second-revision-and-correction.md` (v2).
 
 ![Injection Pipeline Workflow](images/injection-pipeline-workflow.png)
 

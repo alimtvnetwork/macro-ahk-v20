@@ -82,9 +82,9 @@ Spec 06 §Progress Bar Specification defined segment percentages relative to eac
 
 ### References
 
-- `spec/06-macro-controller/credit-system.md` §Progress Bar Specification
-- `spec/02-app-issues/02-status-bar-credit-display-mismatch.md`
-- `spec/02-app-issues/37-compact-mode-bar-missing-segments.md`
+- `spec/10-macro-controller/credit-system.md` §Progress Bar Specification
+- `spec/17-app-issues/02-status-bar-credit-display-mismatch.md`
+- `spec/17-app-issues/37-compact-mode-bar-missing-segments.md`
 
 ---
 

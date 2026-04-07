@@ -231,7 +231,7 @@ model UpdaterInfo {
 }
 ```
 
-See: `spec/07-chrome-extension/58-updater-system.md`
+See: `spec/11-chrome-extension/58-updater-system.md`
 
 ---
 
@@ -326,7 +326,7 @@ model UpdaterStep {
 
 ### 13. UpdaterDetails (View)
 
-Aggregates UpdaterInfo with category names via `GROUP_CONCAT`. See `spec/03-data-and-api/db-join-specs/01-category-join-pattern.md`.
+Aggregates UpdaterInfo with category names via `GROUP_CONCAT`. See `spec/07-data-and-api/db-join-specs/01-category-join-pattern.md`.
 
 ---
 

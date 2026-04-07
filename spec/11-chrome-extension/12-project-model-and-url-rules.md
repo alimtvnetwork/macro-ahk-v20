@@ -322,7 +322,7 @@ Built-in scripts (`builtin-macro-loop`, `builtin-combo`, `builtin-xpath-utils`) 
 
 ## Lessons Carried from AHK Issues
 
-The following issues from `/spec/02-app-issues/` informed this design:
+The following issues from `/spec/17-app-issues/` informed this design:
 
 | AHK Issue | Chrome Extension Prevention |
 |-----------|-----------------------------|

@@ -1,5 +1,5 @@
 {
-  "$schema": "spec/03-imported-spec/12-powershell-integration/schemas/powershell.schema.json",
+  "$schema": "spec/14-imported/12-powershell-integration/schemas/powershell.schema.json",
   "projectName": "Marco Chrome Extension",
   "rootDir": ".",
   "extensionDir": "chrome-extension",

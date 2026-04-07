@@ -3,7 +3,7 @@
  *
  * Provides marco.files.* methods for project-scoped file storage.
  *
- * See: spec/07-devtools-and-injection/sdk-convention.md §marco.files
+ * See: spec/12-devtools-and-injection/sdk-convention.md §marco.files
  */
 
 import { sendMessage } from "./bridge";

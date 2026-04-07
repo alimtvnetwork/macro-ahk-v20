@@ -11,7 +11,7 @@
  * - Error toasts: 30s; normal: 12s auto-dismiss
  * - Recent-errors store for diagnostic panels
  *
- * See: spec/01-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md
+ * See: spec/17-app-issues/85-sdk-notifier-config-seeding-database-overhaul.md
  */
 
 /* ------------------------------------------------------------------ */

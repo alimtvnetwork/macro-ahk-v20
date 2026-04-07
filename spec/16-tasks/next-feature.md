@@ -194,7 +194,7 @@ On `run.ps1 -d`, the default settings JSON is seeded as the initial value. If th
 | `standalone-scripts/prompts/13-next-tasks/` | CREATE | Next Tasks prompt folder |
 | `standalone-scripts/macro-controller/01-macro-looping.js` | MODIFY | Add Task Next sub-menu + automation loop |
 | `src/background/handlers/settings-handler.ts` | MODIFY | Add task-next settings defaults |
-| `spec/04-tasks/next-feature.md` | CREATE | This spec |
+| `spec/16-tasks/next-feature.md` | CREATE | This spec |
 
 ---
 

@@ -96,7 +96,7 @@ None — visual change only.
 
 ### References to spec sections updated
 
-- `/spec/02-app-issues/02-status-bar-credit-display-mismatch.md` (this file)
+- `/spec/17-app-issues/02-status-bar-credit-display-mismatch.md` (this file)
 
 ---
 
@@ -109,7 +109,7 @@ None — visual change only.
 ## Done Checklist
 
 - [x] Spec updated (issue write-up documents the rendering consistency rule)
-- [x] Issue write-up created under `/spec/02-app-issues/`
+- [x] Issue write-up created under `/spec/17-app-issues/`
 - [x] Memory updated with summary and prevention rule
 - [x] Acceptance criteria updated
 - [x] Iterations recorded (single iteration — no prior attempts)

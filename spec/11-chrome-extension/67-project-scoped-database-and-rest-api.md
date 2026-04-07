@@ -2,7 +2,7 @@
 
 **Date**: 2026-03-23  
 **Status**: Implemented  
-**Spec**: `spec/07-chrome-extension/67-project-scoped-database-and-rest-api.md`
+**Spec**: `spec/11-chrome-extension/67-project-scoped-database-and-rest-api.md`
 
 ---
 
@@ -193,6 +193,6 @@ RiseupAsiaMacroExt.Projects.<CodeName>.api.list()
 
 ## 8. Related Specs
 
-- Spec 63: Rise Up Macro SDK (`spec/07-chrome-extension/63-rise-up-macro-sdk.md`)
-- Spec 65: Developer Docs & Project Slug (`spec/07-chrome-extension/65-developer-docs-and-project-slug.md`)
-- Spec 17: Data Models (`spec/03-data-and-api/data-models.md`)
+- Spec 63: Rise Up Macro SDK (`spec/11-chrome-extension/63-rise-up-macro-sdk.md`)
+- Spec 65: Developer Docs & Project Slug (`spec/11-chrome-extension/65-developer-docs-and-project-slug.md`)
+- Spec 17: Data Models (`spec/07-data-and-api/data-models.md`)

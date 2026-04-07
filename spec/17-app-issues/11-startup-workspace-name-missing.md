@@ -56,7 +56,7 @@ Each retry checks `state.workspaceName` before running. If a manual Check or loo
 - **Startup flow**: `macro-looping.ts` → `loadWorkspacesOnStartup()` + `scheduleWorkspaceRetry()`
 - **Workspace detection**: `workspace-detection.ts` → `autoDetectLoopCurrentWorkspace()`
 - **Check button (working)**: `loop-engine.ts` → `runCheck()` (3-step XPath protocol)
-- **XPath protocol**: `spec/07-chrome-extension/60-check-button-spec.md`
+- **XPath protocol**: `spec/11-chrome-extension/60-check-button-spec.md`
 
 ---
 

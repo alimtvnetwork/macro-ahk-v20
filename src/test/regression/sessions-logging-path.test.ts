@@ -9,7 +9,7 @@
  * Fix: all paths now use `getCurrentSessionId()` from logging-handler
  * and pass the session ID as a parameter, never as a cross-DB subquery.
  *
- * @see spec/02-app-issues/91-injection-false-positive-and-sessions-db-root-cause.md
+ * @see spec/17-app-issues/91-injection-false-positive-and-sessions-db-root-cause.md
  */
 
 import { describe, it, expect } from "vitest";

@@ -79,9 +79,9 @@ Additionally, compact mode now shows **all emoji credit labels** (`🎁💰🔄�
 
 ### References
 
-- `spec/06-macro-controller/credit-system.md` §Progress Bar Specification, §Rendering Sites
-- `spec/02-app-issues/02-status-bar-credit-display-mismatch.md` (precedent for rendering consistency)
-- `spec/02-app-issues/36-bearer-token-removal-broke-credit-bar.md` (related auth fix)
+- `spec/10-macro-controller/credit-system.md` §Progress Bar Specification, §Rendering Sites
+- `spec/17-app-issues/02-status-bar-credit-display-mismatch.md` (precedent for rendering consistency)
+- `spec/17-app-issues/36-bearer-token-removal-broke-credit-bar.md` (related auth fix)
 
 ---
 

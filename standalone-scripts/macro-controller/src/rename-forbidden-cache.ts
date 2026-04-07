@@ -5,7 +5,7 @@
  * on rename attempts. Cached workspaces are skipped in bulk rename
  * unless the user triggers a force-retry.
  *
- * @see spec/01-app-issues/60-grouped-kv-forbidden-rename.md
+ * @see spec/17-app-issues/60-grouped-kv-forbidden-rename.md
  */
 
 import { log } from './logging';

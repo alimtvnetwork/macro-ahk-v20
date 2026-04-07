@@ -56,4 +56,4 @@ This guarantees the caller always receives a terminal response and can unfreeze 
 
 - `standalone-scripts/macro-controller/src/ui/prompt-manager.ts`
 - `src/content-scripts/message-relay.ts`
-- `spec/02-app-issues/61-add-prompt-save-stuck-relay-timeout.md`
+- `spec/17-app-issues/61-add-prompt-save-stuck-relay-timeout.md`

@@ -311,6 +311,6 @@ export function markBearerTokenExpired(controller: string): void {
 
 ## References
 
-- `spec/06-macro-controller/ts-migration-v2/01-initialization-fix.md` — startup flow
+- `spec/10-macro-controller/ts-migration-v2/01-initialization-fix.md` — startup flow
 - `memory/auth/session-token-resolution` — token resolution priority
 - `memory/features/macro-controller/error-handling-v2` — toast error guard
