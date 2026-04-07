@@ -1385,6 +1385,7 @@ async function showInjectionFailureToastInTab(
         await chrome.scripting.executeScript({
             target: { tabId },
             world: "MAIN",
+            // eslint-disable-next-line max-lines-per-function
             func: (names: string[], failed: number, total: number, ms: number, version: string) => {
                 const nameList = names.length <= 3 ? names.join(", ") : names.slice(0, 3).join(", ") + ` +${names.length - 3} more`;
                 const msg = `❌ Marco v${version} — ${failed}/${total} scripts failed (${ms}ms)\n${nameList}`;
