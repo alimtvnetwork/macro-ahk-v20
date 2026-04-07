@@ -6,7 +6,16 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v1.76.0] — 2026-04-07
+## [v1.77.0] — 2026-04-07
+
+### Added
+- Diagnostic logging in `findNextTasksPrompt()` — prints slug/id of every prompt entry during resolution to confirm fields survive the full pipeline (load → cache → resolve)
+
+### Changed
+- Macro Controller version bump: 2.106.0 → 2.107.0
+
+---
+
 
 ### Added
 - Regression tests for prompt normalization — 11 tests covering slug/id/isDefault field preservation and newline normalization
