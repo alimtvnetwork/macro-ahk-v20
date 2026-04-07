@@ -1,8 +1,8 @@
 # Automator — Future Work Roadmap
 
-**Last Updated**: 2026-04-05
+**Last Updated**: 2026-04-07
 **Active Codebase**: `marco-script-ahk-v7.latest/` (v7.23)
-**Chrome Extension**: v2.9.0
+**Chrome Extension**: v2.98.0
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
@@ -11,9 +11,19 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.9.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.98.0 — Stable
 
-All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.9.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, and hover micro-interactions. ESLint zero errors/warnings. All immediate workstream items complete.
+All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.98.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, and 4-tier CSP fallback. ESLint zero errors/warnings. All immediate workstream items complete.
+
+### 2026-04-07 Session
+
+- **Injection Pipeline Cache Gate**: Added IndexedDB-backed pipeline cache with HIT/MISS/FORCE states. On cache HIT, Stages 0–3 are skipped entirely. 3-layer invalidation: manifest version mismatch, automated rebuild, and manual `INVALIDATE_CACHE` message.
+- **4-Tier CSP Fallback Chain**: Documented and aligned code with diagram — MAIN World Blob → USER_SCRIPT (Chrome 135+) → ISOLATED Blob → ISOLATED Eval. Updated spec and Mermaid diagram.
+- **Force Run Support**: Added `forceReload` flag to context menu ("⚡ Force Run (bypass cache)") and shortcut handler (`force-run-scripts` command). Registered in `manifest.json` — users assign shortcut at `chrome://extensions/shortcuts`.
+- **LLM Guide Updated**: `generate-llm-guide.ts` rewritten to reflect 7-stage + cache gate pipeline, 4-tier CSP fallback, `forceReload` parameter on `INJECT_SCRIPTS`, and pipeline cache documentation.
+- **S-056 Completed**: Cross-Project Sync spec matured from DRAFT v1.0.0 → READY v2.0.0. Added conflict resolution rules, SQLite storage backend design with content hashing, and comprehensive edge case handling (14 acceptance criteria).
+- **S-052 Completed**: Prompt click E2E verification checklist (7 tests) added to issue write-up #52. Covers fresh render, snapshot restore, MAIN world relay, save round-trip, error boundary, and action button isolation. Awaits manual Chrome execution.
+- **ESLint**: Zero errors, zero warnings maintained throughout all changes.
 
 ### 2026-04-06 Hotfix
 
@@ -34,7 +44,7 @@ All critical AHK features implemented. 44 issue write-ups documented. 26 enginee
 
 | Task | Description | Status |
 |------|-------------|--------|
-| **Task 1.2** — E2E Chrome Verification | Load extension in Chrome, verify popup/options/CRUD/injection/context menu/import-export | Blocked (requires manual Chrome testing) |
+| **Task 1.2** — E2E Chrome Verification | Load extension in Chrome, verify popup/options/CRUD/injection/context menu/import-export. S-052 checklist ready. | Blocked (requires manual Chrome testing) |
 
 ### Priority 2: Test Coverage
 
@@ -48,6 +58,12 @@ A marketplace for discovering, searching, and importing projects/scripts from a 
 
 Spec folder: `spec/05-chrome-extension/82-pstore-project-store/`
 
+### Priority 4: Cross-Project Sync (Spec Ready)
+
+Shared asset library with synced/pinned/detached linking, project groups, version history, and import/export. Spec matured to READY v2.0.0 with conflict resolution, storage backend, and edge cases.
+
+Spec: `spec/13-features/cross-project-sync.md`
+
 ---
 
 ## Completed Work (Summary)
@@ -55,12 +71,14 @@ Spec folder: `spec/05-chrome-extension/82-pstore-project-store/`
 | Area | Highlights |
 |------|-----------|
 | **AHK Layer** | E2E tests (22 suites, 150+ cases), XPath self-healing, config schema validation, hot-reload, token expiry UI |
-| **Extension Releases** | v1.0–v2.5.0: injection, SQLite, auth, context menu, scaling, React unification, view transitions |
+| **Extension Releases** | v1.0–v2.98.0: injection, SQLite, auth, context menu, scaling, React unification, view transitions, cache gate, force run |
 | **React UI Unification** | All 12 steps complete — content scripts moved, message client migrated, version bumped |
 | **Immediate Workstream** | Swagger API Explorer, Storage Browser (4 categories), Prompt Seeding, Overflow Menus, Project Files Panel, ZIP Export/Import |
+| **Injection Pipeline** | 7-stage + cache gate, 4-tier CSP fallback (MAIN Blob → USER_SCRIPT → ISOLATED Blob → ISOLATED Eval), Force Run (context menu + shortcut) |
 | **UI Polish** | Tailwind hover micro-interactions (Task 4.1), direction-aware view transitions (Task 4.2) |
-| **Build & Docs** | Build verification (Task 2.1), CDP injection docs (Task 3.1), AI onboarding checklist (Task 3.2) |
+| **Build & Docs** | Build verification (Task 2.1), CDP injection docs (Task 3.1), AI onboarding checklist (Task 3.2), LLM guide updated |
 | **Code Quality** | ESLint 1390 → 0 issues, SonarJS integration, TS migration v2 (6 phases) |
+| **Specs Matured** | S-056 Cross-Project Sync (READY v2.0.0), S-052 Prompt Click verification checklist |
 | **Issues Resolved** | #76–#90: cookie binding, hot-reload, globals migration, auth bridge, injection pipeline, IndexedDB cache, prompt click fix |
 
 ---
@@ -71,7 +89,8 @@ Spec folder: `spec/05-chrome-extension/82-pstore-project-store/`
 |---|------|--------|--------|---------|
 | 1 | **Task 2.2** — React component tests | Medium | High — catches UI regressions | None |
 | 2 | **Task 1.2** — E2E Chrome verification | Low | High — validates real-world usage | Manual Chrome required |
-| 3 | **P Store** — Project marketplace | High | High — new feature | Owner spec pending |
+| 3 | **Cross-Project Sync** — Shared asset library | High | High — new feature | Spec ready |
+| 4 | **P Store** — Project marketplace | High | High — new feature | Owner spec pending |
 
 **Recommended next**: Task 2.2 (React component tests) — no blockers, highest actionable impact.
 
