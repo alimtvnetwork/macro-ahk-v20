@@ -1153,6 +1153,10 @@ async function showInjectionToastInTab(
             func: (ok: number, total: number, ms: number, version: string) => {
                 const msg = `✅ Marco v${version} — ${ok}/${total} scripts injected (${ms}ms)`;
 
+                // Dismiss loading toast first
+                const loader = document.getElementById("__marco-inject-toast-loading");
+                if (loader) { loader.style.opacity = "0"; loader.style.transform = "translateY(8px) scale(0.96)"; setTimeout(() => loader.remove(), 300); }
+
                 // Try SDK toast first
                 const m = (window as any).marco;
                 if (m?.notify?.success) {
