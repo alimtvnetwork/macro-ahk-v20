@@ -22,7 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
-import { Play, RotateCw, Loader2, Keyboard } from "lucide-react";
+import { Play, RotateCw, Loader2, Keyboard, Zap } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
