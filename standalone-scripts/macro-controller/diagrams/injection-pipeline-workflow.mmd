@@ -20,12 +20,12 @@ graph TD
 
     %% ===== CACHE GATE =====
     TOAST --> CACHE{"Cache Decision Gate<br/>Check IndexedDB: marco_injection_cache"}:::cache
-    CACHE -. "Cache key = extVersion + configHash + scriptHashes<br/>LOG INFO: cache HIT or MISS" .-> CACHENOTE["If nothing changed since last injection,<br/>skip Stages 0-3 entirely and reuse<br/>the stored wrapped payload."]:::note
+    CACHE -. "Cache key = extension version string only.<br/>No hashing needed.<br/>LOG INFO: cache HIT or MISS" .-> CACHENOTE["If version matches and cache exists,<br/>skip Stages 0-3 entirely and reuse<br/>the stored wrapped payload."]:::note
 
-    CACHE -- "HIT: payload cached" --> CACHEFAST["Skip to Stage 4<br/>Use cached wrapped payload"]:::cache
+    CACHE -- "HIT: version matches" --> CACHEFAST["Skip to Stage 4<br/>Use cached wrapped payload"]:::cache
     CACHEFAST --> EXEC
 
-    CACHE -- "MISS: rebuild needed" --> GUARD
+    CACHE -- "MISS: no cache or version changed" --> GUARD
 
     %% ===== STAGE 0a =====
     GUARD["Stage 0a: ensureBuiltinScriptsExist"]:::stage
