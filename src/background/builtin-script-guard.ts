@@ -241,10 +241,10 @@ async function seedMissingBuiltinsDirectly(
                 console.log("[builtin-guard:fallback] ✅ Read instruction.json for %s: v%s (from %s)",
                     scriptName, version, instrAbsUrl);
             } else {
-                logBgWarnError(BgLogTag.BUILTIN_GUARD_FALLBACK, `instruction.json HTTP ${instrResp.status} for ${scriptName} — URL: ${instrAbsUrl}`);
+                logBgWarnError(BgLogTag.BUILTIN_GUARD_FALLBACK, `instruction.json fetch returned non-OK\n  Path: ${instrAbsUrl}\n  Missing: instruction.json metadata for "${scriptName}"\n  Reason: HTTP ${instrResp.status} — file may not exist in web_accessible_resources`);
                 void persistInjectionWarn(
                     "BUILTIN_GUARD_INSTRUCTION_MISSING",
-                    `[builtin-guard:fallback] instruction.json not found for ${scriptName}: HTTP ${instrResp.status} at ${instrAbsUrl}`,
+                    `[builtin-guard:fallback] instruction.json not found\n  Path: ${instrAbsUrl}\n  Missing: Metadata for "${scriptName}"\n  Reason: HTTP ${instrResp.status}`,
                 );
             }
         } catch (fetchErr) {
