@@ -217,8 +217,6 @@ function _preWarmViaLoader(): void {
 function createUiAndObserver(): void {
   timingStart('ui', 'UI Creation');
 
-  // Dismiss the standalone startup toast now that the full UI is being created
-  removeStartupToast();
 
   const mc = MacroController.getInstance();
   if (tryCreateUiNow(mc)) {
