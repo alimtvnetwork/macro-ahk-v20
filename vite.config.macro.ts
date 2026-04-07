@@ -7,10 +7,11 @@ import { resolve } from 'path';
  * Compiles TypeScript source → single IIFE JS bundle for injection.
  * Output: standalone-scripts/macro-controller/dist/macro-looping.js
  *
- * Usage: npm run build:macro
+ * Usage: npm run build:macro-controller
+ *        npm run build:macro-controller -- --mode development  (inline source maps)
  *
- * Always uses inline sourcemaps so injected code produces readable stack traces.
- * Scripts are injected as raw code strings — external .map files are never loaded.
+ * Dev mode (--mode development): inline sourcemaps for readable injected stack traces.
+ * Prod mode (default): no sourcemaps for smaller bundles.
  */
 export default defineConfig(({ mode }) => ({
   publicDir: false,
