@@ -26,7 +26,7 @@ function Show-Help {
     Write-Host "  -f,  -force        Clean build: remove dist, caches, node_modules"
     Write-Host "  -i,  -installonly  Install/update dependencies only"
     Write-Host "  -r,  -rebuild      Complete clean reinstall (combines -f + -i)"
-    Write-Host "  -d,  -deploy       Deploy extension to browser profile"
+    Write-Host "  -d,  -deploy       Deploy extension to browser profile (dev mode: inline source maps)"
     Write-Host "  -pr, -profile      Chrome/Edge profile name (default: '$($script:DefaultProfile)')"
     Write-Host "  -e,  -browser      Browser: 'chrome' or 'edge' (default: 'chrome')"
     Write-Host "  -w,  -watch        Watch mode -- rebuild on file changes"

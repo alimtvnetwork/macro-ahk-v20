@@ -24,7 +24,7 @@
 .OUTPUTS
     Hashtable with keys: Name, Success, Output (array of log lines).
 #>
-function Build-StandaloneScript([string]$ScriptDirPath, [string]$ScriptName, [string]$RootDir) {
+function Build-StandaloneScript([string]$ScriptDirPath, [string]$ScriptName, [string]$RootDir, [string]$BuildMode = "production") {
     $output = @()
     $success = $true
 
@@ -105,15 +105,16 @@ function Build-StandaloneScript([string]$ScriptDirPath, [string]$ScriptName, [st
     # ── TypeScript -> JS (npm run build:<name>) ──
     Push-Location $RootDir
     try {
-        $output += "  Building TypeScript bundle..."
-        $buildResult = npm run "build:$ScriptName" 2>&1
+        $modeFlag = if ($BuildMode -eq "development") { " -- --mode development" } else { "" }
+        $output += "  Building TypeScript bundle (mode: $BuildMode)..."
+        $buildResult = Invoke-Expression "npm run `"build:$ScriptName`"$modeFlag" 2>&1
         $buildExitCode = $LASTEXITCODE
         if ($buildExitCode -ne 0) {
             $output += "  [FAIL] build:$ScriptName failed (exit $buildExitCode)"
             foreach ($line in $buildResult) { $output += "    $line" }
             $success = $false
         } else {
-            $output += "  [OK] build:$ScriptName complete"
+            $output += "  [OK] build:$ScriptName complete ($BuildMode)"
         }
     } finally {
         Pop-Location
@@ -138,8 +139,8 @@ function Build-StandaloneScript([string]$ScriptDirPath, [string]$ScriptName, [st
 .OUTPUTS
     Int — number of successfully built scripts. Throws on fatal failure.
 #>
-function Build-AllStandaloneScripts([string]$RootDir) {
-    Write-Host "  Building standalone scripts (parallel)..." -ForegroundColor Yellow
+function Build-AllStandaloneScripts([string]$RootDir, [string]$BuildMode = "production") {
+    Write-Host "  Building standalone scripts (parallel, mode: $BuildMode)..." -ForegroundColor Yellow
 
     $standaloneDir = Join-Path $RootDir "standalone-scripts"
     $scriptDirs = Get-ChildItem -Path $standaloneDir -Directory -ErrorAction SilentlyContinue | Where-Object {
@@ -158,13 +159,13 @@ function Build-AllStandaloneScripts([string]$RootDir) {
     foreach ($dir in $scriptDirs) {
         $scriptName = $dir.Name
         $scriptPath = $dir.FullName
-        Write-Host "    [START] $scriptName" -ForegroundColor DarkCyan
+        Write-Host "    [START] $scriptName ($BuildMode)" -ForegroundColor DarkCyan
 
         $job = Start-Job -ScriptBlock {
-            param($ModulePath, $ScriptDirPath, $ScriptName, $RootDir)
+            param($ModulePath, $ScriptDirPath, $ScriptName, $RootDir, $Mode)
             . $ModulePath
-            Build-StandaloneScript -ScriptDirPath $ScriptDirPath -ScriptName $ScriptName -RootDir $RootDir
-        } -ArgumentList $thisModulePath, $scriptPath, $scriptName, $RootDir
+            Build-StandaloneScript -ScriptDirPath $ScriptDirPath -ScriptName $ScriptName -RootDir $RootDir -BuildMode $Mode
+        } -ArgumentList $thisModulePath, $scriptPath, $scriptName, $RootDir, $BuildMode
 
         $jobs += $job
     }
