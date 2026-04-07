@@ -6,6 +6,21 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v1.75.0] — 2026-04-07
+
+### Fixed
+- **Next Task regression** — `normalizePromptEntries()` dropped `slug`, `id`, `isDefault` fields causing `findNextTasksPrompt()` to always fall through to `entries[0]` (start prompt) instead of resolving the correct `next-tasks` slug
+- **Excessive newlines in large prompts** — added `normalizeNewlines()` to collapse 3+ consecutive blank lines before editor injection
+
+### Changed
+- `pasteIntoEditor()` now normalizes whitespace before injecting prompt text
+- Macro Controller version bump: 2.104.0 → 2.105.0
+
+### Root Cause Analysis
+- [RCA: prompt-next-task-regression](spec/02-app-issues/prompt-next-task-regression-newline-formatting-root-cause-version-bump-and-changelog.md)
+
+---
+
 ## [v2.4.0] — 2026-04-05
 
 ### Added

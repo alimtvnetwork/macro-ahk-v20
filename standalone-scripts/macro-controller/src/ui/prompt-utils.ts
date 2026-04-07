@@ -22,13 +22,21 @@ export function normalizePromptEntries(entries: Partial<PromptEntry & { order?: 
     if (name && text) {
       const entry: PromptEntry = { name, text };
 
+      if (raw.id) { entry.id = raw.id; }
+      if (raw.slug) { entry.slug = raw.slug; }
       if (raw.category) { entry.category = raw.category; }
       if (raw.isFavorite) { entry.isFavorite = true; }
+      if (raw.isDefault !== undefined) { entry.isDefault = raw.isDefault; }
 
       out.push(entry);
     }
   }
   return out;
+}
+
+/** Normalize excessive blank lines: collapse 3+ consecutive newlines to 2 (one blank line). */
+export function normalizeNewlines(text: string): string {
+  return text.replace(/\n{3,}/g, '\n\n').trim();
 }
 
 // ── JSON parse with truncation recovery ──
@@ -151,7 +159,8 @@ function pasteIntoContentEditable(target: HTMLElement, text: string): boolean {
   return false;
 }
 
-export function pasteIntoEditor(text: string, promptsCfg: PromptsCfg, getByXPath: (xpath: string) => Element | null): boolean {
+export function pasteIntoEditor(rawText: string, promptsCfg: PromptsCfg, getByXPath: (xpath: string) => Element | null): boolean {
+  const text = normalizeNewlines(rawText);
   const target = findPasteTarget(promptsCfg, getByXPath) as HTMLElement | null;
   if (!target) {
     log('Prompt paste: No editor target found — copying to clipboard instead', 'warn');
