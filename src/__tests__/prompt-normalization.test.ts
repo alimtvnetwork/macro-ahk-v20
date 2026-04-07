@@ -40,7 +40,39 @@ function normalizePromptEntries(entries: Partial<PromptEntry & { order?: number 
 }
 
 function normalizeNewlines(text: string): string {
-  return text.replace(/\n{3,}/g, '\n\n').trim();
+  return text
+    .replace(/\r\n/g, '\n')
+    .replace(/\n[ \t]*\n[ \t]*\n/g, '\n\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
+ * Mirrors findNextTasksPrompt from task-next-ui.ts.
+ * Must NEVER fall back to entries[0] — that caused the regression.
+ */
+function findNextTasksPrompt(entries: PromptEntry[], targetSlug = 'next-tasks'): PromptEntry | null {
+  // Priority 1: Exact slug match
+  for (const entry of entries) {
+    if ((entry.slug || '').toLowerCase() === targetSlug) return entry;
+  }
+  // Priority 2: id match
+  for (const entry of entries) {
+    const id = (entry.id || '').toLowerCase();
+    if (id === targetSlug || id === 'default-' + targetSlug || id.indexOf(targetSlug) !== -1) return entry;
+  }
+  // Priority 3: Derived slug from name
+  for (const entry of entries) {
+    const derived = (entry.name || '').toLowerCase().replace(/\s+/g, '-');
+    if (derived === targetSlug) return entry;
+  }
+  // Priority 4: Name contains both 'next' and 'task'
+  for (const entry of entries) {
+    const name = (entry.name || '').toLowerCase();
+    if (name.indexOf('next') !== -1 && name.indexOf('task') !== -1) return entry;
+  }
+  // NO FALLBACK to entries[0] — return null
+  return null;
 }
 
 // ─── Regression: slug/id/isDefault must survive normalization ───
@@ -115,5 +147,72 @@ describe('normalizeNewlines', () => {
 
   it('trims leading/trailing whitespace', () => {
     expect(normalizeNewlines('\n\n\nHello\n\n\n')).toBe('Hello');
+  });
+
+  it('normalizes Windows \\r\\n line endings', () => {
+    expect(normalizeNewlines('a\r\n\r\n\r\nb')).toBe('a\n\nb');
+  });
+
+  it('collapses blank-ish lines with whitespace between newlines', () => {
+    expect(normalizeNewlines('a\n \n \nb')).toBe('a\n\nb');
+    expect(normalizeNewlines('a\n\t\n\nb')).toBe('a\n\nb');
+  });
+
+  it('handles large prompts with multiple excessive gaps', () => {
+    const input = 'Step 1\n\n\n\nStep 2\n\n\n\n\nStep 3\n\nStep 4';
+    expect(normalizeNewlines(input)).toBe('Step 1\n\nStep 2\n\nStep 3\n\nStep 4');
+  });
+});
+
+// ─── Regression: findNextTasksPrompt must NEVER return Start Prompt ───
+
+describe('findNextTasksPrompt — next task selection', () => {
+  const fullEntries: PromptEntry[] = [
+    { name: 'Start Prompt', text: 'Write a readme...', slug: 'start-prompt', id: 'default-start' },
+    { name: 'Start Prompt v2', text: 'Write a readme v2...', slug: 'start-prompt-v2', id: 'default-start-v2' },
+    { name: 'Next Tasks', text: 'List remaining tasks', slug: 'next-tasks', id: 'default-next-tasks', category: 'automation' },
+  ];
+
+  it('finds Next Tasks by slug (priority 1)', () => {
+    const result = findNextTasksPrompt(fullEntries);
+    expect(result).not.toBeNull();
+    expect(result!.name).toBe('Next Tasks');
+  });
+
+  it('finds Next Tasks by id when slug is missing (priority 2)', () => {
+    const entries = fullEntries.map(e => ({ ...e, slug: undefined }));
+    const result = findNextTasksPrompt(entries);
+    expect(result).not.toBeNull();
+    expect(result!.name).toBe('Next Tasks');
+  });
+
+  it('finds Next Tasks by derived name slug (priority 3)', () => {
+    const entries = fullEntries.map(e => ({ ...e, slug: undefined, id: undefined }));
+    const result = findNextTasksPrompt(entries);
+    expect(result).not.toBeNull();
+    expect(result!.name).toBe('Next Tasks');
+  });
+
+  it('finds by name keywords (priority 4)', () => {
+    const entries = [
+      { name: 'Start Prompt', text: 'Write...' },
+      { name: 'My Next Awesome Task List', text: 'Do things' },
+    ];
+    const result = findNextTasksPrompt(entries);
+    expect(result).not.toBeNull();
+    expect(result!.name).toBe('My Next Awesome Task List');
+  });
+
+  it('NEVER falls back to entries[0] — returns null instead', () => {
+    const entries = [
+      { name: 'Start Prompt', text: 'Write a readme...' },
+      { name: 'Rejog Memory', text: 'Read context...' },
+    ];
+    const result = findNextTasksPrompt(entries);
+    expect(result).toBeNull();
+  });
+
+  it('returns null for empty entries', () => {
+    expect(findNextTasksPrompt([])).toBeNull();
   });
 });
