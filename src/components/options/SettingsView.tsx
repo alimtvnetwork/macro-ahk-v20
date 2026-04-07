@@ -57,6 +57,7 @@ interface SettingsData {
 const DEFAULT_SETTINGS: SettingsData = {
   autoRunOnPageLoad: true,
   showNotifications: true,
+  showInjectionToast: true,
   defaultRunAt: "document_idle",
   debugMode: false,
   maxCycleCount: 100,
