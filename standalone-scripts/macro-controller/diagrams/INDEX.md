@@ -17,6 +17,7 @@
 10. [Injection Pipeline Workflow](#10-injection-pipeline-workflow) — Full Run Scripts pipeline from click to page execution
 11. [Copy Injection Logs Workflow](#11-copy-injection-logs-workflow) — Copy button data gathering and report generation
 12. [Auth Token Seeding Workflow](#12-auth-token-seeding-workflow) — Extension boot to bearer token resolution and seeding
+13. [Message Relay Workflow](#13-message-relay-workflow) — Full request/response and broadcast flow through the 3-tier relay
 
 ---
 
@@ -149,3 +150,14 @@ Copy Injection Logs button workflow: 5 parallel background fetches via Promise.a
 Full authentication and token seeding flow from 4 trigger sources (extension boot, Run Scripts pipeline, cookie change, tab navigation) through the core 2-tier resolution: Tier 1 scans tab localStorage for Supabase JWTs (`sb-*-auth-token`), Tier 2 reads session cookies and only seeds if the value is a real JWT (`eyJ...` with 3 segments). Raw opaque cookies are never seeded. On cookie change, the cookie watcher reseeds all platform tabs and broadcasts TOKEN_UPDATED/TOKEN_EXPIRED. Downstream consumers (authBridge, Macro Controller, Credit Monitor) read from localStorage with TTL caching.
 
 ![Auth Token Seeding Workflow](images/auth-token-seeding-workflow.png)
+
+---
+
+## 13. Message Relay Workflow
+
+**File:** [`message-relay-workflow.mmd`](message-relay-workflow.mmd)  
+**Image:** [`images/message-relay-workflow.png`](images/message-relay-workflow.png)
+
+End-to-end message relay workflow: page scripts (MacroController or Marco SDK) post messages via `window.postMessage` → content script relay validates source (`marco-controller` or `marco-sdk`), checks against the ALLOWED_TYPES whitelist (40+ types), enforces rate limiting (100/s) → forwards to background via `chrome.runtime.sendMessage` → background router dispatches to HANDLER_REGISTRY → response flows back through `sendResponse` callback → content script posts back to page with matching `requestId` → caller Promise resolves. Broadcasts (CONFIG_UPDATED, TOKEN_EXPIRED, TOKEN_UPDATED, CONFIG_CHANGED) flow unsolicited from background → content script → page. Guards include duplicate relay sentinel, SDK 15s timeout, and error envelopes for blocked types.
+
+![Message Relay Workflow](images/message-relay-workflow.png)
