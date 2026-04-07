@@ -21,19 +21,32 @@ export function generateLlmGuide(codeName: string, slug: string): string {
 
 ## 1. Architecture Overview
 
-### Injection Pipeline (5 Stages)
+### Injection Pipeline (7 Stages + Cache Gate)
 
 | Stage | Name | Description |
 |-------|------|-------------|
-| 1 | **URL Match** | Background service worker matches the active tab URL against project URL rules (exact, prefix, regex, glob). |
-| 2 | **Dependency Resolution** | Topological sort resolves project dependencies. Parents inject before children. |
-| 3 | **SDK Bootstrap** | \`marco-sdk.js\` IIFE injects \`window.marco\` into the MAIN world with bridge modules (auth, cookies, config, xpath, kv, files). |
-| 4 | **Namespace Registration** | Per-project namespace IIFE registers \`${ns}\` with proxy methods delegating to \`window.marco.*\`. |
-| 5 | **Script Injection** | Project scripts inject in \`order\` sequence into the MAIN world. They can immediately use the SDK namespace. |
+| **Pre** | **User Trigger + Toast** | User clicks "Run Scripts" (normal) or "Force Run" (\`forceReload=true\`). A loading spinner toast is shown in the tab. |
+| **Cache** | **Cache Decision Gate** | IndexedDB lookup by manifest version key. **HIT** → skip Stages 0–3, jump to Execute. **MISS** → full pipeline. **FORCE** → delete cache, full rebuild. |
+| 0 | **Guard + Dependencies** | \`ensureBuiltinScriptsExist\` self-heals missing built-ins, then \`prependDependencyScripts\` performs topological sort. |
+| 1 | **Script Resolution** | Loads code from \`chrome.storage.local\`, config JSON, and theme JSON. Unresolvable scripts are hard errors. |
+| 2 | **Tab Env Prep** (\`Promise.all\`) | Parallel: (a) \`bootstrapNamespaceRoot\` in MAIN world, (b) \`ensureRelayInjected\` in ISOLATED world, (c) \`seedTokensIntoTab\`. |
+| 3 | **Wrap + Prepare** | CSS-first sequential mode when assets detected; otherwise batch IIFE wrap + combine + cache payload in IndexedDB. |
+| 4 | **Execute — 4-Tier CSP Fallback** | Tier 1: MAIN World Blob (primary) → Tier 2: USER_SCRIPT (Chrome 135+) → Tier 3: ISOLATED Blob → Tier 4: ISOLATED Eval (last resort). |
+| 5 | **Namespaces** (parallel with 3+4) | (a) Settings + llmGuide → \`RiseupAsiaMacroExt.Settings\`, (b) Per-project namespace → \`${ns}\`. |
+| **Post** | **Post-Pipeline** | Log mirror (DevTools + SQLite + OPFS), performance budget check, verify 6 post-injection globals, final toast (success/warn/error). |
+
+### 4-Tier CSP Fallback Chain
+
+When a page's Content Security Policy blocks script injection, the extension falls back through 4 tiers:
+
+1. **Tier 1 — MAIN World Blob**: Primary method. Creates a \`blob:\` URL script tag in the page's MAIN world. Full access to \`window\`, DOM, and page globals.
+2. **Tier 2 — USER_SCRIPT** (Chrome 135+): Uses \`chrome.userScripts.execute()\`. Near-MAIN access but bypasses strict CSP. Sets \`health=DEGRADED\`.
+3. **Tier 3 — ISOLATED World Blob**: Same blob technique but in ISOLATED world. Shares DOM but not \`window\` vars. Most macro features degraded.
+4. **Tier 4 — ISOLATED Eval**: Direct \`eval()\` in ISOLATED world. Last resort. If this also fails, \`health=ERROR\` and injection is impossible on the page.
 
 ### Execution Context
 
-- **World**: All scripts run in the page's MAIN world (not ISOLATED).
+- **World**: All scripts target the page's MAIN world (not ISOLATED). CSP fallback may downgrade to ISOLATED or USER_SCRIPT.
 - **Bridge**: \`window.postMessage\` → content script relay → \`chrome.runtime.sendMessage\` → background service worker.
 - **Frozen**: \`window.marco\` and all namespace objects are \`Object.freeze()\`d — scripts cannot modify the SDK.
 
@@ -395,7 +408,7 @@ Schema metadata is tracked in the \`ProjectSchema\` meta-table.
 | Type | Direction | Payload |
 |------|-----------|---------|
 | \`GET_TOKEN\` | script → bg | — |
-| \`INJECT_SCRIPTS\` | popup → bg | \`{ tabId, scripts }\` |
+| \`INJECT_SCRIPTS\` | popup → bg | \`{ tabId, scripts, forceReload? }\` |
 | \`DB_QUERY\` | script → bg | \`{ projectId, table, method, params }\` |
 | \`CONFIG_CHANGED\` | bg → script | \`{ key, value }\` |
 | \`GET_SESSION_LOGS\` | popup → bg | — |
@@ -417,18 +430,28 @@ Shortcuts can be customized at \`chrome://extensions/shortcuts\`.
 
 ## 8. Performance & Caching
 
-### IndexedDB Script Cache
+### Pipeline Cache (IndexedDB)
 
-Stable scripts (SDK, XPath) are pre-cached in IndexedDB at extension boot.
-This eliminates \`fetch()\` calls from \`web_accessible_resources\` on subsequent injections.
+The full wrapped injection payload is cached in IndexedDB (\`marco_injection_cache\`) keyed by the extension's manifest version string. On subsequent runs, the **Cache Gate** checks this cache:
+
+- **HIT** (version matches): Skips Stages 0–3 entirely, jumps straight to Execute (Stage 4). Typical speedup: 50–80%.
+- **MISS** (version mismatch or empty): Full pipeline rebuild, then stores the new payload.
+- **FORCE** (user clicks Force Run): Deletes cached entry, performs full rebuild.
+
+Cache is invalidated by 3 layers:
+1. \`chrome.runtime.onInstalled\` clears cache on extension update.
+2. Version key mismatch triggers automatic rebuild.
+3. \`INVALIDATE_CACHE\` message for manual invalidation.
+
+### Script Pre-Cache
+
+Stable scripts (SDK, XPath) are also pre-cached in IndexedDB at extension boot to eliminate \`fetch()\` calls from \`web_accessible_resources\`.
 
 | Script | Caching | Reason |
 |--------|---------|--------|
 | \`marco-sdk.js\` | Pre-cached at boot | Rarely changes; provides core SDK |
 | \`xpath.js\` | Pre-cached at boot | Rarely changes; XPath utilities |
 | \`macro-looping.js\` | Cached after first inject | Changes frequently |
-
-Cache is automatically invalidated on extension version bump or manual \`INVALIDATE_CACHE\` message.
 
 ### Injection Budget
 
