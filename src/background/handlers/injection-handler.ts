@@ -1210,6 +1210,117 @@ async function showInjectionToastInTab(
 }
 
 /* ------------------------------------------------------------------ */
+/*  Post-injection failure toast in target tab                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Shows a red error toast in the target tab when one or more scripts fail injection.
+ * Lists the failed script names so the user knows exactly what went wrong.
+ */
+async function showInjectionFailureToastInTab(
+    tabId: number,
+    failedNames: string[],
+    failCount: number,
+    totalCount: number,
+    durationMs: number,
+): Promise<void> {
+    try {
+        await chrome.scripting.executeScript({
+            target: { tabId },
+            world: "MAIN",
+            func: (names: string[], failed: number, total: number, ms: number, version: string) => {
+                const nameList = names.length <= 3 ? names.join(", ") : names.slice(0, 3).join(", ") + ` +${names.length - 3} more`;
+                const msg = `❌ Marco v${version} — ${failed}/${total} scripts failed (${ms}ms)\n${nameList}`;
+
+                // Try SDK toast first
+                const m = (window as any).marco;
+                if (m?.notify?.error) {
+                    try { m.notify.error(msg, { duration: 6000 }); return; } catch { /* fall through */ }
+                }
+
+                // DOM fallback
+                const CONTAINER_ID = "__marco-inject-toast";
+                let container = document.getElementById(CONTAINER_ID);
+                if (!container) {
+                    container = document.createElement("div");
+                    container.id = CONTAINER_ID;
+                    container.style.cssText = "position:fixed;bottom:20px;right:20px;z-index:2147483647;pointer-events:none;display:flex;flex-direction:column;gap:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;";
+                    (document.body || document.documentElement).appendChild(container);
+                }
+
+                const toast = document.createElement("div");
+                toast.style.cssText = [
+                    "pointer-events:auto",
+                    "display:flex",
+                    "align-items:flex-start",
+                    "gap:8px",
+                    "padding:10px 16px",
+                    "border-radius:10px",
+                    "font-size:12px",
+                    "font-weight:500",
+                    "color:#fecaca",
+                    "background:linear-gradient(135deg,#7f1d1d 0%,#991b1b 100%)",
+                    "border:1px solid rgba(239,68,68,0.3)",
+                    "box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 0 1px rgba(239,68,68,0.1)",
+                    "opacity:0",
+                    "transform:translateY(12px) scale(0.96)",
+                    "transition:all 0.35s cubic-bezier(0.16,1,0.3,1)",
+                    "max-width:400px",
+                    "backdrop-filter:blur(12px)",
+                ].join(";") + ";";
+
+                const icon = document.createElement("span");
+                icon.textContent = "❌";
+                icon.style.cssText = "font-size:16px;flex-shrink:0;margin-top:1px;";
+
+                const body = document.createElement("div");
+                body.style.cssText = "flex:1;min-width:0;";
+
+                const titleDiv = document.createElement("div");
+                titleDiv.textContent = `Marco v${version} — ${failed}/${total} scripts failed (${ms}ms)`;
+                titleDiv.style.cssText = "margin-bottom:3px;";
+
+                const detailDiv = document.createElement("div");
+                detailDiv.textContent = nameList;
+                detailDiv.style.cssText = "font-size:10px;opacity:0.75;word-break:break-word;";
+
+                body.appendChild(titleDiv);
+                body.appendChild(detailDiv);
+
+                const close = document.createElement("button");
+                close.textContent = "✕";
+                close.style.cssText = "background:none;border:none;color:#fecaca;font-size:14px;cursor:pointer;opacity:0.6;padding:0 2px;margin-left:4px;transition:opacity 0.2s;flex-shrink:0;";
+                close.onmouseenter = () => { close.style.opacity = "1"; };
+                close.onmouseleave = () => { close.style.opacity = "0.6"; };
+                close.onclick = () => dismiss();
+
+                toast.appendChild(icon);
+                toast.appendChild(body);
+                toast.appendChild(close);
+                container.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                    toast.style.opacity = "1";
+                    toast.style.transform = "translateY(0) scale(1)";
+                });
+
+                const dismiss = () => {
+                    toast.style.opacity = "0";
+                    toast.style.transform = "translateY(8px) scale(0.96)";
+                    setTimeout(() => toast.remove(), 350);
+                };
+
+                // Error toasts stay longer — 6s
+                setTimeout(dismiss, 6000);
+            },
+            args: [failedNames, failCount, totalCount, Math.round(durationMs), EXTENSION_VERSION],
+        });
+    } catch (toastError) {
+        logCaughtError(BgLogTag.INJECTION, "showInjectionFailureToastInTab failed", toastError);
+    }
+}
+
+/* ------------------------------------------------------------------ */
 /*  Post-injection verification                                        */
 /* ------------------------------------------------------------------ */
 
