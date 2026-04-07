@@ -408,7 +408,7 @@ Schema metadata is tracked in the \`ProjectSchema\` meta-table.
 | Type | Direction | Payload |
 |------|-----------|---------|
 | \`GET_TOKEN\` | script → bg | — |
-| \`INJECT_SCRIPTS\` | popup → bg | \`{ tabId, scripts }\` |
+| \`INJECT_SCRIPTS\` | popup → bg | \`{ tabId, scripts, forceReload? }\` |
 | \`DB_QUERY\` | script → bg | \`{ projectId, table, method, params }\` |
 | \`CONFIG_CHANGED\` | bg → script | \`{ key, value }\` |
 | \`GET_SESSION_LOGS\` | popup → bg | — |
