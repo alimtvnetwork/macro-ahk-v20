@@ -166,39 +166,55 @@ All scripts are batched into a single payload:
 
 ## Stage 4: Execute in Tab
 
-The wrapped payload is executed in the tab with a 3-tier CSP fallback strategy:
+The wrapped payload is executed in the tab with a **4-tier CSP fallback** strategy. Health transitions to **DEGRADED** on any non-primary path.
 
-### Primary: MAIN World Blob Injection
+### Tier 1 (Primary): MAIN World Blob Injection
 
 1. Convert code string to `Blob` (`type: text/javascript`)
 2. `URL.createObjectURL` creates a `blob:` URL
 3. Create `<script>` element with `src = blob URL`
-4. Append to `document.documentElement`
+4. Append to `document.body` or `document.documentElement`
 5. Browser executes in **MAIN world**
 6. Revoke blob URL after execution
 
 > Blob URLs are treated as same-origin by the browser, bypassing most CSP restrictions.
 
-### Fallback 1: textContent Injection
+### Tier 2: USER_SCRIPT World (Chrome 135+)
 
-If Blob injection fails (CSP blocks `blob:` URLs):
+If MAIN blob injection fails (CSP blocks):
 
-1. Create `<script>` element
-2. Set `textContent` = code string
-3. Append to `document.documentElement`
-4. Still runs in **MAIN world**
+1. `chrome.userScripts.execute()` with `world: "USER_SCRIPT"`
+2. Configures a custom world with relaxed CSP (`unsafe-inline`, `unsafe-eval`)
+3. Health = **DEGRADED**
 
-> Logged as `WARN: Blob failed, textContent fallback`.
+> USER_SCRIPT world has access to page DOM but separate JS context. Available on Chrome 135+. Falls back to Tier 3 if `chrome.userScripts` API is unavailable or fails.
 
-### Fallback 2: ISOLATED World (Last Resort)
+### Tier 3: ISOLATED World Blob Injection
 
-If both Blob and textContent fail:
+If USER_SCRIPT is unavailable or fails:
 
-1. Use `chrome.scripting.executeScript` with `world: "ISOLATED"`
+1. `chrome.scripting.executeScript` with `world: "ISOLATED"`
+2. Runs blob injection from ISOLATED world context
+3. Health = **DEGRADED**
+
+> ISOLATED world has its own `window` object. Cannot see `RiseupAsiaMacroExt` or page variables.
+
+### Tier 4 (Last Resort): ISOLATED World Eval
+
+If ISOLATED blob also fails:
+
+1. `chrome.scripting.executeScript` with `world: "ISOLATED"` using `eval()`
 2. Health = **DEGRADED**
-3. `LOG ERROR: Forced to ISOLATED world`
+3. `LOG ERROR: All higher tiers failed`
 
-> ISOLATED world has its own `window` object. Cannot see `RiseupAsiaMacroExt` or page variables. Most macro features will NOT work. This is explicit degraded mode.
+> Most macro features will NOT work in ISOLATED world. This is explicit degraded mode. A combined error message logs the failure reason for all 4 tiers.
+
+### Fallback Chain Summary
+
+```
+MAIN Blob → USER_SCRIPT (Chrome 135+) → ISOLATED Blob → ISOLATED Eval
+     ✅              ⚠️ DEGRADED            ⚠️ DEGRADED       ⚠️ DEGRADED
+```
 
 ### UI Injection Flow
 
@@ -210,7 +226,9 @@ After successful MAIN world execution:
 
 ---
 
-## Stage 5: Populate Data Namespaces (Parallel)
+## Stage 5: Populate Data Namespaces (Parallel with Stages 3+4)
+
+> **Note**: Stage 5 runs **in parallel** with Stages 3+4 for performance. Namespaces are independent of script execution and can be injected concurrently.
 
 Root object `RiseupAsiaMacroExt` exists from Stage 2a. Stage 5 fills it with runtime data.
 
