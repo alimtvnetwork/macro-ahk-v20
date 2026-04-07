@@ -67,7 +67,7 @@ const instruction: ProjectInstruction = {
     schemaVersion: "1.0",
     name: "marco-sdk",
     displayName: "Rise Up Macro SDK",
-    version: "2.102.0",
+    version: "2.103.0",
     description: "Core SDK — creates and freezes window.marco namespace",
     world: "MAIN",
     isGlobal: true,

@@ -164,9 +164,12 @@ export function setBackdropOpacity(opacity: number): void {
   const clamped = Math.min(1, Math.max(0, opacity));
   try { localStorage.setItem(LS_BACKDROP_OPACITY, String(clamped)); } catch { /* ignore */ }
   const backdrop = document.getElementById(BACKDROP_ID);
-  if (backdrop) {
-    backdrop.style.background = clamped === 0 ? 'none' : 'rgba(0,0,0,' + clamped + ')';
+  if (!backdrop) return;
+  if (clamped === 0) {
+    backdrop.remove();
+    return;
   }
+  backdrop.style.background = 'rgba(0,0,0,' + clamped + ')';
 }
 
 export function enableFloating(ctx: PanelLayoutCtx) {
@@ -174,12 +177,14 @@ export function enableFloating(ctx: PanelLayoutCtx) {
   log('Switching MacroLoop panel to floating mode', 'info');
   ctx.isFloating = true;
 
-  // Add a dark backdrop behind the panel so the host page's white bg doesn't show through
-  if (!document.getElementById(BACKDROP_ID)) {
-    const opacity = getBackdropOpacity();
+  const opacity = getBackdropOpacity();
+  if (opacity === 0) {
+    const existingBackdrop = document.getElementById(BACKDROP_ID);
+    if (existingBackdrop) existingBackdrop.remove();
+  } else if (!document.getElementById(BACKDROP_ID)) {
     const backdrop = document.createElement('div');
     backdrop.id = BACKDROP_ID;
-    backdrop.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:' + (opacity === 0 ? 'none' : 'rgba(0,0,0,' + opacity + ')') + ';z-index:99996;pointer-events:none;';
+    backdrop.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,' + opacity + ');z-index:99996;pointer-events:none;';
     document.body.appendChild(backdrop);
   }
 

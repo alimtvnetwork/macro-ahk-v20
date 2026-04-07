@@ -7,7 +7,7 @@
  * @see spec/04-macro-controller/ts-migration-v2/05-module-splitting.md
  */
 
-import { cSectionBg, cSectionHeader, cSectionToggle } from '../shared-state';
+import { cPanelBorder, cSectionBg, cSectionHeader, cSectionToggle } from '../shared-state';
 import type { CollapsibleSectionOpts } from '../types';
 
 export interface CollapsibleResult {
@@ -25,7 +25,7 @@ export function createCollapsibleSection(
   _opts?: CollapsibleSectionOpts,
 ): CollapsibleResult {
   const section = document.createElement('div');
-  section.style.cssText = 'padding:4px 6px;background:' + cSectionBg + ';border-radius:4px;';
+  section.style.cssText = 'padding:4px 6px;background:' + cSectionBg + ';border:1px solid ' + cPanelBorder + ';border-radius:4px;';
 
   const header = buildSectionHeader();
   const toggle = buildToggleIndicator();

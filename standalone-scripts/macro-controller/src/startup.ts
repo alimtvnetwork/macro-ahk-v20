@@ -544,18 +544,24 @@ function resolveTier1Workspace(tier1Data: MarkViewedResponse): boolean {
 
 // ── Workspace Retry ──
 
-// Issue 84 Fix 2: Reduced to 2 retries — attempt 1 refreshes cookie, attempt 2 is final
+// Retry policy: first retry forces cookie refresh, second retry is the final pass.
 const STARTUP_WS_MAX_RETRIES = 2;
 
 function scheduleWorkspaceRetry(attempt: number): void {
   const isExhausted = attempt > STARTUP_WS_MAX_RETRIES;
   if (isExhausted) {
-    log('Startup: Workspace retry exhausted (' + STARTUP_WS_MAX_RETRIES + ' attempts) — workspace may need manual Check', 'warn');
-    showToast('⚠️ Workspace not detected after ' + STARTUP_WS_MAX_RETRIES + ' retries — click ☑ Check to retry manually', 'warn', { noStop: true });
+    log(
+      'standalone-scripts/macro-controller/src/startup.ts scheduleWorkspaceRetry: workspace unresolved after '
+      + STARTUP_WS_MAX_RETRIES
+      + ' retries; projectId=' + (extractProjectIdFromUrl() || 'missing')
+      + '; tokenSource=' + (getLastTokenSource() || 'none')
+      + '; loadedWorkspaces=' + ((loopCreditState.perWorkspace || []).length)
+      + '; reason=Tier 1 mark-viewed + passive fallback did not identify the current workspace',
+      'error',
+    );
     return;
   }
 
-  // Retry 1: 2s (cookie refresh), Retry 2: 4s (final attempt)
   const delayMs = attempt * 2000;
   log('Startup: Scheduling workspace retry #' + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' in ' + delayMs + 'ms', 'check');
 
@@ -566,20 +572,24 @@ function scheduleWorkspaceRetry(attempt: number): void {
       return;
     }
 
-    // On first retry, attempt cookie-based token refresh before giving up on token
-    let retryToken = resolveToken();
+    let retryToken = '';
 
-    if (!retryToken && attempt === 1) {
-      log(STARTUP_RETRY + attempt + ' — no token from resolveToken, attempting cookie refresh...', 'check');
-      const cookieToken = getBearerTokenFromCookie();
-      if (cookieToken) {
-        log(STARTUP_RETRY + attempt + ' — cookie token resolved, using for retry', 'success');
-        retryToken = cookieToken;
+    if (attempt === 1) {
+      log(STARTUP_RETRY + attempt + ' — forcing cookie read before retry', 'check');
+      retryToken = getBearerTokenFromCookie();
+      if (retryToken) {
+        log(STARTUP_RETRY + attempt + ' — cookie token resolved, using refreshed token for retry', 'success');
+      } else {
+        log(STARTUP_RETRY + attempt + ' — cookie read returned no token, falling back to current resolver', 'warn');
       }
     }
 
     if (!retryToken) {
-      log(STARTUP_RETRY + attempt + ' — no token available, moving to next retry', 'warn');
+      retryToken = resolveToken();
+    }
+
+    if (!retryToken) {
+      log(STARTUP_RETRY + attempt + ' — no token available after cookie fallback, moving to next retry', 'warn');
       scheduleWorkspaceRetry(attempt + 1);
       return;
     }
