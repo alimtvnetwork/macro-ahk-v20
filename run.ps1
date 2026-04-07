@@ -275,8 +275,10 @@ if (-not $skipbuild) {
         Install-RootBuildDependencies $RootDir
 
         # Build standalone scripts IN PARALLEL
+        # -d (deploy) = development mode (inline source maps); default = production (no source maps)
+        $standaloneBuildMode = if ($deploy) { "development" } else { "production" }
         Push-Location $RootDir
-        try { Build-AllStandaloneScripts $RootDir }
+        try { Build-AllStandaloneScripts $RootDir $standaloneBuildMode }
         finally { Pop-Location }
 
         # Verify standalone dist artifacts
