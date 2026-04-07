@@ -18,6 +18,7 @@
 11. [Copy Injection Logs Workflow](#11-copy-injection-logs-workflow) — Copy button data gathering and report generation
 12. [Auth Token Seeding Workflow](#12-auth-token-seeding-workflow) — Extension boot to bearer token resolution and seeding
 13. [Message Relay Workflow](#13-message-relay-workflow) — Full request/response and broadcast flow through the 3-tier relay
+14. [Prompts Pipeline Workflow](#14-prompts-pipeline-workflow) — Markdown source to SQLite seeding to dual-cache runtime rendering
 
 ---
 
@@ -161,3 +162,14 @@ Full authentication and token seeding flow from 4 trigger sources (extension boo
 End-to-end message relay workflow: page scripts (MacroController or Marco SDK) post messages via `window.postMessage` → content script relay validates source (`marco-controller` or `marco-sdk`), checks against the ALLOWED_TYPES whitelist (40+ types), enforces rate limiting (100/s) → forwards to background via `chrome.runtime.sendMessage` → background router dispatches to HANDLER_REGISTRY → response flows back through `sendResponse` callback → content script posts back to page with matching `requestId` → caller Promise resolves. Broadcasts (CONFIG_UPDATED, TOKEN_EXPIRED, TOKEN_UPDATED, CONFIG_CHANGED) flow unsolicited from background → content script → page. Guards include duplicate relay sentinel, SDK 15s timeout, and error envelopes for blocked types.
 
 ![Message Relay Workflow](images/message-relay-workflow.png)
+
+---
+
+## 14. Prompts Pipeline Workflow
+
+**File:** [`prompts-pipeline-workflow.mmd`](prompts-pipeline-workflow.mmd)  
+**Image:** [`images/prompts-pipeline-workflow.png`](images/prompts-pipeline-workflow.png)
+
+End-to-end prompt lifecycle workflow: Stage 1 reads markdown source files (info.json + prompt.md per numbered folder); Stage 2 build aggregation via AggregatePrompts.mjs validates, renders markdown to HTML, and outputs MacroPrompts.json with a Count-Hash36 version hash; Stage 3 deploys via ViteStaticCopy into chrome-extension dist/prompts/ as a web-accessible resource; Stage 4 SQLite seeding on install/update uses the version hash to skip unchanged data, upserts into Prompts + PromptsCategory tables with both JsonCopy and HtmlCopy; Stage 5 runtime loading on user menu open checks IndexedDB dual cache (marco_prompts_cache) first, falls back to GetPrompts bridge → SQLite on cache miss, with manual Load button for force-refresh; Stage 6 UI rendering picks HtmlCopy for MacroController (zero rendering cost) or JsonCopy for other consumers, displays category-tabbed dropdown, and pastes selected prompt into editor with variable resolution.
+
+![Prompts Pipeline Workflow](images/prompts-pipeline-workflow.png)
