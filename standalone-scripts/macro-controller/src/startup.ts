@@ -555,7 +555,7 @@ function scheduleWorkspaceRetry(attempt: number): void {
 
     if (!retryToken && attempt === 1) {
       log(STARTUP_RETRY + attempt + ' — no token from resolveToken, attempting cookie refresh...', 'check');
-      const cookieToken = typeof getBearerTokenFromCookie === 'function' ? getBearerTokenFromCookie() : '';
+      const cookieToken = getBearerTokenFromCookie();
       if (cookieToken) {
         log(STARTUP_RETRY + attempt + ' — cookie token resolved, using for retry', 'success');
         retryToken = cookieToken;
