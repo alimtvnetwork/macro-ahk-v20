@@ -450,7 +450,7 @@ async function logInjectionSuccess(
     if (isMacroLooping) {
         const injectedVersion = extractMacroVersion(script.code);
         if (injectedVersion && injectedVersion !== EXTENSION_VERSION) {
-            const legacyMsg = `⚠️ LEGACY SCRIPT DETECTED: macro-looping.js v${injectedVersion} injected but extension is v${EXTENSION_VERSION}. Source: ${codeSource ?? "unknown"}. The injected script is OUTDATED — stale cache or embedded code fallback.`;
+            const legacyMsg = `LEGACY SCRIPT DETECTED\n  Path: chrome.storage.local script="${script.name}" id="${script.id}"\n  Missing: Current version macro-looping.js v${EXTENSION_VERSION}\n  Reason: Injected script is v${injectedVersion} but extension is v${EXTENSION_VERSION} — stale cache or embedded code fallback. Source: ${codeSource ?? "unknown"}`;
             console.error("[injection] " + legacyMsg);
             try {
                 await handleLogError({
