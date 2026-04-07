@@ -385,7 +385,7 @@ async function executeCachedPayload(
         budgetMs = settings.injectionBudgetMs ?? 500;
     } catch { /* use default */ }
     if (totalMs > budgetMs) {
-        logBgWarnError("[injection]", `PERFORMANCE BUDGET EXCEEDED (cached path) — ${totalMs}ms (budget: ${budgetMs}ms)`);
+        logBgWarnError(BgLogTag.INJECTION, `PERFORMANCE BUDGET EXCEEDED (cached path) — ${totalMs}ms (budget: ${budgetMs}ms)`);
     }
 
     recordInjectionTiming(totalMs, successCount, budgetMs);
