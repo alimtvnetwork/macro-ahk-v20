@@ -78,8 +78,8 @@ export function decodeJwtPayload(token: string): JwtInfo {
 
     return {
       valid: !isExpired,
-      expiresAt: expSeconds ? new Date(expSeconds * 1000).toLocaleTimeString('en-US', { hour12: false }) : '—',
-      issuedAt: iatSeconds ? new Date(iatSeconds * 1000).toLocaleTimeString('en-US', { hour12: false }) : '—',
+      expiresAt: expSeconds ? formatTimestamp(expSeconds) : '—',
+      issuedAt: iatSeconds ? formatTimestamp(iatSeconds) : '—',
       remainingMs,
       sub: (payload.sub || payload.email || '—').toString().substring(0, 30),
       error: isExpired ? 'Token expired' : '',
