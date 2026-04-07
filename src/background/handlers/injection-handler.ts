@@ -69,6 +69,10 @@ async function isInjectionToastEnabled(): Promise<boolean> {
 /** LLM guide cache — keyed by `codeName:slug`, avoids regenerating ~10KB template per injection */
 const _llmGuideCache = new Map<string, string>();
 
+/** Cache key for the combined wrapped payload in IndexedDB */
+const PIPELINE_CACHE_KEY = "pipeline_payload" as const;
+const PIPELINE_CACHE_CATEGORY: CacheCategory = "scripts";
+
 /* ------------------------------------------------------------------ */
 /*  INJECT_SCRIPTS                                                     */
 /* ------------------------------------------------------------------ */
