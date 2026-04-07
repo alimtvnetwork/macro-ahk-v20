@@ -207,7 +207,11 @@ async function handleMenuClick(
 
     switch (menuItemId) {
         case MENU_ID.RUN:
-            await handleRunScripts(tabId);
+            await handleRunScripts(tabId, false);
+            break;
+
+        case MENU_ID.FORCE_RUN:
+            await handleRunScripts(tabId, true);
             break;
 
         case MENU_ID.REINJECT:
