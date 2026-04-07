@@ -9,15 +9,15 @@ import { resolve } from 'path';
  *
  * Usage: npm run build:xpath
  *
- * Production mode (default): minified, no sourcemap
- * Development mode (--mode development): unminified, inline sourcemap
+ * Always uses inline sourcemaps so injected code produces readable stack traces.
+ * Scripts are injected as raw code strings — external .map files are never loaded.
  */
 export default defineConfig(({ mode }) => ({
   publicDir: false,
   build: {
     outDir: 'standalone-scripts/xpath/dist',
     emptyOutDir: false,
-    sourcemap: mode === 'development' ? 'inline' : true,
+    sourcemap: 'inline',
     minify: mode !== 'development' ? 'esbuild' : false,
     lib: {
       entry: resolve(__dirname, 'standalone-scripts/xpath/src/index.ts'),
