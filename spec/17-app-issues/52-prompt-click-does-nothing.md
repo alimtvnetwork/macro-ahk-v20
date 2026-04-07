@@ -116,3 +116,53 @@ This enables user-saved prompts to load from SQLite even in MAIN world, consiste
 - [x] Issue write-up created under `/spec/17-app-issues/`
 - [x] Root-cause fix applied (3 fixes)
 - [ ] End-to-end verification on lovable.dev
+
+---
+
+## E2E Verification Checklist (S-052)
+
+**Prerequisites**: Load extension in Chrome, open lovable.dev, open DevTools console.
+
+### Test 1: Basic Prompt Click (Fresh Render)
+1. Open macro controller → Prompts dropdown
+2. Click any prompt item text
+3. **Expected**: Prompt text pasted into chatbox editor, toast "Prompt injected"
+4. **Pass criteria**: Text appears in editor within 1s
+
+### Test 2: Click Target Coverage
+1. Open Prompts dropdown
+2. Click on: (a) prompt name text, (b) category badge, (c) empty space in the row
+3. **Expected**: All three trigger paste — only action button icons (edit/delete/copy) should NOT trigger paste
+4. **Pass criteria**: (a), (b), (c) all paste correctly
+
+### Test 3: Snapshot Restore Path (Issue #90)
+1. Open Prompts dropdown → close it → reopen it (triggers snapshot restore)
+2. Click prompt #1
+3. **Expected**: Prompt #1's text is pasted (not prompt #3 or any other)
+4. **Pass criteria**: `data-prompt-idx` attribute correctly identifies items
+
+### Test 4: MAIN World Relay (Issue #52 Root Cause 2)
+1. In DevTools console, verify `chrome.runtime` is `undefined` (MAIN world)
+2. Open Prompts dropdown (this triggers `tryLoadByMessage` via relay)
+3. **Expected**: User-saved prompts load (not just bundled `__MARCO_PROMPTS__`)
+4. **Pass criteria**: Console shows `[Marco] Prompts loaded via relay` or similar
+
+### Test 5: Save → Reload Round-Trip
+1. Open Prompts → Edit a prompt → Save
+2. Close dropdown → Reopen
+3. **Expected**: Saved changes persist and load via relay
+4. **Pass criteria**: Edited text appears correctly
+
+### Test 6: Error Boundary
+1. Navigate away from lovable.dev editor (destroy chatbox DOM)
+2. Click a prompt in the dropdown
+3. **Expected**: Toast: "Copied to clipboard" (fallback), no silent failure
+4. **Pass criteria**: No uncaught exceptions in console
+
+### Test 7: Action Buttons Isolation
+1. Open Prompts dropdown
+2. Click the copy icon on a prompt
+3. **Expected**: Copies prompt text to clipboard WITHOUT pasting into editor
+4. Click edit icon → verify edit dialog opens
+5. Click delete icon → verify delete confirmation
+6. **Pass criteria**: Action buttons work independently, don't trigger paste
