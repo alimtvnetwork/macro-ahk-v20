@@ -527,9 +527,8 @@ function resolveTier1Workspace(tier1Data: MarkViewedResponse): boolean {
 
 // ── Workspace Retry ──
 
-// Issue 84 Fix 2: Retries with exponential backoff (1.5s, 3s, 4.5s, 6s, 9s)
-// RC-03: Extended to 5 retries with exponential backoff for slow pages
-const STARTUP_WS_MAX_RETRIES = 5;
+// Issue 84 Fix 2: Reduced to 2 retries — attempt 1 refreshes cookie, attempt 2 is final
+const STARTUP_WS_MAX_RETRIES = 2;
 
 function scheduleWorkspaceRetry(attempt: number): void {
   const isExhausted = attempt > STARTUP_WS_MAX_RETRIES;
@@ -539,8 +538,8 @@ function scheduleWorkspaceRetry(attempt: number): void {
     return;
   }
 
-  // Exponential backoff: 1.5s, 3s, 4.5s, 6s, 9s
-  const delayMs = Math.min(attempt * 1500, 9000);
+  // Retry 1: 2s (cookie refresh), Retry 2: 4s (final attempt)
+  const delayMs = attempt * 2000;
   log('Startup: Scheduling workspace retry #' + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' in ' + delayMs + 'ms', 'check');
 
   setTimeout(function () {
@@ -550,15 +549,25 @@ function scheduleWorkspaceRetry(attempt: number): void {
       return;
     }
 
-    log(STARTUP_RETRY + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' — re-fetching credits + workspace detection...', 'check');
-    const retryToken = resolveToken();
+    // On first retry, attempt cookie-based token refresh before giving up on token
+    let retryToken = resolveToken();
+
+    if (!retryToken && attempt === 1) {
+      log(STARTUP_RETRY + attempt + ' — no token from resolveToken, attempting cookie refresh...', 'check');
+      const cookieToken = typeof getBearerTokenFromCookie === 'function' ? getBearerTokenFromCookie() : '';
+      if (cookieToken) {
+        log(STARTUP_RETRY + attempt + ' — cookie token resolved, using for retry', 'success');
+        retryToken = cookieToken;
+      }
+    }
 
     if (!retryToken) {
-      log(STARTUP_RETRY + attempt + ' — no token available, deferring to next retry', 'warn');
+      log(STARTUP_RETRY + attempt + ' — no token available, moving to next retry', 'warn');
       scheduleWorkspaceRetry(attempt + 1);
       return;
     }
 
+    log(STARTUP_RETRY + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' — re-fetching credits + workspace detection...', 'check');
     state.workspaceFromApi = false;
 
     fetchLoopCreditsAsync(false).then(function () {
