@@ -106,7 +106,7 @@ async function tryOpfsInit(): Promise<boolean> {
         console.log("[db-manager] OPFS persistence active");
         return true;
     } catch (err) {
-        console.error("[db-manager] OPFS unavailable:", err);
+        console.error(`[db-manager] OPFS unavailable\n  Path: navigator.storage.getDirectory() → OPFS root\n  Missing: SQLite database files (logs + errors)\n  Reason: ${err instanceof Error ? err.message : String(err)} — OPFS may not be supported or quota exceeded`, err);
         return false;
     }
 }
