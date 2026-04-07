@@ -17,6 +17,7 @@ import { timingStart, timingEnd, logTimingSummary } from './startup-timing';
 import { dualWriteAll, nsRead } from './api-namespace';
 import { registerTokenBroadcastListener } from './token-broadcast-listener';
 import { showToast, dismissAllToasts } from './toast';
+import { updateStartupToast } from './startup-toast';
 import { toErrorMessage } from './error-utils';
 import {
   resolveToken,
