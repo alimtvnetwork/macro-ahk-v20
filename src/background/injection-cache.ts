@@ -140,7 +140,7 @@ export async function cacheSet<T>(category: CacheCategory, value: T, subKey = ""
 
             request.onsuccess = () => resolve();
             request.onerror = () => {
-                logCaughtError(BgLogTag.INJECTION_CACHE, `Set failed for ${key}`, request.error);
+                logCaughtError(BgLogTag.INJECTION_CACHE, `Set failed for cache entry\n  Path: IndexedDB → ${DB_NAME} → store="${STORE_NAME}" → key="${key}"\n  Missing: Successful write of cached entry\n  Reason: IDBRequest error — ${request.error?.message ?? "unknown, possible quota exceeded"}`, request.error);
                 reject(request.error);
             };
         });
