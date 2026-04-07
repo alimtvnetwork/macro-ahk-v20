@@ -295,7 +295,14 @@ export function buildGeneralPanel(
     panel.appendChild(field.row);
   });
 
-  // ── Backdrop Opacity Slider ──
+  panel.appendChild(_buildBackdropSlider());
+  panel.appendChild(_buildVersionInfo());
+
+  return { panel, inputs };
+}
+
+/** Builds the backdrop opacity slider row. */
+function _buildBackdropSlider(): HTMLDivElement {
   const currentBackdropOpacity = getBackdropOpacity();
   const bdRow = document.createElement('div');
   bdRow.style.cssText = 'margin-top:14px;margin-bottom:10px;';
@@ -332,12 +339,14 @@ export function buildGeneralPanel(
   bdHint.style.cssText = 'font-size:9px;color:#64748b;margin-top:2px;';
   bdHint.textContent = 'Dark overlay behind the floating panel. 0% = transparent, 100% = opaque.';
   bdRow.appendChild(bdHint);
-  panel.appendChild(bdRow);
 
+  return bdRow;
+}
+
+/** Builds the version info footer. */
+function _buildVersionInfo(): HTMLDivElement {
   const verInfo = document.createElement('div');
   verInfo.style.cssText = 'margin-top:16px;padding:10px;background:' + cPanelBgAlt + ';border-radius:6px;font-size:10px;color:#64748b;';
   verInfo.innerHTML = '<strong style="color:' + cPrimaryLight + '">MacroLoop</strong> v' + VERSION + '<br>Changes are saved to the running instance. For permanent changes, update the config JSON or extension settings.';
-  panel.appendChild(verInfo);
-
-  return { panel, inputs };
+  return verInfo;
 }
