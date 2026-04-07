@@ -130,10 +130,10 @@ export async function mirrorPipelineLogsToTab(
         await chrome.scripting.executeScript({
             target: { tabId },
             world: "MAIN",
-            // eslint-disable-next-line sonarjs/cognitive-complexity
             func: (
                 entries: Array<{ msg: string; level: string }>,
                 title: string | undefined,
+            // eslint-disable-next-line sonarjs/cognitive-complexity
             ) => {
                 const realEntries = entries.filter((e) => e.level !== "__group__" && e.level !== "__groupEnd__");
                 const hasErrors = realEntries.some((e) => e.level === "error");
