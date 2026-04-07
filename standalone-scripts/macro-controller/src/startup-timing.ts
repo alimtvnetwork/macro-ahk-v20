@@ -101,6 +101,18 @@ export function logTimingSummary(): void {
 
   lines.push('├──────────────────────────┴────────┴────────┴────────┴──────────┤');
   lines.push('│  Total: ' + totalMs + 'ms | Phases: ' + entries.length + '                                       │'.substring(0, 55) + '│');
+
+  // Append version number for quick identification in console
+  try {
+    // Dynamic import to avoid circular dependency — VERSION may not be available at module load
+    const ver = (typeof window !== 'undefined' && (window as Record<string, unknown>).RiseupAsiaMacroExt)
+      ? String(((window as Record<string, unknown>).RiseupAsiaMacroExt as Record<string, unknown>)?.Projects?.MacroController?.meta?.version || '?')
+      : '?';
+    lines.push('│  Version: v' + ver + '                                                    │'.substring(0, 55) + '│');
+  } catch {
+    // Version unavailable — skip
+  }
+
   lines.push('└─────────────────────────────────────────────────────────────────┘');
 
   console.log(lines.join('\n'));

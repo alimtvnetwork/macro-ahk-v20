@@ -14,6 +14,7 @@ import type { PromptEntry, PromptsCfg } from '../types';
 export function normalizePromptEntries(entries: Partial<PromptEntry & { order?: number }>[]): PromptEntry[] {
   if (!Array.isArray(entries)) return [];
   const out: PromptEntry[] = [];
+  let droppedCount = 0;
   for (const p of entries) {
     const raw = p || {};
     const name = typeof raw.name === 'string' ? raw.name : '';
@@ -29,7 +30,13 @@ export function normalizePromptEntries(entries: Partial<PromptEntry & { order?: 
       if (raw.isDefault !== undefined) { entry.isDefault = raw.isDefault; }
 
       out.push(entry);
+    } else {
+      droppedCount++;
+      console.warn('[normalizePromptEntries] ⚠️ Dropped entry — name="' + (name || '(empty)') + '", text.length=' + text.length + ', id=' + (raw.id || '—') + ', slug=' + (raw.slug || '—') + '. Reason: ' + (!name ? 'missing name' : 'missing text'));
     }
+  }
+  if (droppedCount > 0) {
+    console.warn('[normalizePromptEntries] ⚠️ Dropped ' + droppedCount + '/' + entries.length + ' entries due to missing name or text');
   }
   return out;
 }
