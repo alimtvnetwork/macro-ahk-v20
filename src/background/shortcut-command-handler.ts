@@ -12,6 +12,7 @@ import { handleMessage } from "./message-router";
 import { logCaughtError, logBgWarnError, BgLogTag} from "./bg-logger";
 
 const RUN_SCRIPTS_COMMAND = "run-scripts";
+const FORCE_RUN_SCRIPTS_COMMAND = "force-run-scripts";
 
 interface ActiveProjectResponse {
     activeProject?: {
@@ -27,7 +28,9 @@ export function registerShortcutCommands(): void {
         console.log("[Marco] Shortcut command received: %s at %s", command, new Date().toISOString());
 
         if (command === RUN_SCRIPTS_COMMAND) {
-            void runScriptsFromShortcut();
+            void runScriptsFromShortcut(false);
+        } else if (command === FORCE_RUN_SCRIPTS_COMMAND) {
+            void runScriptsFromShortcut(true);
         }
     });
 
@@ -52,7 +55,7 @@ export function registerShortcutCommands(): void {
 }
 
 /** Runs active project scripts in the currently active tab. */
-async function runScriptsFromShortcut(): Promise<void> {
+async function runScriptsFromShortcut(forceReload: boolean): Promise<void> {
     const t0 = performance.now();
 
     try {
@@ -63,7 +66,7 @@ async function runScriptsFromShortcut(): Promise<void> {
             return;
         }
 
-        console.log("[Marco] Shortcut: active tab=%d, fetching project scripts...", activeTabId);
+        console.log("[Marco] Shortcut: active tab=%d, fetching project scripts...%s", activeTabId, forceReload ? " (FORCE RUN)" : "");
 
         const scripts = await getActiveProjectScripts();
 
@@ -78,6 +81,7 @@ async function runScriptsFromShortcut(): Promise<void> {
             type: MessageType.INJECT_SCRIPTS,
             tabId: activeTabId,
             scripts,
+            ...(forceReload ? { forceReload: true } : {}),
         });
 
         const elapsed = Math.round(performance.now() - t0);

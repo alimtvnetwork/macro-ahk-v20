@@ -23,6 +23,7 @@ const MENU_ID = {
     ROOT: "marco-root",
     PROJECT_PARENT: "marco-projects",
     RUN: "marco-run",
+    FORCE_RUN: "marco-force-run",
     REINJECT: "marco-reinject",
     SEP1: "marco-sep-1",
     COPY_LOGS: "marco-copy-logs",
@@ -64,6 +65,13 @@ function createStaticMenuItems(): void {
         id: MENU_ID.RUN,
         parentId: MENU_ID.ROOT,
         title: "▶ Run Scripts",
+        contexts: ["all"],
+    });
+
+    chrome.contextMenus.create({
+        id: MENU_ID.FORCE_RUN,
+        parentId: MENU_ID.ROOT,
+        title: "⚡ Force Run (bypass cache)",
         contexts: ["all"],
     });
 
@@ -199,7 +207,11 @@ async function handleMenuClick(
 
     switch (menuItemId) {
         case MENU_ID.RUN:
-            await handleRunScripts(tabId);
+            await handleRunScripts(tabId, false);
+            break;
+
+        case MENU_ID.FORCE_RUN:
+            await handleRunScripts(tabId, true);
             break;
 
         case MENU_ID.REINJECT:
@@ -224,7 +236,7 @@ async function handleMenuClick(
 /*  Action Implementations                                             */
 /* ------------------------------------------------------------------ */
 
-async function handleRunScripts(tabId: number): Promise<void> {
+async function handleRunScripts(tabId: number, forceReload = false): Promise<void> {
     const hasValidTab = tabId > 0;
     if (!hasValidTab) return;
 
@@ -241,6 +253,7 @@ async function handleRunScripts(tabId: number): Promise<void> {
         type: MessageType.INJECT_SCRIPTS,
         tabId,
         scripts: enabledScripts,
+        ...(forceReload ? { forceReload: true } : {}),
     });
 }
 
