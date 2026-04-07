@@ -194,6 +194,7 @@ Write-Host "[deploy] Injection cache invalidation complete"
 | Cache MISS (corrupt) | ERROR | `[cache] CORRUPT — cached payload unreadable, rebuilding` |
 | Cache stored | INFO | `[cache] Stored payload for version=${ver}, size=${n} bytes` |
 | Deploy invalidation | INFO | `[deploy] Injection cache cleared on ${reason}` |
+| Force Run bypass | INFO | `[cache] FORCE RUN — cache bypassed by user` |
 | Manual invalidation | INFO | `[cache] Manual invalidation by user` |
 
 All logs are mirrored to:
