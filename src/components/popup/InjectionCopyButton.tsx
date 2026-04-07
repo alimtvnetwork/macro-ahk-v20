@@ -26,6 +26,16 @@ interface ErrorEntry {
   resolved?: number;
 }
 
+interface VerificationResult {
+  marcoSdk: boolean;
+  extRoot: boolean;
+  mcClass: boolean;
+  mcInstance: boolean;
+  uiContainer: boolean;
+  markerEl: boolean;
+  verifiedAt: string;
+}
+
 interface SessionLog {
   id?: number;
   timestamp?: string;
@@ -66,6 +76,7 @@ function buildInjectionReport(
   logs: SessionLog[],
   status: Record<string, unknown> | null,
   health: Record<string, unknown> | null,
+  verification?: VerificationResult | null,
 ): string {
   const sections: string[] = [];
 
@@ -110,6 +121,22 @@ function buildInjectionReport(
     sections.push(...diagLogs.map(formatLog));
   } else {
     sections.push("  (no matching diagnostics)");
+  }
+
+  // Post-injection verification
+  sections.push("");
+  sections.push("── POST-INJECTION VERIFICATION ───────────");
+  if (verification) {
+    const icon = (ok: boolean) => ok ? "✅" : "❌";
+    sections.push(`  window.marco (SDK)           : ${icon(verification.marcoSdk)}`);
+    sections.push(`  window.RiseupAsiaMacroExt     : ${icon(verification.extRoot)}`);
+    sections.push(`  window.MacroController (class): ${icon(verification.mcClass)}`);
+    sections.push(`  api.mc (singleton instance)   : ${icon(verification.mcInstance)}`);
+    sections.push(`  #macro-loop-container (UI)    : ${icon(verification.uiContainer)}`);
+    sections.push(`  [data-marco-injected] marker  : ${verification.markerEl ? "✅" : "⚠️ (not required)"}`);
+    sections.push(`  Verified at: ${verification.verifiedAt}`);
+  } else {
+    sections.push("  (no verification data — inject scripts first)");
   }
 
   // Health details
@@ -167,19 +194,28 @@ export function InjectionCopyButton() {
     setState("loading");
 
     try {
-      const [errorsRes, logsRes, statusRes, healthRes] = await Promise.allSettled([
+      const [errorsRes, logsRes, statusRes, healthRes, injectionsRes] = await Promise.allSettled([
         sendMessage<{ errors: ErrorEntry[] }>({ type: "GET_ACTIVE_ERRORS" }),
         sendMessage<{ logs: SessionLog[] }>({ type: "GET_RECENT_LOGS", limit: 100 }),
         sendMessage<Record<string, unknown>>({ type: "GET_STATUS" }),
         sendMessage<Record<string, unknown>>({ type: "GET_HEALTH_STATUS" }),
+        // Fetch verification from active tab's injection record
+        (async () => {
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (!tab?.id) return null;
+          const res = await sendMessage<{ injections: Record<number, unknown> }>({ type: "GET_TAB_INJECTIONS", tabId: tab.id } as any);
+          const record = res?.injections?.[tab.id] as { verification?: VerificationResult } | null;
+          return record?.verification ?? null;
+        })(),
       ]);
 
       const errors = errorsRes.status === "fulfilled" ? errorsRes.value.errors ?? [] : [];
       const logs = logsRes.status === "fulfilled" ? logsRes.value.logs ?? [] : [];
       const status = statusRes.status === "fulfilled" ? statusRes.value : null;
       const health = healthRes.status === "fulfilled" ? healthRes.value : null;
+      const verification = injectionsRes.status === "fulfilled" ? injectionsRes.value as VerificationResult | null : null;
 
-      const report = buildInjectionReport(errors, logs, status, health);
+      const report = buildInjectionReport(errors, logs, status, health, verification);
       await navigator.clipboard.writeText(report);
 
       setErrorCount(errors.length);

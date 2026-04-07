@@ -27,6 +27,16 @@ export interface TabInjectionRecord {
     pipelineDurationMs?: number;
     /** Performance budget threshold in milliseconds. */
     budgetMs?: number;
+    /** Post-injection verification results — confirms globals landed in MAIN world. */
+    verification?: {
+        marcoSdk: boolean;
+        extRoot: boolean;
+        mcClass: boolean;
+        mcInstance: boolean;
+        uiContainer: boolean;
+        markerEl: boolean;
+        verifiedAt: string;
+    };
 }
 
 /** Full transient state persisted to chrome.storage.session. */
