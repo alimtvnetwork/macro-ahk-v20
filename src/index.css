@@ -58,6 +58,13 @@
   }
 }
 
+/* ── CSS Sentinel — runtime validation marker ── */
+/* If this CSS is loaded, the #marco-css-sentinel element gets display:none.
+   JS checks for this to verify CSS injection succeeded. */
+#marco-css-sentinel {
+  display: none !important;
+}
+
 @layer base {
   *,
   *::before,
