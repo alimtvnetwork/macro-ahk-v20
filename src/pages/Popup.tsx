@@ -140,6 +140,26 @@ const PopupPage = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-9 gap-1 hover:bg-destructive/10 hover:text-destructive shrink-0"
+                  onClick={handleForceRun}
+                  disabled={runLoading || reinjectLoading}
+                >
+                  {runLoading
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <Zap className="h-4 w-4" />}
+                  <span className="hidden sm:inline text-xs">Force</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p className="text-xs">Bypass cache — rebuild and inject from scratch</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
                   size="icon"
                   variant="ghost"
                   className="h-9 w-9 shrink-0 text-muted-foreground hover:text-primary"
