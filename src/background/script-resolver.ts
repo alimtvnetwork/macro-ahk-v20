@@ -205,7 +205,7 @@ async function resolveDependencies(
                 continue;
             }
             if (depScript.isEnabled === false) {
-                logBgWarnError(BgLogTag.SCRIPT_RESOLVER, `Dependency disabled: ${depScript.name} (required by ${script.name})`);
+                logBgWarnError(BgLogTag.SCRIPT_RESOLVER, `Dependency disabled\n  Path: chrome.storage.local script id="${depScript.id}" name="${depScript.name}"\n  Missing: Enabled dependency (isEnabled=false)\n  Reason: Script "${depScript.name}" is required by "${script.name}" but is currently disabled`);
                 continue;
             }
 
