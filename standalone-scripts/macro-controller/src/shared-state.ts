@@ -46,34 +46,17 @@ if (_configWarnings.length > 0) {
 /** Get config validation warnings (for diagnostics). */
 export function getConfigValidationWarnings(): string[] { return _configWarnings; }
 
-class ThemeState {
-  private _activeKey = 'dark';
-
-  constructor() {
-    if (themeRoot.activePreset === 'dark') {
-      this._activeKey = 'dark';
-    }
-  }
-
-  get activeKey(): string {
-    return this._activeKey;
-  }
-
-  set activeKey(v: string) {
-    this._activeKey = v;
-  }
-}
-
-const themeState = new ThemeState();
+const FORCED_THEME_KEY = 'dark';
 
 export function resolvePreset(key: string): ThemePreset {
+  const darkPreset = themeRoot.presets?.dark;
+  if (darkPreset) return darkPreset;
   if (themeRoot.presets && themeRoot.presets[key]) return themeRoot.presets[key];
-  // Schema v1 fallback: colors at root level — construct a ThemePreset from root
   if (themeRoot.colors) return { colors: themeRoot.colors };
   return {} as ThemePreset;
 }
 
-const theme = resolvePreset(themeState.activeKey);
+const theme = resolvePreset(FORCED_THEME_KEY);
 const TC = theme.colors || {};
 const TP = TC.panel || {};
 const TPri = TC.primary || {};
@@ -95,7 +78,7 @@ const TTypo = theme.typography || {};
 // Exported constants
 // ============================================
 export const FILE_NAME = 'macro-looping.js';
-export const VERSION = '2.102.0';
+export const VERSION = '2.103.0';
 
 // Expose version via RiseupAsiaMacroExt namespace (Issue 78 — no bare window globals)
 try {
@@ -216,7 +199,7 @@ export const cModalBg     = TModal.bg     || cPanelBg;
 export const cModalBorder = TModal.border || cPrimary;
 
 // Section colors
-export const cSectionBg      = TSec.bg          || 'rgba(0,0,0,0.2)';
+export const cSectionBg      = cPanelBgAlt;
 export const cSectionHeader  = TSec.headerColor || '#f5e6b8';
 export const cSectionToggle  = TSec.toggleColor || '#e8e8e8';
 

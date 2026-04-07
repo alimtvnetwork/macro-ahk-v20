@@ -101,7 +101,7 @@ export interface ButtonRowResult {
 
 export function buildButtonRow(deps: PanelBuilderDeps): ButtonRowResult {
   const btnRow = document.createElement('div');
-  btnRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:8px 4px;min-width:460px;';
+  btnRow.style.cssText = 'display:flex;gap:8px;row-gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:8px 0 10px;width:100%;min-width:0;margin:0 auto;';
 
   const btnStyle = 'padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:' + tFontSm + ';cursor:pointer;transition:all ' + trNormal + ';line-height:1;height:34px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;';
 
