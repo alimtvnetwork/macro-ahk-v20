@@ -362,6 +362,11 @@ async function injectAllScripts(
             const combinedCode = wrappedParts.join("\n;\n");
             console.log("[injection] 3/4 BATCH    — %d scripts combined (%d chars)", orderedScripts.length, combinedCode.length);
 
+            // Store wrapped payload in IndexedDB cache for future runs
+            void cacheSet(PIPELINE_CACHE_CATEGORY, { code: combinedCode, scriptMeta }, PIPELINE_CACHE_KEY)
+                .then(() => console.log("[injection] CACHE STORE — payload cached for version=%s, size=%d bytes", EXTENSION_VERSION, combinedCode.length))
+                .catch(() => { /* best-effort cache write */ });
+
             const execResult = await executeInTab(tabId, combinedCode);
             const durationMs = Date.now() - startTime;
 
