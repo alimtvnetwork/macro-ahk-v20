@@ -62,43 +62,36 @@ function scrollToCurrentItem(setLoopWsNavIndex: (v: number) => void, label: stri
   }
 }
 
-/** Handle the Focus Current button click. */
+/** Handle the Focus Current button click — always uses API-resolved workspace. */
 function handleFocusCurrent(
   populateLoopWorkspaceDropdown: () => void,
   setLoopWsNavIndex: (v: number) => void,
   fetchLoopCreditsWithDetect: (silent: boolean) => void,
   autoDetectLoopCurrentWorkspace: (token: string) => Promise<void>,
 ): void {
-  // Priority 1: state.workspaceName (already resolved)
-  // Priority 2: loopCreditState.currentWs (from API)
-  // Priority 3: re-detect via API
-  let currentName = state.workspaceName || '';
-  if (!currentName && loopCreditState.currentWs) {
-    currentName = loopCreditState.currentWs.fullName || loopCreditState.currentWs.name || '';
-    if (currentName) {
-      state.workspaceName = currentName;
-      log('Focus Current: resolved from loopCreditState.currentWs: "' + currentName + '"', 'success');
-    }
-  }
+  // Always re-detect from API to ensure current workspace is accurate
+  const token = resolveToken();
 
-  log('Focus Current: looking for "' + currentName + '"', 'check');
-
-  if (currentName && (loopCreditState.perWorkspace || []).length > 0) {
-    populateLoopWorkspaceDropdown();
-    scrollToCurrentItem(setLoopWsNavIndex, currentName);
-    return;
-  }
-
+  // If we have workspaces loaded but no current name, detect first
   if ((loopCreditState.perWorkspace || []).length === 0) {
     log('Focus Current: no workspaces loaded, fetching...', 'check');
     fetchLoopCreditsWithDetect(false);
     return;
   }
 
-  const token = resolveToken();
+  log('Focus Current: re-detecting current workspace via API...', 'check');
   autoDetectLoopCurrentWorkspace(token).then(function() {
+    const currentName = state.workspaceName
+      || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
+
+    if (!currentName) {
+      log('Focus Current: ❌ workspace still unknown after API detection', 'error');
+      return;
+    }
+
+    log('Focus Current: resolved "' + currentName + '" from API', 'success');
     populateLoopWorkspaceDropdown();
-    scrollToCurrentItem(setLoopWsNavIndex, state.workspaceName || '');
+    scrollToCurrentItem(setLoopWsNavIndex, currentName);
   });
 }
 

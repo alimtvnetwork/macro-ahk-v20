@@ -202,9 +202,14 @@ function renderProgressBar(progressContainer: HTMLElement): void {
 
 function renderStoppedStatus(statusLine: HTMLElement, progressContainer: HTMLElement): void {
   statusLine.textContent = '';
-  if (state.workspaceName) {
+
+  // Always show workspace name — resolved from API via state.workspaceName or loopCreditState.currentWs
+  const wsName = state.workspaceName
+    || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
+
+  if (wsName) {
     const wsSpan = document.createElement('span');
-    wsSpan.textContent = state.workspaceName;
+    wsSpan.textContent = wsName;
     wsSpan.style.cssText = 'color:#fbbf24;font-weight:700;';
     statusLine.appendChild(wsSpan);
     statusLine.appendChild(document.createTextNode(' | '));
@@ -223,12 +228,12 @@ function renderStoppedStatus(statusLine: HTMLElement, progressContainer: HTMLEle
     statusLine.appendChild(creditSpan);
   }
   const hasWorkspaces = (loopCreditState.perWorkspace || []).length > 0;
-  if (!state.workspaceName && !hasWorkspaces) {
+  if (!wsName && !hasWorkspaces) {
     const hint = document.createElement('div');
     hint.style.cssText = 'margin-top:4px;font-size:' + tFontTiny + ';color:' + cWarning + ';';
     hint.textContent = '⏳ Loading workspaces… Click ☑ Check or 💰 Credits to retry';
     statusLine.appendChild(hint);
-  } else if (!state.workspaceName && hasWorkspaces) {
+  } else if (!wsName && hasWorkspaces) {
     const hint = document.createElement('div');
     hint.style.cssText = 'margin-top:4px;font-size:' + tFontTiny + ';color:' + cWarning + ';';
     hint.textContent = '⚠️ Workspace not detected — click ☑ Check to identify current workspace';

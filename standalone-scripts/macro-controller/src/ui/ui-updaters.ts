@@ -15,7 +15,7 @@ import { cacheWorkspaceName } from '../workspace-cache';
 
 function mc() { return MacroController.getInstance(); }
 import { IDS, TIMING, state, loopCreditState } from '../shared-state';
-import { log, getDisplayProjectName } from '../logging';
+import { log } from '../logging';
 import { runCycle } from '../loop-engine';
 
 // Re-export status renderer symbols
@@ -31,7 +31,6 @@ export function updateUI(): void {
   updateButtons();
   updateRecordIndicator();
   mc().ui?.populateDropdown();
-  updateProjectNameDisplay();
   updateTitleBarWorkspaceName();
 
   // Persist workspace name to localStorage for instant UI on next load
@@ -59,13 +58,13 @@ export function updateUILight(): void {
 }
 
 /**
- * Update project name display in title bar (v7.9.39).
+ * @deprecated — Removed: `loop-project-name` element no longer exists.
+ * Workspace/project name is shown exclusively via `loop-title-ws-name` (wsNameEl).
+ * Keeping as no-op to prevent runtime errors from any remaining callers.
  */
 export function updateProjectNameDisplay(): void {
-  const el = document.getElementById('loop-project-name');
-  if (el) {
-    el.textContent = getDisplayProjectName();
-  }
+  // Intentionally empty — the `loop-project-name` element was removed to fix
+  // the duplicate project name regression. See spec/02-app-issues/project-name-duplication-rca.md
 }
 
 /**

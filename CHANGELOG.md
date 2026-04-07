@@ -6,7 +6,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v2.108.0] — 2026-04-07
+## [v2.109.0] — 2026-04-07
+
+### Fixed
+- **REGRESSION**: Duplicate project name displayed in panel header — removed dead `loop-project-name` element and `updateProjectNameDisplay()`, project/workspace name now shown exclusively via `wsNameEl` (id=`loop-title-ws-name`)
+- **REGRESSION**: XPath-based workspace name extraction (`getProjectNameFromDom`) replaced with API-only resolution — `getDisplayProjectName()` no longer uses DOM XPath
+- "Focus Current" now always re-detects workspace from API (`mark-viewed`) instead of using stale cached values
+- Stop section now resolves workspace name from `loopCreditState.currentWs` as fallback, ensuring display regardless of loop state
+
+### Changed
+- Version bump: 2.108.0 → 2.109.0 (all version files synced)
+
+---
 
 ### Fixed
 - **REGRESSION**: "Next Task" flow incorrectly returned Start Prompt instead of the correct Next Tasks prompt — removed dangerous `entries[0]` fallback in `findNextTasksPrompt()` that silently returned the first prompt (Start Prompt) when no match was found

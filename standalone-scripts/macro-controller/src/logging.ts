@@ -122,29 +122,12 @@ export function getWsHistoryKey(): string {
   return projectId ? WS_HISTORY_KEY + '_' + projectId : WS_HISTORY_KEY;
 }
 
+/**
+ * @deprecated — XPath-based project name extraction is no longer used.
+ * Use API-resolved `state.projectNameFromApi` instead.
+ * Kept as no-op to prevent runtime errors from any remaining callers.
+ */
 export function getProjectNameFromDom(): string | null {
-  const xp = CONFIG.PROJECT_NAME_XPATH;
-  const isDisabled = !xp || xp.charAt(0) === '_';
-
-  if (isDisabled) {
-    return null;
-  }
-
-  try {
-    const el = document.evaluate(xp, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-
-    if (el) {
-      const text = (el.textContent || '').trim();
-      const hasText = text !== '';
-
-      if (hasText) {
-        return text;
-      }
-    }
-  } catch (_e) {
-    /* XPath error */
-  }
-
   return null;
 }
 
@@ -154,19 +137,13 @@ export function getDisplayProjectName(): string {
     return state.projectNameFromApi;
   }
 
-  // Priority 2: DOM XPath (legacy fallback only)
-  const domName = getProjectNameFromDom();
-  if (domName) {
-    return domName;
-  }
-
-  // Priority 3: document title parse
+  // Priority 2: document title parse (no XPath — removed per regression fix)
   const titleMatch = (document.title || '').match(/^(.+?)\s*[-–—]\s*(?:Lovable|lovable)/);
   if (titleMatch) {
     return titleMatch[1].trim();
   }
 
-  // Priority 4: truncated project ID
+  // Priority 3: truncated project ID
   const pid = getProjectIdFromUrl();
   return pid ? pid.substring(0, 8) : 'Unknown Project';
 }
