@@ -248,10 +248,10 @@ async function seedMissingBuiltinsDirectly(
                 );
             }
         } catch (fetchErr) {
-            logCaughtError(BgLogTag.BUILTIN_GUARD_FALLBACK, `Failed to fetch instruction.json for ${scriptName} — URL: ${instrAbsUrl}`, fetchErr);
+            logCaughtError(BgLogTag.BUILTIN_GUARD_FALLBACK, `Failed to fetch instruction.json\n  Path: ${instrAbsUrl}\n  Missing: instruction.json metadata for "${scriptName}"\n  Reason: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`, fetchErr);
             void persistInjectionError(
                 "BUILTIN_GUARD_INSTRUCTION_FETCH_FAILED",
-                `[builtin-guard:fallback] instruction.json fetch failed for ${scriptName}: ${reason}. URL: ${instrAbsUrl}`,
+                `[builtin-guard:fallback] instruction.json fetch failed\n  Path: ${instrAbsUrl}\n  Missing: Metadata for "${scriptName}"\n  Reason: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`,
             );
         }
 
