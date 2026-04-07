@@ -1,7 +1,9 @@
 # Spec: Cross-Project Sync — Shared Assets & Linked Projects
 
-**Version**: 1.0.0  
-**Status**: DRAFT  
+**Version**: 2.0.0  
+**Status**: READY  
+**Created**: 2026-03-26  
+**Matured**: 2026-04-07
 **Created**: 2026-03-26  
 
 ---
