@@ -13,7 +13,7 @@ import { toErrorMessage } from './error-utils';
  * @see spec/06-coding-guidelines/02-typescript-immutability-standards.md
  */
 
-import { VERSION, BLOATED_KEY_PATTERNS, LOG_STORAGE_KEY, LOG_MAX_ENTRIES, WS_HISTORY_KEY, CONFIG, state, cLogDefault, cLogError, cLogInfo, cLogSuccess, cLogWarn, cLogDelegate, cLogCheck, cLogSkip } from './shared-state';
+import { VERSION, BLOATED_KEY_PATTERNS, LOG_STORAGE_KEY, LOG_MAX_ENTRIES, WS_HISTORY_KEY, state, cLogDefault, cLogError, cLogInfo, cLogSuccess, cLogWarn, cLogDelegate, cLogCheck, cLogSkip } from './shared-state';
 import type { PersistedLogEntry } from './types';
 import { shouldLog, shouldConsole, shouldPersist, shouldActivityUi } from './log-manager';
 import { addActivityLog } from './log-activity-ui';
