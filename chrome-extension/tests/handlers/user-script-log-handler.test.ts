@@ -111,7 +111,7 @@ describe("handleUserScriptLog", () => {
         await handleUserScriptLog(buildLogMessage({ metadata }));
 
         const insertArgs = mockLogsDb.run.mock.calls[0];
-        const storedMetadata = JSON.parse(insertArgs[1][6]);
+        const storedMetadata = JSON.parse(insertArgs[1][7]);
 
         expect(storedMetadata.authHeader).toContain("...REDACTED");
         expect(storedMetadata.password).toContain("...REDACTED");
