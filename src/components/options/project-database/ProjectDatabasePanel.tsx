@@ -85,6 +85,25 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
     setErrorModalOpen(true);
   }, [projectSlug]);
 
+  const fetchUserDbCount = useCallback(async () => {
+    try {
+      const result = await sendMessage<{ isOk: boolean; rows?: Array<{ IsDefault?: number }> }>({
+        type: "PROJECT_API",
+        project: projectSlug,
+        method: "GET",
+        endpoint: "ProjectDatabases",
+        params: { limit: 100, offset: 0 },
+      } as any);
+      if (result.isOk && result.rows) {
+        const userCreated = result.rows.filter((r) => r.IsDefault !== 1).length;
+        setUserDbCount(userCreated);
+      }
+    } catch {
+      // ProjectDatabases table may not exist yet — default to 0
+      setUserDbCount(0);
+    }
+  }, [projectSlug]);
+
   const refreshTables = useCallback(async () => {
     setLoading(true);
     try {
@@ -104,7 +123,9 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
     } finally {
       setLoading(false);
     }
-  }, [sendMessage, projectSlug]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Also refresh the user DB count
+    void fetchUserDbCount();
+  }, [sendMessage, projectSlug, fetchUserDbCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     void refreshTables();
