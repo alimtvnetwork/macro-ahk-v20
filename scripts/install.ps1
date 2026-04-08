@@ -4,7 +4,7 @@
 # Usage:
 #   irm https://github.com/<OWNER>/<REPO>/releases/latest/download/install-extension.ps1 | iex
 #   — or —
-#   .\install-extension.ps1 [-Version v2.112.0] [-InstallDir "D:\marco-extension\v2.112.0"]
+#   .\install.ps1 [-Version v2.115.0] [-InstallDir "D:\marco-extension\v2.115.0"]
 #
 # Default install directory:
 #   $HOME\marco-extension\<version>\
