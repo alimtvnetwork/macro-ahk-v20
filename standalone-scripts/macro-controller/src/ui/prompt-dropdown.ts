@@ -568,25 +568,26 @@ function renderPromptItem(
 ): HTMLElement {
   const item = document.createElement('div');
   item.setAttribute('data-prompt-idx', String(idx));
-  item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:6px 8px;cursor:pointer;font-size:10px;color:#c9a8ef;border-bottom:1px solid rgba(124,58,237,0.15);';
+  const hasText = Boolean(p.text);
+  item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:6px 8px;cursor:pointer;font-size:10px;color:' + (hasText ? '#c9a8ef' : '#6b5a8a') + ';border-bottom:1px solid rgba(124,58,237,0.15);' + (hasText ? '' : 'opacity:0.6;');
   item.onmouseover = function() { (this as HTMLElement).style.background = cBtnMenuHover; };
   item.onmouseout = function() { (this as HTMLElement).style.background = 'transparent'; };
 
   const badge = document.createElement('span');
   badge.textContent = String(idx + 1);
-  badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;background:' + cPrimary + ';color:' + cPanelFg + ';font-size:8px;font-weight:700;margin-right:6px;flex-shrink:0;';
+  badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;background:' + (hasText ? cPrimary : 'rgba(124,58,237,0.3)') + ';color:' + cPanelFg + ';font-size:8px;font-weight:700;margin-right:6px;flex-shrink:0;';
   item.appendChild(badge);
 
   const nameSpan = document.createElement('span');
-  nameSpan.textContent = p.name;
+  nameSpan.textContent = p.name + (hasText ? '' : ' (text not loaded)');
   nameSpan.style.cssText = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-  nameSpan.title = p.text || '';
+  nameSpan.title = p.text || 'Prompt text not available — click Load to refresh';
   item.appendChild(nameSpan);
 
   const actions = document.createElement('span');
   actions.style.cssText = 'display:flex;align-items:center;gap:2px;margin-left:4px;flex-shrink:0;';
 
-  if (p.text) {
+  if (hasText) {
     appendPromptActions(actions, p, promptsDropdown, promptsCfg, ctx, taskNextDeps);
     item.onclick = function(e: Event) {
       if (actions.contains(e.target as Node)) return;
