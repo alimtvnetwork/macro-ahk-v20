@@ -390,7 +390,7 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: DIST_DIR,
             emptyOutDir: true,
-            sourcemap: true,
+            sourcemap: mode === 'development' ? 'inline' : false,
             minify: false,
             modulePreload: false,
             rollupOptions: {

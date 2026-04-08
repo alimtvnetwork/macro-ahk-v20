@@ -114,6 +114,9 @@ jobs:
           cp README.md chrome-extension/dist/README.md
           echo "${VER}" > chrome-extension/dist/VERSION
 
+          # ── Remove source maps (must never ship in releases) ──
+          find chrome-extension/dist -name '*.map' -delete
+
           # ── Chrome extension — zip dist/ contents (no dist/ prefix) ──
           cd chrome-extension/dist
           zip -r "../../release-assets/marco-extension-${VER}.zip" .
