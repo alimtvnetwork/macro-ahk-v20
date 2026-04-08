@@ -1,13 +1,15 @@
 /**
  * MacroLoop Controller — Bulk Rename Dialog
  * Phase 5A: Extracted from ws-selection-ui.ts
+ * Phase 7:  Persistent rename presets via project-scoped IndexedDB
  *
- * Orchestrator: builds the floating draggable dialog, preview list,
- * delay slider, and apply/stop/cancel buttons.
+ * Orchestrator: builds the floating draggable dialog, preset selector,
+ * preview list, delay slider, and apply/stop/cancel/save buttons.
  *
- * Sub-modules: bulk-rename-fields.
+ * Sub-modules: bulk-rename-fields, rename-preset-store.
  *
- * @see spec/04-macro-controller/ts-migration-v2/05-module-splitting.md
+ * @see spec/10-macro-controller/ts-migration-v2/05-module-splitting.md
+ * @see spec/10-macro-controller/ts-migration-v2/07-rename-persistence-indexeddb.md
  */
 
 import type {
@@ -26,6 +28,7 @@ import {
   cPrimaryBorderA,
 } from '../shared-state';
 import { log } from '../logging';
+import { showToast } from '../toast';
 import {
   applyRenameTemplate,
   bulkRenameWorkspaces,
@@ -41,7 +44,13 @@ import {
   buildTemplateRow,
   buildStartNumInput,
   buildTokenRow,
+  buildPresetRow,
 } from './bulk-rename-fields';
+import {
+  getRenamePresetStore,
+  createDefaultPreset,
+  type RenamePreset,
+} from '../rename-preset-store';
 
 /**
  * Render the floating bulk rename dialog for selected workspaces.
