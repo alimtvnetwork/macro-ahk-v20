@@ -5,6 +5,7 @@
  * The first required default is always a Key-Value database.
  *
  * @see spec/11-chrome-extension/55-storage-ui-redesign.md
+ * @see spec/11-chrome-extension/90-namespace-database-creation.md
  */
 
 /* ------------------------------------------------------------------ */
@@ -94,26 +95,81 @@ export const DEFAULT_PROJECT_DATABASES: DefaultDatabaseDef[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Namespace-based Database Creation (INCOMPLETE)                     */
+/*  Namespace Validation                                               */
+/*  @see spec/11-chrome-extension/90-namespace-database-creation.md    */
 /* ------------------------------------------------------------------ */
 
+/** Reserved namespace prefixes that only the system can use. */
+const RESERVED_PREFIXES = ["System.", "Marco."];
+
+/** Maximum user-created databases per project (excludes defaults). */
+export const MAX_USER_DATABASES = 25;
+
 /**
- * @incomplete — Namespace-based database creation flow.
- *
- * Users must be able to create databases using namespaces.
- * The exact UX flow, validation rules, and naming constraints
- * are not fully provided and remain pending clarification.
- *
- * Planned fields for the creation form:
- * - Namespace (e.g., "MyPlugin.Data")
- * - Database name
- * - Database kind selection
- *
- * Validation rules TBD:
- * - Namespace format constraints
- * - Reserved namespace prefixes
- * - Maximum databases per project
+ * PascalCase dot-separated namespace format:
+ * - 2–5 segments separated by dots
+ * - Each segment starts with uppercase letter
+ * - Only alphanumeric within segments
+ * - Total length 3–100 chars
  */
+const NAMESPACE_PATTERN = /^[A-Z][a-zA-Z0-9]*(\.[A-Z][a-zA-Z0-9]*){1,4}$/;
+
+export interface NamespaceValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+/** Validates a namespace string against all rules. */
+export function validateNamespace(namespace: string): NamespaceValidationResult {
+  if (!namespace || namespace.trim().length === 0) {
+    return { valid: false, error: "Namespace is required" };
+  }
+
+  const trimmed = namespace.trim();
+
+  if (trimmed.length < 3) {
+    return { valid: false, error: "Namespace must be at least 3 characters" };
+  }
+  if (trimmed.length > 100) {
+    return { valid: false, error: "Namespace must be 100 characters or less" };
+  }
+
+  // Check reserved prefixes
+  for (const prefix of RESERVED_PREFIXES) {
+    if (trimmed.startsWith(prefix)) {
+      return { valid: false, error: `"${prefix.slice(0, -1)}" is a reserved namespace prefix` };
+    }
+  }
+
+  if (!NAMESPACE_PATTERN.test(trimmed)) {
+    return {
+      valid: false,
+      error: "Namespace must be PascalCase dot-separated (e.g. MyPlugin.Config), 2–5 segments",
+    };
+  }
+
+  return { valid: true };
+}
+
+/** Validates a database name within a namespace. */
+export function validateDatabaseName(name: string): NamespaceValidationResult {
+  if (!name || name.trim().length === 0) {
+    return { valid: false, error: "Database name is required" };
+  }
+  const trimmed = name.trim();
+  if (trimmed.length > 50) {
+    return { valid: false, error: "Database name must be 50 characters or less" };
+  }
+  if (!/^[A-Z][a-zA-Z0-9]*$/.test(trimmed)) {
+    return { valid: false, error: "Database name must be PascalCase (e.g. MyStore)" };
+  }
+  return { valid: true };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Namespace Database Request                                         */
+/* ------------------------------------------------------------------ */
+
 export interface NamespaceDatabaseRequest {
   namespace: string;
   databaseName: string;
@@ -121,13 +177,26 @@ export interface NamespaceDatabaseRequest {
   description?: string;
 }
 
-/** Placeholder validator — real implementation pending spec clarification. */
-export function validateNamespace(namespace: string): { valid: boolean; error?: string } {
-  if (!namespace || namespace.trim().length === 0) {
-    return { valid: false, error: "Namespace is required" };
-  }
-  if (!/^[A-Za-z][A-Za-z0-9.]*$/.test(namespace)) {
-    return { valid: false, error: "Namespace must start with a letter and contain only letters, numbers, and dots" };
-  }
-  return { valid: true };
-}
+/** SQL for a KeyValue-kind database. */
+export const KV_KIND_SCHEMA = `
+CREATE TABLE IF NOT EXISTS KeyValueStore (
+    Id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    Namespace TEXT NOT NULL DEFAULT 'default',
+    Key       TEXT NOT NULL,
+    Value     TEXT,
+    ValueType TEXT NOT NULL DEFAULT 'text',
+    CreatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    UpdatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+);`;
+
+/** SQL for a Config-kind database. */
+export const CONFIG_KIND_SCHEMA = `
+CREATE TABLE IF NOT EXISTS ConfigStore (
+    Id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    Section   TEXT NOT NULL DEFAULT 'general',
+    Key       TEXT NOT NULL,
+    Value     TEXT,
+    CreatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    UpdatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(Section, Key)
+);`;
