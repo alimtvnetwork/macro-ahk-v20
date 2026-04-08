@@ -26,6 +26,7 @@ import { SchemaTab } from "./SchemaTab";
 import { ErrorModal } from "./ErrorModal";
 import { createErrorModel, type ErrorModel } from "@/types/error-model";
 import { DEFAULT_PROJECT_DATABASES, DATABASE_KINDS, validateNamespace, type NamespaceDatabaseRequest } from "@/types/default-databases";
+import { CreateDatabaseForm } from "./CreateDatabaseForm";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
