@@ -6,6 +6,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v2.119.0] — 2026-04-08
+
+### Fixed
+- Resolved all 20 ESLint warnings across 16 files (cognitive-complexity, max-lines-per-function, unused directives)
+
 ## [v2.118.0] — 2026-04-08
 
 ### Changed
