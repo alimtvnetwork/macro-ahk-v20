@@ -543,6 +543,7 @@ export function SchemaTab({ projectSlug, onMigrationComplete }: SchemaTabProps) 
           </Collapsible>
         </Card>
       ))}
+      <ErrorModal error={modalError} open={errorModalOpen} onOpenChange={setErrorModalOpen} />
     </div>
   );
 }
