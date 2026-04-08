@@ -67,12 +67,7 @@ jobs:
 
       # ── Install root dependencies ─────────────────────────
       - name: Install root dependencies
-        run: |
-          if [ -f pnpm-lock.yaml ]; then
-            pnpm install --frozen-lockfile
-          else
-            pnpm install --no-frozen-lockfile --lockfile=false
-          fi
+        run: pnpm install --no-frozen-lockfile
 
       # ── Install Chrome extension dependencies ─────────────
       - name: Install extension dependencies
