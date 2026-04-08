@@ -93,6 +93,10 @@ jobs:
         run: |
           mkdir -p release-assets
 
+          # ── Copy README + VERSION into extension dist ──
+          cp README.md chrome-extension/dist/README.md
+          echo "${VER}" > chrome-extension/dist/VERSION
+
           # ── Chrome extension — zip dist/ contents (no dist/ prefix) ──
           cd chrome-extension/dist
           zip -r "../../release-assets/marco-extension-${VER}.zip" .
