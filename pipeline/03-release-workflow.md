@@ -42,9 +42,10 @@ Standalone scripts (SDK, XPath, Macro Controller) also default to `sourcemap: fa
 
 ## Version Extraction
 
-The version is derived from the branch name:
+The version is derived from the ref type:
 ```
-refs/heads/release/v2.119.0  →  v2.119.0
+refs/tags/v2.119.0             →  v2.119.0   (tag push)
+refs/heads/release/v2.119.0    →  v2.119.0   (branch push)
 ```
 
 This version is used for:
