@@ -24,6 +24,8 @@ on:
   push:
     branches:
       - "release/*"
+    tags:
+      - "v*"
 
 # Release builds must NEVER be cancelled — every release commit
 # must produce a GitHub Release regardless of newer commits.
