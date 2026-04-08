@@ -77,7 +77,7 @@ describe("Error Handler — GET_ACTIVE_ERRORS", () => {
     it("returns unresolved errors", async () => {
         errorsDb.run(
             "INSERT INTO Errors (SessionId, timestamp, level, source, category, message, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ["s1", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "timeout", 0],
+            ["", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "timeout", 0],
         );
 
         const result = await handleGetActiveErrors();
@@ -87,7 +87,7 @@ describe("Error Handler — GET_ACTIVE_ERRORS", () => {
     it("excludes resolved errors", async () => {
         errorsDb.run(
             "INSERT INTO Errors (SessionId, timestamp, level, source, category, message, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ["s1", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "resolved one", 1],
+            ["", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "resolved one", 1],
         );
 
         const result = await handleGetActiveErrors();
@@ -97,7 +97,7 @@ describe("Error Handler — GET_ACTIVE_ERRORS", () => {
     it("sets health state to DEGRADED when errors exist", async () => {
         errorsDb.run(
             "INSERT INTO Errors (SessionId, timestamp, level, source, category, message, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ["s1", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "active error", 0],
+            ["", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "active error", 0],
         );
 
         await handleGetActiveErrors();
