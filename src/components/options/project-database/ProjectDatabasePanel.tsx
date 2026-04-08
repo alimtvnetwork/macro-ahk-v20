@@ -61,6 +61,7 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
   void projectId; // reserved for future use
   const [tables, setTables] = useState<TableInfo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userDbCount, setUserDbCount] = useState(0);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showCreateDbForm, setShowCreateDbForm] = useState(false);
 
