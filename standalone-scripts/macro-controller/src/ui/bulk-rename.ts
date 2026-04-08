@@ -54,6 +54,7 @@ import {
 
 /**
  * Render the floating bulk rename dialog for selected workspaces.
+ * Loads saved presets from IndexedDB and auto-populates fields.
  */
 export function renderBulkRenameDialog(): void {
   removeBulkRenameDialog();
@@ -66,7 +67,7 @@ export function renderBulkRenameDialog(): void {
   const perWs = loopCreditState.perWorkspace || [];
   const selected: WorkspaceCredit[] = [];
   for (const ws of perWs) {
-    if (getLoopWsCheckedIds()[ws.id]) selected.push(ws);
+    if (getLoopWsCheckedIds()[ws.id]) { selected.push(ws); }
   }
 
   const panel = _createRenamePanel();
@@ -76,17 +77,148 @@ export function renderBulkRenameDialog(): void {
   const body = document.createElement('div');
   body.style.cssText = 'padding:10px;';
 
+  // Build inputs first, then async-load presets
   const inputsResult = _buildRenameInputs(body, selected);
   const btnRow = _buildRenameButtons(body, selected, inputsResult);
 
   panel.appendChild(body);
   panel.appendChild(btnRow);
   document.body.appendChild(panel);
+
+  // Async: load presets and insert preset row at top of body
+  _initPresetUi(body, inputsResult).catch(function (err) {
+    log('[Rename] Preset UI init failed: ' + String(err), 'error');
+  });
 }
 
-// ── Panel Shell ──
-function _createRenamePanel(): HTMLDivElement {
-  const panel = document.createElement('div');
+// ── Current active preset name (panel-scoped) ──
+let _activePresetName = 'Default';
+
+// ── Read current UI values into a RenamePreset ──
+function _readUiToPreset(inputs: RenameInputsResult): RenamePreset {
+  return {
+    name: _activePresetName,
+    template: inputs.tmplRow.input.value,
+    prefix: inputs.prefixRow.input.value,
+    prefixEnabled: inputs.prefixRow.cb ? inputs.prefixRow.cb.checked : false,
+    suffix: inputs.suffixRow.input.value,
+    suffixEnabled: inputs.suffixRow.cb ? inputs.suffixRow.cb.checked : false,
+    startDollar: inputs.getStartNums().dollar,
+    startHash: inputs.getStartNums().hash,
+    startStar: inputs.getStartNums().star,
+    delayMs: getRenameDelayMs(),
+    createdAt: 0,
+    updatedAt: Date.now(),
+  };
+}
+
+// ── Populate UI fields from a preset ──
+function _populateUiFromPreset(preset: RenamePreset, inputs: RenameInputsResult): void {
+  inputs.tmplRow.input.value = preset.template || '';
+  inputs.prefixRow.input.value = preset.prefix || '';
+  if (inputs.prefixRow.cb) { inputs.prefixRow.cb.checked = !!preset.prefixEnabled; }
+  inputs.suffixRow.input.value = preset.suffix || '';
+  if (inputs.suffixRow.cb) { inputs.suffixRow.cb.checked = !!preset.suffixEnabled; }
+  if (preset.delayMs > 0) {
+    setRenameDelayMs(preset.delayMs);
+    const slider = document.querySelector('#ahk-loop-rename-dialog input[type="range"]') as HTMLInputElement | null;
+    if (slider) {
+      slider.value = String(preset.delayMs);
+      slider.dispatchEvent(new Event('input'));
+    }
+  }
+  // Start numbers are populated via the variable detection on updatePreview
+  inputs.updatePreview();
+  inputs.updateStaticEta();
+}
+
+// ── Auto-save current config ──
+async function _autoSave(inputs: RenameInputsResult): Promise<void> {
+  try {
+    const store = getRenamePresetStore();
+    const preset = _readUiToPreset(inputs);
+    await store.savePreset(_activePresetName, preset);
+  } catch {
+    // Silent — auto-save is best-effort
+  }
+}
+
+// ── Init preset UI (async) ──
+async function _initPresetUi(body: HTMLElement, inputs: RenameInputsResult): Promise<void> {
+  const store = getRenamePresetStore();
+  const presetNames = await store.listPresets();
+  _activePresetName = await store.getActivePresetName();
+
+  // Load and populate active preset
+  const activePreset = await store.loadPreset(_activePresetName);
+  if (activePreset) {
+    _populateUiFromPreset(activePreset, inputs);
+  }
+
+  // Build preset row and insert at top of body
+  const presetRow = buildPresetRow(
+    presetNames,
+    _activePresetName,
+    // onSwitch
+    function (name: string) {
+      _activePresetName = name;
+      store.setActivePresetName(name);
+      store.loadPreset(name).then(function (p) {
+        if (p) { _populateUiFromPreset(p, inputs); }
+      });
+    },
+    // onNew
+    function () {
+      const name = prompt('Enter preset name:');
+      if (!name || !name.trim()) { return; }
+      const trimmed = name.trim();
+      _activePresetName = trimmed;
+      const newPreset = createDefaultPreset();
+      newPreset.name = trimmed;
+      store.savePreset(trimmed, newPreset).then(function () {
+        store.setActivePresetName(trimmed);
+        // Add to dropdown
+        const opt = document.createElement('option');
+        opt.value = trimmed;
+        opt.textContent = trimmed;
+        const sel = presetRow.select;
+        sel.insertBefore(opt, sel.querySelector('option[value="__new__"]'));
+        sel.value = trimmed;
+        _populateUiFromPreset(newPreset, inputs);
+        showToast('Created preset "' + trimmed + '"', 'success');
+      });
+    },
+    // onDelete
+    function (name: string) {
+      if (name === 'Default') {
+        showToast('Cannot delete Default preset', 'warn');
+
+        return;
+      }
+      if (!confirm('Delete preset "' + name + '"?')) { return; }
+      store.deletePreset(name).then(function () {
+        // Remove from dropdown
+        const opt = presetRow.select.querySelector('option[value="' + name.replace(/"/g, '\\"') + '"]');
+        if (opt) { opt.remove(); }
+        _activePresetName = 'Default';
+        presetRow.select.value = 'Default';
+        store.loadPreset('Default').then(function (p) {
+          if (p) { _populateUiFromPreset(p, inputs); }
+        });
+        showToast('Deleted preset "' + name + '"', 'info');
+      });
+    },
+    // onSave
+    function () {
+      const preset = _readUiToPreset(inputs);
+      store.savePreset(_activePresetName, preset).then(function () {
+        showToast('Saved preset "' + _activePresetName + '"', 'success');
+      });
+    },
+  );
+
+  body.insertBefore(presetRow.row, body.firstChild);
+}
   panel.id = 'ahk-loop-rename-dialog';
   panel.style.cssText =
     'position:fixed;top:80px;right:40px;z-index:100002;background:' + cPanelBg +
