@@ -66,6 +66,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
     "eslint-plugin-sonarjs": "^3.0.2",
+    "fake-indexeddb": "^6.2.5",
     "input-otp": "^1.4.2",
     "jszip": "^3.10.1",
     "less": "^4.6.4",
