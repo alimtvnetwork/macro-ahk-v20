@@ -6,6 +6,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v2.118.0] — 2026-04-08
+
+### Added
+
+### Fixed
+
+### Changed
+- Version bump: 2.117.0 → 2.118.0 (all version files synced)
+
+---
+
 ## [v2.117.0] — 2026-04-08
 
 ### Fixed

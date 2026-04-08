@@ -11,9 +11,9 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.117.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.118.0 — Stable
 
-All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.117.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, and 4-tier CSP fallback. ESLint zero errors/warnings. All immediate workstream items complete.
+All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.118.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, and 4-tier CSP fallback. ESLint zero errors/warnings. All immediate workstream items complete.
 
 ### 2026-04-08 Session
 
