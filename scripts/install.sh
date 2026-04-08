@@ -5,7 +5,7 @@
 # Usage:
 #   curl -fsSL https://github.com/<OWNER>/<REPO>/releases/latest/download/install-extension.sh | bash
 #   — or —
-#   ./install-extension.sh [--version v2.112.0] [--dir ~/marco-extension/v2.112.0]
+#   ./install.sh [--version v2.115.0] [--dir ~/marco-extension/v2.115.0]
 #
 # Default install directory:
 #   $HOME/marco-extension/<version>/
