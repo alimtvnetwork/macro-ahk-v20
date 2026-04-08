@@ -219,6 +219,10 @@ async function _initPresetUi(body: HTMLElement, inputs: RenameInputsResult): Pro
 
   body.insertBefore(presetRow.row, body.firstChild);
 }
+
+// ── Panel Shell ──
+function _createRenamePanel(): HTMLDivElement {
+  const panel = document.createElement('div');
   panel.id = 'ahk-loop-rename-dialog';
   panel.style.cssText =
     'position:fixed;top:80px;right:40px;z-index:100002;background:' + cPanelBg +
