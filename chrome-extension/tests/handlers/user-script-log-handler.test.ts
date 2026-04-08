@@ -97,6 +97,9 @@ describe("handleUserScriptLog", () => {
 
         const insertArgs = mockLogsDb.run.mock.calls[0];
         const storedMetadata = JSON.parse(insertArgs[1][7]);
+
+        expect(storedMetadata.token).toBe("supersec...REDACTED");
+        expect(storedMetadata.count).toBe(5);
     });
 
     it("redacts auth and password keys", async () => {
