@@ -94,8 +94,8 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
       if (result.isOk && result.tables) {
         setTables(result.tables);
       }
-    } catch {
-      // DB may not be initialized yet — show empty
+    } catch (err) {
+      showError(err, "RefreshTables", { type: "PROJECT_API", project: projectSlug });
       setTables([]);
     } finally {
       setLoading(false);
