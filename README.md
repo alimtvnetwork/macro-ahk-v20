@@ -63,7 +63,7 @@ curl -fsSL https://github.com/riseup-asia/macro-ahk/releases/latest/download/ins
 ### Manual Install
 
 1. Download `marco-extension-v{VERSION}.zip` from [Releases](https://github.com/riseup-asia/macro-ahk/releases)
-2. Extract to a folder (e.g., `D:\marco-extension\v2.112.0`)
+2. Extract to a folder (e.g., `D:\marco-extension\v2.115.0`)
 3. Open `chrome://extensions` (or `edge://extensions`)
 4. Enable **Developer mode** (toggle in top-right)
 5. Click **Load unpacked** and select the extracted folder

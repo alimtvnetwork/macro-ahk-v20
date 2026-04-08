@@ -10,8 +10,8 @@
 #   - macro-controller-v{VER}.zip  — standalone-scripts/macro-controller/**
 #   - marco-sdk-v{VER}.zip         — standalone-scripts/marco-sdk/**
 #   - xpath-v{VER}.zip             — standalone-scripts/xpath/**
-#   - install-extension.sh         — Bash install/download helper
-#   - install-extension.ps1        — PowerShell install/download helper
+#   - install.sh                   — Bash install/download helper
+#   - install.ps1                  — PowerShell install/download helper
 #   - VERSION.txt                  — Plain-text version identifier
 #   - CHANGELOG.md                 — Project changelog (full)
 #
