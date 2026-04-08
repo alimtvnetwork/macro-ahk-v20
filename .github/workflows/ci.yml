@@ -62,6 +62,8 @@ jobs:
       - name: Install extension dependencies
         working-directory: chrome-extension
         run: |
+          # Remove local-only pnpm-workspace.yaml (contains Windows storeDir path)
+          rm -f pnpm-workspace.yaml
           if [ -f pnpm-lock.yaml ]; then
             pnpm install --frozen-lockfile
           else
