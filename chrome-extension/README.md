@@ -7,13 +7,13 @@ Browser automation for workspace and credit management.
 **Windows (PowerShell):**
 
 ```powershell
-irm https://github.com/alimtvnetwork/macro-ahk-v15/releases/latest/download/install.ps1 | iex
+irm https://raw.githubusercontent.com/alimtvnetwork/macro-ahk-v15/main/scripts/install.ps1 | iex
 ```
 
 **Linux / macOS (Bash):**
 
 ```bash
-curl -fsSL https://github.com/alimtvnetwork/macro-ahk-v15/releases/latest/download/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/alimtvnetwork/macro-ahk-v15/main/scripts/install.sh | bash
 ```
 
 See the [root README](../README.md) for all installer options and manual install steps.

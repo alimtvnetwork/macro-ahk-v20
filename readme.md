@@ -13,13 +13,25 @@
 **Windows (PowerShell):**
 
 ```powershell
-irm https://github.com/alimtvnetwork/macro-ahk-v15/releases/latest/download/install.ps1 | iex
+irm https://raw.githubusercontent.com/alimtvnetwork/macro-ahk-v15/main/scripts/install.ps1 | iex
 ```
 
 **Linux / macOS (Bash):**
 
 ```bash
-curl -fsSL https://github.com/alimtvnetwork/macro-ahk-v15/releases/latest/download/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/alimtvnetwork/macro-ahk-v15/main/scripts/install.sh | bash
+```
+
+### Pin a Specific Version
+
+```powershell
+# PowerShell
+& { $Version = "v2.116.1"; irm https://raw.githubusercontent.com/alimtvnetwork/macro-ahk-v15/main/scripts/install.ps1 | iex }
+```
+
+```bash
+# Bash
+curl -fsSL https://raw.githubusercontent.com/alimtvnetwork/macro-ahk-v15/main/scripts/install.sh | bash -s -- --version v2.116.1
 ```
 
 ### Custom Directory Install
@@ -27,19 +39,13 @@ curl -fsSL https://github.com/alimtvnetwork/macro-ahk-v15/releases/latest/downlo
 **Windows (PowerShell):**
 
 ```powershell
-.\install.ps1 -InstallDir "D:\marco-extension\v2.116.1"
-```
-
-**Specific version + custom directory:**
-
-```powershell
-.\install.ps1 -Version v2.116.1 -InstallDir "D:\marco-extension\v2.116.1"
+.\install.ps1 -InstallDir "D:\marco-extension"
 ```
 
 **Linux / macOS:**
 
 ```bash
-./install.sh --version v2.116.1 --dir ~/marco-extension/v2.116.1
+./install.sh --dir ~/marco-extension
 ```
 
 ### Installer Options
