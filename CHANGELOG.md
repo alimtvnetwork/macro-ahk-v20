@@ -6,6 +6,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v2.113.0] — 2026-04-08
+
+### Fixed
+- **Prompt dropdown — Task Next submenu**: snapshot restore path cleaned up Task Next sub-menus but never rebuilt them — hover/click stopped working after cache restore
+- **Prompt dropdown — Load button**: replaced broken emoji icon (🔄 → ↻) with solid styled button; added error recovery so button doesn't stay stuck on failure
+- **Prompt dropdown — Header rebind**: Load button lost onclick handler after snapshot restore — added `_rebindHeader()` to the rebind pipeline
+- **Pale large prompts**: prompts with missing/empty text now show "(text not loaded)" label, dimmed badge, and helpful click toast instead of appearing silently broken
+
+### Changed
+- Version bump: 2.112.0 → 2.113.0 (all version files synced)
+
+---
+
 ## [v2.112.0] — 2026-04-07
 
 ### Fixed
