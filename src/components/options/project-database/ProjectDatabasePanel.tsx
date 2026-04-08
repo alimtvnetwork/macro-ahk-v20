@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, Database, RefreshCw, Table2, Code, FileDown, Loader2, Layers } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Trash2, Database, RefreshCw, Table2, Code, FileDown, Loader2, Layers, KeyRound, AlertTriangle } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -22,6 +23,9 @@ import { sendMessage } from "@/lib/message-client";
 import { JsonSchemaTab } from "./JsonSchemaTab";
 import { ColumnEditor, type ColumnDefinition } from "./ColumnEditor";
 import { SchemaTab } from "./SchemaTab";
+import { ErrorModal } from "./ErrorModal";
+import { createErrorModel, type ErrorModel } from "@/types/error-model";
+import { DEFAULT_PROJECT_DATABASES, DATABASE_KINDS, validateNamespace, type NamespaceDatabaseRequest } from "@/types/default-databases";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
