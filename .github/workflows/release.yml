@@ -2,18 +2,20 @@
 # Marco Extension — Release Pipeline
 #
 # Triggers on push to any branch matching  release/*
-# (e.g.  release/v2.6.0).
+# (e.g.  release/v2.112.0).
 #
 # Produces a GitHub Release with these assets:
-#   • marco-extension-v{VER}.zip   — Chrome extension dist contents
-#   • prompts-v{VER}.zip           — standalone-scripts/prompts/**
-#   • macro-controller-v{VER}.zip  — standalone-scripts/macro-controller/**
-#   • marco-sdk-v{VER}.zip         — standalone-scripts/marco-sdk/**
-#   • xpath-v{VER}.zip             — standalone-scripts/xpath/**
-#   • install-extension.sh         — Bash install/download helper
-#   • install-extension.ps1        — PowerShell install/download helper
-#   • VERSION.txt                  — Plain-text version identifier
-#   • CHANGELOG.md                 — Project changelog (full)
+#   - marco-extension-v{VER}.zip   — Chrome extension dist contents
+#   - prompts-v{VER}.zip           — standalone-scripts/prompts/**
+#   - macro-controller-v{VER}.zip  — standalone-scripts/macro-controller/**
+#   - marco-sdk-v{VER}.zip         — standalone-scripts/marco-sdk/**
+#   - xpath-v{VER}.zip             — standalone-scripts/xpath/**
+#   - install-extension.sh         — Bash install/download helper
+#   - install-extension.ps1        — PowerShell install/download helper
+#   - VERSION.txt                  — Plain-text version identifier
+#   - CHANGELOG.md                 — Project changelog (full)
+#
+# NOTE: No email or notification integrations — by design.
 # ──────────────────────────────────────────────────────────────
 
 name: Release Build
@@ -51,23 +53,38 @@ jobs:
         with:
           node-version: 20
 
+      # ── Setup pnpm ────────────────────────────────────────
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       # ── Install root dependencies ─────────────────────────
       - name: Install root dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # ── Install Chrome extension dependencies ─────────────
       - name: Install extension dependencies
         working-directory: chrome-extension
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      # ── Run test suite ──────────────────────────────────
+      # ── Run test suite ────────────────────────────────────
       - name: Run tests
-        run: npx vitest run
+        run: pnpm run test
+
+      # ── Build standalone scripts (SDK first, then others) ─
+      - name: Build Marco SDK
+        run: pnpm run build:sdk
+
+      - name: Build XPath
+        run: pnpm run build:xpath
+
+      - name: Build Macro Controller
+        run: pnpm run build:macro-controller
 
       # ── Build Chrome extension ────────────────────────────
       - name: Build Chrome extension
-        working-directory: chrome-extension
-        run: npm run build
+        run: pnpm run build:extension
 
       # ── Package assets ────────────────────────────────────
       - name: Package release assets
@@ -82,9 +99,11 @@ jobs:
           cd ../..
 
           # ── Standalone scripts ──
-          cd standalone-scripts/prompts
-          zip -r "../../release-assets/prompts-${VER}.zip" .
-          cd ../..
+          if [ -d "standalone-scripts/prompts" ]; then
+            cd standalone-scripts/prompts
+            zip -r "../../release-assets/prompts-${VER}.zip" .
+            cd ../..
+          fi
 
           cd standalone-scripts/macro-controller
           zip -r "../../release-assets/macro-controller-${VER}.zip" .
@@ -117,9 +136,9 @@ jobs:
       # ── Generate release notes from commit history ────────
       - name: Generate release notes
         id: changelog
+        env:
+          VER: ${{ steps.version.outputs.tag }}
         run: |
-          VER="${{ steps.version.outputs.tag }}"
-
           # Find the previous release tag
           PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]' | head -1 2>/dev/null || true)
 
@@ -131,6 +150,8 @@ jobs:
             RANGE=""
           fi
 
+          REPO="${GITHUB_REPOSITORY}"
+
           # Build categorized release notes
           {
             echo "## Marco Extension ${VER}"
@@ -141,7 +162,7 @@ jobs:
             # Features
             FEATS=$(git log $RANGE --pretty=format:"- %s (%h)" --grep="^feat" -i 2>/dev/null || true)
             if [ -n "$FEATS" ]; then
-              echo "#### ✨ Features"
+              echo "#### Features"
               echo "$FEATS"
               echo ""
             fi
@@ -149,7 +170,7 @@ jobs:
             # Fixes
             FIXES=$(git log $RANGE --pretty=format:"- %s (%h)" --grep="^fix" -i 2>/dev/null || true)
             if [ -n "$FIXES" ]; then
-              echo "#### 🐛 Bug Fixes"
+              echo "#### Bug Fixes"
               echo "$FIXES"
               echo ""
             fi
@@ -157,52 +178,43 @@ jobs:
             # Refactors / chores / docs
             OTHER=$(git log $RANGE --pretty=format:"- %s (%h)" --grep="^refactor\|^chore\|^docs\|^style\|^perf\|^test\|^ci\|^build" -i 2>/dev/null || true)
             if [ -n "$OTHER" ]; then
-              echo "#### 🔧 Maintenance"
+              echo "#### Maintenance"
               echo "$OTHER"
-              echo ""
-            fi
-
-            # Uncategorized
-            ALL=$(git log $RANGE --pretty=format:"%s" 2>/dev/null || true)
-            UNCATEGORIZED=$(echo "$ALL" | grep -ivE "^(feat|fix|refactor|chore|docs|style|perf|test|ci|build)" || true)
-            if [ -n "$UNCATEGORIZED" ]; then
-              echo "#### 📝 Other Changes"
-              echo "$UNCATEGORIZED" | while IFS= read -r line; do
-                HASH=$(git log $RANGE --pretty=format:"%h" --grep="^${line}$" -1 2>/dev/null || true)
-                echo "- ${line} (${HASH})"
-              done
               echo ""
             fi
 
             echo "---"
             echo ""
-            echo "### 📦 Assets"
+            echo "### Assets"
             echo ""
             echo "| Asset | Description |"
             echo "|-------|-------------|"
             echo "| \`marco-extension-${VER}.zip\` | Chrome extension — load unpacked in \`chrome://extensions\` |"
-            echo "| \`prompts-${VER}.zip\` | AI prompt templates |"
-            echo "| \`macro-controller-${VER}.zip\` | Standalone macro controller scripts |"
-            echo "| \`marco-sdk-${VER}.zip\` | Marco SDK |"
-            echo "| \`xpath-${VER}.zip\` | XPath utility scripts |"
-            echo "| \`install-extension.sh\` | Bash installer (Linux/macOS) |"
             echo "| \`install-extension.ps1\` | PowerShell installer (Windows) |"
+            echo "| \`install-extension.sh\` | Bash installer (Linux/macOS) |"
             echo "| \`VERSION.txt\` | Version identifier |"
-            echo "| \`CHANGELOG.md\` | Full project changelog |"
             echo ""
-            echo "### 🚀 Quick Install"
-            echo ""
-            echo "**Linux / macOS:**"
-            echo "\`\`\`bash"
-            echo "curl -fsSL https://github.com/\${GITHUB_REPOSITORY}/releases/download/${VER}/install-extension.sh | bash"
-            echo "\`\`\`"
+            echo "### Quick Install"
             echo ""
             echo "**Windows (PowerShell):**"
             echo "\`\`\`powershell"
-            echo "irm https://github.com/\${GITHUB_REPOSITORY}/releases/download/${VER}/install-extension.ps1 | iex"
+            echo "irm https://github.com/${REPO}/releases/download/${VER}/install-extension.ps1 | iex"
             echo "\`\`\`"
             echo ""
-            echo "Or download the \`marco-extension-${VER}.zip\`, extract, and load manually in \`chrome://extensions\` → Developer mode → Load unpacked."
+            echo "**Custom directory (Windows):**"
+            echo "\`\`\`powershell"
+            echo ".\\install-extension.ps1 -InstallDir \"D:\\marco-extension\\${VER}\""
+            echo "\`\`\`"
+            echo ""
+            echo "**Linux / macOS:**"
+            echo "\`\`\`bash"
+            echo "curl -fsSL https://github.com/${REPO}/releases/download/${VER}/install-extension.sh | bash"
+            echo "\`\`\`"
+            echo ""
+            echo "**Custom directory (Linux / macOS):**"
+            echo "\`\`\`bash"
+            echo "./install-extension.sh --dir ~/marco-extension/${VER}"
+            echo "\`\`\`"
           } > release-assets/RELEASE_NOTES.md
 
           cat release-assets/RELEASE_NOTES.md
