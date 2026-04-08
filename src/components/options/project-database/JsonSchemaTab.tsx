@@ -255,6 +255,15 @@ export function JsonSchemaTab({ projectSlug, onMigrationComplete }: Props) {
       setDocsOutput(null);
       toast.success(`Loaded ${tableDefs.length} table(s) from MetaTables`);
     } catch (err) {
+      const errModel = createErrorModel(err, {
+        source: "Database",
+        operation: "LoadFromDB",
+        projectName: projectSlug,
+        contextJson: JSON.stringify({ type: "GENERATE_SCHEMA_DOCS", project: projectSlug, format: "meta" }),
+        suggestedAction: "Ensure the project slug is set. Try selecting a project from the project list first.",
+      });
+      setModalError(errModel);
+      setErrorModalOpen(true);
       toast.error(`Failed to load: ${String(err)}`);
     } finally {
       setLoadingMeta(false);
