@@ -51,9 +51,16 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          BRANCH="${GITHUB_REF#refs/heads/release/}"
-          echo "tag=${BRANCH}" >> "$GITHUB_OUTPUT"
-          echo "Releasing version: ${BRANCH}"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF_NAME}"
+          elif [[ "$GITHUB_REF" == refs/heads/release/* ]]; then
+            TAG="${GITHUB_REF_NAME#release/}"
+          else
+            echo "::error::Unexpected ref: $GITHUB_REF"
+            exit 1
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Releasing version: ${TAG}"
 
       # ── Setup Node.js ─────────────────────────────────────
       - name: Setup Node.js
