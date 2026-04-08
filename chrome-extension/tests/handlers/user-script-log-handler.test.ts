@@ -27,6 +27,8 @@ vi.mock("../../../src/background/handlers/logging-handler", () => ({
     getLogsDb: () => mockLogsDb,
     getErrorsDb: () => mockErrorsDb,
     markLoggingDirty: vi.fn(),
+    getCurrentSessionId: () => "test-session-1",
+    startSession: vi.fn().mockResolvedValue(1),
 }));
 
 import { handleUserScriptLog } from "@/background/handlers/user-script-log-handler";
@@ -94,7 +96,7 @@ describe("handleUserScriptLog", () => {
         await handleUserScriptLog(buildLogMessage({ metadata }));
 
         const insertArgs = mockLogsDb.run.mock.calls[0];
-        const storedMetadata = JSON.parse(insertArgs[1][6]);
+        const storedMetadata = JSON.parse(insertArgs[1][7]);
 
         expect(storedMetadata.token).toBe("supersec...REDACTED");
         expect(storedMetadata.count).toBe(5);
@@ -109,7 +111,7 @@ describe("handleUserScriptLog", () => {
         await handleUserScriptLog(buildLogMessage({ metadata }));
 
         const insertArgs = mockLogsDb.run.mock.calls[0];
-        const storedMetadata = JSON.parse(insertArgs[1][6]);
+        const storedMetadata = JSON.parse(insertArgs[1][7]);
 
         expect(storedMetadata.authHeader).toContain("...REDACTED");
         expect(storedMetadata.password).toContain("...REDACTED");
@@ -120,7 +122,7 @@ describe("handleUserScriptLog", () => {
         await handleUserScriptLog(buildLogMessage({ metadata: null }));
 
         const insertArgs = mockLogsDb.run.mock.calls[0];
-        expect(insertArgs[1][6]).toBeNull();
+        expect(insertArgs[1][7]).toBeNull();
     });
 
     it("handles non-JSON metadata gracefully", async () => {
@@ -128,7 +130,7 @@ describe("handleUserScriptLog", () => {
 
         expect(mockLogsDb.run).toHaveBeenCalledTimes(1);
         const insertArgs = mockLogsDb.run.mock.calls[0];
-        expect(insertArgs[1][6]).toBe("not-json{{{");
+        expect(insertArgs[1][7]).toBe("not-json{{{");
     });
 
     it("uses user-script as source in SQL insert", async () => {
@@ -139,7 +141,7 @@ describe("handleUserScriptLog", () => {
         const params = insertArgs[1] as unknown[];
 
         expect(sql).toContain("INSERT INTO Logs");
-        expect(params[2]).toBe("user-script");
+        expect(params[3]).toBe("user-script");
     });
 
     it("passes project context to SQL insert", async () => {

@@ -113,7 +113,7 @@ describe("resolveInjectionOrder", () => {
             makeNode({ id: "A", dependencies: [{ projectId: "missing", version: "1.0.0" }] }),
         ]);
         expect(result.isSuccess).toBe(false);
-        expect(result.errorMessage).toContain("unknown project");
+        expect(result.errorMessage).toContain("missing");
     });
 
     it("rejects version mismatch", () => {

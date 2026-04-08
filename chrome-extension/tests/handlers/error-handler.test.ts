@@ -5,13 +5,20 @@
  * real sql.js databases with a mock DbManager.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { installChromeMock, resetMockStorage } from "../mocks/chrome-storage";
 import initSqlJs from "sql.js";
 import type { DbManager } from "../../src/background/db-manager";
 import { MessageType } from "../../src/shared/messages";
 
 installChromeMock();
+
+/* Mock getCurrentSessionId so queryUnresolvedErrors doesn't short-circuit.
+   insertUserScriptError hardcodes SessionId = '' so we return '' to match.
+   Path must target the canonical source (src/), not the chrome-extension shim. */
+vi.mock("../../../src/background/handlers/logging-handler", () => ({
+    getCurrentSessionId: () => "",
+}));
 
 const {
     bindErrorDbManager,
@@ -70,7 +77,7 @@ describe("Error Handler — GET_ACTIVE_ERRORS", () => {
     it("returns unresolved errors", async () => {
         errorsDb.run(
             "INSERT INTO Errors (SessionId, timestamp, level, source, category, message, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ["s1", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "timeout", 0],
+            ["", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "timeout", 0],
         );
 
         const result = await handleGetActiveErrors();
@@ -80,7 +87,7 @@ describe("Error Handler — GET_ACTIVE_ERRORS", () => {
     it("excludes resolved errors", async () => {
         errorsDb.run(
             "INSERT INTO Errors (SessionId, timestamp, level, source, category, message, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ["s1", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "resolved one", 1],
+            ["", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "resolved one", 1],
         );
 
         const result = await handleGetActiveErrors();
@@ -90,7 +97,7 @@ describe("Error Handler — GET_ACTIVE_ERRORS", () => {
     it("sets health state to DEGRADED when errors exist", async () => {
         errorsDb.run(
             "INSERT INTO Errors (SessionId, timestamp, level, source, category, message, resolved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ["s1", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "active error", 0],
+            ["", "2026-01-01T00:00:00Z", "ERROR", "bg", "API", "active error", 0],
         );
 
         await handleGetActiveErrors();
