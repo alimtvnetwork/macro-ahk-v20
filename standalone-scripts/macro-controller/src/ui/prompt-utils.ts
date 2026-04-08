@@ -71,21 +71,78 @@ export function parseWithRecovery(content: string): unknown {
   }
 }
 
-// ── Paste toast (lightweight, no dependency on main toast system) ──
+// ── Toast notification system (solid dark minimal, left accent bar, stacking max 3) ──
+
+const TOAST_CONTAINER_ID = 'marco-toast-stack';
+const TOAST_MAX_STACK = 3;
+
+function _getOrCreateToastContainer(): HTMLElement {
+  let container = document.getElementById(TOAST_CONTAINER_ID);
+  if (!container) {
+    container = document.createElement('div');
+    container.id = TOAST_CONTAINER_ID;
+    container.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
+      'display:flex;flex-direction:column-reverse;gap:6px;z-index:1000000;pointer-events:none;';
+    document.body.appendChild(container);
+  }
+  return container;
+}
+
 export function showPasteToast(message: string, isError: boolean): void {
+  const container = _getOrCreateToastContainer();
+
+  // Enforce max stack — remove oldest if at limit
+  while (container.children.length >= TOAST_MAX_STACK) {
+    const oldest = container.lastElementChild;
+    if (oldest) oldest.remove();
+  }
+
   const toast = document.createElement('div');
-  toast.textContent = message;
-  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
-    'padding:10px 20px;border-radius:8px;font-size:13px;z-index:1000000;' +
-    'color:#fff;font-family:system-ui,sans-serif;pointer-events:none;' +
-    'transition:opacity .3s;opacity:0;' +
-    (isError ? 'background:#dc2626;' : 'background:#16a34a;');
-  document.body.appendChild(toast);
-  requestAnimationFrame(function() { toast.style.opacity = '1'; });
+  toast.style.cssText = 'display:flex;align-items:stretch;border-radius:6px;overflow:hidden;' +
+    'background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);' +
+    'box-shadow:0 4px 16px rgba(0,0,0,0.4);' +
+    'font-family:system-ui,-apple-system,sans-serif;pointer-events:auto;' +
+    'transform:translateY(8px);opacity:0;transition:all .25s ease-out;max-width:380px;';
+
+  // Left accent bar
+  const accent = document.createElement('div');
+  accent.style.cssText = 'width:3px;flex-shrink:0;' +
+    (isError ? 'background:#ef4444;' : 'background:#22c55e;');
+  toast.appendChild(accent);
+
+  // Content area
+  const content = document.createElement('div');
+  content.style.cssText = 'padding:8px 14px;font-size:12px;line-height:1.4;color:#e2e8f0;' +
+    'display:flex;align-items:center;gap:6px;';
+
+  // Icon
+  const icon = document.createElement('span');
+  icon.style.cssText = 'font-size:13px;flex-shrink:0;';
+  icon.textContent = isError ? '✕' : '✓';
+  content.appendChild(icon);
+
+  // Text
+  const text = document.createElement('span');
+  text.textContent = message;
+  text.style.cssText = 'flex:1;';
+  content.appendChild(text);
+
+  toast.appendChild(content);
+  container.insertBefore(toast, container.firstChild);
+
+  // Animate in
+  requestAnimationFrame(function() {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+  });
+
+  // Auto-dismiss
+  const duration = isError ? 4500 : 2800;
   setTimeout(function() {
     toast.style.opacity = '0';
-    setTimeout(function() { toast.remove(); }, 300);
-  }, isError ? 4000 : 2500);
+    toast.style.transform = 'translateY(8px)';
+    setTimeout(function() { toast.remove(); }, 250);
+  }, duration);
 }
 
 // ── Find editor paste target via XPath/CSS selectors ──
