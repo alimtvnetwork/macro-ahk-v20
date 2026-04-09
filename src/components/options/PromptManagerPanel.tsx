@@ -349,6 +349,7 @@ export function PromptManagerPanel() {
         prompts, categories, categoryFilter, setCategoryFilter,
         loading, fatalError, refresh, save, remove, reorder, toggleFavorite, reseedDefaults,
     } = usePrompts();
+    const { assetSlugs: libraryAssets } = useLibraryLinkMap();
     const [editingPrompt, setEditingPrompt] = useState<Partial<PromptEntry> | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [viewingPrompt, setViewingPrompt] = useState<PromptEntry | null>(null);
@@ -626,6 +627,7 @@ export function PromptManagerPanel() {
                                     setIsAdding(false);
                                     setViewingPrompt(prompt);
                                 }}
+                                libraryAssets={libraryAssets}
                             />
                         ))
                     )}
