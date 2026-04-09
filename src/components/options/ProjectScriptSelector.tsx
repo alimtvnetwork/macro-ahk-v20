@@ -191,6 +191,7 @@ function ScriptEntryCard({
             <SyncBadge
               state={linkMap.get(binding.scriptName)!.state}
               pinnedVersion={linkMap.get(binding.scriptName)!.pinnedVersion}
+              updateAvailable={linkMap.get(binding.scriptName)!.updateAvailable}
             />
           )}
           <Button

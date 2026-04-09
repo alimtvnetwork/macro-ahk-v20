@@ -16,12 +16,14 @@ export type LinkState = "synced" | "pinned" | "detached";
 export interface LinkInfo {
   state: LinkState;
   pinnedVersion: string | null;
+  updateAvailable: boolean;
 }
 
 interface SharedAssetMinimal {
   Id: number;
   Slug: string;
   Type: string;
+  Version: string;
 }
 
 interface AssetLinkMinimal {
@@ -76,7 +78,10 @@ export function useLibraryLinkMap(projectId?: number | null): {
     for (const link of projectLinks) {
       const asset = assetById.get(link.SharedAssetId);
       if (asset) {
-        map.set(asset.Slug, { state: link.LinkState, pinnedVersion: link.PinnedVersion });
+        const updateAvailable = link.LinkState === "pinned"
+          && link.PinnedVersion !== null
+          && asset.Version !== link.PinnedVersion;
+        map.set(asset.Slug, { state: link.LinkState, pinnedVersion: link.PinnedVersion, updateAvailable });
       }
     }
     return map;
