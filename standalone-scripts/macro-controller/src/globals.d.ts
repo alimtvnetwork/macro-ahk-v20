@@ -189,6 +189,8 @@ declare global {
       warn(fn: string, msg: string): void;
       info(fn: string, msg: string): void;
       debug(fn: string, msg: string): void;
+      console(fn: string, msg: string, ...args: unknown[]): void;
+      stackTrace(fn: string, msg: string, error?: unknown): void;
     };
     Projects?: Record<string, RiseupAsiaProject | undefined>;
   }
