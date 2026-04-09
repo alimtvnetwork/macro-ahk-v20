@@ -18,9 +18,16 @@ vi.mock('../logging', () => ({
   log: vi.fn(),
   logSub: vi.fn(),
 }));
+vi.mock('../error-utils', () => ({
+  logError: vi.fn(),
+}));
+vi.mock('../constants', () => ({
+  LOOP_JS_HISTORY_MAX: 50,
+}));
 
 import { addLoopJsHistoryEntry, navigateLoopJsHistory, executeJs } from '../ui/js-executor';
 import { log } from '../logging';
+import { logError } from '../error-utils';
 
  
 describe('js-executor', () => {
