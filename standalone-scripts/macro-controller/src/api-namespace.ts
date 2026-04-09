@@ -240,93 +240,115 @@ export function getNamespace(): MacroControllerNamespace | null {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Write helpers (Phase 9D — namespace only, NO window globals)       */
+/*  Typed write/read helpers (no dynamic path traversal)               */
 /* ------------------------------------------------------------------ */
 
+/** Internal: resolve a 2-segment path on the namespace. */
+function resolveInternal(ns: MacroControllerNamespace, key: string): void {
+  // Ensure _internal exists (already guaranteed by getNamespace)
+  void ns._internal[key as keyof MacroControllerInternal];
+}
+
 /**
- * Write a value to the namespace path only.
- * Phase 9D: window.__* globals are no longer set.
- * @param _windowKey — legacy key (kept for callsite readability / grep-ability)
- * @param nsPath     — namespace path, e.g. 'api.loop.start'
- * @param value      — the value to set
+ * Write a value to a typed namespace path.
+ * Phase 10: replaces dynamic `dualWrite` — all paths are compile-time checked.
  */
-export function dualWrite(_windowKey: string, nsPath: string, value: unknown): void {
-  // Write to namespace
+export function nsWrite<P extends keyof NsPathMap>(path: P, value: NsPathMap[P]): void {
   const ns = getNamespace();
   if (!ns) return;
 
-  const parts = nsPath.split('.');
-  let obj: Record<string, unknown> = ns;
+  // 2-segment: _internal.* or api.mc
+  const dot1 = path.indexOf('.');
+  const dot2 = path.indexOf('.', dot1 + 1);
 
-  for (const part of parts.slice(0, -1)) {
-    if (!obj[part]) {
-      obj[part] = {};
+  if (dot2 === -1) {
+    // _internal.key or api.key
+    const section = path.slice(0, dot1);
+    const key = path.slice(dot1 + 1);
+    if (section === '_internal') {
+      ns._internal[key as keyof MacroControllerInternal] = value as MacroControllerInternal[keyof MacroControllerInternal];
+    } else {
+      ns.api[key as keyof MacroControllerApi] = value as MacroControllerApi[keyof MacroControllerApi];
     }
-    obj = obj[part] as Record<string, unknown>;
-  }
-
-  obj[parts[parts.length - 1]] = value;
-}
-
-/**
- * Batch write from a mapping array.
- * @param entries — Array of [windowKey, nsPath, value]
- */
-export function dualWriteAll(entries: Array<[string, string, unknown]>): void {
-  for (const [windowKey, nsPath, value] of entries) {
-    dualWrite(windowKey, nsPath, value);
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/*  Initialize namespace (call after SDK registration)                 */
-/* ------------------------------------------------------------------ */
-
-export function initNamespace(): MacroControllerNamespace | null {
-  const ns = getNamespace();
-  if (ns) {
-    log('[Namespace] MacroController API namespace initialized (v' + VERSION + ')', 'sub');
   } else {
-    log('[Namespace] SDK namespace not available — functions accessible via MacroController singleton only', 'sub');
+    // 3-segment: api.section.key
+    const section = path.slice(dot1 + 1, dot2) as keyof MacroControllerApi;
+    const key = path.slice(dot2 + 1);
+    const target = ns.api[section];
+    if (target && typeof target === 'object') {
+      (target as Record<string, unknown>)[key] = value;
+    }
   }
-  return ns;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Read helpers (Phase 9B)                                            */
-/* ------------------------------------------------------------------ */
-
 /**
- * Read a value from the namespace path.
- * Phase 9D: window fallback removed — namespace is the single source.
- * @param _windowKey — legacy key (kept for grep-ability)
- * @param nsPath     — namespace path, e.g. '_internal.updateStartStopBtn'
+ * Read a value from a typed namespace path.
+ * Phase 10: replaces dynamic `nsRead` — all paths are compile-time checked.
  */
-export function nsRead(_windowKey: string, nsPath: string): unknown {
+export function nsReadTyped<P extends keyof NsPathMap>(path: P): NsPathMap[P] | undefined {
   const ns = getNamespace();
-  if (ns) {
-    const parts = nsPath.split('.');
-    let obj: unknown = ns;
+  if (!ns) return undefined;
 
-    for (const part of parts) {
-      if (obj == null) {
-        break;
-      }
-      obj = (obj as Record<string, unknown>)[part];
-    }
+  const dot1 = path.indexOf('.');
+  const dot2 = path.indexOf('.', dot1 + 1);
 
-    if (obj !== undefined) {
-      return obj;
+  if (dot2 === -1) {
+    const section = path.slice(0, dot1);
+    const key = path.slice(dot1 + 1);
+    if (section === '_internal') {
+      return ns._internal[key as keyof MacroControllerInternal] as NsPathMap[P] | undefined;
     }
+    return ns.api[key as keyof MacroControllerApi] as NsPathMap[P] | undefined;
+  }
+
+  const section = path.slice(dot1 + 1, dot2) as keyof MacroControllerApi;
+  const key = path.slice(dot2 + 1);
+  const target = ns.api[section];
+  if (target && typeof target === 'object') {
+    return (target as Record<string, unknown>)[key] as NsPathMap[P] | undefined;
   }
   return undefined;
 }
 
 /**
- * Call a function from the namespace.
+ * Call a function stored at a typed namespace path.
+ * Phase 10: replaces dynamic `nsCall` — all paths are compile-time checked.
  * No-op if the function doesn't exist.
  */
+export function nsCallTyped<P extends keyof NsPathMap>(
+  path: P,
+  ...args: NsPathMap[P] extends (...a: infer A) => unknown ? A : never[]
+): NsPathMap[P] extends (...a: never[]) => infer R ? R | undefined : undefined {
+  const fn = nsReadTyped(path);
+  if (typeof fn === 'function') {
+    return (fn as (...a: unknown[]) => unknown)(...args) as NsPathMap[P] extends (...a: never[]) => infer R ? R | undefined : undefined;
+  }
+  return undefined as NsPathMap[P] extends (...a: never[]) => infer R ? R | undefined : undefined;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Legacy aliases (deprecated — use nsWrite / nsReadTyped / nsCallTyped) */
+/* ------------------------------------------------------------------ */
+
+/** @deprecated Use nsWrite() instead. */
+export function dualWrite(_windowKey: string, nsPath: string, value: unknown): void {
+  nsWrite(nsPath as keyof NsPathMap, value as NsPathMap[keyof NsPathMap]);
+}
+
+/** @deprecated Use nsWrite() in a loop instead. */
+export function dualWriteAll(entries: Array<[string, string, unknown]>): void {
+  for (const [, nsPath, value] of entries) {
+    nsWrite(nsPath as keyof NsPathMap, value as NsPathMap[keyof NsPathMap]);
+  }
+}
+
+/** @deprecated Use nsReadTyped() instead. */
+export function nsRead(_windowKey: string, nsPath: string): unknown {
+  return nsReadTyped(nsPath as keyof NsPathMap);
+}
+
+/** @deprecated Use nsCallTyped() instead. */
 export function nsCall(_windowKey: string, nsPath: string, ...args: unknown[]): unknown {
-  const fn = nsRead(_windowKey, nsPath);
+  const fn = nsReadTyped(nsPath as keyof NsPathMap);
   if (typeof fn === 'function') return (fn as (...a: unknown[]) => unknown)(...args);
 }
