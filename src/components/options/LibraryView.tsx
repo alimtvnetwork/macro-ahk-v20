@@ -284,6 +284,7 @@ interface PromoteDialogProps {
   onPromoted: () => void;
 }
 
+// eslint-disable-next-line max-lines-per-function -- dialog with form + conflict resolution, splitting would break state cohesion
 export function PromoteDialog({ open, onOpenChange, onPromoted }: PromoteDialogProps) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
