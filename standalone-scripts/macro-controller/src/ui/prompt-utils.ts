@@ -1,5 +1,5 @@
  
-import { toErrorMessage } from '../error-utils';
+import { toErrorMessage, logError } from '../error-utils';
 /**
  * MacroLoop Controller — Prompt Utility Functions
  * Step 03d: Extracted from createUI() closure
@@ -261,7 +261,7 @@ export function pasteIntoEditor(rawText: string, promptsCfg: PromptsCfg, getByXP
     return true;
   } catch (e: unknown) {
     const errMsg = toErrorMessage(e);
-    log('Prompt inject failed: ' + errMsg, 'error');
+    logError('Prompt inject failed', '' + errMsg);
     navigator.clipboard.writeText(text).then(function() {
       showPasteToast('⚠️ Inject failed — copied to clipboard, try Ctrl+V', true);
     }).catch(function() {

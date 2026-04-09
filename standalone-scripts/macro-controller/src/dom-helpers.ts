@@ -274,7 +274,7 @@ function tryClickVisibleButton(btn: Element, buttonIndex: number): boolean | nul
     log('Clicked Project Button successfully — dialog should now be opening', 'success');
     return true;
   } catch (e) {
-    log('Click failed on button ' + buttonIndex + ': ' + (e as Error).message, 'error');
+    logError('unknown', 'Click failed on button ' + buttonIndex + ': ' + (e as Error).message);
     return null;
   }
 }

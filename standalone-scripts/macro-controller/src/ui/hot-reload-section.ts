@@ -187,7 +187,7 @@ function executeReinject(scriptSource: string, version: string): void {
     };
     document.head.appendChild(script);
   } catch (e) {
-    log('Re-inject: blob creation failed — ' + (e instanceof Error ? e.message : String(e)), 'error');
+    logError('Re-inject', 'blob creation failed — ' + (e instanceof Error ? e.message : String(e)));
     showToast('Re-inject failed: ' + (e instanceof Error ? e.message : String(e)), 'error');
   }
 }

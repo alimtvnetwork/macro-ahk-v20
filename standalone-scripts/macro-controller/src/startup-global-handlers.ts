@@ -27,7 +27,7 @@ export function setupGlobalErrorHandlers(): void {
 
     const errMsg = event.message || 'Unknown error';
     const stack = event.error && event.error.stack ? event.error.stack : (event.filename + ':' + event.lineno);
-    log('[GlobalErrorHandler] Uncaught: ' + errMsg, 'error');
+    logError('GlobalErrorHandler', 'Uncaught: ' + errMsg);
 
     if (state.running) {
       stopLoop();
@@ -43,7 +43,7 @@ export function setupGlobalErrorHandlers(): void {
 
     const errMsg = event.reason.message || String(event.reason);
     const stack = event.reason.stack || '';
-    log('[GlobalErrorHandler] Unhandled promise rejection: ' + errMsg, 'error');
+    logError('GlobalErrorHandler', 'Unhandled promise rejection: ' + errMsg);
 
     if (state.running) {
       stopLoop();

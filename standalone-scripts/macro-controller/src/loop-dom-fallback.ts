@@ -46,7 +46,7 @@ export function performDirectMove(direction: LoopDirection): void {
     // completion (success or failure). No blind timeout needed.
     mc().workspaces.moveAdjacent(direction);
   } catch(err) {
-    log('Direct API move FAILED: ' + (err as Error).message, 'error');
+    logError('Direct API move FAILED', '' + (err as Error).message);
     state.isDelegating = false;
     state.forceDirection = null;
     state.delegateStartTime = 0;

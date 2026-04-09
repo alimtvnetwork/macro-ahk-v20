@@ -270,7 +270,7 @@ export class BulkRenameManager {
     }).catch((err: Error) => {
       results.failed++;
       const newFailures = consecutiveFailures + 1;
-      log('[Rename] ❌ ' + (idx + 1) + '/' + entries.length + ' failed: ' + err.message, 'error');
+      logError('Rename', '❌ ' + (idx + 1) + '/' + entries.length + ' failed: ' + err.message);
       this.trackOpTime(opStartTime);
 
       const isCircuitBroken = newFailures >= MAX_CONSECUTIVE_FAILURES;
@@ -405,7 +405,7 @@ export class BulkRenameManager {
       this._doNextUndo(idx + 1, reverseEntries, results, onProgress);
     }).catch((err: Error) => {
       results.failed++;
-      log('[Rename] Undo ❌ ' + (idx + 1) + '/' + reverseEntries.length + ' failed: ' + err.message, 'error');
+      logError('Rename', 'Undo ❌ ' + (idx + 1) + '/' + reverseEntries.length + ' failed: ' + err.message);
 
       if (onProgress) {
         onProgress(results, false);

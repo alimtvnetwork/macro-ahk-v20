@@ -85,7 +85,7 @@ export function renderBulkRenameDialog(): void {
 
   // Async: load presets and insert preset row at top of body
   _initPresetUi(body, inputsResult).catch(function (err) {
-    log('[Rename] Preset UI init failed: ' + String(err), 'error');
+    logError('Rename', 'Preset UI init failed: ' + String(err));
   });
 }
 

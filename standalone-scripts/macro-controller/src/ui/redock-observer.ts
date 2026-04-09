@@ -117,7 +117,7 @@ function tryRedock(ctx: PanelLayoutCtx): boolean {
     showToast('Panel docked ✓', 'success', { noStop: true });
     return true;
   } catch (err) {
-    log('[redock] ❌ Failed to relocate panel: ' + (err instanceof Error ? err.message : String(err)), 'error');
+    logError('redock', '❌ Failed to relocate panel: ' + (err instanceof Error ? err.message : String(err)));
     return false;
   }
 }

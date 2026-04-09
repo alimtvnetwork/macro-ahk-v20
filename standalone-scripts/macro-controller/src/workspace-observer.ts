@@ -97,7 +97,7 @@ export function fetchWorkspaceName(): void {
     }
     mc().updateUI();
   } catch (e) {
-    log('fetchWorkspaceName error: ' + (e as Error).message, 'error');
+    logError('fetchWorkspaceName error', '' + (e as Error).message);
   }
 }
 
@@ -180,7 +180,7 @@ export function fetchWorkspaceNameFromNav(): boolean {
     logSub('Nav workspace element not found or empty', 1);
     return false;
   } catch (e) {
-    log('fetchWorkspaceNameFromNav error: ' + (e as Error).message, 'error');
+    logError('fetchWorkspaceNameFromNav error', '' + (e as Error).message);
     return false;
   }
 }

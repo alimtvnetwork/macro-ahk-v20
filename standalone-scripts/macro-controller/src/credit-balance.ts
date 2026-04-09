@@ -110,7 +110,7 @@ export async function resolveWorkspaceId(): Promise<string | null> {
         markBearerTokenExpired('credit-balance-ws');
       }
 
-      log('CreditBalance: Workspace resolve failed — HTTP ' + resp.status, 'error');
+      logError('CreditBalance', 'Workspace resolve failed — HTTP ' + resp.status);
 
       return null;
     }
@@ -130,7 +130,7 @@ export async function resolveWorkspaceId(): Promise<string | null> {
 
     return ws.id;
   } catch (err) {
-    log('CreditBalance: Workspace resolve error: ' + (err as Error).message, 'error');
+    logError('CreditBalance', 'Workspace resolve error: ' + (err as Error).message);
 
     return null;
   }
@@ -197,7 +197,7 @@ export async function fetchCreditBalance(
         return null;
       }
 
-      log('CreditBalance: HTTP ' + resp.status, 'error');
+      logError('CreditBalance', 'HTTP ' + resp.status);
 
       return null;
     }
@@ -214,7 +214,7 @@ export async function fetchCreditBalance(
 
     return data;
   } catch (err) {
-    log('CreditBalance: Network error: ' + (err as Error).message, 'error');
+    logError('CreditBalance', 'Network error: ' + (err as Error).message);
 
     return null;
   }

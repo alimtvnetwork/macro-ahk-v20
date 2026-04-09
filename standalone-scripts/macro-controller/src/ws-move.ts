@@ -76,7 +76,7 @@ async function probeSessionWithToken(context: string, token: string): Promise<vo
     const resp = await window.marco!.api!.workspace.probe({ baseUrl: CREDIT_API_BASE });
 
     if (!resp.ok) {
-      log(LOG_SESSIONCHECK + context + '] ❌ Session probe failed: HTTP ' + resp.status + ' (auth: ' + authLabel + ')', 'error');
+      logError('unknown', LOG_SESSIONCHECK + context + '] ❌ Session probe failed: HTTP ' + resp.status + ' (auth: ' + authLabel + ')');
       showToast(context + ' failed — session also broken (HTTP ' + resp.status + '). Re-auth needed.', 'error');
 
       return;
@@ -92,7 +92,7 @@ async function probeSessionWithToken(context: string, token: string): Promise<vo
     log(LOG_SESSIONCHECK + context + '] ✅ Session valid — ' + wsCount + ' workspaces loaded (auth: ' + authLabel + ')', 'success');
     showToast(context + ' failed but session is valid (' + wsCount + ' workspaces)', 'info');
   } catch (err) {
-    log(LOG_SESSIONCHECK + context + '] ❌ Network error: ' + (err as Error).message, 'error');
+    logError('unknown', LOG_SESSIONCHECK + context + '] ❌ Network error: ' + (err as Error).message);
     showToast(context + ' failed — network error on session check', 'error');
   }
 }
@@ -117,7 +117,7 @@ export async function verifyWorkspaceSessionAfterFailure(context: string): Promi
     const fallbackToken = recoveredToken || resolveToken();
 
     if (!fallbackToken) {
-      log(LOG_SESSIONCHECK + context + '] Recovery failed — skipping unauthenticated session probe', 'error');
+      logError('unknown', LOG_SESSIONCHECK + context + '] Recovery failed — skipping unauthenticated session probe');
       showToast(context + ' failed — no bearer token available for session check', 'error', { noStop: true });
 
       return;
@@ -125,7 +125,7 @@ export async function verifyWorkspaceSessionAfterFailure(context: string): Promi
 
     await probeSessionWithToken(context, fallbackToken);
   } catch {
-    log(LOG_SESSIONCHECK + context + '] Recovery error — skipping unauthenticated session probe', 'error');
+    logError('unknown', LOG_SESSIONCHECK + context + '] Recovery error — skipping unauthenticated session probe');
     showToast(context + ' failed — no bearer token available for session check', 'error', { noStop: true });
   }
 }
@@ -301,7 +301,7 @@ async function executeMove(
 
     if (!resp.ok) {
       const bodyPreview = JSON.stringify(resp.data).substring(0, 500);
-      log('Move failed: HTTP ' + resp.status + ' | body: ' + bodyPreview, 'error');
+      logError('Move failed', 'HTTP ' + resp.status + ' | body: ' + bodyPreview);
       updateLoopMoveStatus('error', 'HTTP ' + resp.status + ': ' + bodyPreview.substring(0, 80));
       log('Move failed — verifying workspace session is still valid...', 'warn');
       verifyWorkspaceSessionAfterFailure('move');
@@ -311,7 +311,7 @@ async function executeMove(
 
     handleMoveSuccess(targetWorkspaceName, label);
   } catch (err) {
-    log('Move error: ' + (err as Error).message, 'error');
+    logError('Move error', '' + (err as Error).message);
     updateLoopMoveStatus('error', (err as Error).message);
     clearDelegationState();
     verifyWorkspaceSessionAfterFailure('move');
@@ -335,7 +335,7 @@ export async function moveToWorkspace(targetWorkspaceId: string, targetWorkspace
   const projectId = extractProjectIdFromUrl();
 
   if (!projectId) {
-    log('Cannot extract projectId from URL: ' + window.location.href, 'error');
+    logError('Cannot extract projectId from URL', '' + window.location.href);
     updateLoopMoveStatus('error', 'No project ID in URL');
 
     return;

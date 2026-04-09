@@ -74,7 +74,7 @@ async function doubleConfirmAndMove(threshold: number): Promise<void> {
   const resp = await window.marco!.api!.credits.fetchWorkspaces({ baseUrl: CREDIT_API_BASE });
 
   if (!resp.ok) {
-    log('Double-confirm API fetch failed: HTTP ' + resp.status, 'error');
+    logError('Double-confirm API fetch failed', 'HTTP ' + resp.status);
 
     return;
   }
@@ -299,7 +299,7 @@ async function doCycleFetchFallback(): Promise<void> {
         log('Cycle fallback: No token from any source — API call will likely fail with 401', 'warn');
       }
     } catch (err) {
-      log('Cycle fallback: Auth recovery failed before API call: ' + (err as Error).message, 'error');
+      logError('Cycle fallback', 'Auth recovery failed before API call: ' + (err as Error).message);
       releaseCycleLock();
 
       return;

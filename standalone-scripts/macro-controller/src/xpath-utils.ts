@@ -161,7 +161,7 @@ function findViaCssSelector(desc: ElementDescriptor): Element | null {
       }
       log('    ❌ Not found', 'warn');
     } catch (e: unknown) {
-      log('    ❌ Invalid selector: ' + toErrorMessage(e), 'error');
+      logError('unknown', '    ❌ Invalid selector: ' + toErrorMessage(e));
     }
   }
   return null;

@@ -173,7 +173,7 @@ function handleRenameError(
   attempt: RenameAttemptState,
 ): void {
   const bodyPreview = JSON.stringify(resp.data).substring(0, 500);
-  log('[Rename] ❌ HTTP ' + resp.status + ': ' + bodyPreview.substring(0, 200), 'error');
+  logError('Rename', '❌ HTTP ' + resp.status + ': ' + bodyPreview.substring(0, 200));
   showToast('Rename failed: HTTP ' + resp.status + '\nResponse: ' + bodyPreview, 'error', {
     requestDetail: { method: 'PUT', url: API_USER_WORKSPACES_ + wsId, status: resp.status, responseBody: bodyPreview },
   });
