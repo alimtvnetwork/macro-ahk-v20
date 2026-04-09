@@ -1,13 +1,11 @@
 # ──────────────────────────────────────────────────────────────
 # Marco Extension — CI Pipeline (main branch)
 #
-# Runs the same lint → test → build pipeline as release.yml
-# on every push to main.
-#
-# Key difference from release:
-#   - cancel-in-progress: true — a new commit cancels the
-#     previous in-flight build (no wasted runner minutes)
-#   - No GitHub Release or asset packaging
+# Pipeline structure:
+#   1. setup        — checkout, install, lint, test
+#   2. build-sdk    — build Marco SDK (dependency for others)
+#   3. build-standalone (parallel) — XPath, Macro Controller, Prompts
+#   4. build-extension — final Chrome extension build
 #
 # NOTE: No email or notification integrations — by design.
 # ──────────────────────────────────────────────────────────────
@@ -30,11 +28,14 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  # ════════════════════════════════════════════════════════════
+  # Job 1: Setup, Lint, Test
+  # ════════════════════════════════════════════════════════════
+  setup:
+    name: Setup · Lint · Test
     runs-on: ubuntu-latest
 
     steps:
-      # ── Enforce lowercase .md naming ───────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -54,27 +55,22 @@ jobs:
           fi
           echo "✅ All .md filenames are lowercase"
 
-      # ── Setup Node.js ─────────────────────────────────────
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # ── Setup pnpm ────────────────────────────────────────
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      # ── Install root dependencies ─────────────────────────
       - name: Install root dependencies
         run: pnpm install --no-frozen-lockfile
 
-      # ── Install Chrome extension dependencies ─────────────
       - name: Install extension dependencies
         working-directory: chrome-extension
         run: |
-          # Remove local-only pnpm-workspace.yaml (contains Windows storeDir path)
           rm -f pnpm-workspace.yaml
           if [ -f pnpm-lock.yaml ]; then
             pnpm install --frozen-lockfile
@@ -82,7 +78,6 @@ jobs:
             pnpm install --no-frozen-lockfile --lockfile=false
           fi
 
-      # ── Run linters ───────────────────────────────────────
       - name: Run root lint
         run: pnpm run lint
 
@@ -90,25 +85,223 @@ jobs:
         working-directory: chrome-extension
         run: pnpm run lint
 
-      # ── Run test suite ────────────────────────────────────
       - name: Run tests
         run: pnpm run test
 
-      # ── Build standalone scripts (SDK first, then others) ─
+  # ════════════════════════════════════════════════════════════
+  # Job 2: Build SDK (dependency for other standalone scripts)
+  # ════════════════════════════════════════════════════════════
+  build-sdk:
+    name: Build · Marco SDK
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
       - name: Build Marco SDK
         run: pnpm run build:sdk
+
+      - name: Upload SDK dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk-dist
+          path: standalone-scripts/marco-sdk/dist/
+          retention-days: 1
+
+  # ════════════════════════════════════════════════════════════
+  # Job 3a: Build XPath (parallel with 3b, 3c)
+  # ════════════════════════════════════════════════════════════
+  build-xpath:
+    name: Build · XPath
+    needs: build-sdk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Download SDK dist
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-dist
+          path: standalone-scripts/marco-sdk/dist/
 
       - name: Build XPath
         run: pnpm run build:xpath
 
+      - name: Upload XPath dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpath-dist
+          path: standalone-scripts/xpath/dist/
+          retention-days: 1
+
+  # ════════════════════════════════════════════════════════════
+  # Job 3b: Build Macro Controller (parallel with 3a, 3c)
+  # ════════════════════════════════════════════════════════════
+  build-macro-controller:
+    name: Build · Macro Controller
+    needs: build-sdk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Download SDK dist
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-dist
+          path: standalone-scripts/marco-sdk/dist/
+
       - name: Build Macro Controller
         run: pnpm run build:macro-controller
 
-      # ── Build Chrome extension ────────────────────────────
+      - name: Upload Macro Controller dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: macro-controller-dist
+          path: standalone-scripts/macro-controller/dist/
+          retention-days: 1
+
+  # ════════════════════════════════════════════════════════════
+  # Job 3c: Build Prompts (parallel with 3a, 3b)
+  # ════════════════════════════════════════════════════════════
+  build-prompts:
+    name: Build · Prompts
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Prompts
+        run: pnpm run build:prompts
+
+      - name: Upload Prompts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompts-dist
+          path: standalone-scripts/prompts/
+          retention-days: 1
+
+  # ════════════════════════════════════════════════════════════
+  # Job 4: Build Chrome Extension (depends on all standalone)
+  # ════════════════════════════════════════════════════════════
+  build-extension:
+    name: Build · Chrome Extension
+    needs: [build-sdk, build-xpath, build-macro-controller, build-prompts]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install root dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install extension dependencies
+        working-directory: chrome-extension
+        run: |
+          rm -f pnpm-workspace.yaml
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install --no-frozen-lockfile --lockfile=false
+          fi
+
+      - name: Download SDK dist
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-dist
+          path: standalone-scripts/marco-sdk/dist/
+
+      - name: Download XPath dist
+        uses: actions/download-artifact@v4
+        with:
+          name: xpath-dist
+          path: standalone-scripts/xpath/dist/
+
+      - name: Download Macro Controller dist
+        uses: actions/download-artifact@v4
+        with:
+          name: macro-controller-dist
+          path: standalone-scripts/macro-controller/dist/
+
+      - name: Download Prompts
+        uses: actions/download-artifact@v4
+        with:
+          name: prompts-dist
+          path: standalone-scripts/prompts/
+
       - name: Build Chrome extension
         run: pnpm run build:extension
 
-      # ── Summary ───────────────────────────────────────────
       - name: Build summary
         run: |
           echo "=== CI Build Complete ==="
