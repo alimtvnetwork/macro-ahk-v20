@@ -28,6 +28,7 @@ import {
   cPrimaryBorderA,
 } from '../shared-state';
 import { log } from '../logging';
+import { logError } from '../error-utils';
 import { showToast } from '../toast';
 import {
   applyRenameTemplate,
@@ -85,7 +86,7 @@ export function renderBulkRenameDialog(): void {
 
   // Async: load presets and insert preset row at top of body
   _initPresetUi(body, inputsResult).catch(function (err) {
-    log('[Rename] Preset UI init failed: ' + String(err), 'error');
+    logError('Rename', 'Preset UI init failed: ' + String(err));
   });
 }
 

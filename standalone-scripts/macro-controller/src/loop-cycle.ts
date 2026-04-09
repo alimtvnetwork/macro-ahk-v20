@@ -25,6 +25,7 @@ import { stopLoop } from './loop-controls';
 import { runCycleDomFallback } from './loop-dom-fallback';
 import { checkAndActOnCreditBalance, BALANCE_CONFIG } from './credit-balance';
 import { delay } from './async-utils';
+import { logError } from './error-utils';
 
 /** Shorthand for MacroController singleton */
 function mc() { return MacroController.getInstance(); }
@@ -73,7 +74,7 @@ async function doubleConfirmAndMove(threshold: number): Promise<void> {
   const resp = await window.marco!.api!.credits.fetchWorkspaces({ baseUrl: CREDIT_API_BASE });
 
   if (!resp.ok) {
-    log('Double-confirm API fetch failed: HTTP ' + resp.status, 'error');
+    logError('Double-confirm API fetch failed', 'HTTP ' + resp.status);
 
     return;
   }
@@ -132,7 +133,7 @@ async function handleFallbackAuthRecovery(
   const newToken = await recoverAuthOnce();
 
   if (!newToken) {
-    log('Cycle fallback: Recovery failed — skipping this cycle', 'error');
+    logError('Cycle fallback', 'Recovery failed — skipping this cycle');
     showToast('Auth recovery failed — will retry next cycle', 'warn', { noStop: true });
     releaseCycleLock();
 
@@ -167,7 +168,7 @@ async function processWorkspaceData(
   const isParseOk = parseLoopApiResponse(data);
 
   if (!isParseOk) {
-    log('Cycle aborted: API response parse failed', 'error');
+    logError('Cycle aborted', 'API response parse failed');
 
     return;
   }
@@ -231,7 +232,7 @@ function handleCycleFetchError(err: Error, freshToken: string): void {
 
   state.lastRetryError = err.message;
   showToast('Cycle failed after ' + state.maxRetries + ' retries: ' + err.message + '. Loop stopped.', 'error', { stack: err.stack, noStop: true });
-  log('Cycle fallback API fetch failed after ' + state.maxRetries + ' retries: ' + err.message + ' — stopping loop', 'error');
+  logError('Cycle', 'fallback API fetch failed after \' + state.maxRetries + \' retries: \' + err.message + \' — stopping loop');
   logSub('Last token source: ' + getLastTokenSource(), 1);
   stopLoop();
   runCycleDomFallback();
@@ -298,7 +299,7 @@ async function doCycleFetchFallback(): Promise<void> {
         log('Cycle fallback: No token from any source — API call will likely fail with 401', 'warn');
       }
     } catch (err) {
-      log('Cycle fallback: Auth recovery failed before API call: ' + (err as Error).message, 'error');
+      logError('Cycle fallback', 'Auth recovery failed before API call: ' + (err as Error).message);
       releaseCycleLock();
 
       return;
@@ -402,7 +403,7 @@ export function runCycle(): void {
       doCycleFetchFallback();
     })
     .catch(function (err: Error) {
-      log('Step 1: Credit balance check error: ' + err.message + ' — falling back', 'error');
+      logError('Step 1', 'Credit balance check error: \' + err.message + \' — falling back');
 
       if (!BALANCE_CONFIG.fallbackToXPath) {
         releaseCycleLock();

@@ -18,6 +18,7 @@ import { showToast } from './toast';
 import { CREDIT_API_BASE, state } from './shared-state';
 import { extractProjectIdFromUrl } from './workspace-detection';
 import type { CreditBalanceResponse, CreditBalanceConfig } from './types';
+import { logError } from './error-utils';
 
 // ============================================
 // Config — reads from window.__MARCO_CONFIG__.creditStatus.balance
@@ -109,7 +110,7 @@ export async function resolveWorkspaceId(): Promise<string | null> {
         markBearerTokenExpired('credit-balance-ws');
       }
 
-      log('CreditBalance: Workspace resolve failed — HTTP ' + resp.status, 'error');
+      logError('CreditBalance', 'Workspace resolve failed — HTTP ' + resp.status);
 
       return null;
     }
@@ -118,7 +119,7 @@ export async function resolveWorkspaceId(): Promise<string | null> {
     const ws = data.workspace;
 
     if (!ws || !ws.id) {
-      log('CreditBalance: Workspace response missing workspace.id', 'error');
+      logError('CreditBalance', 'Workspace response missing workspace.id');
 
       return null;
     }
@@ -129,7 +130,7 @@ export async function resolveWorkspaceId(): Promise<string | null> {
 
     return ws.id;
   } catch (err) {
-    log('CreditBalance: Workspace resolve error: ' + (err as Error).message, 'error');
+    logError('CreditBalance', 'Workspace resolve error: ' + (err as Error).message);
 
     return null;
   }
@@ -191,12 +192,12 @@ export async function fetchCreditBalance(
           return fetchCreditBalance(wsId, true);
         }
 
-        log('CreditBalance: Auth recovery failed', 'error');
+        logError('CreditBalance', 'Auth recovery failed');
 
         return null;
       }
 
-      log('CreditBalance: HTTP ' + resp.status, 'error');
+      logError('CreditBalance', 'HTTP ' + resp.status);
 
       return null;
     }
@@ -204,7 +205,7 @@ export async function fetchCreditBalance(
     const data = resp.data as CreditBalanceResponse;
 
     if (typeof data.daily_remaining !== 'number') {
-      log('CreditBalance: Response missing daily_remaining — treating as failure', 'error');
+      logError('CreditBalance', 'Response missing daily_remaining — treating as failure');
 
       return null;
     }
@@ -213,7 +214,7 @@ export async function fetchCreditBalance(
 
     return data;
   } catch (err) {
-    log('CreditBalance: Network error: ' + (err as Error).message, 'error');
+    logError('CreditBalance', 'Network error: ' + (err as Error).message);
 
     return null;
   }

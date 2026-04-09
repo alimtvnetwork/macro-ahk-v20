@@ -4,6 +4,7 @@
  */
 
 import { log } from '../logging';
+import { logError } from '../error-utils';
 import { showToast } from '../toast';
 import { refreshBearerTokenFromBestSource, resolveToken, getLastTokenSource } from '../auth';
 import { isOnProjectPage } from '../dom-helpers';
@@ -47,7 +48,7 @@ function doRunCheck(ctx: CheckButtonCtx): void {
   try {
     checkPromise = runCheck();
   } catch(syncErr) {
-    log('Manual Check sync error: ' + (syncErr as Error).message, 'error');
+    logError('Manual Check sync error', '' + (syncErr as Error).message);
     resetCheckButtonState(ctx);
     return;
   }
@@ -56,7 +57,7 @@ function doRunCheck(ctx: CheckButtonCtx): void {
     checkPromise.then(function() {
       log('Manual Check completed successfully', 'success');
     }).catch(function(err: Error) {
-      log('Manual Check failed: ' + (err && err.message ? err.message : String(err)), 'error');
+      logError('Manual Check failed', '' + (err && err.message ? err.message : String(err)));
     }).then(function() {
       // finally equivalent
       resetCheckButtonState(ctx);

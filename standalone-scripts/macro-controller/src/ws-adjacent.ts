@@ -17,6 +17,7 @@ import { parseLoopApiResponse } from './credit-fetch';
 import { showToast } from './toast';
 import { CREDIT_API_BASE, loopCreditState, state } from './shared-state';
 import { moveToWorkspace, updateLoopMoveStatus } from './ws-move';
+import { logError } from './error-utils';
 
 function mc() { return MacroController.getInstance(); }
 
@@ -43,7 +44,7 @@ function clearDelegationState(): void {
 // ============================================
 
 function handleNoTokenFailure(): void {
-  log('moveToAdjacentWorkspace: no bearer token available — request blocked', 'error');
+  logError('moveToAdjacentWorkspace', 'no bearer token available — request blocked');
   updateLoopMoveStatus('error', 'Auth token missing');
   showToast('Cannot fetch workspaces: bearer token is missing.', 'error', { noStop: true });
   clearDelegationState();
@@ -244,7 +245,7 @@ async function doFetchWorkspacesForMove(
   const isParseOk = parseLoopApiResponse(data);
 
   if (!isParseOk) {
-    log('moveToAdjacentWorkspace: Failed to parse workspace data', 'error');
+    logError('moveToAdjacentWorkspace', 'Failed to parse workspace data');
     updateLoopMoveStatus('error', 'Failed to parse workspaces');
     clearDelegationState();
 
@@ -254,7 +255,7 @@ async function doFetchWorkspacesForMove(
   const workspaces = loopCreditState.perWorkspace || [];
 
   if (workspaces.length === 0) {
-    log('No workspaces loaded from API', 'error');
+    logError('unknown', 'No workspaces loaded from API');
     updateLoopMoveStatus('error', 'No workspaces found');
     clearDelegationState();
 
@@ -274,7 +275,7 @@ export function moveToAdjacentWorkspaceCached(direction: string): void {
   const workspaces = loopCreditState.perWorkspace || [];
 
   if (workspaces.length === 0) {
-    log('No cached workspaces — click 💳 first', 'error');
+    logError('unknown', 'No cached workspaces — click 💳 first');
     updateLoopMoveStatus('error', 'Load workspaces first (💳)');
     clearDelegationState();
 
@@ -331,7 +332,7 @@ export async function moveToAdjacentWorkspace(direction: string): Promise<void> 
       processWorkspacesAndMove(direction, workspaces);
     }
   } catch (err) {
-    log('moveToAdjacentWorkspace: Fetch failed — ' + (err as Error).message + '. Falling back to cached data.', 'error');
+    logError('moveToAdjacentWorkspace', 'Fetch failed — \' + (err as Error).message + \'. Falling back to cached data.');
     moveToAdjacentWorkspaceCached(direction);
   }
 }

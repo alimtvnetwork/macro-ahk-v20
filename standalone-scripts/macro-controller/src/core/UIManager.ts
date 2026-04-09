@@ -12,6 +12,7 @@ import type { UIManagerInterface } from './MacroController';
 import { updateUI, updateUILight, destroyPanel } from '../ui/ui-updaters';
 import { populateLoopWorkspaceDropdown } from '../ws-selection-ui';
 import { log } from '../logging';
+import { logError } from '../error-utils';
 
 export class UIManager implements UIManagerInterface {
 
@@ -31,7 +32,7 @@ export class UIManager implements UIManagerInterface {
     if (this._createFn) {
       this._createFn();
     } else {
-      log('[UIManager] createUI not registered — cannot create UI', 'error');
+      logError('UIManager', 'createUI not registered — cannot create UI');
     }
   }
 

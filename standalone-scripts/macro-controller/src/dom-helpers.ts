@@ -13,6 +13,7 @@ import { log, logSub } from './logging';
 import { pollUntil } from './async-utils';
 
 import { ML_ELEMENTS, findElement, getAllByXPath, getByXPath, reactClick } from './xpath-utils';
+import { logError } from './error-utils';
 
 /**
  * Check if current page is a supported project/preview page (not settings/login/signup).
@@ -223,7 +224,7 @@ export function ensureProjectDialogOpen(): boolean {
     if (fallbackBtn) {
       buttons = [fallbackBtn];
     } else {
-      log('PROJECT BUTTON NOT FOUND via XPath or fallback!', 'error');
+      logError('PROJECT', 'BUTTON NOT FOUND via XPath or fallback!');
       log('Please update the XPath in the panel below or in config.ini', 'warn');
 
       return false;
@@ -235,7 +236,7 @@ export function ensureProjectDialogOpen(): boolean {
     if (clickResult !== null) return clickResult;
   }
 
-  log('PROJECT BUTTON NOT FOUND! (' + buttons.length + ' matches but none are valid)', 'error');
+  logError('PROJECT', 'BUTTON NOT FOUND! (\' + buttons.length + \' matches but none are valid)');
 
   return false;
 }
@@ -273,7 +274,7 @@ function tryClickVisibleButton(btn: Element, buttonIndex: number): boolean | nul
     log('Clicked Project Button successfully — dialog should now be opening', 'success');
     return true;
   } catch (e) {
-    log('Click failed on button ' + buttonIndex + ': ' + (e as Error).message, 'error');
+    logError('unknown', 'Click failed on button ' + buttonIndex + ': ' + (e as Error).message);
     return null;
   }
 }

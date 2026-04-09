@@ -18,6 +18,7 @@ import { resolveToken, refreshBearerTokenFromBestSource } from './auth';
 import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isOnProjectPage, isUserTypingInPrompt, pollForDialogReady } from './dom-helpers';
 import { CONFIG, IDS, TIMING, loopCreditState, state } from './shared-state';
 import { runCycle } from './loop-cycle';
+import { logError } from './error-utils';
 
 const NS_UPDATESTARTSTOPBTN = '_internal.updateStartStopBtn';
 
@@ -38,7 +39,7 @@ function validateLoopPreconditions(): boolean {
   }
 
   if (!isOnProjectPage()) {
-    log('Cannot start - must be on a supported project/preview page (not settings)', 'error');
+    logError('Cannot', 'start - must be on a supported project/preview page (not settings)');
     return false;
   }
 
@@ -75,14 +76,14 @@ function verifyControllerInjection(): boolean {
   const loopStartFn = nsRead('__loopStart', 'api.loop.start');
 
   if (!marker || typeof loopStartFn !== 'function') {
-    log('❌ Controller script NOT injected (marker=' + !!marker + ', __loopStart=' + (typeof loopStartFn) + ') — aborting', 'error');
+    logError('unknown', '❌ Controller script NOT injected (marker=\' + !!marker + \', __loopStart=\' + (typeof loopStartFn) + \') — aborting');
     state.running = false;
     nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, false);
     return false;
   }
 
   if (!uiContainer) {
-    log('❌ Controller UI container NOT found in DOM (id=' + IDS.CONTAINER + ') — aborting', 'error');
+    logError('unknown', '❌ Controller UI container NOT found in DOM (id=\' + IDS.CONTAINER + \') — aborting');
     state.running = false;
     nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, false);
     return false;

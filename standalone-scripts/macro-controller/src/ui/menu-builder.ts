@@ -19,6 +19,7 @@ import { createMenuItem, createMenuSep, createSubmenu } from './menu-helpers';
 import { showAboutModal } from './about-modal';
 import { showChangelogModal } from './changelog-modal';
 import { resolveAutoAttachConfig, runAutoAttachGroup } from './auto-attach';
+import { logError } from '../error-utils';
 
 const SECTION_DIVIDER = '// ============================================\n';
 
@@ -145,7 +146,7 @@ function _addExportSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLEl
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📋', 'Export CSV', 'Export all workspaces + credits as CSV', function() { exportWorkspacesAsCsv(); }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📥', 'Download Bundle', 'Download bundle (xpath-utils + macro-looping) as .js file', function() {
     const bundle = nsRead('__exportBundle', '_internal.exportBundle') as string | undefined;
-    if (!bundle || bundle.length < 100) { log('Export: No bundle available — re-inject via AHK to generate', 'error'); return; }
+    if (!bundle || bundle.length < 100) { logError('Export', 'No bundle available — re-inject via AHK to generate'); return; }
     const now = new Date();
     const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
     let header = SECTION_DIVIDER;
@@ -173,7 +174,7 @@ function _addExportSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLEl
   }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📋', 'JS Bundle', 'Copy bundle to clipboard', function() {
     const bundle = nsRead('__exportBundle', '_internal.exportBundle') as string | undefined;
-    if (!bundle || bundle.length < 100) { log('Copy JS: No bundle available — re-inject via AHK to generate', 'error'); return; }
+    if (!bundle || bundle.length < 100) { logError('Copy JS', 'No bundle available — re-inject via AHK to generate'); return; }
     navigator.clipboard.writeText(bundle).then(function() {
       log('Copy JS: Copied to clipboard (' + bundle.length + ' chars)', 'success');
     }).catch(function(err: Error) { log('Copy JS: Clipboard failed: ' + err.message, 'warn'); });

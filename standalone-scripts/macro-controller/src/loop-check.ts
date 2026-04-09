@@ -10,6 +10,7 @@
  */
 
 import { log } from './logging';
+import { logError } from './error-utils';
 import { type WorkspaceCredit } from './types';
 import { findElement, ML_ELEMENTS } from './xpath-utils';
 import { fetchLoopCreditsAsync, syncCreditStateFromApi } from './credit-fetch';
@@ -87,7 +88,7 @@ function logDetectionResult(): void {
   if (state.workspaceName) {
     log('Step 2: ✅ Workspace detected = "' + state.workspaceName + '"', 'success');
   } else {
-    log('Step 2: ❌ No workspace matched from XPath = ' + CONFIG.WORKSPACE_XPATH, 'error');
+    logError('Step 2', '❌ No workspace matched from XPath = ' + CONFIG.WORKSPACE_XPATH);
   }
 }
 
@@ -174,7 +175,7 @@ export function runCheck(): Promise<void> | undefined {
   return detectPromise
     .catch(function(err: Error) {
       restoreOnFailure(previousWsName, previousCurrentWs);
-      log('Detection failed: ' + (err && err.message ? err.message : String(err)), 'error');
+      logError('Detection failed', '' + (err && err.message ? err.message : String(err)));
       throw err;
     })
     .then(function(dialogBtn: Element | null) {

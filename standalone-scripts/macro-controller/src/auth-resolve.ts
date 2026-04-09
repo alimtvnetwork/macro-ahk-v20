@@ -9,7 +9,7 @@
  * @see standalone-scripts/marco-sdk/src/auth-token-utils.ts — AuthTokenUtils class
  */
 
-import { toErrorMessage } from './error-utils';
+import { toErrorMessage, logError } from './error-utils';
 import { log } from './logging';
 import {
   getLastSessionBridgeSource,
@@ -294,8 +294,8 @@ export function getBearerTokenFromCookie(): string {
     cookieDiagState.lastAt = now;
     logCookieDiagnostics(fn, cookies, sessionNames, rawCookie, result.hasTarget);
   } catch (e: unknown) {
-    log(fn + ': EXCEPTION reading cookies: ' + toErrorMessage(e), 'error');
-    log(fn + ': This may happen in sandboxed iframes or restricted contexts', 'error');
+    logError('fn', EXCEPTION reading cookies: ' + toErrorMessage(e));
+    logError('fn', This may happen in sandboxed iframes or restricted contexts);
   }
 
   return '';

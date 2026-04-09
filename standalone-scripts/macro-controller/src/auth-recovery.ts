@@ -30,6 +30,7 @@ import {
 } from './auth-bridge';
 import { createConcurrencyLock } from './async-utils';
 import type { ConcurrencyLock } from './async-utils';
+import { logError } from './error-utils';
 
 // ============================================
 // Types
@@ -402,6 +403,6 @@ function attemptCookieFallback(
     return;
   }
 
-  log('refreshToken: ❌ All tiers exhausted — no token found', 'error');
+  logError('refreshToken', '❌ All tiers exhausted — no token found');
   onDone('', 'none');
 }

@@ -27,6 +27,7 @@ import { showToast } from '../toast';
 import { sendToExtension } from './prompt-manager';
 import { destroyPanel } from './ui-updaters';
 import { createCollapsibleSection } from './sections';
+import { logError } from '../error-utils';
 
 const CSS_PADDING_2PX_0 = ';padding:2px 0;';
 const CSS_FONT_SIZE = 'font-size:';
@@ -181,12 +182,12 @@ function executeReinject(scriptSource: string, version: string): void {
     };
     script.onerror = function() {
       URL.revokeObjectURL(blobUrl);
-      log('Re-inject: script load FAILED', 'error');
+      logError('Re-inject', 'script load FAILED');
       showToast('Re-inject failed — script load error', 'error');
     };
     document.head.appendChild(script);
   } catch (e) {
-    log('Re-inject: blob creation failed — ' + (e instanceof Error ? e.message : String(e)), 'error');
+    logError('Re-inject', 'blob creation failed — ' + (e instanceof Error ? e.message : String(e)));
     showToast('Re-inject failed: ' + (e instanceof Error ? e.message : String(e)), 'error');
   }
 }

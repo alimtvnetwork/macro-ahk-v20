@@ -6,6 +6,7 @@
 
 import { VERSION, IDS, cPanelFg, cPanelFgDim } from '../shared-state';
 import { log, logSub } from '../logging';
+import { logError } from '../error-utils';
 
 const CSS_SPAN_STYLE_COLOR = '<span style="color:';
 
@@ -99,7 +100,7 @@ export function navigateLoopJsHistory(direction: string): void {
 export function executeJs(): void {
   const textbox = document.getElementById(IDS.JS_EXECUTOR);
   if (!textbox) {
-    log('JS textbox element not found', 'error');
+    logError('unknown', 'JS textbox element not found');
     return;
   }
   const code = (textbox as HTMLTextAreaElement).value.trim();
@@ -119,7 +120,7 @@ export function executeJs(): void {
     addLoopJsHistoryEntry(code, true, resultStr.substring(0, 100));
   } catch(e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
-    log('JS execution error: ' + msg, 'error');
+    logError('JS execution error', '' + msg);
     addLoopJsHistoryEntry(code, false, msg);
   }
 }

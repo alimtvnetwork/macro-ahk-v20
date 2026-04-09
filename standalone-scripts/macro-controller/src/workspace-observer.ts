@@ -18,6 +18,7 @@ import { MacroController } from './core/MacroController';
 import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isUserTypingInPrompt, pollForDialogReady } from './dom-helpers';
 
 import { CONFIG, WS_HISTORY_MAX_ENTRIES, loopCreditState, state } from './shared-state';
+import { logError } from './error-utils';
 
 const MSG_IGNORING_API_SET = '" — ignoring, API already set: ';
 
@@ -96,7 +97,7 @@ export function fetchWorkspaceName(): void {
     }
     mc().updateUI();
   } catch (e) {
-    log('fetchWorkspaceName error: ' + (e as Error).message, 'error');
+    logError('fetchWorkspaceName error', '' + (e as Error).message);
   }
 }
 
@@ -179,7 +180,7 @@ export function fetchWorkspaceNameFromNav(): boolean {
     logSub('Nav workspace element not found or empty', 1);
     return false;
   } catch (e) {
-    log('fetchWorkspaceNameFromNav error: ' + (e as Error).message, 'error');
+    logError('fetchWorkspaceNameFromNav error', '' + (e as Error).message);
     return false;
   }
 }
@@ -275,7 +276,7 @@ function scheduleObserverRetry(): void {
     log('Workspace observer: element not found — retry ' + retryNum + '/' + WORKSPACE_OBSERVER_MAX_RETRIES + ' in ' + (retryDelay / 1000) + 's', 'warn');
     setTimeout(startWorkspaceObserver, retryDelay);
   } else {
-    log('Workspace observer: gave up after ' + WORKSPACE_OBSERVER_MAX_RETRIES + ' retries. Set WorkspaceNavXPath in config.ini.', 'error');
+    logError('Workspace observer', 'gave up after \' + WORKSPACE_OBSERVER_MAX_RETRIES + \' retries. Set WorkspaceNavXPath in config.ini.');
   }
 }
 

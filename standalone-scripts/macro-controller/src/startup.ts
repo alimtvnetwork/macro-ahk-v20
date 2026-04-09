@@ -18,7 +18,7 @@ import { dualWriteAll, nsRead } from './api-namespace';
 import { registerTokenBroadcastListener } from './token-broadcast-listener';
 import { showToast, dismissAllToasts } from './toast';
 import { updateStartupToast } from './startup-toast';
-import { toErrorMessage } from './error-utils';
+import { toErrorMessage , logError } from './error-utils';
 import {
   resolveToken,
   refreshBearerTokenFromBestSource,
@@ -206,7 +206,7 @@ function _preWarmViaLoader(): void {
       }
     });
   }).catch(function(e: unknown) {
-    log('Startup: Prompt pre-warm loader import failed — ' + (e instanceof Error ? e.message : String(e)), 'error');
+    logError('Startup', 'Prompt pre-warm loader import failed — ' + (e instanceof Error ? e.message : String(e)));
     timingEnd(PROMPT_PREWARM, 'error', 'loader import failed');
   });
 }
@@ -285,7 +285,7 @@ function buildUiManagerFromFactory(): UIManager {
 function scheduleUiCreationRetry(mc: MacroController, attempt: number): void {
   const MAX_UI_CREATE_RETRIES = 10;
   if (attempt > MAX_UI_CREATE_RETRIES) {
-    log('Startup: ❌ UIManager recovery exhausted after ' + MAX_UI_CREATE_RETRIES + ' attempts', 'error');
+    logError('Startup', '❌ UIManager recovery exhausted after \' + MAX_UI_CREATE_RETRIES + \' attempts');
     return;
   }
 
@@ -344,7 +344,7 @@ function loadWorkspacesOnStartup(): void {
 /** Handle startup when no auth token is available. */
 function handleTokenFailure(tokenResult: { waitedMs: number; reason: string }): void {
   timingEnd('token', 'error', 'No token after ' + tokenResult.waitedMs + 'ms');
-  log('Startup self-check: ❌ Token not available after ' + tokenResult.waitedMs + 'ms — ' + tokenResult.reason, 'error');
+  logError('Startup self-check', '❌ Token not available after ' + tokenResult.waitedMs + 'ms — ' + tokenResult.reason);
   showToast(
     '⚠️ Auth failed — no token after ' + Math.round(tokenResult.waitedMs / 1000) + 's. '
     + 'Try: 1) Re-login to lovable.dev  2) Hard refresh (Ctrl+Shift+R)  3) Click Credits to retry',
@@ -452,7 +452,7 @@ function handleCreditError(err: unknown): void {
   timingEnd('credits', 'error', fullDetail);
   timingEnd('bootstrap', 'error', 'Credit fetch failed: ' + fullDetail);
   logTimingSummary();
-  log('Startup: ❌ Credit/workspace load failed: ' + fullDetail, 'error');
+  logError('Startup', '❌ Credit/workspace load failed: ' + fullDetail);
   if (axiosStatus) {
     log('Startup: HTTP ' + (axiosStatus.status || '?') + ' — check token validity, re-login, or hard refresh', 'warn');
   }

@@ -10,6 +10,7 @@ import { LoopDirection } from './types';
 import { MacroController } from './core/MacroController';
 import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isUserTypingInPrompt, pollForDialogReady } from './dom-helpers';
 import { TIMING, state } from './shared-state';
+import { logError } from './error-utils';
 
 /** Shorthand for MacroController singleton */
 function mc() { return MacroController.getInstance(); }
@@ -45,7 +46,7 @@ export function performDirectMove(direction: LoopDirection): void {
     // completion (success or failure). No blind timeout needed.
     mc().workspaces.moveAdjacent(direction);
   } catch(err) {
-    log('Direct API move FAILED: ' + (err as Error).message, 'error');
+    logError('Direct API move FAILED', '' + (err as Error).message);
     state.isDelegating = false;
     state.forceDirection = null;
     state.delegateStartTime = 0;
@@ -66,7 +67,7 @@ export function runCycleDomFallback(): void {
 
   const clicked = ensureProjectDialogOpen();
   if (!clicked) {
-    log('DOM Fallback: project button not found', 'error');
+    logError('DOM Fallback', 'project button not found');
     return;
   }
 

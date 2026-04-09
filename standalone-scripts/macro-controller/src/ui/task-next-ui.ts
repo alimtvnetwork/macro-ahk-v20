@@ -11,6 +11,7 @@ import type { ResolvedPromptsConfig } from '../types';
 import { showPasteToast, pasteIntoEditor } from './prompt-utils';
 
 import { cPanelBg, cPanelFg, cPrimary, cPrimaryLight } from '../shared-state';
+import { logError } from '../error-utils';
 
 const NEXT_TASKS = 'next-tasks';
 
@@ -198,7 +199,7 @@ function tryClickAndAdvance(ctx: ClickContext): void {
   const btn = findAddToTasksButton();
 
   if (!btn) {
-    log('Task Next: "Add To Tasks" button not found — aborting', 'error');
+    logError('Task Next', '"Add To Tasks" button not found — aborting');
     showPasteToast('❌ Task Next: Button not found — stopped at ' + ctx.completed + '/' + ctx.count, true);
     taskNextState.running = false;
 
@@ -259,7 +260,7 @@ function doNextTask(ctx: TaskNextLoopCtx, index: number): void {
   const injected = pasteIntoEditor(ctx.prompt.text, ctx.promptsCfg, ctx.deps.getByXPath);
 
   if (!injected) {
-    log('Task Next: Failed to inject prompt at task ' + (index + 1), 'error');
+    logError('Task Next', 'Failed to inject prompt at task ' + (index + 1));
     showPasteToast('❌ Task Next: Injection failed at ' + (index + 1) + '/' + ctx.count, true);
     taskNextState.running = false;
 
@@ -296,7 +297,7 @@ export function runTaskNextLoop(deps: TaskNextDeps, count: number) {
   const prompt = findNextTasksPrompt(deps);
 
   if (!prompt || !prompt.text) {
-    log('Task Next: "Next Tasks" prompt not found — aborting', 'error');
+    logError('Task Next', '"Next Tasks" prompt not found — aborting');
     showPasteToast('❌ "Next Tasks" prompt not found', true);
 
     return;

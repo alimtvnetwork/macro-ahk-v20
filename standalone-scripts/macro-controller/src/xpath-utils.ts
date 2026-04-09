@@ -1,5 +1,5 @@
  
-import { toErrorMessage } from './error-utils';
+import { toErrorMessage , logError } from './error-utils';
 /**
  * MacroLoop Controller — XPath Utilities Module
  * Step 2e: Extracted from macro-looping.ts
@@ -87,7 +87,7 @@ export function reactClick(el: Element, callerXpath?: string): void {
 // ============================================
 export function getByXPath(xpath: string): Node | null {
   if (!xpath) {
-    log('XPath is empty or undefined', 'error');
+    logError('XPath', 'is empty or undefined');
     return null;
   }
   return domCache.getByXPath(xpath);
@@ -95,7 +95,7 @@ export function getByXPath(xpath: string): Node | null {
 
 export function getAllByXPath(xpath: string): Node[] {
   if (!xpath) {
-    log('XPath is empty or undefined', 'error');
+    logError('XPath', 'is empty or undefined');
     return [];
   }
   return domCache.getAllByXPath(xpath);
@@ -161,7 +161,7 @@ function findViaCssSelector(desc: ElementDescriptor): Element | null {
       }
       log('    ❌ Not found', 'warn');
     } catch (e: unknown) {
-      log('    ❌ Invalid selector: ' + toErrorMessage(e), 'error');
+      logError('unknown', '    ❌ Invalid selector: ' + toErrorMessage(e));
     }
   }
   return null;
@@ -209,7 +209,7 @@ export function findElement(descriptor: ElementDescriptor): Element | null {
     || findViaTextScan(descriptor)
     || findViaCssSelector(descriptor)
     || findViaAria(descriptor)
-    || (log('  All methods failed for "' + name + '"', 'error'), null);
+    || (logError('unknown', '  All methods failed for "\' + name + \'"'), null);
 }
 
 // ============================================

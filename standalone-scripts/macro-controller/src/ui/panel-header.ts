@@ -30,6 +30,7 @@ import { destroyPanel, updateUI } from './ui-updaters';
 
 import type { PanelBuilderDeps } from './panel-builder';
 import type { PanelLayoutCtx } from './panel-layout';
+import { logError } from '../error-utils';
 
 const CSS_FONT_SIZE = 'font-size:';
 
@@ -207,7 +208,7 @@ function buildAuthBadge(): HTMLElement {
         updateAuthBadge(true, source);
         showToast('🟢 Token refreshed (' + source + ')', 'success');
       } else {
-        log('Auth badge refresh: ❌ No token found', 'error');
+        logError('Auth badge refresh', '❌ No token found');
         updateAuthBadge(false, 'none');
         showToast('🔴 Token refresh failed — please log in', 'warn');
       }

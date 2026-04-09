@@ -14,6 +14,7 @@ const CSS_BORDER_RADIUS_COLOR = ';border-radius:6px;color:';
 
 
 import { log } from '../logging';
+import { logError } from '../error-utils';
 import { cPanelBg, cPanelBgAlt, cPanelFg, cPanelFgDim, cPrimary, cPrimaryLight, cPrimaryBorderA } from '../shared-state';
 import { getByXPath } from '../xpath-utils';
 import { pasteIntoEditor, showPasteToast } from './prompt-utils';
@@ -340,7 +341,7 @@ function _buildPromptModalFooter(
       } else {
         const errMsg = (resp && resp.errorMessage as string) || 'Save failed — extension may not be connected';
         showPasteToast('❌ ' + errMsg, true);
-        log('Prompt save failed: ' + errMsg, 'error');
+        logError('Prompt save failed', '' + errMsg);
       }
     });
   };

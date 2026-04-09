@@ -22,6 +22,7 @@ import { MacroController } from './core/MacroController';
 
 import { CREDIT_API_BASE, loopCreditState } from './shared-state';
 import { parseLoopApiResponse, syncCreditStateFromApi } from './credit-parser';
+import { logError } from './error-utils';
 
 const API_USER_WORKSPACES = '/user/workspaces';
 const NS_UPDATEAUTHDIAG = '_internal.updateAuthDiag';
@@ -75,7 +76,7 @@ function buildAuthFailureDetail(): string {
 
 function emitAuthFailureToast(status: number, statusText: string): void {
   const detail = buildAuthFailureDetail();
-  log('Credit API auth failure diagnostics:\n' + detail, 'error');
+  logError('unknown', 'Credit API auth failure diagnostics:\n' + detail);
 
   showToast(
     'Authentication failed. Tried localStorage → extension bridge → cookie fallback. Click copy for exact cookie names + bridge outcome.',
@@ -110,7 +111,7 @@ async function handleAuthRecovery(
   const newToken = await getBearerToken({ force: true });
 
   if (!newToken) {
-    log('Credit API: Auth recovery failed — no retry', 'error');
+    logError('Credit API', 'Auth recovery failed — no retry');
     emitAuthFailureToast(status, statusText);
 
     return null;
@@ -142,7 +143,7 @@ function handleNonAuthError(resp: SdkApiResponse): void {
   }
 
   const bodyPreview = JSON.stringify(resp.data).substring(0, 500);
-  log('Credit API: HTTP ' + resp.status + ' error body: ' + bodyPreview, 'error');
+  logError('Credit API', 'HTTP ' + resp.status + ' error body: ' + bodyPreview);
 
   showToast('Credit API error: HTTP ' + resp.status, 'error', {
     noStop: true,
@@ -213,7 +214,7 @@ export function fetchLoopCredits(
       await processSuccessData(data, autoDetectFn);
     })
     .catch(function (err: Error) {
-      log('Credit API failed: ' + err.message, 'error');
+      logError('Credit API failed', '' + err.message);
       logSub('Token source: ' + getLastTokenSource(), 1);
       logSub('isRetry: ' + (isRetry ? 'YES' : 'NO'), 1);
       logSub('Hint: If 401/403, the token may be expired. Check extension bridge or re-login.', 1);

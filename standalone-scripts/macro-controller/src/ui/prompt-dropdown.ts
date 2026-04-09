@@ -6,6 +6,7 @@
  */
 
 import { log } from '../logging';
+import { logError } from '../error-utils';
 import type { PromptEntry as LoaderPromptEntry } from '../types';
 
 import { cPanelBg, cPanelFg, cPanelFgDim, cPrimary, cPrimaryLight, cPrimaryHL, cBtnMenuHover, lDropdownRadius, lDropdownShadow } from '../shared-state';
@@ -153,7 +154,7 @@ function handleLoadClick(btn: HTMLElement, ctx: PromptContext, taskNextDeps: Tas
     log('[PromptDropdown] Manual load complete — re-rendering', 'success');
     renderPromptsDropdown(ctx, taskNextDeps);
   }).catch(function(err: unknown) {
-    log('[PromptDropdown] Manual load failed: ' + (err instanceof Error ? err.message : String(err)), 'error');
+    logError('PromptDropdown', 'Manual load failed: ' + (err instanceof Error ? err.message : String(err)));
     btn.textContent = '↻ Load';
     btn.style.pointerEvents = '';
   });
@@ -647,7 +648,7 @@ function _executeDeletePrompt(p: PromptEntry, _dropdown: HTMLElement, ctx: Promp
       clearUISnapshot();
       loadPromptsFromJson().then(function() { renderPromptsDropdown(ctx, taskNextDeps); });
     } else {
-      log('Failed to delete prompt: ' + p.name, 'error');
+      logError('Failed to delete prompt', '' + p.name);
     }
   });
 }

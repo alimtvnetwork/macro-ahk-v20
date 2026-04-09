@@ -15,6 +15,7 @@ import { renameWorkspace } from './rename-api';
 import type { BulkRenameEntry, BulkRenameResults, RenameStrategy } from './types';
 
 import { MacroController } from './core/MacroController';
+import { logError } from './error-utils';
 
 function mc() { return MacroController.getInstance(); }
 
@@ -269,13 +270,13 @@ export class BulkRenameManager {
     }).catch((err: Error) => {
       results.failed++;
       const newFailures = consecutiveFailures + 1;
-      log('[Rename] ❌ ' + (idx + 1) + '/' + entries.length + ' failed: ' + err.message, 'error');
+      logError('Rename', '❌ ' + (idx + 1) + '/' + entries.length + ' failed: ' + err.message);
       this.trackOpTime(opStartTime);
 
       const isCircuitBroken = newFailures >= MAX_CONSECUTIVE_FAILURES;
 
       if (isCircuitBroken) {
-        log('[Rename] ⚡ Circuit breaker: ' + MAX_CONSECUTIVE_FAILURES + ' consecutive failures — auto-stopping', 'error');
+        logError('Rename', '⚡ Circuit breaker: \' + MAX_CONSECUTIVE_FAILURES + \' consecutive failures — auto-stopping');
         showToast('Bulk rename auto-stopped after ' + MAX_CONSECUTIVE_FAILURES + ' consecutive failures', 'error', { noStop: true });
         this.cancelled = true;
       }
@@ -404,7 +405,7 @@ export class BulkRenameManager {
       this._doNextUndo(idx + 1, reverseEntries, results, onProgress);
     }).catch((err: Error) => {
       results.failed++;
-      log('[Rename] Undo ❌ ' + (idx + 1) + '/' + reverseEntries.length + ' failed: ' + err.message, 'error');
+      logError('Rename', 'Undo ❌ ' + (idx + 1) + '/' + reverseEntries.length + ' failed: ' + err.message);
 
       if (onProgress) {
         onProgress(results, false);

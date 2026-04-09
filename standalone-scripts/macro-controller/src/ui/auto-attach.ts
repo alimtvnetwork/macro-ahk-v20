@@ -1,5 +1,5 @@
  
-import { toErrorMessage } from '../error-utils';
+import { toErrorMessage , logError } from '../error-utils';
 /**
  * MacroLoop Controller — Auto-Attach File Automation
  * Step 03f: Extracted from createUI() closure
@@ -110,13 +110,13 @@ export async function runAutoAttachGroup(
     showToast('Attaching file ' + (fileIdx + 1) + '/' + files.length + '...', 'info');
 
     if (!clickByXPath(aaCfg.plusXPath, 'Plus button')) {
-      log('Auto-Attach: Failed to click Plus button — aborting', 'error');
+      logError('Auto-Attach', 'Failed to click Plus button — aborting');
       break;
     }
     await autoAttachDelay(preDialogDelay);
 
     if (!clickByXPath(aaCfg.attachXPath, 'Attach button')) {
-      log('Auto-Attach: Failed to click Attach button — aborting', 'error');
+      logError('Auto-Attach', 'Failed to click Attach button — aborting');
       break;
     }
     await autoAttachDelay(preFileDialogDelay);
