@@ -75,7 +75,7 @@
         "https://lovableproject.com/*",
         "https://*.lovableproject.com/*"
       ],
-      "js": ["src/content-scripts/message-relay.ts"],
+      "js": ["src/content-scripts/message-relay.js"],
       "run_at": "document_start"
     }
   ],
