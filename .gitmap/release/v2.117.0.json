@@ -1,0 +1,18 @@
+{
+  "version": "2.117.0",
+  "branch": "release/v2.117.0",
+  "sourceBranch": "main",
+  "commit": "1d86c7ecb0417ca53dc1058f6db895934225e68a",
+  "tag": "v2.117.0",
+  "assets": [],
+  "changelog": [
+    "**Release CI install failure**: `.github/workflows/release.yml` no longer hard-fails on `pnpm install --frozen-lockfile` when `pnpm-lock.yaml` is absent — both root and `chrome-extension/` now fall back to `pnpm install --no-frozen-lockfile --lockfile=false`",
+    "Release pipeline now runs root ESLint plus `chrome-extension` ESLint before tests",
+    "Generated GitHub release notes now include Bash + PowerShell install commands, manual unpacked-install steps, and explicit `changelog.md` asset listing",
+    "Version bump: 2.116.0 → 2.117.0 (all version files synced)"
+  ],
+  "draft": false,
+  "preRelease": false,
+  "createdAt": "2026-04-09T19:04:43Z",
+  "isLatest": false
+}
