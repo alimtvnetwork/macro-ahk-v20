@@ -79,4 +79,4 @@ initXPathCache().catch(() => {
     /* silent — cache will be empty until first explicit call */
 });
 
-console.log("[marco-sdk] Riseup Macro SDK v2.98.0 initialized (RiseupAsiaMacroExt root created, api + utils + prompts modules loaded)");
+console.log("[marco-sdk] Riseup Macro SDK v2.98.0 initialized (RiseupAsiaMacroExt root created, api + utils + prompts + authUtils modules loaded)");
