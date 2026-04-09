@@ -517,60 +517,60 @@ export async function handleExportLibrary(): Promise<{ bundle: LibraryExport }> 
     };
 }
 
-export async function handleImportLibrary(msg: unknown): Promise<{
+interface ImportResult {
     imported: number;
     skipped: number;
     conflicts: Array<{ slug: string; existingVersion: string }>;
-}> {
-    const { bundle } = msg as { bundle: LibraryExport };
-    const db = getDb();
-    let imported = 0;
-    let skipped = 0;
-    const conflicts: Array<{ slug: string; existingVersion: string }> = [];
+}
 
-    for (const asset of bundle.assets) {
-        const contentJson = typeof asset.content === "string"
-            ? asset.content
-            : JSON.stringify(asset.content);
-        const hash = await computeContentHash(contentJson);
+async function importAsset(
+    db: SqlJsDatabase,
+    asset: LibraryExport["assets"][0],
+    result: ImportResult,
+): Promise<void> {
+    const contentJson = typeof asset.content === "string" ? asset.content : JSON.stringify(asset.content);
+    const hash = await computeContentHash(contentJson);
+    const existing = db.exec("SELECT Id, ContentHash, Version FROM SharedAsset WHERE Slug = ?", [asset.slug]);
 
-        // Check slug collision
-        const existing = db.exec("SELECT Id, ContentHash, Version FROM SharedAsset WHERE Slug = ?", [asset.slug]);
-
-        if (existing.length === 0 || existing[0].values.length === 0) {
-            // New — insert
-            db.run(
-                `INSERT INTO SharedAsset (Type, Name, Slug, ContentJson, ContentHash, Version) VALUES (?, ?, ?, ?, ?, ?)`,
-                [asset.type, asset.name, asset.slug, contentJson, hash, asset.version],
-            );
-            imported++;
+    if (existing.length === 0 || existing[0].values.length === 0) {
+        db.run(
+            `INSERT INTO SharedAsset (Type, Name, Slug, ContentJson, ContentHash, Version) VALUES (?, ?, ?, ?, ?, ?)`,
+            [asset.type, asset.name, asset.slug, contentJson, hash, asset.version],
+        );
+        result.imported++;
+    } else {
+        const [, existingHash, existingVersion] = existing[0].values[0] as [number, string, string];
+        if (existingHash === hash) {
+            result.skipped++;
         } else {
-            const [, existingHash, existingVersion] = existing[0].values[0] as [number, string, string];
-            if (existingHash === hash) {
-                skipped++; // Identical
-            } else {
-                conflicts.push({ slug: asset.slug, existingVersion });
-            }
+            result.conflicts.push({ slug: asset.slug, existingVersion });
         }
     }
+}
 
-    // Import groups (skip conflicts — group names are not unique-constrained beyond the user's intent)
-    for (const group of bundle.groups) {
+function importGroups(db: SqlJsDatabase, groups: LibraryExport["groups"]): void {
+    for (const group of groups) {
         db.run(
             `INSERT INTO ProjectGroup (Name, SharedSettingsJson) VALUES (?, ?)`,
             [group.name, group.sharedSettings ? JSON.stringify(group.sharedSettings) : null],
         );
-        const groupIdResult = db.exec(SQL_LAST_INSERT_ROWID);
-        const groupId = groupIdResult[0].values[0][0] as number;
-
+        const groupId = db.exec(SQL_LAST_INSERT_ROWID)[0].values[0][0] as number;
         for (const projectId of group.memberProjectIds) {
-            db.run(
-                `INSERT OR IGNORE INTO ProjectGroupMember (GroupId, ProjectId) VALUES (?, ?)`,
-                [groupId, projectId],
-            );
+            db.run(`INSERT OR IGNORE INTO ProjectGroupMember (GroupId, ProjectId) VALUES (?, ?)`, [groupId, projectId]);
         }
     }
+}
 
+export async function handleImportLibrary(msg: unknown): Promise<ImportResult> {
+    const { bundle } = msg as { bundle: LibraryExport };
+    const db = getDb();
+    const result: ImportResult = { imported: 0, skipped: 0, conflicts: [] };
+
+    for (const asset of bundle.assets) {
+        await importAsset(db, asset, result);
+    }
+    importGroups(db, bundle.groups);
     markDirty();
-    return { imported, skipped, conflicts };
+
+    return result;
 }
