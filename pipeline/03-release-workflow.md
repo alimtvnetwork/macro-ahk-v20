@@ -11,19 +11,80 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 ```
 
-## Pipeline Steps
+## Pipeline Architecture
 
-Steps 1–11 are identical to the CI workflow (lint → test → build).
-
-After build, the release adds:
+The release pipeline mirrors the CI parallel job structure with an added packaging + release job:
 
 ```
-12. Strip source maps → Delete all .map files from chrome-extension/dist (logs count)
-13. Package assets    → Create ZIP files for each component
-14. Generate checksums → SHA256 checksums.txt for all assets
-15. Generate notes    → Auto-generate release notes with commit, branch, build date
-16. GitHub Release    → Create tagged release with all assets
+┌──────────┐
+│  setup   │  ← Checkout, resolve version, lint (root + ext), test
+└────┬─────┘
+     │
+     ├─────────────────────┐
+     │                     │
+┌────▼─────┐        ┌─────▼──────┐
+│ build-sdk│        │build-prompts│
+└────┬─────┘        └─────┬──────┘
+     │                     │
+     ├──────────┐          │
+     │          │          │
+┌────▼───┐ ┌───▼──────┐   │
+│ xpath  │ │controller│   │
+└────┬───┘ └───┬──────┘   │
+     │         │           │
+     └────┬────┘───────────┘
+          │
+   ┌──────▼───────┐
+   │   release    │  ← Build extension + package + GitHub Release
+   └──────────────┘
 ```
+
+## Job Descriptions
+
+### 1. `setup` — Lint & Test
+
+Runs all quality gates. Outputs `version` for downstream jobs.
+
+| Step | Command |
+|------|---------|
+| Checkout | `actions/checkout@v4 (fetch-depth: 0)` |
+| Resolve version | Extract from `refs/tags/v*` or `refs/heads/release/*` |
+| Enforce lowercase .md | `find + grep` |
+| Install root + ext deps | `pnpm install` |
+| Root lint | `pnpm run lint` |
+| Extension lint | `cd chrome-extension && pnpm run lint` |
+| Tests | `pnpm run test` |
+
+### 2. `build-sdk` — Marco SDK (depends on: setup)
+
+Uploads `standalone-scripts/marco-sdk/dist/` as `sdk-dist` artifact.
+
+### 3a. `build-xpath` — XPath (depends on: build-sdk, parallel with 3b)
+
+Downloads `sdk-dist`, uploads `xpath-dist`.
+
+### 3b. `build-macro-controller` — Macro Controller (depends on: build-sdk, parallel with 3a)
+
+Downloads `sdk-dist`, uploads `macro-controller-dist`.
+
+### 3c. `build-prompts` — Prompts (depends on: setup, parallel with 2/3a/3b)
+
+Uploads `prompts-dist`. No SDK dependency.
+
+### 4. `release` — Build Extension + Package + Release
+
+Downloads all 4 artifacts, builds the Chrome extension, then packages and publishes.
+
+## Artifact Passing Between Jobs
+
+| Artifact Name | Source Path | Consumed By |
+|---------------|------------|-------------|
+| `sdk-dist` | `standalone-scripts/marco-sdk/dist/` | xpath, controller, release |
+| `xpath-dist` | `standalone-scripts/xpath/dist/` | release |
+| `macro-controller-dist` | `standalone-scripts/macro-controller/dist/` | release |
+| `prompts-dist` | `standalone-scripts/prompts/` | release |
+
+All artifacts have 1-day retention.
 
 ## Source Map Removal
 
@@ -71,6 +132,8 @@ This version is used for:
 - GitHub Release tag and title
 - VERSION.txt content
 
+Version is resolved in the `setup` job and passed to `release` via job outputs.
+
 ## Release Notes Generation
 
 Auto-generated with:
@@ -107,7 +170,9 @@ CI workflow only needs `contents: read`.
 
 | Action | Version |
 |--------|---------|
-| `actions/checkout` | v6 |
+| `actions/checkout` | v4 |
 | `actions/setup-node` | v4 |
 | `pnpm/action-setup` | v4 |
+| `actions/upload-artifact` | v4 |
+| `actions/download-artifact` | v4 |
 | `softprops/action-gh-release` | v2 |
