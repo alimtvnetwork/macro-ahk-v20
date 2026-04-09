@@ -53,7 +53,7 @@ export interface MigrationResult {
 /* ------------------------------------------------------------------ */
 
 const SCHEMA_VERSION_KEY = "marco_schema_version";
-const CURRENT_SCHEMA_VERSION = 5;
+const CURRENT_SCHEMA_VERSION = 7;
 
 /* ------------------------------------------------------------------ */
 /*  Migration Registry                                                 */
@@ -89,6 +89,12 @@ const MIGRATIONS: Migration[] = [
         description: "Add changelog, caching, auto-check, confirm settings to UpdaterInfo; create UpdateSettings table",
         up: applyV6Up,
         down: applyV6Down,
+    },
+    {
+        version: 7,
+        description: "Add SharedAsset, AssetLink, ProjectGroup, ProjectGroupMember tables for Cross-Project Sync",
+        up: applyV7Up,
+        down: applyV7Down,
     },
 ];
 
