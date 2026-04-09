@@ -247,6 +247,7 @@ import {
     handleImportLibrary,
     handleGetAssetVersions,
     handleRollbackAssetVersion,
+    handleCascadeGroupSettings,
 } from "./handlers/library-handler";
 
 /** Handler function that takes message and sender. */
