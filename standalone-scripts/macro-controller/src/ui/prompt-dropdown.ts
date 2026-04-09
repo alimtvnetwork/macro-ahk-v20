@@ -34,6 +34,7 @@ import {
   clearUISnapshot,
 } from './prompt-cache';
 import type { CachedPromptEntry } from './prompt-cache';
+import { showToast } from '../toast';
 
 /** Adapter: getByXPath returns Node|null, pasteIntoEditor needs Element|null */
 function getByXPathAsElement(xpath: string): Element | null {
@@ -105,6 +106,8 @@ export function renderPromptsDropdown(ctx: PromptContext, taskNextDeps: TaskNext
     // No valid snapshot — full render
     _renderFresh(promptsDropdown, entries, promptsCfg, ctx, taskNextDeps, currentHash, currentFilter);
   }).catch(function() {
+    logError('renderPrompts', 'Prompt dropdown render failed', function);
+    showToast('❌ Prompt dropdown render failed', 'error');
     _renderFresh(promptsDropdown, entries, promptsCfg, ctx, taskNextDeps, currentHash, currentFilter);
   });
 }

@@ -1,3 +1,4 @@
+import { logError } from './error-utils';
 /**
  * Workspace Cache — localStorage persistence for instant UI on reload.
  *
@@ -39,6 +40,7 @@ export function getCachedWorkspaceName(): string {
   try {
     const pid = resolveProjectId();
     return localStorage.getItem(cacheKey(pid, 'name')) || '';
+  logError('getCachedWsName', 'Failed to read cached workspace name', e);
   } catch (_e) {
     return '';
   }
@@ -49,6 +51,7 @@ export function getCachedWorkspaceId(): string {
   try {
     const pid = resolveProjectId();
     return localStorage.getItem(cacheKey(pid, 'id')) || '';
+  logError('getCachedWsId', 'Failed to read cached workspace ID', e);
   } catch (_e) {
     return '';
   }
@@ -72,7 +75,8 @@ export function cacheWorkspaceName(name: string, id?: string): void {
     }
     // Track last project for cross-project detection
     localStorage.setItem(WS_LAST_PROJECT_KEY, pid);
-  } catch (_e) {
+  } catch (e) {
+    logError('setCachedWs', 'Failed to persist workspace cache', e);
     // localStorage unavailable — no-op
   }
 }

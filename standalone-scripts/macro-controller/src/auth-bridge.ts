@@ -10,6 +10,7 @@
 import { log } from './logging';
 import { getLastSessionBridgeSource } from './shared-state';
 import {
+import { logError } from './error-utils';
   extractBearerTokenFromUnknown,
   getBearerTokenFromSessionBridge,
   getSessionCookieNames,
@@ -92,7 +93,8 @@ function getVisibleCookieNames(): string[] {
     return rawCookie
       ? rawCookie.split(';').map(function (c: string) { return c.trim().split('=')[0]; }).filter(Boolean)
       : [];
-  } catch (_e) {
+  } catch (e) {
+    logError('listCookieNames', 'Failed to parse cookie names', e);
     return [];
   }
 }

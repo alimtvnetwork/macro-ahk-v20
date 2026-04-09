@@ -101,6 +101,7 @@ function openIdb(): Promise<IDBDatabase> {
             req.onsuccess = () => resolve(req.result);
             req.onerror = () => reject(req.error);
         } catch (e) {
+            NamespaceLogger.error('resolvePrompt', 'Failed to resolve prompt', e);
             reject(e);
         }
     });
@@ -125,7 +126,7 @@ function readCache(): Promise<CacheRecord | null> {
                 }
             });
         })
-        .catch(() => null);
+        .catch((e) => { NamespaceLogger.error('fetchPromptList', 'Failed to fetch prompt list', e); return null; });
 }
 
 function writeCache(entries: PromptEntry[]): Promise<void> {
@@ -144,7 +145,7 @@ function writeCache(entries: PromptEntry[]): Promise<void> {
                 }
             });
         })
-        .catch(() => {});
+        .catch((e) => { NamespaceLogger.error('cachePrompt', 'Failed to cache prompt', e); });
 }
 
 function clearCache(): Promise<void> {
@@ -162,7 +163,7 @@ function clearCache(): Promise<void> {
                 }
             });
         })
-        .catch(() => {});
+        .catch((e) => { NamespaceLogger.error('clearPromptCache', 'Failed to clear prompt cache', e); });
 }
 
 /* ------------------------------------------------------------------ */
@@ -412,13 +413,13 @@ export function createPromptsApi(): PromptsApi {
             );
             if (!target) {
                 // Fallback: copy to clipboard
-                navigator.clipboard.writeText(text).catch(() => {});
+                navigator.clipboard.writeText(text).catch((e) => { NamespaceLogger.error('copyToClipboard', 'Clipboard write failed', e); });
                 return false;
             }
             try {
                 return injectText(text, target);
             } catch {
-                navigator.clipboard.writeText(text).catch(() => {});
+                navigator.clipboard.writeText(text).catch((e) => { NamespaceLogger.error('copyToClipboard', 'Clipboard write failed', e); });
                 return false;
             }
         },

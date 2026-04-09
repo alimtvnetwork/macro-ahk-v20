@@ -374,7 +374,8 @@ function logAuthDiag(): void {
     timingStart('auth-source', 'Auth Source (SDK)');
     timingEnd('auth-source', status, detail);
     log('Startup: SDK auth diag — source=' + authDiag.source + ', bridge=' + authDiag.bridgeOutcome + ', ' + Math.round(authDiag.durationMs) + 'ms', authDiag.source === 'none' ? 'error' : 'info');
-  } catch (_e: unknown) {
+  } catch (e: unknown) {
+    logError('emitAuthDiag', 'SDK auth diagnostics unavailable', e);
     // SDK not available yet — skip silently
   }
 }

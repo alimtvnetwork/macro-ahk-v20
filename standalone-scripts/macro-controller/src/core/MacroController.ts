@@ -25,6 +25,7 @@ import { domCache } from '../dom-cache';
 import { nsRead } from '../api-namespace';
 import { wsRenderStats } from '../ws-selection-ui';
 import { statusRenderStats } from '../ui/ui-updaters';
+import { logError } from '../error-utils';
 
 // ============================================
 // Sub-manager interfaces (stubs for Step 1)
@@ -246,7 +247,8 @@ export class MacroController {
         const f = nsRead(winKey, nsPath);
         return `  ${nsPath}: ${f ? '✅ available' : '❌ missing'}`;
       }).join('\n');
-    } catch (_e) {
+    } catch (e) {
+      logError('MacroController.selfCheck', 'Namespace not accessible during self-check', e);
       factoryStatus = '  (namespace not accessible)';
     }
 

@@ -54,6 +54,8 @@ import {
 import type { PanelBuilderDeps } from './panel-builder';
 import type { PromptEntry } from '../types';
 import type { TaskNextDeps } from './task-next-ui';
+import { logError } from '../error-utils';
+import { showToast } from '../toast';
 
 const CSS_BACKGROUND = 'background:';
 const CSS_BORDER_1PX_SOLID_RGBA_255_255_255_0_08 = ';border:1px solid rgba(255,255,255,0.08);';
@@ -319,6 +321,8 @@ function buildPromptsDropdown(_deps: PanelBuilderDeps, btnStyle: string): Prompt
         loadPromptsFromJson().then(function(_loaded: PromptEntry[] | null) {
           renderPromptsDropdown(promptCtx, taskNextDeps);
         }).catch(function() {
+          logError('loadPrompts', 'Failed to load prompts from JSON', function);
+          showToast('❌ Failed to load prompts from JSON', 'error');
           // Show error state if load completely fails
           promptsDropdown.innerHTML = '';
           const errEl = document.createElement('div');

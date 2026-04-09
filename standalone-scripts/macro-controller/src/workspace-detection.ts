@@ -19,6 +19,7 @@ import { log, logSub } from './logging';
 import { resolveToken, markBearerTokenExpired } from './auth';
 import { matchWorkspaceByName } from './ws-name-matching';
 import { detectWorkspaceViaProjectDialog } from './ws-dialog-detection';
+import { logError } from './error-utils';
 
 // ============================================
 // Helper — auth failure check
@@ -65,7 +66,8 @@ export function extractProjectIdFromUrl(): string | null {
     if (bareUuidLabelMatch) {
       return bareUuidLabelMatch[1];
     }
-  } catch (_e) {
+  } catch (e) {
+    logError('resolveProjectId', 'URL parse error during project ID resolution', e);
     // ignore URL parse errors, fall through to legacy regex checks
   }
 

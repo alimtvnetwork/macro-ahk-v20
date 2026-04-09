@@ -78,7 +78,8 @@ export function isUserTypingInPrompt(): boolean {
     }
 
     return isInPrompt;
-  } catch (_e) {
+  } catch (e) {
+    logError('isPromptArea', 'Prompt area detection failed', e);
     return false;
   }
 }

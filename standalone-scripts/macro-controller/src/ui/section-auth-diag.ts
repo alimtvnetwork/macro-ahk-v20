@@ -26,6 +26,8 @@ import {
 
 import { buildWaterfallSection } from './auth-diag-waterfall';
 import { buildHeaderControls } from './auth-diag-clipboard';
+import { logError } from '../error-utils';
+import { showToast } from '../toast';
 
 // Re-export for backward compatibility
 export { recordRefreshOutcome } from './auth-jwt-utils';
@@ -90,7 +92,9 @@ function performAuthDiagUpdate(ctx: AuthDiagUpdateCtx): void {
         ctx.headerBadge.title = 'No token from any source · ' + Math.round(diag.durationMs) + 'ms';
       }
     }
-  } catch (_e: unknown) {
+  } catch (e: unknown) {
+    logError('renderAuthDiag', 'Auth diagnostics render failed', e);
+    showToast('❌ Auth diagnostics render failed', 'error');
     // SDK not available
   }
 }

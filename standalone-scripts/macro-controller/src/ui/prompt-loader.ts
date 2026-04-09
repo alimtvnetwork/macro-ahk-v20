@@ -17,6 +17,8 @@ import {
 } from './prompt-cache';
 import type { TaskNextDeps } from './task-next-ui';
 import { normalizePromptEntries } from './prompt-utils';
+import { logError } from '../error-utils';
+import { showToast } from '../toast';
 
 /** Editable prompt — a PromptEntry with an optional DB id. */
 export interface EditablePrompt extends PromptEntry {
@@ -91,6 +93,8 @@ class PromptLoaderState {
     this._pendingCallbacks = [];
     for (const callback of pending) {
       try {
+        logError('parsePromptFile', 'Failed to parse prompt file', e);
+        showToast('❌ Failed to parse prompt file', 'error');
         callback(prompts);
       } catch (_e) {
         // Ignore callback failures so prompt loading can continue.
@@ -318,6 +322,8 @@ export function loadPromptsFromJson(): Promise<PromptEntry[] | null> {
 
     return fetchAndCacheFromExtension();
   }).catch(function() {
+    logError('loadPrompts', 'Prompt loading failed', function);
+    showToast('❌ Prompt loading failed', 'error');
     return fetchAndCacheFromExtension();
   });
 }

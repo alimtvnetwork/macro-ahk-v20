@@ -12,6 +12,8 @@ import { showPasteToast, pasteIntoEditor } from './prompt-utils';
 
 import type { PromptEntry } from '../types';
 import type { SavePromptDeps } from './save-prompt';
+import { logError } from '../error-utils';
+import { showToast } from '../toast';
 
 // ── Search Input ──
 
@@ -247,6 +249,8 @@ function buildCopyButton(prompt: PromptEntry): HTMLElement {
     navigator.clipboard.writeText(prompt.text || '').then(function () {
       showPasteToast('📋 Copied "' + (prompt.name || '') + '" to clipboard', false);
     }).catch(function () {
+      logError('deletePrompt', 'Prompt deletion failed', function);
+      showToast('❌ Prompt deletion failed', 'error');
       showPasteToast('❌ Failed to copy', true);
     });
   };

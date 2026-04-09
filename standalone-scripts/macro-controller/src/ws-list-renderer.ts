@@ -29,6 +29,7 @@ import {
   setLoopWsNavIndex,
 } from './ws-checkbox-handler';
 import { showWsContextMenu } from './ws-context-menu';
+import { logError } from './error-utils';
 
 // ── Extracted string constants (sonarjs/no-duplicate-string) ──
 const ATTR_DATA_ACTIVE = 'data-active';
@@ -66,7 +67,9 @@ class WsListViewState {
       const stored: string | null = localStorage.getItem('ml_compact_mode');
 
       return stored === null ? true : stored === 'true';
-    } catch (_e: unknown) {
+    } catch (e: unknown) {
+
+logError('getExpanded', 'Failed to read expanded state from localStorage', e);
 
       return true;
     }

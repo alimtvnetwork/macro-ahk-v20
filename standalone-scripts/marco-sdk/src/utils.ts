@@ -118,6 +118,7 @@ async function withRetry<T>(fn: () => Promise<T>, options: RetryOptions): Promis
         try {
             return await fn();
         } catch (error: unknown) {
+            NamespaceLogger.error('parseJson', 'JSON parse failed', error);
             if (attempt === options.maxAttempts) { throw error; }
             if (options.onRetry) { options.onRetry(attempt, error); }
             await delay(currentDelay);

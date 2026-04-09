@@ -1,5 +1,5 @@
  
-import { toErrorMessage } from './error-utils';
+import { toErrorMessage, logError } from './error-utils';
 /**
  * MacroLoop Controller — Logging Module
  * Phase 6: for-of conversions, newline-before-return, curly braces (CQ13–CQ15)
@@ -33,6 +33,7 @@ export function safeSetItem(key: string, value: string): boolean {
 
     return true;
   } catch (e: unknown) {
+    logError('safeSetItem', 'localStorage setItem failed', e);
     const isQuotaError = (
       e instanceof DOMException &&
       (e.code === 22 || e.code === 1014 || e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
@@ -101,7 +102,8 @@ function clearAndRetrySetItem(key: string, value: string): boolean {
     localStorage.setItem(key, value);
 
     return true;
-  } catch (_e) {
+  } catch (e) {
+    logError('safeGetItem', 'localStorage getItem failed', e);
     return false;
   }
 }
@@ -232,7 +234,8 @@ function _flushPendingLogs(): void {
     }
 
     safeSetItem(key, JSON.stringify(logs));
-  } catch (_e) {
+  } catch (e) {
+    logError('storeLog', 'Failed to persist log entry', e);
     /* storage full or unavailable */
   }
 }
@@ -269,7 +272,8 @@ export function getAllLogs(): PersistedLogEntry[] {
     const key = getLogStorageKey();
 
     return JSON.parse(localStorage.getItem(key) || '[]');
-  } catch (_e) {
+  } catch (e) {
+    logError('getStoredLogs', 'Failed to read stored logs', e);
     return [];
   }
 }

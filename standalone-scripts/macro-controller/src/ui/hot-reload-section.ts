@@ -91,7 +91,9 @@ export function restoreReinjectState(): { restored: boolean; loopWasRunning: boo
     // but we saved them above so use the values before clearing
     // Actually we need to read THEN clear. Let me fix the flow:
     return { restored: false, loopWasRunning: false };
-  } catch (_e) {
+  } catch (e) {
+    logError('tryRestoreV1', 'Hot-reload state restore v1 failed', e);
+    showToast('❌ Hot-reload state restore v1 failed', 'error');
     return { restored: false, loopWasRunning: false };
   }
 }
@@ -129,7 +131,9 @@ export function checkAndRestoreReinjectState(): { restored: boolean; loopWasRunn
     }
 
     return { restored: true, loopWasRunning, wsName, wsId };
-  } catch (_e) {
+  } catch (e) {
+    logError('tryRestoreV2', 'Hot-reload state restore v2 failed', e);
+    showToast('❌ Hot-reload state restore v2 failed', 'error');
     return { restored: false, loopWasRunning: false, wsName: '', wsId: '' };
   }
 }

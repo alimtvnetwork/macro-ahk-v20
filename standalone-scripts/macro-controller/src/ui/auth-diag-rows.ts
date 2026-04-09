@@ -18,6 +18,7 @@ import {
   recordRefreshOutcome,
 } from './auth-jwt-utils';
 import type { AuthDiagDeps } from './section-auth-diag';
+import { logError } from '../error-utils';
 
 const ROW_CSS = 'display:flex;align-items:center;gap:6px;padding:2px 4px;background:rgba(0,0,0,.2);border-radius:3px;';
 
@@ -71,7 +72,8 @@ function detectBindingsSource(): boolean {
   try {
     const root = RiseupAsiaMacroExt;
     return root !== undefined && root.Projects !== undefined && Object.keys(root.Projects).length > 0;
-  } catch (_e: unknown) {
+  } catch (e: unknown) {
+    logError('hasActiveProject', 'Failed to check active projects', e);
     return false;
   }
 }

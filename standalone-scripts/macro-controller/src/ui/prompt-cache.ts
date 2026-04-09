@@ -7,6 +7,8 @@
  */
 
 import { log } from '../logging';
+import { logError } from '../error-utils';
+import { showToast } from '../toast';
 
 const DB_NAME = 'marco_prompts_cache';
 const DB_VERSION = 3;
@@ -94,6 +96,8 @@ function openDb(): Promise<IDBDatabase> {
       request.onsuccess = function() { resolve(request.result); };
       request.onerror = function() { reject(request.error); };
     } catch (e) {
+      logError('readFromStore', 'IndexedDB read failed', e);
+      showToast('❌ IndexedDB read failed', 'error');
       reject(e);
     }
   });

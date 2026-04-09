@@ -17,6 +17,8 @@ import type { TaskNextDeps } from './task-next-ui';
 import type { ResolvedPromptsConfig } from '../types';
 import { htmlToMarkdown } from './save-prompt-html-converter';
 import { createPromptsDropdown, positionDropdownAboveButton, renderChatboxPromptsDropdown } from './save-prompt-dropdown';
+import { logError } from '../error-utils';
+import { showToast } from '../toast';
 
 // Re-export for backward compatibility
 export { htmlToMarkdown } from './save-prompt-html-converter';
@@ -180,7 +182,9 @@ function tryInjectSavePrompt(ctx: InjectCtx): boolean {
     log('Save Prompt + Prompts buttons injected into chatbox toolbar', 'info');
 
     return true;
-  } catch (_e: unknown) {
+  } catch (e: unknown) {
+    logError('savePrompt', 'Prompt save failed', e);
+    showToast('❌ Prompt save failed', 'error');
     return false;
   }
 }

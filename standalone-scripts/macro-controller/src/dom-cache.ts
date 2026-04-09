@@ -1,3 +1,4 @@
+import { logError } from './error-utils';
 /**
  * DomCache — TTL-based DOM query cache (V2 Phase 04, Task 04.1)
  *
@@ -54,6 +55,7 @@ class DomCache {
       const el = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
       this._cache.set(xpath, { element: el, timestamp: Date.now() });
       return el;
+    logError('DomCache.getOne', 'XPath evaluation failed', e);
     } catch (_e: unknown) {
       return null;
     }
@@ -83,7 +85,8 @@ class DomCache {
       }
       this._cacheMulti.set(xpath, { elements: nodes, timestamp: Date.now() });
       return nodes;
-    } catch (_e: unknown) {
+    } catch (e: unknown) {
+      logError('DomCache.getAll', 'XPath multi-evaluation failed', e);
       return [];
     }
   }

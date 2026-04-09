@@ -13,6 +13,8 @@
 
 import { VERSION } from './shared-state';
 import { log } from './logging';
+import { logError } from './error-utils';
+import { showToast } from './toast';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -93,7 +95,9 @@ export function getNamespace(): MacroControllerNamespace | null {
 
     nsCache.ns = mc as MacroControllerNamespace;
     return nsCache.ns;
-  } catch (_e) {
+  } catch (e) {
+    logError('getNamespace', 'Failed to access MacroController namespace', e);
+    showToast('❌ Failed to access MacroController namespace', 'error');
     return null;
   }
 }
