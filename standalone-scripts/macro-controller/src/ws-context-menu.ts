@@ -16,9 +16,9 @@ import {
 } from './shared-state';
 import { log } from './logging';
 import { renameWorkspace } from './workspace-rename';
-import {
 import { logError } from './error-utils';
 import { showToast } from './toast';
+import {
   populateLoopWorkspaceDropdown,
   fetchLoopCreditsWithDetect,
 } from './ws-list-renderer';

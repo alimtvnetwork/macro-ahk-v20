@@ -320,8 +320,8 @@ export function loadPromptsFromJson(): Promise<PromptEntry[] | null> {
     log('[PromptCache] No IndexedDB cache — fetching from extension...', 'info');
 
     return fetchAndCacheFromExtension();
-  }).catch(function() {
-    logError('loadPrompts', 'Prompt loading failed', function);
+  }).catch(function(e: unknown) {
+    logError('loadPrompts', 'Prompt loading failed', e);
     showToast('❌ Prompt loading failed', 'error');
     return fetchAndCacheFromExtension();
   });

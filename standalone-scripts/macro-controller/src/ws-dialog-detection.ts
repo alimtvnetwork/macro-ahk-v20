@@ -57,7 +57,7 @@ export function detectWorkspaceViaProjectDialog(callerFn?: string, perWs?: Works
 
   return findProjectButtonWithRetry(fn, 3, 1000).then(function(btn: Element | null) {
     if (!btn) {
-      logError('fn', Project button NOT found after retries — cannot open dialog. XPath=' + CONFIG.PROJECT_BUTTON_XPATH);
+      logError('ws-dialog-detection', 'Project button NOT found after retries — cannot open dialog. XPath=' + CONFIG.PROJECT_BUTTON_XPATH);
       log(fn + KEEPING_EXISTING_WORKSPACE + (state.workspaceName || '(none)'), 'warn');
       return Promise.resolve(null);
     }
