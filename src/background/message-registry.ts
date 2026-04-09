@@ -225,6 +225,28 @@ import {
     handleHotReloadScript,
 } from "./handlers/script-info-handler";
 
+import {
+    handleGetSharedAssets,
+    handleGetSharedAsset,
+    handleSaveSharedAsset,
+    handleDeleteSharedAsset,
+    handleGetAssetLinks,
+    handleSaveAssetLink,
+    handleDeleteAssetLink,
+    handleSyncLibraryAsset,
+    handlePromoteAsset,
+    handleReplaceLibraryAsset,
+    handleForkLibraryAsset,
+    handleGetProjectGroups,
+    handleSaveProjectGroup,
+    handleDeleteProjectGroup,
+    handleGetGroupMembers,
+    handleAddGroupMember,
+    handleRemoveGroupMember,
+    handleExportLibrary,
+    handleImportLibrary,
+} from "./handlers/library-handler";
+
 /** Handler function that takes message and sender. */
 export type MessageHandler = (
     message: MessageRequest,
@@ -448,4 +470,24 @@ export const HANDLER_REGISTRY = new Map<MessageType, MessageHandler>([
         const { handleDynamicRequire } = await import("./handlers/dynamic-require-handler");
         return handleDynamicRequire(msg);
     }],
+    // ─── Cross-Project Sync (Spec 13) ───
+    [MessageType.LIBRARY_GET_ASSETS, async (msg) => handleGetSharedAssets(msg)],
+    [MessageType.LIBRARY_GET_ASSET, async (msg) => handleGetSharedAsset(msg)],
+    [MessageType.LIBRARY_SAVE_ASSET, async (msg) => handleSaveSharedAsset(msg)],
+    [MessageType.LIBRARY_DELETE_ASSET, async (msg) => handleDeleteSharedAsset(msg)],
+    [MessageType.LIBRARY_GET_LINKS, async (msg) => handleGetAssetLinks(msg)],
+    [MessageType.LIBRARY_SAVE_LINK, async (msg) => handleSaveAssetLink(msg)],
+    [MessageType.LIBRARY_DELETE_LINK, async (msg) => handleDeleteAssetLink(msg)],
+    [MessageType.LIBRARY_SYNC_ASSET, async (msg) => handleSyncLibraryAsset(msg)],
+    [MessageType.LIBRARY_PROMOTE_ASSET, async (msg) => handlePromoteAsset(msg)],
+    [MessageType.LIBRARY_REPLACE_ASSET, async (msg) => handleReplaceLibraryAsset(msg)],
+    [MessageType.LIBRARY_FORK_ASSET, async (msg) => handleForkLibraryAsset(msg)],
+    [MessageType.LIBRARY_GET_GROUPS, async () => handleGetProjectGroups()],
+    [MessageType.LIBRARY_SAVE_GROUP, async (msg) => handleSaveProjectGroup(msg)],
+    [MessageType.LIBRARY_DELETE_GROUP, async (msg) => handleDeleteProjectGroup(msg)],
+    [MessageType.LIBRARY_GET_GROUP_MEMBERS, async (msg) => handleGetGroupMembers(msg)],
+    [MessageType.LIBRARY_ADD_GROUP_MEMBER, async (msg) => handleAddGroupMember(msg)],
+    [MessageType.LIBRARY_REMOVE_GROUP_MEMBER, async (msg) => handleRemoveGroupMember(msg)],
+    [MessageType.LIBRARY_EXPORT, async () => handleExportLibrary()],
+    [MessageType.LIBRARY_IMPORT, async (msg) => handleImportLibrary(msg)],
 ]);
