@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-04-09
 **Active Codebase**: `marco-script-ahk-v7.latest/` (v7.23)
-**Chrome Extension**: v2.117.0
+**Chrome Extension**: v2.119.0
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
