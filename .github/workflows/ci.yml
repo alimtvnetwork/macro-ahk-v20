@@ -18,6 +18,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 concurrency:
   group: ci-main-${{ github.sha }}
@@ -31,11 +34,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ── Checkout ──────────────────────────────────────────
+      # ── Enforce lowercase .md naming ───────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Enforce lowercase .md filenames
+        run: |
+          VIOLATIONS=$(find . -name '*.md' \
+            -not -path './node_modules/*' \
+            -not -path './.git/*' \
+            -not -path './skipped/*' \
+            | grep '[A-Z]' || true)
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Uppercase .md filenames found — all .md files must be lowercase hyphen-case:"
+            echo "$VIOLATIONS"
+            exit 1
+          fi
+          echo "✅ All .md filenames are lowercase"
 
       # ── Setup Node.js ─────────────────────────────────────
       - name: Setup Node.js
