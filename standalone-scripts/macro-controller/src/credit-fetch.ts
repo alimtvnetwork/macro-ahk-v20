@@ -16,7 +16,7 @@
 import { log, logSub } from './logging';
 import { resolveToken, invalidateSessionBridgeKey, markBearerTokenExpired, getLastTokenSource, getAuthDebugSnapshot, getBearerToken } from './auth';
 import { showToast } from './toast';
-import { dualWrite, nsCall } from './api-namespace';
+import { nsWrite, nsCallTyped } from './api-namespace';
 
 import { MacroController } from './core/MacroController';
 
@@ -25,7 +25,7 @@ import { parseLoopApiResponse, syncCreditStateFromApi } from './credit-parser';
 import { logError } from './error-utils';
 
 const API_USER_WORKSPACES = '/user/workspaces';
-const NS_UPDATEAUTHDIAG = '_internal.updateAuthDiag';
+
 
 function mc() { return MacroController.getInstance(); }
 
@@ -161,21 +161,21 @@ async function processSuccessData(
   if (!isParseOk) return;
 
   const freshToken = resolveToken();
-  dualWrite('__loopResolvedToken', '_internal.resolvedToken', freshToken);
+  nsWrite('_internal.resolvedToken', freshToken);
 
   if (autoDetectFn) {
     await autoDetectFn(freshToken);
     syncCreditStateFromApi();
     mc().updateUI();
     log('Credit API: display updated (workspace detected)', 'success');
-    nsCall('__loopUpdateAuthDiag', NS_UPDATEAUTHDIAG);
+    nsCallTyped('_internal.updateAuthDiag');
 
     return;
   }
 
   syncCreditStateFromApi();
   mc().updateUI();
-  nsCall('__loopUpdateAuthDiag', NS_UPDATEAUTHDIAG);
+  nsCallTyped('_internal.updateAuthDiag');
 }
 
 // ============================================
@@ -218,7 +218,7 @@ export function fetchLoopCredits(
       logSub('Token source: ' + getLastTokenSource(), 1);
       logSub('isRetry: ' + (isRetry ? 'YES' : 'NO'), 1);
       logSub('Hint: If 401/403, the token may be expired. Check extension bridge or re-login.', 1);
-      nsCall('__loopUpdateAuthDiag', NS_UPDATEAUTHDIAG);
+      nsCallTyped('_internal.updateAuthDiag');
       mc().updateUI();
     });
 }

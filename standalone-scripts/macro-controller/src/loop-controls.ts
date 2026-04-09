@@ -8,7 +8,7 @@
  */
 
 import { log, logSub } from './logging';
-import { nsCall, nsRead } from './api-namespace';
+import { nsCallTyped, nsReadTyped } from './api-namespace';
 import { showToast, setStopLoopCallback } from './toast';
 import { LoopDirection } from './types';
 import { getByXPath } from './xpath-utils';
@@ -20,7 +20,7 @@ import { CONFIG, IDS, TIMING, loopCreditState, state } from './shared-state';
 import { runCycle } from './loop-cycle';
 import { logError } from './error-utils';
 
-const NS_UPDATESTARTSTOPBTN = '_internal.updateStartStopBtn';
+
 
 // Re-export runCheck from loop-check.ts (barrel pattern)
 export { runCheck } from './loop-check';
@@ -55,7 +55,7 @@ function initLoopState(direction: LoopDirection | string): void {
   state.__cycleRetryPending = false;
   state.running = true;
   state.countdown = Math.floor(TIMING.LOOP_INTERVAL / 1000);
-  nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, true);
+  nsCallTyped('_internal.updateStartStopBtn', true);
 }
 
 function logLoopStartInfo(): void {
@@ -73,19 +73,19 @@ function verifyControllerInjection(): boolean {
   const marker = document.getElementById(IDS.SCRIPT_MARKER);
   const uiContainer = document.getElementById(IDS.CONTAINER);
   const xpathTarget = getByXPath(CONFIG.CONTROLS_XPATH);
-  const loopStartFn = nsRead('__loopStart', 'api.loop.start');
+  const loopStartFn = nsReadTyped('api.loop.start');
 
   if (!marker || typeof loopStartFn !== 'function') {
     logError('unknown', '❌ Controller script NOT injected (marker=\' + !!marker + \', __loopStart=\' + (typeof loopStartFn) + \') — aborting');
     state.running = false;
-    nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, false);
+    nsCallTyped('_internal.updateStartStopBtn', false);
     return false;
   }
 
   if (!uiContainer) {
     logError('unknown', '❌ Controller UI container NOT found in DOM (id=\' + IDS.CONTAINER + \') — aborting');
     state.running = false;
-    nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, false);
+    nsCallTyped('_internal.updateStartStopBtn', false);
     return false;
   }
 
@@ -202,7 +202,7 @@ export function stopLoop(): boolean {
 
   log('=== LOOP STOPPED ===', 'success');
   log('Total cycles completed: ' + state.cycleCount);
-  nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, false);
+  nsCallTyped('_internal.updateStartStopBtn', false);
   mc().updateUI();
 
   return true;

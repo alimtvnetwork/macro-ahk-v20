@@ -9,7 +9,7 @@
 
 import { log } from './logging';
 import { logError } from './error-utils';
-import { dualWrite } from './api-namespace';
+import { nsWrite } from './api-namespace';
 import { showToast } from './toast';
 import { VERSION, loopCreditState, state } from './shared-state';
 import { extractProjectIdFromUrl } from './workspace-detection';
@@ -86,7 +86,7 @@ function buildDiagnosticDump(): DiagnosticDump {
 
 /** Register the diagnostic dump API on window + namespace. */
 export function setupDiagnosticDump(): void {
-  dualWrite('__loopDiag', 'api.loop.diagnostics', buildDiagnosticDump);
+  nsWrite('api.loop.diagnostics', buildDiagnosticDump);
 }
 
 // Re-export overlay API for external use

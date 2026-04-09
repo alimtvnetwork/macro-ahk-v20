@@ -9,13 +9,13 @@
  */
 
 import { log } from './logging';
-import { nsRead } from './api-namespace';
+import { nsReadTyped } from './api-namespace';
 import { IDS, VERSION } from './shared-state';
 import { resetRedockState } from './ui/redock-observer';
 
 // CQ16: Extracted from setupPersistenceObserver closure
 function tryReinjectUI(createUI: () => void): void {
-  const isDestroyed = nsRead('__loopDestroyed', '_internal.destroyed');
+  const isDestroyed = nsReadTyped('_internal.destroyed');
 
   if (isDestroyed) {
     log('Panel was destroyed by user — skipping re-injection', 'info');

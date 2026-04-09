@@ -12,7 +12,7 @@ import { exportWorkspacesAsCsv } from '../logging';
 import { VERSION, cPanelBg, cPanelFgDim, cPanelFgMuted, cPrimary, cBtnMenuBg, cBtnMenuFg, cSectionHeader, lDropdownRadius, lDropdownShadow, tFontSm, trFast, autoAttachCfg, state } from '../shared-state';
 import { LoopDirection, type AutoAttachGroupRuntime } from '../types';
 import { showToast } from '../toast';
-import { dualWrite, nsCall, nsRead } from '../api-namespace';
+import { nsWrite, nsCallTyped, nsReadTyped } from '../api-namespace';
 import { refreshBearerTokenFromBestSource, getAuthDebugSnapshot } from '../auth';
 import { moveToAdjacentWorkspace } from '../workspace-management';
 import { createMenuItem, createMenuSep, createSubmenu } from './menu-helpers';
@@ -145,7 +145,7 @@ function _addExportSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLEl
   const exportMenu = createSubmenu(menuCtx, '📦', 'Export');
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📋', 'Export CSV', 'Export all workspaces + credits as CSV', function() { exportWorkspacesAsCsv(); }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📥', 'Download Bundle', 'Download bundle (xpath-utils + macro-looping) as .js file', function() {
-    const bundle = nsRead('__exportBundle', '_internal.exportBundle') as string | undefined;
+    const bundle = nsReadTyped('_internal.exportBundle');
     if (!bundle || bundle.length < 100) { logError('Export', 'No bundle available — re-inject via AHK to generate'); return; }
     const now = new Date();
     const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
@@ -173,14 +173,14 @@ function _addExportSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLEl
     log('Export: Downloaded bundle (' + fullExport.length + ' chars)', 'success');
   }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📋', 'JS Bundle', 'Copy bundle to clipboard', function() {
-    const bundle = nsRead('__exportBundle', '_internal.exportBundle') as string | undefined;
+    const bundle = nsReadTyped('_internal.exportBundle');
     if (!bundle || bundle.length < 100) { logError('Copy JS', 'No bundle available — re-inject via AHK to generate'); return; }
     navigator.clipboard.writeText(bundle).then(function() {
       log('Copy JS: Copied to clipboard (' + bundle.length + ' chars)', 'success');
     }).catch(function(err: Error) { log('Copy JS: Clipboard failed: ' + err.message, 'warn'); });
   }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '🔧', 'Diagnostic Dump', 'Run diagnostic dump', function() {
-    const result = nsCall('__loopDiag', 'api.loop.diagnostics');
+    const result = nsCallTyped('api.loop.diagnostics');
     if (result === undefined) log('Diagnostic dump not available', 'warn');
   }));
   menuDropdown.appendChild(exportMenu.el);
@@ -223,7 +223,7 @@ function _addReadSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLElem
 
 // ── Auto Attach Section ──
 function _addAutoAttachSection(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLElement }, menuDropdown: HTMLElement): void {
-  dualWrite('__autoAttachRunGroup', 'api.autoAttach.runGroup', function(group: AutoAttachGroupRuntime) { runAutoAttachGroup(group, autoAttachCfg as Record<string, unknown>, showToast); });
+  nsWrite('api.autoAttach.runGroup', function(group: AutoAttachGroupRuntime) { runAutoAttachGroup(group, autoAttachCfg as Record<string, unknown>, showToast); });
   menuDropdown.appendChild(createMenuSep());
 
   const aaHeader = document.createElement('div');

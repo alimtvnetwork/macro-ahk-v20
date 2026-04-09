@@ -9,7 +9,7 @@
  */
 
 import { MacroController } from '../core/MacroController';
-import { dualWrite, nsCall } from '../api-namespace';
+import { nsWrite, nsCallTyped } from '../api-namespace';
 import { clearSkeletons } from './skeleton';
 import { cacheWorkspaceName } from '../workspace-cache';
 
@@ -105,7 +105,7 @@ export function updateTitleBarWorkspaceName(): void {
  * Sync the start/stop button visual state.
  */
 export function updateButtons(): void {
-  nsCall('__loopUpdateStartStopBtn', '_internal.updateStartStopBtn', !!state.running);
+  nsCallTyped('_internal.updateStartStopBtn', !!state.running);
 
   const stopBtn = document.getElementById(IDS.STOP_BTN);
   if (stopBtn) {
@@ -176,9 +176,9 @@ export function setLoopInterval(newIntervalMs: number): boolean {
  */
 export function destroyPanel(): void {
   log('MacroLoop panel DESTROYED by user — remove marker + globals for clean re-inject', 'warn');
-  dualWrite('__loopDestroyed', '_internal.destroyed', true);
+  nsWrite('_internal.destroyed', true);
 
-  try { nsCall('__loopStop', 'api.loop.stop'); } catch (e) { log('destroyPanel: loop stop failed — ' + (e instanceof Error ? e.message : String(e)), 'warn'); }
+  try { nsCallTyped('api.loop.stop'); } catch (e) { log('destroyPanel: loop stop failed — ' + (e instanceof Error ? e.message : String(e)), 'warn'); }
 
   const marker = document.getElementById(IDS.SCRIPT_MARKER);
   if (marker) marker.remove();

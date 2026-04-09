@@ -22,7 +22,7 @@ import { VERSION, state, loopCreditState } from '../shared-state';
 import type { WorkspaceCredit, LoopCreditState } from '../types';
 import { log } from '../logging';
 import { domCache } from '../dom-cache';
-import { nsRead } from '../api-namespace';
+import { nsReadTyped } from '../api-namespace';
 import { wsRenderStats } from '../ws-selection-ui';
 import { statusRenderStats } from '../ui/ui-updaters';
 import { logError } from '../error-utils';
@@ -150,7 +150,7 @@ export class MacroController {
 
   get auth(): AuthManagerInterface {
     if (!this._auth) {
-      const factory = nsRead('__createAuthManager', '_internal.createAuthManager') as (() => AuthManagerInterface) | null;
+      const factory = nsReadTyped('_internal.createAuthManager') as (() => AuthManagerInterface) | null;
       if (factory) {
         log('[MacroController] Self-healing: auto-registering AuthManager from persisted factory', 'warn');
         this._auth = factory();
@@ -162,7 +162,7 @@ export class MacroController {
 
   get credits(): CreditManagerInterface {
     if (!this._credits) {
-      const factory = nsRead('__createCreditManager', '_internal.createCreditManager') as (() => CreditManagerInterface) | null;
+      const factory = nsReadTyped('_internal.createCreditManager') as (() => CreditManagerInterface) | null;
       if (factory) {
         log('[MacroController] Self-healing: auto-registering CreditManager from persisted factory', 'warn');
         this._credits = factory();
@@ -174,7 +174,7 @@ export class MacroController {
 
   get workspaces(): WorkspaceManagerInterface {
     if (!this._workspaces) {
-      const factory = nsRead('__createWorkspaceManager', '_internal.createWorkspaceManager') as (() => WorkspaceManagerInterface) | null;
+      const factory = nsReadTyped('_internal.createWorkspaceManager') as (() => WorkspaceManagerInterface) | null;
       if (factory) {
         log('[MacroController] Self-healing: auto-registering WorkspaceManager from persisted factory', 'warn');
         this._workspaces = factory();
@@ -186,7 +186,7 @@ export class MacroController {
 
   get loop(): LoopEngineInterface {
     if (!this._loop) {
-      const factory = nsRead('__createLoopEngine', '_internal.createLoopEngine') as (() => LoopEngineInterface) | null;
+      const factory = nsReadTyped('_internal.createLoopEngine') as (() => LoopEngineInterface) | null;
       if (factory) {
         log('[MacroController] Self-healing: auto-registering LoopEngine from persisted factory', 'warn');
         this._loop = factory();
@@ -202,7 +202,7 @@ export class MacroController {
    */
   get ui(): UIManagerInterface | null {
     if (!this._ui) {
-      const factory = nsRead('__createUIManager', '_internal.createUIManager') as (() => UIManagerInterface) | null;
+      const factory = nsReadTyped('_internal.createUIManager') as (() => UIManagerInterface) | null;
       if (factory) {
         log('[MacroController] Self-healing: auto-registering UIManager from persisted factory', 'warn');
         this._ui = factory();
@@ -244,7 +244,7 @@ export class MacroController {
     let factoryStatus = '';
     try {
       factoryStatus = factoryKeys.map(([nsPath, winKey]) => {
-        const f = nsRead(winKey, nsPath);
+        const f = nsReadTyped(nsPath as keyof import('../api-namespace').NsPathMap);
         return `  ${nsPath}: ${f ? '✅ available' : '❌ missing'}`;
       }).join('\n');
     } catch (e) {
@@ -253,7 +253,7 @@ export class MacroController {
     }
 
     const nsKey = '_internal.create' + managerName;
-    const factoryPresent = !!nsRead('__create' + managerName, nsKey);
+    const factoryPresent = !!nsReadTyped(nsKey as keyof import('../api-namespace').NsPathMap);
 
     const msg =
       `MacroController: ${managerName} not registered\n` +

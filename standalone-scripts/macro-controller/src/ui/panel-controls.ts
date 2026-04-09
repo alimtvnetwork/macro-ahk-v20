@@ -31,7 +31,7 @@ import { log } from '../logging';
 import { getByXPath } from '../xpath-utils';
 import { pollUntil } from '../async-utils';
 import { getBearerToken, updateAuthBadge } from '../auth';
-import { dualWrite } from '../api-namespace';
+import { nsWrite } from '../api-namespace';
 import { buildHamburgerMenu } from './menu-builder';
 import { createCheckButton } from './check-button';
 import { createCountdownCtx, updateStartStopBtn } from './countdown';
@@ -185,7 +185,7 @@ function buildStartStopButton(deps: PanelBuilderDeps, btnStyle: string): { wrap:
   startStopWrap.appendChild(countdownBadge);
 
   const cdCtx = createCountdownCtx(startStopBtn, countdownBadge, function(d: string) { deps.startLoop(d); }, deps.stopLoop);
-  dualWrite('__loopUpdateStartStopBtn', '_internal.updateStartStopBtn', function(running: boolean) { updateStartStopBtn(cdCtx, running); });
+  nsWrite('_internal.updateStartStopBtn', function(running: boolean) { updateStartStopBtn(cdCtx, running); });
   updateStartStopBtn(cdCtx, !!state.running);
 
   return { wrap: startStopWrap, btn: startStopBtn };

@@ -13,7 +13,7 @@
 
 import { VERSION, IDS } from './shared-state';
 import { logSub } from './logging';
-import { dualWrite, nsCall, nsRead } from './api-namespace';
+import { nsWrite, nsCallTyped, nsReadTyped } from './api-namespace';
 import { UIManager } from './core/UIManager';
 
 const LOG_MACROLOOP_V = '[MacroLoop v';
@@ -27,7 +27,7 @@ type IdempotentResult = 'proceed' | 'abort';
  */
 export function runIdempotentCheck(): IdempotentResult {
   // v7.25: Clear destroyed flag on fresh injection
-  dualWrite('__loopDestroyed', '_internal.destroyed', false);
+  nsWrite('_internal.destroyed', false);
 
   const existingMarker = document.getElementById(IDS.SCRIPT_MARKER);
   if (!existingMarker) return 'proceed';
@@ -39,7 +39,7 @@ export function runIdempotentCheck(): IdempotentResult {
     return handleVersionMismatch(existingMarker, existingVersion);
   }
 
-  if (nsRead('__loopStart', 'api.loop.start')) {
+  if (nsReadTyped('api.loop.start')) {
     return handleGlobalsIntact(existingMarker);
   }
 
@@ -49,7 +49,7 @@ export function runIdempotentCheck(): IdempotentResult {
 
 function handleVersionMismatch(marker: HTMLElement, existingVersion: string): IdempotentResult {
   console.warn(LOG_MACROLOOP_V + VERSION + '] VERSION MISMATCH: existing=' + existingVersion + ' new=' + VERSION + ' — forcing re-injection');
-  try { nsCall('__loopStop', 'api.loop.stop'); } catch (e) { logSub('Version mismatch teardown: loop stop failed — ' + (e instanceof Error ? e.message : String(e)), 1); }
+  try { nsCallTyped('api.loop.stop'); } catch (e) { logSub('Version mismatch teardown: loop stop failed — ' + (e instanceof Error ? e.message : String(e)), 1); }
   marker.remove();
   const staleContainer = document.getElementById(IDS.CONTAINER);
   if (staleContainer) staleContainer.remove();
@@ -70,7 +70,7 @@ function handleGlobalsIntact(marker: HTMLElement): IdempotentResult {
 
 function attemptUiRecovery(marker: HTMLElement): IdempotentResult {
   try {
-    const existingController = nsRead('__mc', 'api.mc') as {
+    const existingController = nsReadTyped('api.mc') as {
       ui?: { create?: () => void; update?: () => void } | null;
       hasUI?: boolean;
       registerUI?: (ui: unknown) => void;
@@ -105,7 +105,7 @@ function attemptUiRecovery(marker: HTMLElement): IdempotentResult {
 
   // Recovery failed — force full re-bootstrap
   console.warn(LOG_MACROLOOP_V + VERSION + '] UI recovery failed — forcing full re-bootstrap');
-  try { nsCall('__loopStop', 'api.loop.stop'); } catch (_e) { logSub('UI recovery fallback: loop stop failed — ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
+  try { nsCallTyped('api.loop.stop'); } catch (_e) { logSub('UI recovery fallback: loop stop failed — ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
   marker.remove();
   return 'proceed';
 }

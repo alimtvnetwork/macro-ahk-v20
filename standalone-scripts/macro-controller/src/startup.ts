@@ -14,7 +14,7 @@
 import { log, getProjectNameFromDom } from './logging';
 import { getCachedWorkspaceName, cacheWorkspaceName } from './workspace-cache';
 import { timingStart, timingEnd, logTimingSummary } from './startup-timing';
-import { dualWriteAll, nsRead } from './api-namespace';
+import { nsWrite, nsReadTyped } from './api-namespace';
 import { registerTokenBroadcastListener } from './token-broadcast-listener';
 import { showToast, dismissAllToasts } from './toast';
 import { updateStartupToast } from './startup-toast';
@@ -132,17 +132,15 @@ function _registerGlobals(deps: {
   updateProjectButtonXPath: (xpath: string) => void;
   updateProgressXPath: (xpath: string) => void;
 }): void {
-  dualWriteAll([
-    ['__loopStart', 'api.loop.start', startLoop as (direction?: string) => void],
-    ['__loopStop', 'api.loop.stop', stopLoop],
-    ['__loopCheck', 'api.loop.check', deps.runCheck],
-    ['__loopState', 'api.loop.state', function () { return state; }],
-    ['__loopSetInterval', 'api.loop.setInterval', deps.setLoopInterval],
-    ['__loopToast', 'api.ui.toast', showToast],
-    ['__delegateComplete', '_internal.delegateComplete', deps.delegateComplete],
-    ['__setProjectButtonXPath', 'api.config.setProjectButtonXPath', deps.updateProjectButtonXPath],
-    ['__setProgressXPath', 'api.config.setProgressXPath', deps.updateProgressXPath],
-  ]);
+  nsWrite('api.loop.start', startLoop as (direction?: string) => boolean);
+  nsWrite('api.loop.stop', stopLoop);
+  nsWrite('api.loop.check', deps.runCheck);
+  nsWrite('api.loop.state', function () { return state; });
+  nsWrite('api.loop.setInterval', deps.setLoopInterval);
+  nsWrite('api.ui.toast', showToast);
+  nsWrite('_internal.delegateComplete', deps.delegateComplete);
+  nsWrite('api.config.setProjectButtonXPath', deps.updateProjectButtonXPath);
+  nsWrite('api.config.setProgressXPath', deps.updateProgressXPath);
 }
 
 /** Logs workspace cache source for diagnostics. */
@@ -255,7 +253,7 @@ function ensureUiManagerRegistered(mc: MacroController): boolean {
     return true;
   }
 
-  const factory = nsRead('__createUIManager', '_internal.createUIManager') as (() => ReturnType<typeof buildUiManagerFromFactory>) | null;
+  const factory = nsReadTyped('_internal.createUIManager') as (() => ReturnType<typeof buildUiManagerFromFactory>) | null;
   if (factory) {
     try {
       mc.registerUI(factory());
@@ -266,7 +264,7 @@ function ensureUiManagerRegistered(mc: MacroController): boolean {
     }
   }
 
-  const legacyCreateFn = nsRead('__createUIWrapper', '_internal.createUIWrapper') as (() => void) | null;
+  const legacyCreateFn = nsReadTyped('_internal.createUIWrapper') as (() => void) | null;
   if (legacyCreateFn) {
     const uiManager = new UIManager();
     uiManager.setCreateFn(legacyCreateFn);
