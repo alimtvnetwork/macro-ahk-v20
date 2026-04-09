@@ -419,6 +419,8 @@ export interface ControllerState {
   workspaceName: string;
   /** Project name resolved from API (mark-viewed response). */
   projectNameFromApi: string;
+  /** Project name resolved from DOM XPath on page load. */
+  projectNameFromDom: string;
   hasFreeCredit: boolean;
   lastStatusCheck: number;
   statusRefreshId: ReturnType<typeof setTimeout> | null;
