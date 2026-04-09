@@ -76,8 +76,7 @@ export function parseWithRecovery(content: string): unknown {
 
 // ── Toast notification system (solid dark minimal, left accent bar, stacking max 3) ──
 
-const TOAST_CONTAINER_ID = 'marco-toast-stack';
-const TOAST_MAX_STACK = 3;
+import { ID_TOAST_STACK as TOAST_CONTAINER_ID, TOAST_MAX_STACK } from '../constants';
 
 function _getOrCreateToastContainer(): HTMLElement {
   let container = document.getElementById(TOAST_CONTAINER_ID);

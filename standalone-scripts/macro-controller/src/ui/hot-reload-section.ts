@@ -34,7 +34,7 @@ import { CSS_PADDING_2PX_0, CSS_FONT_SIZE } from '../constants';
 /*  State preservation keys (spec §State Preservation Keys)           */
 /* ------------------------------------------------------------------ */
 
-const REINJECT_PREFIX = '__marco_reinject_';
+import { LS_REINJECT_PREFIX as REINJECT_PREFIX } from '../constants';
 const REINJECT_KEYS = {
   wsName:        REINJECT_PREFIX + 'wsName',
   wsId:          REINJECT_PREFIX + 'wsId',
@@ -154,7 +154,7 @@ class ReinjectState {
 }
 
 const reinjectState = new ReinjectState();
-const REINJECT_COOLDOWN_MS = 5000;
+import { REINJECT_COOLDOWN_MS } from '../constants';
 
 function executeReinject(scriptSource: string, version: string): void {
   log('Re-inject: starting teardown for v' + version, 'warn');

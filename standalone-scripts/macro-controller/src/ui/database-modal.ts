@@ -13,8 +13,7 @@ import { buildJsonTab } from './database-json-tab';
 import { log } from '../logging';
 import { injectDatabaseStyles } from './database-modal-styles';
 import { loadTables } from './database-modal-data';
-
-const MODAL_ID = 'macroloop-database-modal';
+import { ID_DATABASE_MODAL as MODAL_ID } from '../constants';
 
 /** Open (or toggle) the database browser modal. */
 // eslint-disable-next-line max-lines-per-function

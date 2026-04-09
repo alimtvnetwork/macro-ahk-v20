@@ -12,8 +12,7 @@ import { showPasteToast, pasteIntoEditor } from './prompt-utils';
 
 import { cPanelBg, cPanelFg, cPrimary, cPrimaryLight } from '../shared-state';
 import { logError } from '../error-utils';
-
-const NEXT_TASKS = 'next-tasks';
+import { LABEL_NEXT_TASKS as NEXT_TASKS } from '../constants';
 
 /** Settings shape for Task Next */
 export interface TaskNextSettings {
