@@ -13,9 +13,36 @@ import {
     getMockStoreSnapshot,
 } from "../mocks/chrome-storage";
 
-// Mock the manifest seeder — it fetches seed-manifest.json which isn't available in test env
-vi.mock("../../src/background/manifest-seeder", () => ({
+// Mock heavy dependencies — root src/ paths since the chrome-extension shim re-exports from there
+vi.mock("../../../src/background/manifest-seeder", () => ({
     seedFromManifest: vi.fn().mockResolvedValue({ scripts: 3, configs: 2, projects: 3 }),
+}));
+
+vi.mock("../../../src/background/boot", () => ({
+    bootReady: Promise.resolve(),
+}));
+
+vi.mock("../../../src/background/bg-logger", () => ({
+    logCaughtError: vi.fn(),
+    BgLogTag: { DefaultProjectSeeder: "DefaultProjectSeeder" },
+}));
+
+vi.mock("../../../src/background/handlers/updater-handler", () => ({
+    handleListUpdaters: vi.fn().mockResolvedValue([]),
+    handleCreateUpdater: vi.fn().mockResolvedValue(undefined),
+    linkUpdaterToCategory: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock("../../../src/background/db-manager", () => ({
+    initDatabases: vi.fn().mockResolvedValue({}),
+}));
+
+vi.mock("../../../src/background/injection-cache", () => ({
+    invalidateCacheOnDeploy: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock("../../../src/background/cache-warmer", () => ({
+    warmScriptCache: vi.fn().mockResolvedValue({ hit: 0, miss: 0 }),
 }));
 
 installChromeMock();
