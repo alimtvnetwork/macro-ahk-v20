@@ -45,11 +45,11 @@
 
 **GIVEN** a configuration change is persisted (user or seed)  
 **WHEN** the version is incremented  
-**THEN** a new entry is appended to `CHANGELOG.md` with version, date, and change description
+**THEN** a new entry is appended to `changelog.md` with version, date, and change description
 
 **Edge Cases:**
-- **GIVEN** `CHANGELOG.md` does not exist **WHEN** a version change occurs **THEN** the file is created with a header and the first entry
-- **GIVEN** `CHANGELOG.md` is read-only **WHEN** an append is attempted **THEN** the change proceeds but a warning is logged about the changelog failure
+- **GIVEN** `changelog.md` does not exist **WHEN** a version change occurs **THEN** the file is created with a header and the first entry
+- **GIVEN** `changelog.md` is read-only **WHEN** an append is attempted **THEN** the change proceeds but a warning is logged about the changelog failure
 
 ---
 

@@ -139,7 +139,7 @@ Start with [`check-button/01-overview.md`](./check-button/01-overview.md) for th
 6. Validation Checklist
 7. Cross-References
 
-See [TEMPLATE.md](TEMPLATE.md) for the standard format.
+See [template.md](template.md) for the standard format.
 
 ## File Naming
 

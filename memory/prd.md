@@ -120,7 +120,7 @@ Enhance an AutoHotkey (AHK) based automation tool that interacts with the `lovab
 |-- macro-looping.js        # MacroLoop v3.0 Delegate mode, draggable, hide/minimize, shortcuts
 |-- SPEC.md                 # Technical specification
 |-- MEMORY.md               # Learning document with design decisions
-|-- README.md               # User-facing documentation
+|-- readme.md               # User-facing documentation
 +-- Includes/
     |-- Config.ahk          # Loads settings from config.ini with per-section logging
     |-- JsInject.ahk        # Injects JS into browser DevTools with key press logging

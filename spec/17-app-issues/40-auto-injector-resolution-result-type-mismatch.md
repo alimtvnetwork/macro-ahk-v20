@@ -96,7 +96,7 @@ TypeScript strict mode catches this if return types are explicitly annotated.
 
 ### References to spec sections updated
 
-- `spec/17-app-issues/README.md` — index entry added
+- `spec/17-app-issues/readme.md` — index entry added
 
 ---
 

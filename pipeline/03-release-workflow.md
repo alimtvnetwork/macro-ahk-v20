@@ -46,7 +46,7 @@ Standalone scripts (SDK, XPath, Macro Controller) also default to `sourcemap: fa
 | `install.sh` | Bash installer for Linux/macOS |
 | `install.ps1` | PowerShell installer for Windows |
 | `VERSION.txt` | Plain-text version identifier |
-| `CHANGELOG.md` | Full project changelog |
+| `changelog.md` | Full project changelog |
 | `checksums.txt` | SHA256 checksums of all assets |
 
 ## Checksums

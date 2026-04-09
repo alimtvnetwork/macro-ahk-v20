@@ -13,7 +13,7 @@
 #   - install.sh                   — Bash install/download helper
 #   - install.ps1                  — PowerShell install/download helper
 #   - VERSION.txt                  — Plain-text version identifier
-#   - CHANGELOG.md                 — Project changelog (full)
+#   - changelog.md                 — Project changelog (full)
 #   - checksums.txt                — SHA256 checksums of all assets
 #
 # NOTE: No email or notification integrations — by design.
@@ -125,7 +125,7 @@ jobs:
           mkdir -p release-assets
 
           # ── Copy README + VERSION into extension dist ──
-          cp README.md chrome-extension/dist/README.md
+          cp readme.md chrome-extension/dist/readme.md
           echo "${VER}" > chrome-extension/dist/VERSION
 
           # ── Remove source maps (must never ship in releases) ──
@@ -165,9 +165,9 @@ jobs:
           # ── VERSION.txt ──
           echo "${VER}" > release-assets/VERSION.txt
 
-          # ── CHANGELOG.md (full project changelog) ──
-          if [ -f CHANGELOG.md ]; then
-            cp CHANGELOG.md release-assets/CHANGELOG.md
+          # ── changelog.md (full project changelog) ──
+          if [ -f changelog.md ]; then
+            cp changelog.md release-assets/changelog.md
           fi
 
           # ── Generate checksums ──
@@ -262,7 +262,7 @@ jobs:
             echo "| \`macro-controller-${VER}.zip\` | Standalone macro controller |"
             echo "| \`marco-sdk-${VER}.zip\` | SDK library |"
             echo "| \`xpath-${VER}.zip\` | XPath utility |"
-            echo "| \`CHANGELOG.md\` | Full project changelog |"
+            echo "| \`changelog.md\` | Full project changelog |"
             echo "| \`install.ps1\` | PowerShell installer (Windows) |"
             echo "| \`install.sh\` | Bash installer (Linux/macOS) |"
             echo "| \`VERSION.txt\` | Version identifier |"

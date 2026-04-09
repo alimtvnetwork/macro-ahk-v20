@@ -140,7 +140,7 @@ This matches the original v6.55 approach (`Send("^+j")` → `Send("{F6}")` → `
 
 ### References to spec sections updated
 
-- `specs/CHANGELOG.md` — v7.9.45 entry
+- `specs/changelog.md` — v7.9.45 entry
 - This file — `/spec/17-app-issues/11-devtools-toggle-close-bug.md`
 
 ---

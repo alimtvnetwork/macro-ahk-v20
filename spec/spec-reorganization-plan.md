@@ -43,7 +43,7 @@ spec/
 ├── 11-imported/                    # Imported external specs: error management, WordPress, PowerShell
 ├── 12-prompts/                     # AI prompt samples and prompt folder structure
 ├── archive/                        # Legacy AHK specs, performance audits, XMind files
-├── README.md                       # Folder index
+├── readme.md                       # Folder index
 └── spec-reorganization-plan.md     # This file
 ```
 
@@ -66,7 +66,7 @@ spec/
 | 11 | Rename prompt-samples → `spec/15-prompts/` | ✅ Done |
 | 12 | Archive legacy specs and XMind files | ✅ Done |
 | 13 | Update all cross-references in specs and memory files | ✅ Done |
-| 14 | Write new `spec/README.md` with folder index | ✅ Done |
+| 14 | Write new `spec/readme.md` with folder index | ✅ Done |
 | 15 | Insert `05-design-diagram/` with mermaid diagram spec hierarchy | ✅ Done (2026-04-06) |
 | 16 | Migrate `00-standards/` contents into `05-design-diagram/` | ✅ Done (2026-04-06) |
 | 17 | Fix broken cross-references after final restructure | ✅ Done (2026-04-06) |

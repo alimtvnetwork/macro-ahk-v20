@@ -129,7 +129,7 @@ spec/powershell-integration/
     └── server-client-project.json  ← Sample for server/client layout
 
 spec/upload-scripts/              ← Related: WordPress plugin upload scripts
-├── README.md                    ← Upload pipeline overview
+├── readme.md                    ← Upload pipeline overview
 ├── 01-upload-plugin-v1.md       ← V1: Basic single-file upload
 ├── 02-upload-plugin-v2.md       ← V2: Envelope-aware upload
 ├── 03-upload-plugin-v3.md       ← V3: Parallel multi-plugin deployment

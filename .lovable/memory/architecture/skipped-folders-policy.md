@@ -22,4 +22,4 @@ All AHK automation folders have been moved to `skipped/` and must NOT be read, e
 ## See Also
 
 - `spec/11-folder-policy.md` — Full folder policy
-- `skipped/README.md` — Skipped folder README
+- `skipped/readme.md` — Skipped folder README

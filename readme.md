@@ -293,7 +293,7 @@ chrome-extension/dist/
 │   └── seed-manifest.json
 ├── prompts/
 │   └── macro-prompts.json
-├── README.md
+├── readme.md
 ├── VERSION
 └── ...
 ```
@@ -329,7 +329,7 @@ Pushing to a `release/*` branch (e.g., `release/v2.117.0`) automatically:
 3. Runs the full test suite
 4. Builds standalone scripts (SDK → XPath → Macro Controller)
 5. Builds the Chrome extension
-6. Copies `README.md`, `VERSION`, and `CHANGELOG.md` into the release asset set
+6. Copies `readme.md`, `VERSION`, and `changelog.md` into the release asset set
 7. Zips `chrome-extension/dist/` into `marco-extension-v{VERSION}.zip`
 8. Generates categorized release notes from commit history with Bash + PowerShell install commands
 9. Creates a GitHub Release with all assets attached
@@ -347,7 +347,7 @@ Pushing to a `release/*` branch (e.g., `release/v2.117.0`) automatically:
 | `install.ps1` | PowerShell installer (Windows) |
 | `install.sh` | Bash installer (Linux/macOS) |
 | `VERSION.txt` | Version identifier |
-| `CHANGELOG.md` | Full project changelog |
+| `changelog.md` | Full project changelog |
 
 ### Release Install Commands
 

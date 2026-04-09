@@ -97,7 +97,7 @@ None — fix is structural (schema alignment).
 
 ### References to spec sections updated
 
-- `chrome-extension/CHANGELOG.md` — v1.16.0 entry
+- `chrome-extension/changelog.md` — v1.16.0 entry
 
 ---
 

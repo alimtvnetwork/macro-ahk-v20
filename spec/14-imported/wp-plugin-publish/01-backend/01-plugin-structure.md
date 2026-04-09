@@ -102,7 +102,7 @@ wp-plugin-publish/
 ├── go.mod
 ├── go.sum
 ├── Makefile
-└── README.md
+└── readme.md
 ```
 
 ---

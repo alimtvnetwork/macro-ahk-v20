@@ -49,7 +49,7 @@ standalone-scripts/macro-controller/
 ├── 01-macro-looping.js       ← Original JS (kept as reference)
 ├── 02-macro-controller-config.json
 ├── 03-macro-prompts.json
-└── README.md
+└── readme.md
 ```
 
 ## Build

@@ -82,7 +82,7 @@
 - Rename folders per RC-05 spec
 - Run cross-reference audit
 - Update README and memory files
-- **Files:** All `spec/` folders, `spec/README.md`, `.lovable/memory/`
+- **Files:** All `spec/` folders, `spec/readme.md`, `.lovable/memory/`
 
 ### T10: Timing instrumentation
 

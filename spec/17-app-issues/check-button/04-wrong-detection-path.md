@@ -73,7 +73,7 @@ Default `LoopIntervalMs` changed from 50000 to 100000 in `config.ini`.
 ## Files Changed
 - `marco-script-ahk-v7.latest/macro-looping.js` — `runCheck()` rewritten with XPath-only + 4-step logging; `detectWorkspaceViaProjectDialog()` no longer sets `workspaceFromApi`
 - `marco-script-ahk-v7.latest/config.ini` — `LoopIntervalMs=100000`, `ScriptVersion=7.14`
-- `marco-script-ahk-v7.latest/specs/CHANGELOG.md`
+- `marco-script-ahk-v7.latest/specs/changelog.md`
 
 ## Testing
 1. Inject MacroLoop controller

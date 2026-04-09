@@ -91,7 +91,7 @@ exits with code **3**, halting the build immediately.
 
 - Build guard logs the installed version on every build (`[OK] axios@1.14.0 (safe)`).
 - Any deviation produces a `[FATAL]` log with exit code 3.
-- See also: `AXIOS-SECURITY-NOTE.md` in the project root.
+- See also: `axios-security-note.md` in the project root.
 
 ---
 
@@ -99,7 +99,7 @@ exits with code **3**, halting the build immediately.
 
 | File                              | Purpose                                  |
 |-----------------------------------|------------------------------------------|
-| `AXIOS-SECURITY-NOTE.md`         | Developer-facing security advisory       |
+| `axios-security-note.md`         | Developer-facing security advisory       |
 | `scripts/check-axios-version.mjs`| Build-time version guard (exit 3 on bad) |
 | `package.json`                   | Pinned to exact `1.14.0`                 |
 
@@ -118,5 +118,5 @@ exits with code **3**, halting the build immediately.
 IMPORTANT — DO NOT MODIFY AXIOS VERSION WITHOUT READING THIS SPEC.
 Bad versions: 1.14.1, 0.30.4
 Safe versions: 1.14.0, 0.30.3
-See AXIOS-SECURITY-NOTE.md for additional context.
+See axios-security-note.md for additional context.
 -->

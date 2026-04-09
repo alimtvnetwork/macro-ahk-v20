@@ -31,7 +31,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Release pipeline now runs root ESLint plus `chrome-extension` ESLint before tests
-- Generated GitHub release notes now include Bash + PowerShell install commands, manual unpacked-install steps, and explicit `CHANGELOG.md` asset listing
+- Generated GitHub release notes now include Bash + PowerShell install commands, manual unpacked-install steps, and explicit `changelog.md` asset listing
 
 ### Changed
 - Version bump: 2.116.0 → 2.117.0 (all version files synced)

@@ -46,11 +46,11 @@ sed -i 's/2\.118\.0/2.119.0/g' \
 ```
 
 ### Option C: AI assistant
-Tell the AI: "bump the version" — it should update all 7 locations and CHANGELOG.md.
+Tell the AI: "bump the version" — it should update all 7 locations and changelog.md.
 
-## CHANGELOG.md
+## changelog.md
 
-After bumping, add an entry at the top of `CHANGELOG.md`:
+After bumping, add an entry at the top of `changelog.md`:
 ```markdown
 ## [v2.120.0] — YYYY-MM-DD
 

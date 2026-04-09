@@ -156,7 +156,7 @@ The **Automator** is a **Chrome Extension + JavaScript** automation tool that co
 
 ### Step 7: After Making Changes
 
-- [ ] If fixing a bug: create issue write-up at `/spec/17-app-issues/NN-{slug}.md` using `TEMPLATE.md`
+- [ ] If fixing a bug: create issue write-up at `/spec/17-app-issues/NN-{slug}.md` using `template.md`
 - [ ] Update `.lovable/memory/suggestions/01-suggestions-tracker.md` if completing a suggestion
 - [ ] Update `.lovable/plan.md` if completing a planned task
 - [ ] Run build verification: `run.ps1 -d` (auto-builds standalone scripts + extension)

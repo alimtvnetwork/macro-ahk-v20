@@ -30,7 +30,7 @@ Project documentation is consolidated in the `spec/` directory using a numbered 
 - File naming: kebab-case, descriptive. No duplicate prefix numbers.
 - Single source of truth: each topic in exactly one folder.
 - Cross-references use relative paths. Historical specs go to `archive/`.
-- Full index: `spec/README.md`. Migration history: `spec/spec-reorganization-plan.md`.
+- Full index: `spec/readme.md`. Migration history: `spec/spec-reorganization-plan.md`.
 
 ## 08-design-diagram Structure
 

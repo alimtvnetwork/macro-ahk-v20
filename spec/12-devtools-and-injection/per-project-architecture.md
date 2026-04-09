@@ -28,7 +28,7 @@ standalone-scripts/{project-name}/
 │   └── ...                   # Other assets (configs, prompts)
 ├── less/                     # LESS source (optional)
 ├── templates/                # HTML template source (optional)
-└── README.md
+└── readme.md
 ```
 
 ### Rules

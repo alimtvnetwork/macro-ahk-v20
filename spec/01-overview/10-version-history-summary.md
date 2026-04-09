@@ -3,7 +3,7 @@
 **Version**: v7.17
 **Last Updated**: 2026-02-25
 
-For the detailed changelog, see `marco-script-ahk-v7.latest/specs/CHANGELOG.md`.
+For the detailed changelog, see `marco-script-ahk-v7.latest/specs/changelog.md`.
 
 ---
 

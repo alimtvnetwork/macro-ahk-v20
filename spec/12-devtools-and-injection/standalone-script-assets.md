@@ -41,7 +41,7 @@ standalone-scripts/
 │   ├── 03-macro-prompts.json   # LEGACY: Keep as-is
 │   ├── 04-macro-theme.json     # LEGACY: Keep as-is
 │   ├── src/instruction.ts       # Project manifest (sole source of truth)
-│   └── README.md
+│   └── readme.md
 ├── xpath/
 │   ├── src/
 │   ├── less/                   # Optional per script

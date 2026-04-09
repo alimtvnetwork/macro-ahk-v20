@@ -147,7 +147,7 @@ standalone-scripts/xpath/
 ├── dist/
 │   ├── xpath.js          ← Compiled IIFE
 │   └── instruction.json  ← Compiled manifest
-└── README.md
+└── readme.md
 ```
 
 **Source**: Extract from `standalone-scripts/macro-controller/src/xpath-utils.ts`
@@ -240,7 +240,7 @@ Execute each step via "next" command:
 
 | Step | Task | Files Changed |
 |------|------|---------------|
-| **01** | Create `standalone-scripts/xpath/` folder structure with `src/instruction.ts` and `README.md` | New files |
+| **01** | Create `standalone-scripts/xpath/` folder structure with `src/instruction.ts` and `readme.md` | New files |
 | **02** | Extract XPath logic into `standalone-scripts/xpath/src/` (self-contained, no macro-controller deps) | New: `index.ts`, `core.ts`, `find-element.ts`, `react-click.ts` |
 | **03** | Create `vite.config.xpath.ts` and add `build:xpath` npm script | New + `package.json` |
 | **04** | Update macro-controller to remove bundled xpath-utils, use `window.XPathUtils` as primary | `macro-controller/src/xpath-utils.ts`, `macro-looping.ts` |

@@ -77,9 +77,9 @@ All config files use lowercase with dots or hyphens:
 These are the only exceptions to the lowercase rule:
 
 ```
-✅ README.md
+✅ readme.md
 ✅ LICENSE
-✅ CHANGELOG.md
+✅ changelog.md
 ```
 
 ---

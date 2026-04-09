@@ -571,7 +571,7 @@ function getMockResponse(message: MessagePayload): unknown {
                 { id: "f2", filename: "config/urls.json", mimeType: "application/json", size: 128, createdAt: "2026-03-10T08:00:00Z", updatedAt: "2026-03-15T10:00:00Z" },
                 { id: "f3", filename: "scripts/init.js", mimeType: "text/javascript", size: 1024, createdAt: "2026-03-12T09:00:00Z", updatedAt: "2026-03-20T14:00:00Z" },
                 { id: "f4", filename: "scripts/helpers/utils.js", mimeType: "text/javascript", size: 512, createdAt: "2026-03-14T11:00:00Z", updatedAt: "2026-03-19T16:00:00Z" },
-                { id: "f5", filename: "README.md", mimeType: "text/markdown", size: 340, createdAt: "2026-03-10T08:00:00Z", updatedAt: "2026-03-21T08:00:00Z" },
+                { id: "f5", filename: "readme.md", mimeType: "text/markdown", size: 340, createdAt: "2026-03-10T08:00:00Z", updatedAt: "2026-03-21T08:00:00Z" },
                 { id: "f6", filename: "notes.txt", mimeType: "text/plain", size: 89, createdAt: "2026-03-16T10:00:00Z", updatedAt: "2026-03-16T10:00:00Z" },
             ],
         },

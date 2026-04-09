@@ -32,7 +32,7 @@ standalone-scripts/
 │   │   └── bridge.ts     ← postMessage relay helper
 │   ├── dist/
 │   │   └── marco-sdk.js  ← compiled IIFE
-│   └── README.md
+│   └── readme.md
 ├── macro-controller/     ← depends on marco-sdk
 │   ├── project.json      ← { "dependencies": [{ "projectId": "marco-sdk", "version": "^1.0.0" }] }
 │   └── ...

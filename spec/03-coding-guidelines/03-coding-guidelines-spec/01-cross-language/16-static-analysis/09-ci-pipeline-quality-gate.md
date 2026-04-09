@@ -416,7 +416,7 @@ When a rule must be suppressed:
 | 6 | SonarQube rule profile configured with rules from §4.3 | 🔲 |
 | 7 | Coverage reports wired to SonarQube | 🔲 |
 | 8 | Quality gate set as required status check on `main` / `develop` | 🔲 |
-| 9 | Exemption process documented in `CONTRIBUTING.md` | 🔲 |
+| 9 | Exemption process documented in `contributing.md` | 🔲 |
 | 10 | Team reviewed and approved pipeline + thresholds | 🔲 |
 
 ---

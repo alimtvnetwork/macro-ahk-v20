@@ -48,7 +48,7 @@ The spec folder numbering is inconsistent. `02-issues` contains bug reports but 
 - External references from `spec/11-chrome-extension/`, `spec/10-macro-controller/`, `.lovable/memory/` files
 
 ### Files referencing `spec/07-data-and-api/`
-- `spec/README.md` — needs updating
+- `spec/readme.md` — needs updating
 - `.lovable/memory/project/documentation-hierarchy.md` — needs updating
 - Any `@see` comments in source code
 
@@ -56,7 +56,7 @@ The spec folder numbering is inconsistent. `02-issues` contains bug reports but 
 
 1. Rename `spec/17-app-issues/` → `spec/17-app-issues/`
 2. Rename `spec/07-data-and-api/` → `spec/07-data-and-api/`
-3. Update `spec/README.md`
+3. Update `spec/readme.md`
 4. Update `.lovable/memory/project/documentation-hierarchy.md`
 5. Search all source files for `spec/01-` and `spec/02-` references
 6. Update any `@see` annotations in TypeScript files
@@ -71,7 +71,7 @@ The spec folder numbering is inconsistent. `02-issues` contains bug reports but 
 ## Acceptance Criteria
 
 - [ ] Spec folders are renumbered per the corrected ordering
-- [ ] `spec/README.md` reflects new ordering
+- [ ] `spec/readme.md` reflects new ordering
 - [ ] All cross-references are updated (zero broken links)
 - [ ] Memory files updated
 - [ ] Source code `@see` annotations updated

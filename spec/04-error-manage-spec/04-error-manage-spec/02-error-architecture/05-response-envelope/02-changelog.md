@@ -110,7 +110,7 @@ Project-wide major version increment (+1.0.0) applied to all specification files
 - Defined the six top-level envelope blocks: **Status**, **Attributes**, **Results**, **Navigation**, **Errors**, **MethodsStack**.
 - Established PascalCase key convention across all stacks.
 - Published reference JSON samples (`envelope-single.json`, `envelope-multiple.json`, `envelope-error.json`, `envelope-debug.json`, `envelope-minimal.json`).
-- Added `spec/response-envelope/README.md` as the canonical specification document.
+- Added `spec/response-envelope/readme.md` as the canonical specification document.
 
 ---
 

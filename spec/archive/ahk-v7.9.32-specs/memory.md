@@ -414,7 +414,7 @@ JS communicates state back to AHK via temporary `document.title` markers:
 | AutoLoop.ahk | Version bump to 5.2 |
 | config.ini | Version bump to 5.2 |
 | SPEC.md | Documented fast path, backoff retry, version comparison |
-| README.md | Version bump to 5.2 |
+| readme.md | Version bump to 5.2 |
 
 ### MutationObserver UI Persistence (combo.js)
 Injected UI panels (ComboSwitch controller, MacroLoop panel) survive SPA navigation and React re-renders:
@@ -482,7 +482,7 @@ All `pollForElement()` calls now use descriptors instead of raw XPaths, with 5-m
 | MacroLoop.ahk | Page validation + devToolsOpened reset in ToggleMacroLoop |
 | Automator.ahk | Version bump to 5.3 |
 | config.ini | Version bump to 5.3 |
-| README.md | Version bump to 5.3 |
+| readme.md | Version bump to 5.3 |
 | SPEC.md | Version bump to 5.3, documented multi-method XPath |
 | MEMORY.md | This section |
 9. ~~**Visual retry indicator** - show "Retrying (2/3)..." in credit status display during backoff~~ ✅ Done
@@ -1331,7 +1331,7 @@ if (clipStatus = ProgressStatus.DONE) {
 | combo.js | Bearer token UI (with input validation), enhanced fetch logging, Clear All Data button |
 | config.ini | Version bump to 7.4, added LovableBearerToken placeholder |
 | specs/SPEC.md | Documented token resolution, fetch logging, Clear All |
-| specs/README.md | Version bump to 7.4, changelog entry |
+| specs/readme.md | Version bump to 7.4, changelog entry |
 | specs/MEMORY.md | This section |
 | Config/Constants/ProgressStatus.ahk | New enum: combo.js polling states |
 | Config/Constants/LogLevel.ahk | New enum: log severity levels (replaces globals) |
@@ -1630,8 +1630,8 @@ All hardcoded color strings in converted sections replaced with `THEME.*` and `F
 - **Trade-off**: If already on Console, `Ctrl+Shift+J` is a toggle and may close DevTools; next call recovers via the first-time open path (`devToolsOpened` flag)
 - Refocus delay increased from 200ms to 300ms to account for panel switching
 
-### CHANGELOG.md Created
-- New `specs/CHANGELOG.md` centralizes all version history from v4.9 through v7.6
+### changelog.md Created
+- New `specs/changelog.md` centralizes all version history from v4.9 through v7.6
 - Follows Keep a Changelog format with Added/Fixed/Changed categories per version
 - Single reference point for release notes
 
@@ -1648,7 +1648,7 @@ All hardcoded color strings in converted sections replaced with `THEME.*` and `F
 | GeneralDefaults.ahk | Version bump to 7.6 |
 | config.ini | Version bump to 7.6 |
 | specs/JSON-schema.md | New — comprehensive data reference |
-| specs/CHANGELOG.md | New — centralized version history |
+| specs/changelog.md | New — centralized version history |
 | specs/MEMORY.md | This section |
 
 ## V7.8 Changes - InjectJSQuick, Idempotent Init & Domain Guards
@@ -1739,5 +1739,5 @@ This prevents state loss during re-injection (e.g., after a combo.js re-embed, c
 | Automator.ahk | Version bump to 7.8 |
 | GeneralDefaults.ahk | Version bump to 7.8 |
 | config.ini | Version bump to 7.8 |
-| specs/CHANGELOG.md | v7.8 release notes |
+| specs/changelog.md | v7.8 release notes |
 | specs/MEMORY.md | This section |

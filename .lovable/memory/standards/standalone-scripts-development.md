@@ -20,7 +20,7 @@ standalone-scripts/macro-controller/
 ├── dist/
 │   └── macro-looping.js      ← Compiled IIFE (injected into browser)
 ├── 01-macro-looping.js       ← Original JS reference
-└── README.md
+└── readme.md
 ```
 
 ## TypeScript Migration (In Progress)

@@ -115,7 +115,7 @@
 - [x] Update `plan.md` with UI unification progress
 - [x] Update memory files for new directory structure
 - [ ] Move this checklist to `.lovable/memory/workflow/completed/` when all steps done
-- [x] Update `CHANGELOG.md` with v1.18.0 migration summary
+- [x] Update `changelog.md` with v1.18.0 migration summary
 - [x] Bump version in `manifest.json` (1.18.0.0), `EXTENSION_VERSION` (1.18.0)
 
 ---

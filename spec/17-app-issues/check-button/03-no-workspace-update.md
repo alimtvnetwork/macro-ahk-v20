@@ -76,7 +76,7 @@ if (isExpanded) {
 
 ## Files Changed
 - `marco-script-ahk-v7.latest/macro-looping.js`
-- `marco-script-ahk-v7.latest/specs/CHANGELOG.md`
+- `marco-script-ahk-v7.latest/specs/changelog.md`
 
 ## Testing
 1. Inject MacroLoop controller

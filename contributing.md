@@ -254,7 +254,7 @@ Releases follow semantic versioning (`vMAJOR.MINOR.PATCH`):
 1. Create a `release/v{VERSION}` branch from `main`.
 2. Push the branch — CI automatically:
    - Runs tests and builds all standalone scripts + extension
-   - Copies `README.md` + `VERSION` into the extension dist
+   - Copies `readme.md` + `VERSION` into the extension dist
    - Zips `chrome-extension/dist/` and creates a GitHub Release
 3. The release includes install scripts (`.ps1` and `.sh`) as downloadable assets.
 
@@ -320,9 +320,9 @@ Files use numbered prefixes: `01-name-of-file.md`.
 
 - [Engineering Standards](spec/06-coding-guidelines/engineering-standards.md)
 - [Build Pipeline](spec/12-devtools-and-injection/developer-guide/03-build-pipeline.md)
-- [Extension README](chrome-extension/README.md)
-- [Root README](README.md)
-- [CHANGELOG](CHANGELOG.md)
+- [Extension README](chrome-extension/readme.md)
+- [Root README](readme.md)
+- [CHANGELOG](changelog.md)
 - [Version History](spec/00-overview/10-version-history-summary.md)
 
 ---
@@ -330,5 +330,5 @@ Files use numbered prefixes: `01-name-of-file.md`.
 ## Need Help?
 
 - Check `spec/` for architecture docs and issue write-ups.
-- Review [CHANGELOG.md](CHANGELOG.md) for recent changes.
+- Review [changelog.md](changelog.md) for recent changes.
 - Look at existing code for patterns before introducing new ones.

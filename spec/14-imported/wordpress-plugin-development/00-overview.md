@@ -175,7 +175,7 @@ my-plugin/
 ├── assets/
 │   ├── css/admin.css
 │   └── js/admin.js
-└── README.md
+└── readme.md
 ```
 
 ## Author

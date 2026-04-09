@@ -15,7 +15,7 @@ repo-root/
 │   └── macro-controller/        # Main automation controller
 ├── scripts/                      # Build & validation Node.js scripts
 ├── .github/workflows/            # CI and Release GitHub Actions
-├── CHANGELOG.md                  # Human-maintained changelog
+├── changelog.md                  # Human-maintained changelog
 └── package.json                  # Root — contains all build/lint/test commands
 ```
 

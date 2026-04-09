@@ -238,7 +238,7 @@ Write-Host "[version] Bumped to $($manifest.version)"
 
 ### Version History Log
 
-Maintain a `CHANGELOG.md` in the extension root. Format follows [Keep a Changelog](https://keepachangelog.com/):
+Maintain a `changelog.md` in the extension root. Format follows [Keep a Changelog](https://keepachangelog.com/):
 
 ```markdown
 # Changelog

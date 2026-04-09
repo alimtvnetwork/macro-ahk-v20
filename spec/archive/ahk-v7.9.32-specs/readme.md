@@ -74,7 +74,7 @@ marco-script-ahk-v7.0/
 ├── test-xpath-examples.md      # XPath testing reference
 │
 ├── specs/                      # 📁 All documentation
-│   ├── README.md               # This file
+│   ├── readme.md               # This file
 │   ├── SPEC.md                 # Technical specification
 │   ├── MEMORY.md               # AI learning document
 │   ├── spec-issues-v6.55.md    # v6.55 issue tracker

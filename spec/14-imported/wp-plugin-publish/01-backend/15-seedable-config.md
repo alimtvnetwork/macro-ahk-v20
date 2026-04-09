@@ -14,7 +14,7 @@ The **Seedable Config Architecture + Changelog Versioning** defines a pattern fo
 
 1. **First-run seeding** populates SQLite DB from `config.seed.json`
 2. **Every config change updates the version**
-3. **Every version change logs to CHANGELOG.md**
+3. **Every version change logs to changelog.md**
 4. **Subsequent runs respect version** to avoid duplicate seeds
 
 This ensures configuration is always traceable, auditable, and version-aware.
@@ -30,7 +30,7 @@ This ensures configuration is always traceable, auditable, and version-aware.
 | `config.seed.json` | Default seed values for first-time setup |
 | `config.schema.json` | JSON Schema for validation |
 | `config.json` | Runtime configuration (gitignored) |
-| `CHANGELOG.md` | Version history of config changes |
+| `changelog.md` | Version history of config changes |
 
 ### 2. Version Flow
 
@@ -63,7 +63,7 @@ This ensures configuration is always traceable, auditable, and version-aware.
 │                                  ▼                                        │
 │                          ┌───────────────┐                               │
 │                          │ Update        │                               │
-│                          │ CHANGELOG.md  │                               │
+│                          │ changelog.md  │                               │
 │                          └───────────────┘                               │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -205,7 +205,7 @@ JSON Schema for validation:
 }
 ```
 
-### CHANGELOG.md Format
+### changelog.md Format
 
 ```markdown
 # Changelog
@@ -435,7 +435,7 @@ func (s *ConfigService) updateMetaVersion(version string) error {
     }).Error
 }
 
-// updateChangelog appends version entry to CHANGELOG.md
+// updateChangelog appends version entry to changelog.md
 func (s *ConfigService) updateChangelog(seed SeedConfig) error {
     isChangelogEmpty := seed.Changelog == ""
 

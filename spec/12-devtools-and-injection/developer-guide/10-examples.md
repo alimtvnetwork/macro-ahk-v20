@@ -15,7 +15,7 @@ standalone-scripts/page-monitor/
 ├── src/
 │   ├── index.ts
 │   └── instruction.ts
-└── README.md
+└── readme.md
 ```
 
 ### Step 2: `src/instruction.ts`
@@ -167,7 +167,7 @@ standalone-scripts/dashboard-overlay/
 │   └── dashboard-overlay.less
 ├── templates/
 │   └── panel.html
-└── README.md
+└── readme.md
 ```
 
 ### Step 2: `src/instruction.ts`

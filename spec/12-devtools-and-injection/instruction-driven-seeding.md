@@ -261,7 +261,7 @@ spec/12-devtools-and-injection/developer-guide/
 #### 01-project-structure.md
 - Required folder structure under `standalone-scripts/{name}/`
 - Required files: `src/index.ts`, `src/instruction.ts`, `script-manifest.json`
-- Optional: `less/`, `templates/`, `README.md`
+- Optional: `less/`, `templates/`, `readme.md`
 - `dist/` output structure
 - Naming conventions (kebab-case folder, camelCase TS)
 

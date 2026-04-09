@@ -5,8 +5,8 @@
 ```
 my-plugin/
 ├── my-plugin.php              # Main entry point (same name as folder)
-├── README.md                  # Documentation
-├── CHANGELOG.md               # Version history
+├── readme.md                  # Documentation
+├── changelog.md               # Version history
 ├── LICENSE                    # License file
 │
 ├── includes/                  # PSR-4 root (RiseupAsia\ namespace)

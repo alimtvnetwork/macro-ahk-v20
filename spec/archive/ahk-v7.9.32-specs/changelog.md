@@ -1,4 +1,4 @@
-# CHANGELOG.md — Automator Version History
+# changelog.md — Automator Version History
 
 All notable changes to the Automator project are documented in this file.
 
@@ -414,7 +414,7 @@ All notable changes to the Automator project are documented in this file.
 
 ### Added
 - **`specs/JSON-schema.md`** — Comprehensive data reference documenting API response schema (`GET /user/workspaces`), internal combo.js data models (`creditState`, `perWorkspace[]`, `comboHistory[]`, `jsHistory[]`), all `config.ini` sections with types/defaults, and the full placeholder injection map.
-- **`specs/CHANGELOG.md`** — This file; centralizes all version history.
+- **`specs/changelog.md`** — This file; centralizes all version history.
 - **Export Compiled JS** — Tray menu entries ("Export combo.js", "Export macro-looping.js") that resolve all `__PLACEHOLDER__` tokens from config.ini, save the compiled JS to `logs/compiled-<name>.js` with a metadata header, and copy to clipboard for easy paste-into-DevTools debugging.
 - **`Includes/ExportCompiledJS.ahk`** — Generic `SaveCompiledJS(scriptName, compiledJs, sourceFile)` utility + per-script `ExportComboJS()` / `ExportMacroLoopJS()` wrappers.
 - **`BuildComboJS(direction)`** in Combo.ahk and **`BuildMacroLoopJS()`** in MacroLoop/Embed.ahk — Extracted placeholder-resolution logic into reusable builder functions shared by both injection and export paths.

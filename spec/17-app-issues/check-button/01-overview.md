@@ -123,4 +123,4 @@ These rules must be enforced in every change to `runCheck()` or Check button cli
 | `08-workspace-detection-race.md` | Issue #08: `workspaceFromApi` race + over-complex detection |
 | `09-dialog-close-before-progress-read.md` | Issue #09: Dialog closed before progress bar read |
 | `10-runtime-seed-drift.md` | Issue #10: TS fix not propagated to seeded runtime bundle |
-| `README.md` | Folder scope and index |
+| `readme.md` | Folder scope and index |

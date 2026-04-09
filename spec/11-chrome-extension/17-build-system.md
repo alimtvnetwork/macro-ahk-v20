@@ -80,7 +80,7 @@ chrome-extension/                    ← Root of the extension project
 ├── vite.config.ts
 ├── tsconfig.json
 ├── package.json                     ← Extension-specific (NOT the Lovable app's)
-└── README.md
+└── readme.md
 ```
 
 ---

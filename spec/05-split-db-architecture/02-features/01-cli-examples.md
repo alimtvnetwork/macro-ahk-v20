@@ -32,7 +32,7 @@ data/
     │   │       └── 002-react-hooks-def456.db
     │   │
     │   └── documents/
-    │       ├── 001-readme-md.db                   # RAG chunks for README.md
+    │       ├── 001-readme-md.db                   # RAG chunks for readme.md
     │       └── 002-main-go.db                     # RAG chunks for main.go
     │
     ├── ai/

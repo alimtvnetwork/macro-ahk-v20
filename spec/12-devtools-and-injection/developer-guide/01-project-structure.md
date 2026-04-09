@@ -23,7 +23,7 @@ standalone-scripts/{project-name}/
 ├── less/                     # LESS source files (optional)
 ├── templates/                # HTML template source files (optional)
 ├── prompts/                  # Prompt data files (optional)
-└── README.md                 # Project documentation
+└── readme.md                 # Project documentation
 ```
 
 ## Required Files

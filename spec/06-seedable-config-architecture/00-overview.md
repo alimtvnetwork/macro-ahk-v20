@@ -32,7 +32,7 @@ The **Seedable Config Architecture + Changelog Versioning** defines a pattern fo
 
 1. **First-run seeding** populates SQLite DB from `config.seed.json`
 2. **Every config change updates the version**
-3. **Every version change logs to CHANGELOG.md**
+3. **Every version change logs to changelog.md**
 4. **Subsequent runs respect version** to avoid duplicate seeds
 
 This ensures configuration is always traceable, auditable, and version-aware.
