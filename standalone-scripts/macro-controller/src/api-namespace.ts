@@ -95,6 +95,7 @@ export interface MacroControllerApi {
 export interface MacroControllerInternal {
   resolvedToken?: string;
   destroyed?: boolean;
+  exportBundle?: string;
   delegateComplete?: () => void;
   updateStartStopBtn?: (running: boolean) => void;
   updateAuthDiag?: () => void;
@@ -116,6 +117,64 @@ export interface MacroControllerNamespace {
   api: MacroControllerApi;
   _internal: MacroControllerInternal;
   [key: string]: unknown;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Typed path map — every valid namespace path with its value type     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * NsPathMap enumerates every known namespace path and its concrete type.
+ * Used by nsWrite / nsReadTyped / nsCallTyped for compile-time safety
+ * instead of dynamic `split('.')` traversal.
+ */
+export interface NsPathMap {
+  // _internal
+  '_internal.resolvedToken': string;
+  '_internal.destroyed': boolean;
+  '_internal.exportBundle': string | undefined;
+  '_internal.delegateComplete': (() => void) | undefined;
+  '_internal.updateStartStopBtn': ((running: boolean) => void) | undefined;
+  '_internal.updateAuthDiag': (() => void) | undefined;
+  '_internal.createUIWrapper': (() => void) | undefined;
+  '_internal.createUIManager': (() => object) | undefined;
+  '_internal.createWorkspaceManager': (() => object) | undefined;
+  '_internal.createAuthManager': (() => object) | undefined;
+  '_internal.createCreditManager': (() => object) | undefined;
+  '_internal.createLoopEngine': (() => object) | undefined;
+  // api (top-level)
+  'api.mc': MacroController;
+  // api.loop
+  'api.loop.start': LoopApi['start'];
+  'api.loop.stop': LoopApi['stop'];
+  'api.loop.check': LoopApi['check'];
+  'api.loop.state': LoopApi['state'];
+  'api.loop.setInterval': LoopApi['setInterval'];
+  'api.loop.diagnostics': LoopApi['diagnostics'];
+  // api.credits
+  'api.credits.fetch': CreditsApi['fetch'];
+  // api.auth
+  'api.auth.getToken': AuthApi['getToken'];
+  // api.workspace
+  'api.workspace.moveTo': WorkspaceApi['moveTo'];
+  'api.workspace.forceSwitch': WorkspaceApi['forceSwitch'];
+  'api.workspace.bulkRename': WorkspaceApi['bulkRename'];
+  'api.workspace.getRenameDelay': WorkspaceApi['getRenameDelay'];
+  'api.workspace.setRenameDelay': WorkspaceApi['setRenameDelay'];
+  'api.workspace.cancelRename': WorkspaceApi['cancelRename'];
+  'api.workspace.undoRename': WorkspaceApi['undoRename'];
+  'api.workspace.renameHistory': WorkspaceApi['renameHistory'];
+  // api.ui
+  'api.ui.refreshStatus': UiApi['refreshStatus'];
+  'api.ui.startStatusRefresh': UiApi['startStatusRefresh'];
+  'api.ui.stopStatusRefresh': UiApi['stopStatusRefresh'];
+  'api.ui.destroy': UiApi['destroy'];
+  'api.ui.toast': UiApi['toast'];
+  // api.config
+  'api.config.setProjectButtonXPath': ConfigApi['setProjectButtonXPath'];
+  'api.config.setProgressXPath': ConfigApi['setProgressXPath'];
+  // api.autoAttach
+  'api.autoAttach.runGroup': AutoAttachApi['runGroup'];
 }
 
 /* ------------------------------------------------------------------ */
