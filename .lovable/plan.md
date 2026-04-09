@@ -1,3 +1,18 @@
+## Error Logging & Type Safety — ✅ COMPLETE
+
+**Spec**: `spec/10-macro-controller/ts-migration-v2/08-error-logging-and-type-safety.md`
+
+| Task | Description | Status |
+|------|-------------|--------|
+| T1 | Create `NamespaceLogger` class in SDK | ✅ Complete |
+| T2 | Update `globals.d.ts` with full namespace + Logger types | ✅ Complete |
+| T3 | Fix all 16 swallowed errors (S1–S16) | ✅ Complete |
+| T4 | Eliminate all `any` types (5 files) | ✅ Complete |
+| T5 | Migrate controller `log(msg, 'error')` calls to `Logger.error()` | ✅ Complete |
+| T6 | Verify: `tsc --noEmit` passes, ESLint zero errors | ✅ Complete |
+
+---
+
 ## Rename Preset Persistence — Implementation Plan
 
 **Spec**: `spec/10-macro-controller/ts-migration-v2/07-rename-persistence-indexeddb.md`
