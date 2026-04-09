@@ -1,0 +1,482 @@
+/**
+ * Marco Extension — Project Group Panel
+ *
+ * CRUD for ProjectGroup + member management.
+ * Renders as a tab inside LibraryView.
+ *
+ * @see spec/13-features/cross-project-sync.md §8 Groups
+ */
+
+import { useState, useCallback } from "react";
+import { sendMessage } from "@/lib/message-client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Plus,
+  Trash2,
+  Pencil,
+  Users,
+  FolderOpen,
+  UserPlus,
+  UserMinus,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
+import { toast } from "sonner";
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
+interface ProjectGroup {
+  Id: number;
+  Name: string;
+  SharedSettingsJson: string | null;
+  CreatedAt: string;
+}
+
+interface ProjectGroupMember {
+  Id: number;
+  GroupId: number;
+  ProjectId: number;
+}
+
+interface ProjectGroupPanelProps {
+  groups: ProjectGroup[];
+  onRefresh: () => void;
+}
+
+/* ------------------------------------------------------------------ */
+/*  GroupFormDialog                                                     */
+/* ------------------------------------------------------------------ */
+
+interface GroupFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSaved: () => void;
+  editGroup?: ProjectGroup | null;
+}
+
+function GroupFormDialog({ open, onOpenChange, onSaved, editGroup }: GroupFormDialogProps) {
+  const [name, setName] = useState(editGroup?.Name ?? "");
+  const [settings, setSettings] = useState(editGroup?.SharedSettingsJson ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const isEdit = !!editGroup?.Id;
+
+  const handleSave = useCallback(async () => {
+    if (!name.trim()) {
+      toast.error("Group name is required");
+      return;
+    }
+    setSaving(true);
+    try {
+      await sendMessage({
+        type: "LIBRARY_SAVE_GROUP" as never,
+        group: {
+          ...(isEdit ? { Id: editGroup!.Id } : {}),
+          Name: name.trim(),
+          SharedSettingsJson: settings.trim() || null,
+        },
+      } as never);
+      toast.success(isEdit ? `Group "${name}" updated` : `Group "${name}" created`);
+      onOpenChange(false);
+      onSaved();
+    } catch (err) {
+      toast.error("Save failed: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setSaving(false);
+    }
+  }, [name, settings, isEdit, editGroup, onOpenChange, onSaved]);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            {isEdit ? <Pencil className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            {isEdit ? "Edit Group" : "Create Group"}
+          </DialogTitle>
+          <DialogDescription>
+            {isEdit ? "Update group name and shared settings." : "Create a new project group for shared configuration."}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <Label className="text-xs">Group Name</Label>
+            <Input
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Production Sites"
+              className="h-8 text-sm"
+              autoFocus
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs">Shared Settings (JSON, optional)</Label>
+            <Textarea
+              value={settings}
+              onChange={e => setSettings(e.target.value)}
+              placeholder='{"logLevel": "warn", "retryOnNavigate": true}'
+              className="min-h-[80px] font-mono text-xs"
+            />
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSave} disabled={saving || !name.trim()}>
+            {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
+            {isEdit ? "Update" : "Create"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  GroupDetailPanel                                                    */
+/* ------------------------------------------------------------------ */
+
+interface GroupDetailPanelProps {
+  group: ProjectGroup;
+  onBack: () => void;
+  onRefresh: () => void;
+}
+
+// eslint-disable-next-line max-lines-per-function -- group detail with member CRUD, splitting would break cohesion
+function GroupDetailPanel({ group, onBack, onRefresh }: GroupDetailPanelProps) {
+  const [members, setMembers] = useState<ProjectGroupMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [addProjectId, setAddProjectId] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [removeMember, setRemoveMember] = useState<ProjectGroupMember | null>(null);
+
+  const loadMembers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await sendMessage<{ members: ProjectGroupMember[] }>({
+        type: "LIBRARY_GET_GROUP_MEMBERS" as never,
+        groupId: group.Id,
+      } as never);
+      setMembers(res.members ?? []);
+    } catch (err) {
+      toast.error("Failed to load members: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setLoading(false);
+    }
+  }, [group.Id]);
+
+  // Load on mount
+  useState(() => { loadMembers(); });
+
+  const handleAddMember = useCallback(async () => {
+    const pid = parseInt(addProjectId, 10);
+    if (isNaN(pid) || pid <= 0) {
+      toast.error("Enter a valid project ID");
+      return;
+    }
+    setAdding(true);
+    try {
+      await sendMessage({
+        type: "LIBRARY_ADD_GROUP_MEMBER" as never,
+        groupId: group.Id,
+        projectId: pid,
+      } as never);
+      toast.success(`Project #${pid} added to group`);
+      setAddProjectId("");
+      loadMembers();
+    } catch (err) {
+      toast.error("Add failed: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setAdding(false);
+    }
+  }, [addProjectId, group.Id, loadMembers]);
+
+  const handleRemoveMember = useCallback(async (member: ProjectGroupMember) => {
+    try {
+      await sendMessage({
+        type: "LIBRARY_REMOVE_GROUP_MEMBER" as never,
+        groupId: group.Id,
+        projectId: member.ProjectId,
+      } as never);
+      toast.success(`Project #${member.ProjectId} removed`);
+      setRemoveMember(null);
+      loadMembers();
+    } catch (err) {
+      toast.error("Remove failed: " + (err instanceof Error ? err.message : String(err)));
+    }
+  }, [group.Id, loadMembers]);
+
+  const handleDeleteGroup = useCallback(async () => {
+    try {
+      await sendMessage({
+        type: "LIBRARY_DELETE_GROUP" as never,
+        groupId: group.Id,
+      } as never);
+      toast.success(`Group "${group.Name}" deleted`);
+      setDeleteOpen(false);
+      onRefresh();
+      onBack();
+    } catch (err) {
+      toast.error("Delete failed: " + (err instanceof Error ? err.message : String(err)));
+    }
+  }, [group, onBack, onRefresh]);
+
+  let parsedSettings: Record<string, unknown> | null = null;
+  if (group.SharedSettingsJson) {
+    try { parsedSettings = JSON.parse(group.SharedSettingsJson); } catch { /* ignore */ }
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h2 className="text-lg font-bold tracking-tight flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              {group.Name}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Created {new Date(group.CreatedAt).toLocaleDateString()} · {members.length} member(s)
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={() => setEditOpen(true)}>
+            <Pencil className="h-3.5 w-3.5 mr-1" />
+            Edit
+          </Button>
+          <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => setDeleteOpen(true)}>
+            <Trash2 className="h-3.5 w-3.5 mr-1" />
+            Delete
+          </Button>
+        </div>
+      </div>
+
+      {/* Shared Settings */}
+      {parsedSettings && (
+        <Card className="border-border/60 bg-card/50">
+          <CardContent className="p-4">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Shared Settings</h3>
+            <pre className="text-xs font-mono bg-muted/30 rounded p-3 overflow-x-auto">
+              {JSON.stringify(parsedSettings, null, 2)}
+            </pre>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Add Member */}
+      <div className="flex items-center gap-2">
+        <Input
+          value={addProjectId}
+          onChange={e => setAddProjectId(e.target.value)}
+          placeholder="Project ID"
+          className="h-8 text-sm w-32 font-mono"
+          type="number"
+          min={1}
+        />
+        <Button size="sm" onClick={handleAddMember} disabled={adding || !addProjectId.trim()}>
+          {adding ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <UserPlus className="h-3.5 w-3.5 mr-1" />}
+          Add Member
+        </Button>
+      </div>
+
+      {/* Members List */}
+      {loading ? (
+        <div className="flex items-center justify-center py-10 text-muted-foreground gap-2">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="text-sm">Loading members…</span>
+        </div>
+      ) : members.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
+          <Users className="h-8 w-8 opacity-30" />
+          <p className="text-sm">No members yet. Add a project by ID.</p>
+        </div>
+      ) : (
+        <ScrollArea className="h-[300px]">
+          <div className="space-y-2">
+            {members.map(member => (
+              <div
+                key={member.Id}
+                className="flex items-center justify-between p-3 rounded-lg border border-border/60 bg-card/50 hover:bg-card/80 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Badge variant="outline" className="text-[11px] font-mono px-2">
+                    #{member.ProjectId}
+                  </Badge>
+                  <span className="text-sm text-muted-foreground">Project {member.ProjectId}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                  onClick={() => setRemoveMember(member)}
+                >
+                  <UserMinus className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      )}
+
+      {/* Edit dialog */}
+      {editOpen && (
+        <GroupFormDialog
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          onSaved={() => { onRefresh(); }}
+          editGroup={group}
+        />
+      )}
+
+      {/* Delete confirmation */}
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete group "{group.Name}"?</AlertDialogTitle>
+            <AlertDialogDescription>
+              All member associations will be removed. Projects themselves are not affected.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteGroup} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Remove member confirmation */}
+      <AlertDialog open={!!removeMember} onOpenChange={(v) => { if (!v) setRemoveMember(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Project #{removeMember?.ProjectId}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This project will no longer inherit shared settings from this group.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => removeMember && handleRemoveMember(removeMember)}>
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  ProjectGroupPanel (main export)                                    */
+/* ------------------------------------------------------------------ */
+
+// eslint-disable-next-line max-lines-per-function -- panel with list + detail view, splitting would break navigation state
+export function ProjectGroupPanel({ groups, onRefresh }: ProjectGroupPanelProps) {
+  const [createOpen, setCreateOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<ProjectGroup | null>(null);
+
+  if (selectedGroup) {
+    return (
+      <GroupDetailPanel
+        group={selectedGroup}
+        onBack={() => setSelectedGroup(null)}
+        onRefresh={() => { setSelectedGroup(null); onRefresh(); }}
+      />
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold tracking-tight flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Project Groups
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Organize projects into groups with shared configuration. {groups.length} group(s).
+          </p>
+        </div>
+        <Button size="sm" onClick={() => setCreateOpen(true)}>
+          <Plus className="h-3.5 w-3.5 mr-1" />
+          New Group
+        </Button>
+      </div>
+
+      {/* Group list */}
+      {groups.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-3">
+          <FolderOpen className="h-10 w-10 opacity-30" />
+          <p className="text-sm">No groups yet. Create one to organize related projects.</p>
+          <Button size="sm" variant="outline" onClick={() => setCreateOpen(true)}>
+            <Plus className="h-3.5 w-3.5 mr-1" />
+            Create first group
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {groups.map(group => (
+            <Card
+              key={group.Id}
+              className="group relative border-border/60 bg-card/50 hover:bg-card/80 hover:border-primary/30 transition-all duration-200 cursor-pointer hover:shadow-[0_2px_12px_-4px_hsl(var(--primary)/0.15)]"
+              onClick={() => setSelectedGroup(group)}
+            >
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold truncate">{group.Name}</h3>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <span>Created {new Date(group.CreatedAt).toLocaleDateString()}</span>
+                  {group.SharedSettingsJson && (
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">Has settings</Badge>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Create dialog */}
+      <GroupFormDialog open={createOpen} onOpenChange={setCreateOpen} onSaved={onRefresh} />
+    </div>
+  );
+}
