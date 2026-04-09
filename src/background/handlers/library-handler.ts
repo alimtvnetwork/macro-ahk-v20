@@ -480,6 +480,58 @@ export async function handleRemoveGroupMember(msg: unknown): Promise<{ isOk: tru
 }
 
 /* ------------------------------------------------------------------ */
+/*  Version History                                                    */
+/* ------------------------------------------------------------------ */
+
+export async function handleGetAssetVersions(msg: unknown): Promise<{ versions: AssetVersion[] }> {
+    const { assetId } = msg as { assetId: number };
+    const db = getDb();
+    const stmt = db.prepare("SELECT * FROM AssetVersion WHERE SharedAssetId = ? ORDER BY CreatedAt DESC");
+    stmt.bind([assetId]);
+    const versions: AssetVersion[] = [];
+    while (stmt.step()) {
+        versions.push(stmt.getAsObject() as unknown as AssetVersion);
+    }
+    stmt.free();
+    return { versions };
+}
+
+export async function handleRollbackAssetVersion(msg: unknown): Promise<{ isOk: true; rolledBackTo: string }> {
+    const { assetId, versionId } = msg as { assetId: number; versionId: number };
+    const db = getDb();
+
+    // Get the target version's content
+    const versionResult = db.exec(
+        "SELECT Version, ContentJson, ContentHash FROM AssetVersion WHERE Id = ? AND SharedAssetId = ?",
+        [versionId, assetId],
+    );
+    if (versionResult.length === 0 || versionResult[0].values.length === 0) {
+        throw new Error(`[library] Version ${versionId} not found for asset ${assetId}\n  Path: src/background/handlers/library-handler.ts\n  Missing: AssetVersion row\n  Reason: versionId does not exist or belongs to different asset`);
+    }
+
+    const [targetVersion, contentJson, contentHash] = versionResult[0].values[0] as [string, string, string];
+
+    // Get current version for snapshot
+    const currentResult = db.exec("SELECT Version, ContentJson, ContentHash FROM SharedAsset WHERE Id = ?", [assetId]);
+    if (currentResult.length > 0 && currentResult[0].values.length > 0) {
+        const [curVer, curJson, curHash] = currentResult[0].values[0] as [string, string, string];
+        // Snapshot current state before rollback
+        snapshotVersion(db, assetId, curVer, curJson, curHash, "pre-rollback");
+    }
+
+    // Apply the rollback
+    const newVersion = bumpMinor(targetVersion);
+    snapshotVersion(db, assetId, newVersion, contentJson, contentHash, "rollback");
+
+    db.run(
+        `UPDATE SharedAsset SET ContentJson = ?, ContentHash = ?, Version = ?, UpdatedAt = datetime('now') WHERE Id = ?`,
+        [contentJson, contentHash, newVersion, assetId],
+    );
+    markDirty();
+    return { isOk: true, rolledBackTo: newVersion };
+}
+
+/* ------------------------------------------------------------------ */
 /*  Import/Export                                                       */
 /* ------------------------------------------------------------------ */
 
