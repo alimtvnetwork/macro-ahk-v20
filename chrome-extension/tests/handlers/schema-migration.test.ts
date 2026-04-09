@@ -40,8 +40,8 @@ describe("Schema Migration Runner", () => {
         const result = await migrateSchema(logsDb, errorsDb);
 
         expect(result.fromVersion).toBe(1);
-        expect(result.toVersion).toBe(6);
-        expect(result.applied).toBe(5);
+        expect(result.toVersion).toBe(7);
+        expect(result.applied).toBe(6);
         expect(result.failed).toBe(false);
     });
 
@@ -52,11 +52,11 @@ describe("Schema Migration Runner", () => {
         await migrateSchema(logsDb, errorsDb);
 
         const snapshot = getMockStoreSnapshot();
-        expect(snapshot["marco_schema_version"]).toBe(6);
+        expect(snapshot["marco_schema_version"]).toBe(7);
     });
 
     it("skips migrations when already at current version", async () => {
-        await chrome.storage.local.set({ marco_schema_version: 6 });
+        await chrome.storage.local.set({ marco_schema_version: 7 });
 
         const logsDb = await createTestDb(BASE_LOGS_SCHEMA);
         const errorsDb = await createTestDb(BASE_ERRORS_SCHEMA);
@@ -90,7 +90,7 @@ describe("Schema Migration Runner", () => {
         const first = await migrateSchema(logsDb, errorsDb);
         const second = await migrateSchema(logsDb, errorsDb);
 
-        expect(first.applied).toBe(5);
+        expect(first.applied).toBe(6);
         expect(second.applied).toBe(0);
         expect(second.failed).toBe(false);
     });
