@@ -1,7 +1,7 @@
 # Chrome Extension — Installation Scripts Specification
 
-**Version**: v1.0
-**Date**: 2026-04-08
+**Version**: v1.1
+**Date**: 2026-04-09
 **Breaking change from v0.2**: Replaced the local `Install-Extension.ps1` (git-pull + profile-detect + watch mode) with a lightweight GitHub-release downloader (`install.ps1` / `install.sh`).
 
 ---
@@ -145,13 +145,14 @@ irm ... | iex
 
 ## Bash Script (`install.sh`)
 
-### Parameters (Environment Variables)
+### Parameters (CLI flags)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VERSION` | `""` (latest) | Install a specific version |
-| `INSTALL_DIR` | `$HOME/marco-extension` | Target extraction directory |
-| `REPO` | `alimtvnetwork/macro-ahk-v15` | GitHub `owner/repo` |
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--version <ver>` | latest | Install a specific version |
+| `--dir <path>` | `$HOME/marco-extension` | Target extraction directory |
+| `--repo <o/r>` | `alimtvnetwork/macro-ahk-v15` | GitHub `owner/repo` |
+| `--help` | — | Print usage |
 
 ### Usage
 
@@ -160,10 +161,10 @@ irm ... | iex
 curl -fsSL .../install.sh | bash
 
 # Pinned version
-VERSION=v2.116.1 curl -fsSL .../install.sh | bash
+curl -fsSL .../install.sh | bash -s -- --version v2.116.1
 
 # Custom directory
-INSTALL_DIR=/opt/marco curl -fsSL .../install.sh | bash
+curl -fsSL .../install.sh | bash -s -- --dir /opt/marco
 ```
 
 ### Key Implementation Details
@@ -172,7 +173,16 @@ INSTALL_DIR=/opt/marco curl -fsSL .../install.sh | bash
 - **`trap cleanup EXIT`** — Temp directory always cleaned up
 - **`curl` with `wget` fallback** — Uses whichever is available
 - **`unzip` required** — Exits with clear error if missing
-- **Same verification** as PowerShell: file count > 0, manifest.json check
+- **OS detection** — Rejects Windows (MINGW/MSYS/CYGWIN) with pointer to PowerShell installer
+- **Same verification** as PowerShell: file count > 0, VERSION marker written
+
+### Logging Helpers
+
+| Function | Color | Purpose |
+|----------|-------|---------|
+| `step` | Cyan | Progress steps |
+| `ok` | Green | Success messages |
+| `err` | Red | Error messages |
 
 ---
 
@@ -182,9 +192,19 @@ Release ZIP files **never contain source maps** (`.js.map` files). This is enfor
 
 1. Build produces the extension in `dist/`
 2. **Source map removal step** deletes any `*.map` files from `dist/` before packaging
-3. The release workflow logs confirmation: `Removed N source map files`
+3. The release workflow logs: `Removed N source map files`
 
 See: [Sourcemap Strategy](mem://architecture/sourcemap-strategy), [Release Workflow](../../pipeline/03-release-workflow.md)
+
+---
+
+## Checksums
+
+All release assets include a `checksums.txt` with SHA256 hashes, generated in the release workflow:
+
+```bash
+sha256sum * > checksums.txt
+```
 
 ---
 
@@ -195,8 +215,9 @@ The release workflow (`.github/workflows/release.yml`) automatically:
 1. Builds the extension
 2. Removes source maps
 3. Creates `marco-extension-{version}.zip`
-4. Uploads to GitHub Release assets alongside `install.ps1` and `install.sh`
-5. Generates release notes with installation commands
+4. Generates SHA256 checksums
+5. Uploads to GitHub Release assets alongside `install.ps1` and `install.sh`
+6. Generates release notes with installation commands
 
 The installers download from these release assets. The one-liner URLs use `raw.githubusercontent.com` to fetch the script from `main` branch, ensuring users always get the latest installer logic.
 
@@ -207,11 +228,13 @@ The installers download from these release assets. The one-liner URLs use `raw.g
 - [x] One-liner `irm ... | iex` downloads and extracts the extension
 - [x] One-liner `curl ... | bash` downloads and extracts the extension
 - [x] Latest version auto-detected from GitHub Releases API
-- [x] Pinned version supported via `-Version` / `VERSION=`
-- [x] Custom install directory via `-InstallDir` / `INSTALL_DIR=`
+- [x] Pinned version supported via `-Version` / `--version`
+- [x] Custom install directory via `-InstallDir` / `--dir`
 - [x] Clean install (removes previous directory)
-- [x] manifest.json verification
+- [x] manifest.json verification (PowerShell)
 - [x] VERSION marker file written
 - [x] Clear load-unpacked instructions printed
 - [x] No source maps in release ZIP
 - [x] Temp directory always cleaned up
+- [x] SHA256 checksums generated for all assets
+- [x] OS detection in bash (rejects Windows with PS1 pointer)

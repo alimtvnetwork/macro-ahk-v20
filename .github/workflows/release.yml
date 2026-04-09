@@ -1,19 +1,20 @@
 # ──────────────────────────────────────────────────────────────
 # Marco Extension — Release Pipeline
 #
-# Triggers on push to any branch matching  release/*
+# Triggers on push to any branch matching  release/**
 # (e.g.  release/v2.112.0).
 #
 # Produces a GitHub Release with these assets:
-#   - marco-extension-v{VER}.zip   — Chrome extension dist contents
-#   - prompts-v{VER}.zip           — standalone-scripts/prompts/**
-#   - macro-controller-v{VER}.zip  — standalone-scripts/macro-controller/**
-#   - marco-sdk-v{VER}.zip         — standalone-scripts/marco-sdk/**
-#   - xpath-v{VER}.zip             — standalone-scripts/xpath/**
+#   - marco-extension-{VER}.zip    — Chrome extension dist contents
+#   - prompts-{VER}.zip            — standalone-scripts/prompts/**
+#   - macro-controller-{VER}.zip   — standalone-scripts/macro-controller/**
+#   - marco-sdk-{VER}.zip          — standalone-scripts/marco-sdk/**
+#   - xpath-{VER}.zip              — standalone-scripts/xpath/**
 #   - install.sh                   — Bash install/download helper
 #   - install.ps1                  — PowerShell install/download helper
 #   - VERSION.txt                  — Plain-text version identifier
 #   - CHANGELOG.md                 — Project changelog (full)
+#   - checksums.txt                — SHA256 checksums of all assets
 #
 # NOTE: No email or notification integrations — by design.
 # ──────────────────────────────────────────────────────────────
@@ -23,7 +24,7 @@ name: Release Build
 on:
   push:
     branches:
-      - "release/*"
+      - "release/**"
     tags:
       - "v*"
 
@@ -36,31 +37,35 @@ concurrency:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-and-release:
+    name: Build and Release
     runs-on: ubuntu-latest
 
     steps:
       # ── Checkout ──────────────────────────────────────────
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       # ── Extract version from branch name ──────────────────
-      - name: Extract version
+      - name: Resolve version
         id: version
         run: |
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
-            TAG="${GITHUB_REF_NAME}"
+            VERSION="${GITHUB_REF_NAME}"
           elif [[ "$GITHUB_REF" == refs/heads/release/* ]]; then
-            TAG="${GITHUB_REF_NAME#release/}"
+            VERSION="${GITHUB_REF_NAME#release/}"
           else
             echo "::error::Unexpected ref: $GITHUB_REF"
             exit 1
           fi
-          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "Releasing version: ${TAG}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: ${VERSION}"
 
       # ── Setup Node.js ─────────────────────────────────────
       - name: Setup Node.js
@@ -115,7 +120,7 @@ jobs:
       # ── Package assets ────────────────────────────────────
       - name: Package release assets
         env:
-          VER: ${{ steps.version.outputs.tag }}
+          VER: ${{ steps.version.outputs.version }}
         run: |
           mkdir -p release-assets
 
@@ -124,7 +129,9 @@ jobs:
           echo "${VER}" > chrome-extension/dist/VERSION
 
           # ── Remove source maps (must never ship in releases) ──
+          MAP_COUNT=$(find chrome-extension/dist -name '*.map' | wc -l | tr -d ' ')
           find chrome-extension/dist -name '*.map' -delete
+          echo "Removed ${MAP_COUNT} source map files"
 
           # ── Chrome extension — zip dist/ contents (no dist/ prefix) ──
           cd chrome-extension/dist
@@ -163,6 +170,13 @@ jobs:
             cp CHANGELOG.md release-assets/CHANGELOG.md
           fi
 
+          # ── Generate checksums ──
+          cd release-assets
+          sha256sum * > checksums.txt
+          cat checksums.txt
+          cd ..
+
+          echo ""
           echo "=== Release assets ==="
           ls -lh release-assets/
 
@@ -170,7 +184,7 @@ jobs:
       - name: Generate release notes
         id: changelog
         env:
-          VER: ${{ steps.version.outputs.tag }}
+          VER: ${{ steps.version.outputs.version }}
         run: |
           # Find the previous release tag
           PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]' | head -1 2>/dev/null || true)
@@ -184,11 +198,25 @@ jobs:
           fi
 
           REPO="${GITHUB_REPOSITORY}"
+          COMMIT_SHA="${GITHUB_SHA}"
+          BRANCH="${GITHUB_REF_NAME}"
+          BUILD_DATE="$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
 
           # Build categorized release notes
           {
             echo "## Marco Extension ${VER}"
             echo ""
+
+            echo "### Release Info"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Version | \`${VER}\` |"
+            echo "| Commit | \`${COMMIT_SHA:0:10}\` |"
+            echo "| Branch | \`${BRANCH}\` |"
+            echo "| Build Date | ${BUILD_DATE} |"
+            echo ""
+
             echo "### What's Changed"
             echo ""
 
@@ -218,45 +246,57 @@ jobs:
 
             echo "---"
             echo ""
+
+            echo "### Checksums (SHA256)"
+            echo ""
+            echo "\`\`\`"
+            cat release-assets/checksums.txt
+            echo "\`\`\`"
+            echo ""
+
             echo "### Assets"
             echo ""
             echo "| Asset | Description |"
             echo "|-------|-------------|"
             echo "| \`marco-extension-${VER}.zip\` | Chrome extension — load unpacked in \`chrome://extensions\` |"
-             echo "| \`CHANGELOG.md\` | Full project changelog for this release |"
-             echo "| \`install.ps1\` | PowerShell installer (Windows) |"
-             echo "| \`install.sh\` | Bash installer (Linux/macOS) |"
+            echo "| \`macro-controller-${VER}.zip\` | Standalone macro controller |"
+            echo "| \`marco-sdk-${VER}.zip\` | SDK library |"
+            echo "| \`xpath-${VER}.zip\` | XPath utility |"
+            echo "| \`CHANGELOG.md\` | Full project changelog |"
+            echo "| \`install.ps1\` | PowerShell installer (Windows) |"
+            echo "| \`install.sh\` | Bash installer (Linux/macOS) |"
             echo "| \`VERSION.txt\` | Version identifier |"
+            echo "| \`checksums.txt\` | SHA256 checksums |"
             echo ""
             echo "### Quick Install"
             echo ""
             echo "**Windows (PowerShell):**"
             echo "\`\`\`powershell"
-             echo "irm https://raw.githubusercontent.com/${REPO}/main/scripts/install.ps1 | iex"
+            echo "irm https://raw.githubusercontent.com/${REPO}/main/scripts/install.ps1 | iex"
             echo "\`\`\`"
             echo ""
             echo "**Pin this version (Windows):**"
             echo "\`\`\`powershell"
-             echo "& { \\\$Version = \"${VER}\"; irm https://raw.githubusercontent.com/${REPO}/main/scripts/install.ps1 | iex }"
+            echo "& { \\\$Version = \"${VER}\"; irm https://raw.githubusercontent.com/${REPO}/main/scripts/install.ps1 | iex }"
             echo "\`\`\`"
             echo ""
             echo "**Linux / macOS:**"
             echo "\`\`\`bash"
-             echo "curl -fsSL https://raw.githubusercontent.com/${REPO}/main/scripts/install.sh | bash"
+            echo "curl -fsSL https://raw.githubusercontent.com/${REPO}/main/scripts/install.sh | bash"
             echo "\`\`\`"
             echo ""
             echo "**Pin this version (Linux / macOS):**"
             echo "\`\`\`bash"
-             echo "curl -fsSL https://raw.githubusercontent.com/${REPO}/main/scripts/install.sh | bash -s -- --version ${VER}"
+            echo "curl -fsSL https://raw.githubusercontent.com/${REPO}/main/scripts/install.sh | bash -s -- --version ${VER}"
             echo "\`\`\`"
-             echo ""
-             echo "### Manual Install (Chromium)"
-             echo ""
-             echo "1. Download \`marco-extension-${VER}.zip\` from this release."
-             echo "2. Extract it to a local folder."
-             echo "3. Open \`chrome://extensions\`."
-             echo "4. Enable **Developer mode**."
-             echo "5. Click **Load unpacked** and select the extracted folder."
+            echo ""
+            echo "### Manual Install (Chromium)"
+            echo ""
+            echo "1. Download \`marco-extension-${VER}.zip\` from this release."
+            echo "2. Extract it to a local folder."
+            echo "3. Open \`chrome://extensions\`."
+            echo "4. Enable **Developer mode**."
+            echo "5. Click **Load unpacked** and select the extracted folder."
           } > release-assets/RELEASE_NOTES.md
 
           cat release-assets/RELEASE_NOTES.md
@@ -265,9 +305,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: "Marco Extension ${{ steps.version.outputs.tag }}"
+          tag_name: ${{ steps.version.outputs.version }}
+          name: "Marco Extension ${{ steps.version.outputs.version }}"
           body_path: release-assets/RELEASE_NOTES.md
           files: release-assets/*
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          make_latest: ${{ !contains(steps.version.outputs.version, '-') }}
