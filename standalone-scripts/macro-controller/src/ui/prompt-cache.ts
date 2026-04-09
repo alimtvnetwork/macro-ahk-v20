@@ -160,6 +160,7 @@ function deleteRecord(storeName: string, key: string): Promise<void> {
         tx.oncomplete = function() { db.close(); resolve(); };
         tx.onerror = function() { db.close(); resolve(); };
       } catch (_e) {
+        log('[PromptCache] deleteRecord(' + storeName + ') transaction failed: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn');
         resolve();
       }
     });
