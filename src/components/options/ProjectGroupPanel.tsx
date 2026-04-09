@@ -183,6 +183,7 @@ function GroupDetailPanel({ group, onBack, onRefresh }: GroupDetailPanelProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [removeMember, setRemoveMember] = useState<ProjectGroupMember | null>(null);
+  const [cascading, setCascading] = useState(false);
 
   const loadMembers = useCallback(async () => {
     setLoading(true);
@@ -254,6 +255,25 @@ function GroupDetailPanel({ group, onBack, onRefresh }: GroupDetailPanelProps) {
       toast.error("Delete failed: " + (err instanceof Error ? err.message : String(err)));
     }
   }, [group, onBack, onRefresh]);
+
+  const handleCascade = useCallback(async () => {
+    setCascading(true);
+    try {
+      const result = await sendMessage<{ cascadedCount: number }>({
+        type: "LIBRARY_CASCADE_GROUP_SETTINGS" as never,
+        groupId: group.Id,
+      } as never);
+      if (result.cascadedCount > 0) {
+        toast.success(`Settings pushed to ${result.cascadedCount} project(s)`);
+      } else {
+        toast.info("No members to cascade to, or no settings configured");
+      }
+    } catch (err) {
+      toast.error("Cascade failed: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setCascading(false);
+    }
+  }, [group.Id]);
 
   let parsedSettings: Record<string, unknown> | null = null;
   if (group.SharedSettingsJson) {
