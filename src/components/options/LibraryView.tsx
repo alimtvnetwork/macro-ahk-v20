@@ -316,7 +316,7 @@ export function PromoteDialog({ open, onOpenChange, onPromoted }: PromoteDialogP
         type: "LIBRARY_PROMOTE_ASSET" as never,
         slug: slug.trim(),
         name: name.trim(),
-        type: type,
+        assetType: type,
         contentJson: content.trim(),
       } as never);
 
@@ -366,7 +366,7 @@ export function PromoteDialog({ open, onOpenChange, onPromoted }: PromoteDialogP
         type: "LIBRARY_FORK_ASSET" as never,
         originalSlug: slug.trim(),
         name: name.trim(),
-        type: type,
+        assetType: type,
         contentJson: content.trim(),
       } as never);
       toast.success(`Forked as "${result.slug}"`);
