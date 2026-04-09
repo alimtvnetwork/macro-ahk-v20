@@ -114,7 +114,7 @@ export function invalidatePromptCache(): void {
   // Also invalidate SDK cache if available
   const sdk = window.marco as { prompts?: { invalidateCache(): Promise<void> } } | undefined;
   if (sdk && sdk.prompts && typeof sdk.prompts.invalidateCache === 'function') {
-    sdk.prompts.invalidateCache().catch(function() { /* silent */ });
+    sdk.prompts.invalidateCache().catch(function(e: unknown) { log('[PromptLoader] SDK cache invalidation failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
   }
   clearPromptCache().then(function() {
     log('[PromptCache] Cache cleared (invalidated)', 'info');
@@ -135,7 +135,7 @@ export function clearLoadedPrompts(): void {
   // Also invalidate SDK cache
   const sdk = window.marco as { prompts?: { invalidateCache(): Promise<void> } } | undefined;
   if (sdk && sdk.prompts && typeof sdk.prompts.invalidateCache === 'function') {
-    sdk.prompts.invalidateCache().catch(function() { /* silent */ });
+    sdk.prompts.invalidateCache().catch(function(e: unknown) { log('[PromptLoader] SDK cache invalidation failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
   }
 }
 

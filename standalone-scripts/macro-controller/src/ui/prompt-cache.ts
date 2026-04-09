@@ -124,10 +124,11 @@ function readRecord<T>(storeName: string, key: string): Promise<T | null> {
         req.onerror = function() { resolve(null); };
         tx.oncomplete = function() { db.close(); };
       } catch (_e) {
+        log('[PromptCache] readRecord(' + storeName + '/' + key + ') transaction failed: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn');
         resolve(null);
       }
     });
-  }).catch(function() { return null; });
+  }).catch(function(e: unknown) { log('[PromptCache] readRecord(' + storeName + ') IndexedDB open failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); return null; });
 }
 
 /** Write a record to a store. */
@@ -162,7 +163,7 @@ function deleteRecord(storeName: string, key: string): Promise<void> {
         resolve();
       }
     });
-  }).catch(function() { /* silent */ });
+  }).catch(function(e: unknown) { log('[PromptCache] deleteRecord(' + storeName + '/' + key + ') failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
 }
 
 function logWriteError(storeName: string, e: unknown): void {

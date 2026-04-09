@@ -24,7 +24,7 @@ function savePanelState(state: string): void {
 }
 
 function loadPanelState(): string {
-  try { return localStorage.getItem(LS_PANEL_STATE) || 'expanded'; } catch (_e) { return 'expanded'; }
+  try { return localStorage.getItem(LS_PANEL_STATE) || 'expanded'; } catch (_e) { logSub('Failed to load panel state: ' + (_e instanceof Error ? _e.message : String(_e)), 1); return 'expanded'; }
 }
 
 interface PanelGeometry {
@@ -51,7 +51,7 @@ function loadPanelGeometry(): PanelGeometry | null {
     const raw = localStorage.getItem(LS_PANEL_GEOMETRY);
     if (!raw) return null;
     return JSON.parse(raw) as PanelGeometry;
-  } catch (_e) { return null; }
+  } catch (_e) { logSub('Failed to parse panel geometry: ' + (_e instanceof Error ? _e.message : String(_e)), 1); return null; }
 }
 
 function clamp(value: number, min: number, max: number): number {

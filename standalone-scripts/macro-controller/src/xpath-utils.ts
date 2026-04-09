@@ -178,7 +178,7 @@ function findViaAriaLabel(desc: ElementDescriptor): Element | null {
         log('  ' + desc.name + ' FOUND via ARIA: ' + label, 'success');
         return result;
       }
-    } catch (_e) { /* skip */ }
+    } catch (_e) { logSub('ARIA label query skipped for "' + label + '": ' + toErrorMessage(_e), 1); }
   }
   return null;
 }

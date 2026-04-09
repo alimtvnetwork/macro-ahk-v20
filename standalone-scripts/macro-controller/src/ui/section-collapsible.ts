@@ -77,11 +77,11 @@ function buildTitleElement(title: string): HTMLElement {
 
 function readCollapsedState(storageKey: string): boolean {
   let savedState: string | null = null;
-  try { savedState = localStorage.getItem(storageKey); } catch (_e: unknown) { /* ignore */ }
+  try { savedState = localStorage.getItem(storageKey); } catch (_e: unknown) { console.debug('[RiseupAsia] [readCollapsedState] localStorage read failed for ' + storageKey); }
   const hasSavedState = savedState !== null;
   return hasSavedState ? savedState === 'collapsed' : true;
 }
 
 function persistCollapsedState(storageKey: string, isExpanding: boolean): void {
-  try { localStorage.setItem(storageKey, isExpanding ? 'expanded' : 'collapsed'); } catch (_e: unknown) { /* ignore */ }
+  try { localStorage.setItem(storageKey, isExpanding ? 'expanded' : 'collapsed'); } catch (_e: unknown) { console.debug('[RiseupAsia] [persistCollapsedState] localStorage write failed for ' + storageKey); }
 }

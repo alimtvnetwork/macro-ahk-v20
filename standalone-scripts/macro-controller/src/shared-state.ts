@@ -87,7 +87,7 @@ try {
     if (!root.Projects.MacroController.meta) root.Projects.MacroController.meta = {};
     root.Projects.MacroController.meta.version = VERSION;
   }
-} catch (_e) { /* SDK namespace not yet registered — version set at injection time */ }
+} catch (_e) { console.debug('[RiseupAsia] [shared-state] SDK namespace not yet registered — version set at injection time'); }
 
 // ============================================
 // Panel colors

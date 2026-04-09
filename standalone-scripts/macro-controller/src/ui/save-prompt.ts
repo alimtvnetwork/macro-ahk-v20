@@ -97,7 +97,7 @@ export function findSavePromptContainer(): Element | null {
       log('Save Prompt: Container found via XPath', 'check');
       return xpathResult as Element;
     }
-  } catch (_e: unknown) { /* XPath eval error */ }
+  } catch (_e: unknown) { log('Save Prompt: XPath eval error: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn'); }
 
   return findContainerViaCssFallback();
 }
@@ -126,7 +126,7 @@ function findContainerViaCssFallback(): Element | null {
           return element;
         }
       }
-    } catch (_e: unknown) { /* selector error */ }
+    } catch (_e: unknown) { log('Save Prompt: CSS selector error at fallback #' + (fallbackIndex + 1) + ': ' + (_e instanceof Error ? _e.message : String(_e)), 'warn'); }
   }
 
   return null;

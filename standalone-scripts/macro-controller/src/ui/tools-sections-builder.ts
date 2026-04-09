@@ -266,7 +266,7 @@ function _buildRecentErrorsSection(): HTMLElement {
     navigator.clipboard.writeText(text).then(function() {
       copyAllErrBtn.textContent = '✓';
       setTimeout(function() { copyAllErrBtn.textContent = '📋'; }, 2000);
-    }).catch(function() { /* fallback */ });
+    }).catch(function(e: unknown) { log('Clipboard write failed for error copy: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
   };
 
   const dlErrBtn = document.createElement('button');
