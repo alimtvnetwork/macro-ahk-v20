@@ -439,7 +439,7 @@
 
     "@types/chai": ["@types/chai@5.2.3", "", { "dependencies": { "@types/deep-eql": "*", "assertion-error": "^2.0.1" } }, "sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA=="],
 
-    "@types/chrome": ["@types/chrome@0.1.39", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@types/chrome/-/chrome-0.1.39.tgz", { "dependencies": { "@types/filesystem": "*", "@types/har-format": "*" } }, "sha512-AttzlXiLx2TSqmuJy8baP7YrOb8yyIM6V02dePrK/n1wRlhnu7Obd7GqUUVhje0hhkU7BaJuQmoFXRd5hWqdjQ=="],
+    "@types/chrome": ["@types/chrome@0.1.40", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@types/chrome/-/chrome-0.1.40.tgz", { "dependencies": { "@types/filesystem": "*", "@types/har-format": "*" } }, "sha512-UnfyRAe8ORu9HSuTH0EqyOEUin3JrWW9Nl/gDXezNfTUrfIoxw+WRZgKOxGz0t5BnjbfXBnS2eCYfW2PxH1wcA=="],
 
     "@types/d3-array": ["@types/d3-array@3.2.1", "", {}, "sha512-Y2Jn2idRrLzUfAKV2LyRImR+y4oa2AntrgID95SHJxuMUrkNXmanDSed71sRNZysveJVt1hLLemQZIady0FpEg=="],
 
