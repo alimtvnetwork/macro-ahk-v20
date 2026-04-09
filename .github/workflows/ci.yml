@@ -302,8 +302,18 @@ jobs:
       - name: Build Chrome extension
         run: pnpm run build:extension
 
+      - name: Verify no source maps in dist
+        run: |
+          MAP_FILES=$(find chrome-extension/dist -name '*.map' 2>/dev/null || true)
+          if [ -n "$MAP_FILES" ]; then
+            echo "::error::Source map files found in dist — production builds must not include .map files:"
+            echo "$MAP_FILES"
+            exit 1
+          fi
+          echo "✅ No source map files in dist"
+
       - name: Build summary
         run: |
           echo "=== CI Build Complete ==="
           echo "Commit: ${GITHUB_SHA:0:8}"
-          echo "Lint: OK | Tests: OK | Build: OK"
+          echo "Lint: OK | Tests: OK | Build: OK | No source maps: OK"
