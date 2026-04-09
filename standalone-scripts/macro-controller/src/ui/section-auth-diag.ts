@@ -46,7 +46,7 @@ export interface AuthDiagResult {
   updateAuthDiagRow: () => void;
 }
 
-const ROW_CSS = 'display:flex;align-items:center;gap:6px;padding:2px 4px;background:rgba(0,0,0,.2);border-radius:3px;';
+import { CSS_ROW_DIAG as ROW_CSS } from '../constants';
 
 // CQ16: Extracted auth diag update context + function
 interface AuthDiagUpdateCtx {

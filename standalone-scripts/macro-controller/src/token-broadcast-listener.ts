@@ -11,8 +11,7 @@
 
 import { log } from './logging';
 import { persistResolvedBearerToken, updateAuthBadge, setLastTokenSource } from './auth';
-
-const SOURCE_EXTENSION = 'marco-extension';
+import { LABEL_SOURCE_EXTENSION as SOURCE_EXTENSION } from './constants';
 
 interface TokenBroadcast {
   source: string;

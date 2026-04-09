@@ -25,7 +25,7 @@ class JsHistoryState {
 }
 
 const jsHistoryState = new JsHistoryState();
-const LOOP_JS_HISTORY_MAX = 20;
+import { LOOP_JS_HISTORY_MAX } from '../constants';
 
 export function addLoopJsHistoryEntry(code: string, success: boolean, resultText: string): void {
   const now = new Date();

@@ -92,10 +92,7 @@ interface QueuedToast {
 // ToastManager — All mutable state encapsulated
 // ============================================
 
-const RECENT_ERRORS_MAX = 50;
-const TOAST_QUEUE_MAX = 20;
-const TOAST_QUEUE_POLL_MS = 250;
-const TOAST_QUEUE_TTL_MS = 30_000;
+import { RECENT_ERRORS_MAX, TOAST_QUEUE_MAX, TOAST_QUEUE_POLL_MS, TOAST_QUEUE_TTL_MS } from './constants';
 
 class ToastManager {
   private isVersionSeeded = false;

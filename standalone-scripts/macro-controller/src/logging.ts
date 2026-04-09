@@ -211,7 +211,7 @@ class LogFlushState {
 }
 
 const logFlushState = new LogFlushState();
-const LOG_FLUSH_INTERVAL_MS = 1000;
+import { LOG_FLUSH_INTERVAL_MS } from './constants';
 
 function _flushPendingLogs(): void {
   logFlushState.timer = null;

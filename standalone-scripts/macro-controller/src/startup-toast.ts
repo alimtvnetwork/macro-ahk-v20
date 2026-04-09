@@ -14,9 +14,7 @@
  * @see spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/03-rc02-missing-startup-toast.md
  */
 
-const TOAST_ID = 'mcl-startup-toast';
-const AUTO_DISMISS_MS = 10_000;
-const FADE_DURATION_MS = 300;
+import { ID_STARTUP_TOAST as TOAST_ID, TOAST_AUTO_DISMISS_MS as AUTO_DISMISS_MS, TOAST_FADE_DURATION_MS as FADE_DURATION_MS } from './constants';
 
 let dismissTimer: ReturnType<typeof setTimeout> | null = null;
 

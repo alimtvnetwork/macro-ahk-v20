@@ -181,15 +181,7 @@ export function getBearerTokenFromSessionBridge(): string {
 // Cookie Token & Session Cookie Names
 // ============================================
 
-const FALLBACK_SESSION_COOKIE_NAMES = [
-  'lovable-session-id-v2',
-  'lovable-session-id.id',
-  '__Secure-lovable-session-id.id',
-  '__Host-lovable-session-id.id',
-  'lovable-session-id',
-];
-
-const COOKIE_DIAGNOSTIC_COOLDOWN_MS = 60_000;
+import { FALLBACK_SESSION_COOKIE_NAMES, COOKIE_DIAGNOSTIC_COOLDOWN_MS } from './constants';
 
 // CQ11: Encapsulate diagnostic timestamp in singleton
 class CookieDiagnosticState {

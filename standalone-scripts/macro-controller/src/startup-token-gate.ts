@@ -9,6 +9,7 @@
  */
 
 import { resolveToken, refreshBearerTokenFromBestSource } from './auth';
+import { TOKEN_POLL_INTERVAL_MS as POLL_INTERVAL_MS, TOKEN_REFRESH_RETRY_MS as REFRESH_RETRY_MS } from './constants';
 
 export interface TokenReadyResult {
   token: string;
@@ -29,9 +30,6 @@ interface TokenGateCtx {
   startedAt: number;
   resolve: (result: TokenReadyResult) => void;
 }
-
-const POLL_INTERVAL_MS = 250;
-const REFRESH_RETRY_MS = 1500;
 
 function finishTokenGate(ctx: TokenGateCtx, result: TokenReadyResult): void {
   if (ctx.settled) return;

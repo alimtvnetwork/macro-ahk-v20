@@ -11,8 +11,7 @@
 import { log } from './logging';
 import { sendToExtension } from './ui/prompt-manager';
 import type { ExtensionResponse } from './types';
-
-const FORBIDDEN_GROUP = 'rename_forbidden';
+import { GKV_FORBIDDEN_GROUP as FORBIDDEN_GROUP } from './constants';
 const forbiddenWsIds = new Set<string>();
 
 /** Load forbidden workspace IDs from GroupedKv on controller init. */

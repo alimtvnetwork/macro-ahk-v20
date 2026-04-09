@@ -46,7 +46,7 @@ if (_configWarnings.length > 0) {
 /** Get config validation warnings (for diagnostics). */
 export function getConfigValidationWarnings(): string[] { return _configWarnings; }
 
-const FORCED_THEME_KEY = 'dark';
+import { FORCED_THEME_KEY } from './constants';
 
 export function resolvePreset(key: string): ThemePreset {
   const darkPreset = themeRoot.presets?.dark;
@@ -77,7 +77,7 @@ const TTypo = theme.typography || {};
 // ============================================
 // Exported constants
 // ============================================
-export const FILE_NAME = 'macro-looping.js';
+export { FILE_NAME } from './constants';
 export const VERSION = '2.124.0';
 
 // Expose version via RiseupAsiaMacroExt namespace (Issue 78 — no bare window globals)
@@ -216,8 +216,7 @@ export const lPanelFloatSh = TLayout.panelFloatShadow    || '0 8px 32px rgba(0,0
 
 // ── Default panel dimensions (single source of truth) ──
 // Change these two values to adjust the default load size everywhere.
-export const PANEL_DEFAULT_WIDTH  = 494;
-export const PANEL_DEFAULT_HEIGHT = 517;
+export { PANEL_DEFAULT_WIDTH, PANEL_DEFAULT_HEIGHT } from './constants';
 export const lDropdownRadius= TLayout.dropdownBorderRadius || '4px';
 export const lDropdownShadow= TLayout.dropdownShadow      || '0 8px 24px rgba(0,0,0,0.6)';
 export const lModalRadius  = TLayout.modalBorderRadius    || '12px';

@@ -14,7 +14,7 @@ import { reactClick, getByXPath, getAllByXPath, findElement, ML_ELEMENTS } from 
 import { collectWorkspaceNameCandidatesFromNode, matchWorkspaceByName, normalizeWorkspaceName } from './ws-name-matching';
 import type { WorkspaceCredit, WorkspaceMatchCandidate } from './types';
 
-const KEEPING_EXISTING_WORKSPACE = ': Keeping existing workspace: ';
+import { LABEL_KEEPING_EXISTING_WS as KEEPING_EXISTING_WORKSPACE } from './constants';
 
 // ============================================
 // Tier 2: Detect workspace via Project Dialog XPath

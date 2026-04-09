@@ -20,7 +20,7 @@ import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isUserTyp
 import { CONFIG, WS_HISTORY_MAX_ENTRIES, loopCreditState, state } from './shared-state';
 import { logError } from './error-utils';
 
-const MSG_IGNORING_API_SET = '" — ignoring, API already set: ';
+import { LABEL_IGNORING_API_SET as MSG_IGNORING_API_SET } from './constants';
 
 function mc() { return MacroController.getInstance(); }
 
@@ -192,7 +192,7 @@ export function fetchWorkspaceNameFromNav(): boolean {
 //   Before: 2 module-level `let` vars (workspaceObserverInstance, workspaceObserverRetryCount).
 //   After:  `WorkspaceObserverState` singleton class with private fields.
 // ============================================
-const WORKSPACE_OBSERVER_MAX_RETRIES = 10;
+import { WORKSPACE_OBSERVER_MAX_RETRIES } from './constants';
 
 class WorkspaceObserverState {
   private _instance: MutationObserver | null = null;

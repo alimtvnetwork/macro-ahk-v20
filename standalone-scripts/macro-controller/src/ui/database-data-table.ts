@@ -8,8 +8,7 @@
  */
 
 import { loadTableData } from './database-modal-data';
-
-const PAGE_SIZE = 25;
+import { DB_PAGE_SIZE as PAGE_SIZE } from '../constants';
 
 // ── Helpers ──
 

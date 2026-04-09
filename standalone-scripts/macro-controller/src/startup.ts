@@ -552,7 +552,7 @@ function resolveTier1Workspace(tier1Data: MarkViewedResponse): boolean {
 // ── Workspace Retry ──
 
 // Retry policy: first retry forces cookie refresh, second retry is the final pass.
-const STARTUP_WS_MAX_RETRIES = 2;
+import { STARTUP_WS_MAX_RETRIES } from './constants';
 
 // eslint-disable-next-line max-lines-per-function -- retry orchestration with cookie fallback and async chaining
 function scheduleWorkspaceRetry(attempt: number): void {

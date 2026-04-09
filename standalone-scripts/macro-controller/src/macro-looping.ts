@@ -40,7 +40,7 @@ import { updateWsSelectionUI, triggerLoopMoveFromSelection, setLoopWsNavIndex, p
 import { shouldInject } from './startup-domain-guard';
 import { runIdempotentCheck } from './startup-idempotent-check';
 
-const DOMAIN_GUARD = 'domain-guard';
+import { LABEL_DOMAIN_GUARD as DOMAIN_GUARD } from './constants';
 
 (function macroLoopController() {
   'use strict';

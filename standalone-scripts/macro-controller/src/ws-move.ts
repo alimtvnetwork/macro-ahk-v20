@@ -21,7 +21,7 @@ import { CREDIT_API_BASE, state } from './shared-state';
 import { clearResolvedWorkspace } from './credit-balance';
 import { logError } from './error-utils';
 
-const LOG_SESSIONCHECK = '[SessionCheck/';
+import { LABEL_LOG_SESSIONCHECK as LOG_SESSIONCHECK } from './constants';
 
 function mc() { return MacroController.getInstance(); }
 

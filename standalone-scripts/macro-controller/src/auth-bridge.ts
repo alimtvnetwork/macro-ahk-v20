@@ -17,13 +17,13 @@ import {
   getLastTokenSource,
 } from './auth-resolve';
 
-const EXTENSION_BRIDGE = 'Extension bridge ';
+import { BRIDGE_TIMEOUT_MS, LABEL_EXTENSION_BRIDGE as EXTENSION_BRIDGE } from './constants';
 
 // ============================================
 // Bridge Constants & Outcome Tracking
 // ============================================
 
-import { BRIDGE_TIMEOUT_MS } from './constants';
+
 
 // CQ11: Encapsulate bridge outcome in singleton class
 class BridgeOutcomeState {

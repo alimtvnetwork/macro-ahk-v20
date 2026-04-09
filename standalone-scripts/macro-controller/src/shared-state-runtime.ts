@@ -36,13 +36,7 @@ export function setActivityLogVisible(v: boolean): void { activityLogState.visib
 /** @deprecated Use getActivityLogVisible(). Kept for backward compat. */
 export { activityLogState };
 export const activityLogLines: ActivityLogEntry[] = [];
-export const maxActivityLines = 100;
-
-// ============================================
-// Credit state
-// ============================================
-export const CREDIT_API_BASE = 'https://api.lovable.dev';
-export const CREDIT_CACHE_TTL_S = 30;
+export { MAX_ACTIVITY_LINES as maxActivityLines, CREDIT_API_BASE, CREDIT_CACHE_TTL_S } from './constants';
 
 export const loopCreditState: LoopCreditState = {
   lastCheckedAt: null,
@@ -85,17 +79,10 @@ export function getLoopWsCheckedIds(): Record<string, boolean> { return wsSelect
 export function setLoopWsCheckedIds(v: Record<string, boolean>): void { wsSelectionState.checkedIds = v; }
 export function getLoopWsLastCheckedIdx(): number { return wsSelectionState.lastCheckedIdx; }
 export function setLoopWsLastCheckedIdx(v: number): void { wsSelectionState.lastCheckedIdx = v; }
-
 // ============================================
 // Auth state (CQ11: singleton)
 // ============================================
-export const SESSION_BRIDGE_KEYS = [
-  'marco_bearer_token',
-  'lovable-session-id',
-  'lovable-session-id-v2',
-  'lovable-session-id.id',
-  'ahk_bearer_token'
-];
+export { SESSION_BRIDGE_KEYS } from './constants';
 
 class SessionBridgeState {
   private _source = '';
@@ -116,7 +103,7 @@ export function setLastSessionBridgeSource(v: string): void { sessionBridgeState
 // ============================================
 // Toast constants (legacy — now delegated to SDK marco.notify)
 // ============================================
-export const toastContainerId = 'marco-toast-container';
+export { ID_TOAST_CONTAINER as toastContainerId } from './constants';
 
 // ============================================
 // Controller State (Step 2i: moved from macro-looping.ts IIFE)
@@ -129,8 +116,7 @@ migrateLegacyCache(); // one-time migration from old non-scoped keys
 const _cachedWsName = getCachedWorkspaceName();
 
 // loopCfg imported at shared-state.ts level — use config-validator defaults
-const _retryMaxRetries = 3;
-const _retryBackoffMs = 2000;
+import { RETRY_MAX_RETRIES as _retryMaxRetries, RETRY_BACKOFF_MS as _retryBackoffMs } from './constants';
 
 export const state: ControllerState = {
   running: false,

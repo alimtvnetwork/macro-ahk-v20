@@ -81,7 +81,7 @@ function extractTitleFromMarkdown(markdown: string): string {
 /*  Container Detection                                                */
 /* ------------------------------------------------------------------ */
 
-const SAVE_PROMPT_XPATH = '/html/body/div[3]/div/div[2]/main/div/div/div[1]/div/div[2]/div/form/div[2]/div';
+import { SAVE_PROMPT_XPATH } from '../constants';
 
 const SAVE_PROMPT_CSS_FALLBACKS = [
   'form div[class*="flex"] > div[type="button"]',

@@ -10,10 +10,7 @@
  */
 
 import type { MacroControllerConfig, MacroThemeRoot, ThemePreset } from './types';
-
-// ── Supported schema versions ──
-const SUPPORTED_CONFIG_SCHEMA = 1;
-const SUPPORTED_THEME_SCHEMA = 2;
+import { SUPPORTED_CONFIG_SCHEMA, SUPPORTED_THEME_SCHEMA } from './constants';
 
 // ── Validation warning collector ──
 const validationWarnings: string[] = [];

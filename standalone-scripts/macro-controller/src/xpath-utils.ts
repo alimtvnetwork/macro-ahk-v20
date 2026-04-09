@@ -12,7 +12,7 @@ import { CONFIG } from './shared-state';
 import { log, logSub } from './logging';
 import { domCache } from './dom-cache';
 
-const LOG_XPATHUTILS = '[XPathUtils.';
+import { LABEL_LOG_XPATHUTILS as LOG_XPATHUTILS } from './constants';
 
 // ============================================
 // XPathUtils integration
