@@ -12,7 +12,6 @@
  */
 
 import { VERSION } from './shared-state';
-import { log } from './logging';
 import { logError } from './error-utils';
 import { showToast } from './toast';
 
@@ -132,16 +131,16 @@ export interface NsPathMap {
   // _internal
   '_internal.resolvedToken': string;
   '_internal.destroyed': boolean;
-  '_internal.exportBundle': string | undefined;
-  '_internal.delegateComplete': (() => void) | undefined;
-  '_internal.updateStartStopBtn': ((running: boolean) => void) | undefined;
-  '_internal.updateAuthDiag': (() => void) | undefined;
-  '_internal.createUIWrapper': (() => void) | undefined;
-  '_internal.createUIManager': (() => object) | undefined;
-  '_internal.createWorkspaceManager': (() => object) | undefined;
-  '_internal.createAuthManager': (() => object) | undefined;
-  '_internal.createCreditManager': (() => object) | undefined;
-  '_internal.createLoopEngine': (() => object) | undefined;
+  '_internal.exportBundle': string;
+  '_internal.delegateComplete': () => void;
+  '_internal.updateStartStopBtn': (running: boolean) => void;
+  '_internal.updateAuthDiag': () => void;
+  '_internal.createUIWrapper': () => void;
+  '_internal.createUIManager': () => object;
+  '_internal.createWorkspaceManager': () => object;
+  '_internal.createAuthManager': () => object;
+  '_internal.createCreditManager': () => object;
+  '_internal.createLoopEngine': () => object;
   // api (top-level)
   'api.mc': MacroController;
   // api.loop

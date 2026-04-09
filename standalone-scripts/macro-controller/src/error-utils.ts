@@ -26,9 +26,9 @@ export function toErrorMessage(e: unknown): string {
 }
 
 /** Try to get the SDK namespace logger, returns undefined if unavailable. */
-function getLogger(): typeof RiseupAsiaMacroExt.Logger | undefined {
+function getLogger(): RiseupAsiaMacroExtNamespace['Logger'] | undefined {
   try {
-    return (typeof RiseupAsiaMacroExt !== 'undefined') ? RiseupAsiaMacroExt?.Logger : undefined;
+    return window.RiseupAsiaMacroExt?.Logger;
   } catch {
     return undefined;
   }

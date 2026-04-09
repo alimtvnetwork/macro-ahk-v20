@@ -13,7 +13,7 @@ import { toErrorMessage, logError } from './error-utils';
  * @see spec/06-coding-guidelines/02-typescript-immutability-standards.md
  */
 
-import { VERSION, BLOATED_KEY_PATTERNS, LOG_STORAGE_KEY, LOG_MAX_ENTRIES, WS_HISTORY_KEY, state, cLogDefault, cLogError, cLogInfo, cLogSuccess, cLogWarn, cLogDelegate, cLogCheck, cLogSkip } from './shared-state';
+import { VERSION, BLOATED_KEY_PATTERNS, LOG_STORAGE_KEY, LOG_MAX_ENTRIES, WS_HISTORY_KEY, CONFIG, state, cLogDefault, cLogError, cLogInfo, cLogSuccess, cLogWarn, cLogDelegate, cLogCheck, cLogSkip } from './shared-state';
 import { getByXPath } from './xpath-utils';
 import type { PersistedLogEntry } from './types';
 import { shouldLog, shouldConsole, shouldPersist, shouldActivityUi } from './log-manager';
@@ -131,7 +131,7 @@ export function getWsHistoryKey(): string {
  */
 export function getProjectNameFromDom(): string | null {
   try {
-    const node = getByXPath(state.XPATHS.PROJECT_NAME_XPATH);
+    const node = getByXPath(CONFIG.PROJECT_NAME_XPATH);
     if (node && node.textContent) {
       const name = node.textContent.trim();
       if (name.length > 0) {

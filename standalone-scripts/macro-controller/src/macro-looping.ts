@@ -35,7 +35,7 @@ import { CreditManager } from './core/CreditManager';
 import { LoopEngine } from './core/LoopEngine';
 import { UIManager } from './core/UIManager';
 import { WorkspaceManager } from './core/WorkspaceManager';
-import { nsWrite, initNamespace } from './api-namespace';
+import { nsWrite, getNamespace } from './api-namespace';
 import { updateWsSelectionUI, triggerLoopMoveFromSelection, setLoopWsNavIndex, populateLoopWorkspaceDropdown, renderBulkRenameDialog, getLoopWsCompactMode, setLoopWsCompactMode, getLoopWsFreeOnly, setLoopWsFreeOnly, getLoopWsNavIndex } from './ws-selection-ui';
 import { shouldInject } from './startup-domain-guard';
 import { runIdempotentCheck } from './startup-idempotent-check';
@@ -126,7 +126,7 @@ import { LABEL_DOMAIN_GUARD as DOMAIN_GUARD } from './constants';
   const uiManager = new UIManager();
   uiManager.setCreateFn(createUIWrapper);
   mc.registerUI(uiManager);
-  initNamespace();
+  getNamespace();
   nsWrite('api.mc', mc);
   installWindowFacade();
 

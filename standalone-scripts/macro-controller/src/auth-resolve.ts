@@ -227,7 +227,11 @@ export function getSessionCookieNames(): string[] {
 
     const names: string[] = [];
     for (const projectKey of Object.keys(root.Projects)) {
-      names.push(...extractSessionNamesFromProject(root.Projects[projectKey]));
+      const project = root.Projects[projectKey];
+      if (!project) {
+        continue;
+      }
+      names.push(...extractSessionNamesFromProject(project));
     }
 
     return Array.from(new Set(names.concat(FALLBACK_SESSION_COOKIE_NAMES)));

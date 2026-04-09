@@ -10,6 +10,8 @@
  * @see spec/12-devtools-and-injection/sdk-convention.md — SDK convention
  */
 
+import { NamespaceLogger } from "./logger";
+
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */

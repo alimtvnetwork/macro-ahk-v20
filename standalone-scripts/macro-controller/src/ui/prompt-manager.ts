@@ -8,7 +8,6 @@
 
 export {
   DEFAULT_PROMPTS,
-  DEFAULT_PASTE_XPATH,
   invalidatePromptCache,
   isPromptsCached,
   sendToExtension,
@@ -16,6 +15,7 @@ export {
   getPromptsConfig,
   setRevalidateContext,
 } from './prompt-loader';
+export { DEFAULT_PASTE_XPATH } from '../constants';
 
 export type { PromptContext, EditablePrompt } from './prompt-loader';
 

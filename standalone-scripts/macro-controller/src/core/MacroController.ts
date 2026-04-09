@@ -243,7 +243,7 @@ export class MacroController {
     ];
     let factoryStatus = '';
     try {
-      factoryStatus = factoryKeys.map(([nsPath, winKey]) => {
+      factoryStatus = factoryKeys.map(([nsPath]) => {
         const f = nsReadTyped(nsPath as keyof import('../api-namespace').NsPathMap);
         return `  ${nsPath}: ${f ? '✅ available' : '❌ missing'}`;
       }).join('\n');

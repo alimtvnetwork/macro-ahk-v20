@@ -19,6 +19,19 @@ import { LABEL_LOG_MACROLOOP_V as LOG_MACROLOOP_V } from './constants';
 
 type IdempotentResult = 'proceed' | 'abort';
 
+interface RecoverableController {
+  ui?: { create?: () => void; update?: () => void } | null;
+  registerUI?: (ui: unknown) => void;
+  registerAuth?: (a: unknown) => void;
+  registerCredits?: (c: unknown) => void;
+  registerLoop?: (l: unknown) => void;
+  registerWorkspaces?: (ws: unknown) => void;
+  auth?: unknown;
+  credits?: unknown;
+  loop?: unknown;
+  workspaces?: unknown;
+}
+
 /**
  * Run idempotent injection check.
  * Handles teardown/recovery as needed.
@@ -69,19 +82,7 @@ function handleGlobalsIntact(marker: HTMLElement): IdempotentResult {
 
 function attemptUiRecovery(marker: HTMLElement): IdempotentResult {
   try {
-    const existingController = nsReadTyped('api.mc') as {
-      ui?: { create?: () => void; update?: () => void } | null;
-      hasUI?: boolean;
-      registerUI?: (ui: unknown) => void;
-      registerAuth?: (a: unknown) => void;
-      registerCredits?: (c: unknown) => void;
-      registerLoop?: (l: unknown) => void;
-      registerWorkspaces?: (ws: unknown) => void;
-      auth?: unknown;
-      credits?: unknown;
-      loop?: unknown;
-      workspaces?: unknown;
-    } | null;
+    const existingController = (nsReadTyped('api.mc') as RecoverableController | undefined) ?? null;
 
     healAllManagers(existingController);
 
@@ -110,17 +111,17 @@ function attemptUiRecovery(marker: HTMLElement): IdempotentResult {
 }
 
 
-function healAllManagers(existingController: MacroControllerFacade): void {
+function healAllManagers(existingController: RecoverableController | null): void {
   if (!existingController) return;
 
   // Self-heal UIManager
   if (!existingController.ui) {
-    const savedUIFactory = nsRead('__createUIManager', '_internal.createUIManager') as (() => unknown) | null;
+    const savedUIFactory = nsReadTyped('_internal.createUIManager') as (() => unknown) | undefined;
     if (savedUIFactory && typeof existingController.registerUI === 'function') {
       console.warn(LOG_MACROLOOP_V + VERSION + '] Self-healing: auto-registering UIManager from persisted factory');
       existingController.registerUI(savedUIFactory());
     } else {
-      const savedCreateFn = nsRead('__createUIWrapper', '_internal.createUIWrapper') as (() => void) | null;
+      const savedCreateFn = nsReadTyped('_internal.createUIWrapper') as (() => void) | undefined;
       if (savedCreateFn && typeof existingController.registerUI === 'function') {
         console.warn(LOG_MACROLOOP_V + VERSION + '] Self-healing: auto-registering UIManager from persisted createFn (legacy)');
         const healedUI = new UIManager();
@@ -131,13 +132,13 @@ function healAllManagers(existingController: MacroControllerFacade): void {
   }
 
   // Self-heal other managers
-  healManager(existingController, 'AuthManager', '_internal.createAuthManager', '__createAuthManager',
+  healManager(existingController, 'AuthManager', '_internal.createAuthManager',
     () => existingController?.auth, existingController?.registerAuth);
-  healManager(existingController, 'CreditManager', '_internal.createCreditManager', '__createCreditManager',
+  healManager(existingController, 'CreditManager', '_internal.createCreditManager',
     () => existingController?.credits, existingController?.registerCredits);
-  healManager(existingController, 'LoopEngine', '_internal.createLoopEngine', '__createLoopEngine',
+  healManager(existingController, 'LoopEngine', '_internal.createLoopEngine',
     () => existingController?.loop, existingController?.registerLoop);
-  healManager(existingController, 'WorkspaceManager', '_internal.createWorkspaceManager', '__createWorkspaceManager',
+  healManager(existingController, 'WorkspaceManager', '_internal.createWorkspaceManager',
     () => existingController?.workspaces, existingController?.registerWorkspaces);
 }
 
@@ -145,7 +146,6 @@ function healManager(
   _controller: unknown,
   label: string,
   nsKey: string,
-  winKey: string,
   getter: () => unknown,
   register: ((m: unknown) => void) | undefined,
 ): void {
@@ -153,7 +153,7 @@ function healManager(
   let has = false;
   try { has = !!getter(); } catch (_e) { logSub('Self-heal getter threw for ' + label + ': ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
   if (!has) {
-    const factory = nsRead(winKey, nsKey) as (() => unknown) | null;
+    const factory = nsReadTyped(nsKey as keyof import('./api-namespace').NsPathMap) as (() => unknown) | undefined;
     if (factory) {
       console.warn(LOG_MACROLOOP_V + VERSION + '] Self-healing: auto-registering ' + label + ' from persisted factory');
       register(factory());

@@ -10,7 +10,7 @@
 import { log, logSub } from './logging';
 import { nsCallTyped, nsReadTyped, type NsPathMap } from './api-namespace';
 
-const NS_UPDATE_START_STOP: keyof NsPathMap = '_internal.updateStartStopBtn';
+const NS_UPDATE_START_STOP: '_internal.updateStartStopBtn' = '_internal.updateStartStopBtn';
 import { showToast, setStopLoopCallback } from './toast';
 import { LoopDirection } from './types';
 import { getByXPath } from './xpath-utils';

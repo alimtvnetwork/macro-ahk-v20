@@ -11,6 +11,7 @@
  */
 
 import { sendMessage } from "./bridge";
+import { NamespaceLogger } from "./logger";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */

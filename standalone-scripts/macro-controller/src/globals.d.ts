@@ -16,12 +16,6 @@ interface XPathUtilsAPI {
   reactClick: (el: Element, xpath?: string) => void;
 }
 
-interface MacroControllerFacade {
-  getInstance?: () => unknown;
-  hasInstance?: () => boolean;
-  [key: string]: unknown;
-}
-
 interface MarcoSDKPromptEntry {
   id?: string;
   name: string;
@@ -88,22 +82,6 @@ interface MarcoSDKAuthResolutionDiag {
   bridgeOutcome: 'hit' | 'timeout' | 'error' | 'skipped';
 }
 
-interface MarcoSDKAuthTokenUtils {
-  normalizeBearerToken(raw: string): string;
-  isJwtToken(raw: string): boolean;
-  isUsableToken(raw: string): boolean;
-  extractBearerTokenFromUnknown(raw: unknown): string;
-  scanSupabaseLocalStorage(
-    onFound?: (key: string, tokenLength: number) => void,
-    onScanError?: (error: unknown) => void,
-  ): string;
-  extractSupabaseTokenFromRaw(
-    key: string,
-    raw: string,
-    onFound?: (key: string, tokenLength: number) => void,
-  ): string;
-}
-
 interface MarcoSDK {
   auth?: {
     getToken(): Promise<string | null>;
@@ -144,6 +122,28 @@ interface MarcoSDK {
 }
 
 declare global {
+  interface MacroControllerFacade {
+    getInstance?: () => unknown;
+    hasInstance?: () => boolean;
+    [key: string]: unknown;
+  }
+
+  interface MarcoSDKAuthTokenUtils {
+    normalizeBearerToken(raw: string): string;
+    isJwtToken(raw: string): boolean;
+    isUsableToken(raw: string): boolean;
+    extractBearerTokenFromUnknown(raw: unknown): string;
+    scanSupabaseLocalStorage(
+      onFound?: (key: string, tokenLength: number) => void,
+      onScanError?: (error: unknown) => void,
+    ): string;
+    extractSupabaseTokenFromRaw(
+      key: string,
+      raw: string,
+      onFound?: (key: string, tokenLength: number) => void,
+    ): string;
+  }
+
   interface Window {
     __MARCO_CONFIG__: MacroControllerConfig;
     __MARCO_THEME__: MacroThemeRoot;
