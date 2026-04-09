@@ -11,9 +11,9 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.117.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.119.0 — Stable
 
-All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.117.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, and 4-tier CSP fallback. ESLint zero errors/warnings. All immediate workstream items complete.
+All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.119.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, 4-tier CSP fallback, and Cross-Project Sync (Phase 1 data layer + Phase 2 Library UI). ESLint zero errors/warnings. All immediate workstream items complete.
 
 ### 2026-04-09 Session
 
@@ -22,6 +22,9 @@ All critical AHK features implemented. 44 issue write-ups documented. 26 enginee
 - **Code quality**: Inverted nested ifs to guard clauses throughout auth-resolve.ts. Extracted `findTokenInCookies()` and `extractSessionNamesFromProject()` helpers.
 - **Backward compatibility**: auth-resolve.ts still exports all original functions as thin wrappers — 12+ consumer files unaffected.
 - **Cross-Project Sync Phase 1 (data layer)**: Added 4 new SQLite tables (`SharedAsset`, `AssetLink`, `ProjectGroup`, `ProjectGroupMember`), migration v7, 22 `LIBRARY_*` message types, library handler with sync engine, content hasher (SHA-256), and version manager. Wired into boot sequence.
+- **Cross-Project Sync Phase 2 (Library UI)**: Built `LibraryView.tsx` with `AssetCard` grid, `SyncBadge` (synced/pinned/detached states), `PromoteDialog` with conflict resolution (Replace/Fork/Cancel), `AssetDetailPanel` with content preview and linked projects. Added "Library" sidebar entry, lazy-loaded in Options page. Full mock data in preview adapter.
+- **Unit tests**: 45 tests across 3 files — `library-handler.test.ts` (26 tests: full CRUD + sync engine + import/export), `library-content-hasher.test.ts` (6 tests: SHA-256), `library-version-manager.test.ts` (13 tests: semver ops).
+- **Error logging spec**: Created `spec/10-macro-controller/ts-migration-v2/08-error-logging-and-type-safety.md` — 16 swallowed errors inventoried, `any` elimination plan (66 occurrences in 7 files), NamespaceLogger design.
 - **CI/CD pipeline spec**: Updated `spec/14-ci-cd/01-ci-cd-pipeline.md` and `spec/14-ci-cd/02-release-pipeline.md` to accurately reflect all build steps including source map verification, axios version guard, lint steps, and release asset packaging.
 - **Pipeline spec docs**: Added source map verification step to `release.yml` after build, before packaging. Reviewed and aligned all CI/CD spec docs with actual workflow files.
 
@@ -77,9 +80,9 @@ A marketplace for discovering, searching, and importing projects/scripts from a 
 
 Spec folder: `spec/05-chrome-extension/82-pstore-project-store/`
 
-### Priority 4: Cross-Project Sync (Spec Ready)
+### Priority 4: Cross-Project Sync — Phase 3 (In Progress)
 
-Shared asset library with synced/pinned/detached linking, project groups, version history, and import/export. Spec matured to READY v2.0.0 with conflict resolution, storage backend, and edge cases.
+Phase 1 (data layer) and Phase 2 (Library UI) complete. Remaining: ProjectGroup management UI, drag-to-assign projects, sync notifications, and E2E testing.
 
 Spec: `spec/13-features/cross-project-sync.md`
 
@@ -90,14 +93,15 @@ Spec: `spec/13-features/cross-project-sync.md`
 | Area | Highlights |
 |------|-----------|
 | **AHK Layer** | E2E tests (22 suites, 150+ cases), XPath self-healing, config schema validation, hot-reload, token expiry UI |
-| **Extension Releases** | v1.0–v2.98.0: injection, SQLite, auth, context menu, scaling, React unification, view transitions, cache gate, force run |
+| **Extension Releases** | v1.0–v2.119.0: injection, SQLite, auth, context menu, scaling, React unification, view transitions, cache gate, force run, cross-project sync |
 | **React UI Unification** | All 12 steps complete — content scripts moved, message client migrated, version bumped |
 | **Immediate Workstream** | Swagger API Explorer, Storage Browser (4 categories), Prompt Seeding, Overflow Menus, Project Files Panel, ZIP Export/Import |
 | **Injection Pipeline** | 7-stage + cache gate, 4-tier CSP fallback (MAIN Blob → USER_SCRIPT → ISOLATED Blob → ISOLATED Eval), Force Run (context menu + shortcut) |
+| **Cross-Project Sync** | Phase 1: data layer (4 tables, migration v7, 22 message types, sync engine). Phase 2: Library UI (AssetCard, SyncBadge, PromoteDialog). 45 unit tests. |
 | **UI Polish** | Tailwind hover micro-interactions (Task 4.1), direction-aware view transitions (Task 4.2) |
 | **Build & Docs** | Build verification (Task 2.1), CDP injection docs (Task 3.1), AI onboarding checklist (Task 3.2), LLM guide updated |
-| **Code Quality** | ESLint 1390 → 0 issues, SonarJS integration, TS migration v2 (6 phases) |
-| **Specs Matured** | S-056 Cross-Project Sync (READY v2.0.0), S-052 Prompt Click verification checklist |
+| **Code Quality** | ESLint 1390 → 0 issues, SonarJS integration, TS migration v2 (6 phases), error logging spec (16 swallowed errors inventoried) |
+| **Specs Matured** | S-056 Cross-Project Sync (READY v2.0.0), S-052 Prompt Click verification checklist, error logging & type safety spec |
 | **Issues Resolved** | #76–#90: cookie binding, hot-reload, globals migration, auth bridge, injection pipeline, IndexedDB cache, prompt click fix |
 
 ---
