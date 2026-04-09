@@ -99,6 +99,10 @@ jobs:
       - name: Run root lint
         run: pnpm run lint
 
+      - name: Run chrome-extension lint
+        working-directory: chrome-extension
+        run: pnpm run lint
+
       # ── Run test suite ────────────────────────────────────
       - name: Run tests
         run: pnpm run test
