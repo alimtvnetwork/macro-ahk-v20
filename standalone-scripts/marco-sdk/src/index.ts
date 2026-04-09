@@ -20,6 +20,7 @@ import { createFilesApi } from "./files";
 import { createUtilsApi } from "./utils";
 import { createPromptsApi } from "./prompts";
 import { createApiModule } from "./api";
+import { NamespaceLogger } from "./logger";
 /* ------------------------------------------------------------------ */
 /*  Build namespace                                                    */
 /* ------------------------------------------------------------------ */
@@ -36,7 +37,7 @@ const marco = Object.freeze({
     utils: Object.freeze(createUtilsApi()),
     prompts: Object.freeze(createPromptsApi()),
     api: Object.freeze(createApiModule()),
-    version: "2.98.0",
+    version: "2.119.1",
 });
 
 /* ------------------------------------------------------------------ */
@@ -53,7 +54,9 @@ const marco = Object.freeze({
 
 const win = window as unknown as Record<string, unknown>;
 if (!win.RiseupAsiaMacroExt) {
-    win.RiseupAsiaMacroExt = { Projects: {} };
+    win.RiseupAsiaMacroExt = { Projects: {}, Logger: NamespaceLogger };
+} else {
+    (win.RiseupAsiaMacroExt as Record<string, unknown>).Logger = NamespaceLogger;
 }
 
 
@@ -79,4 +82,4 @@ initXPathCache().catch(() => {
     /* silent — cache will be empty until first explicit call */
 });
 
-console.log("[marco-sdk] Riseup Macro SDK v2.98.0 initialized (RiseupAsiaMacroExt root created, api + utils + prompts + authUtils modules loaded)");
+console.log("[marco-sdk] Riseup Macro SDK v2.119.1 initialized (RiseupAsiaMacroExt root + Logger created, api + utils + prompts + authUtils modules loaded)");
