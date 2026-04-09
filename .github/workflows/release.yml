@@ -491,6 +491,7 @@ jobs:
             echo "| \`macro-controller-${VER}.zip\` | Standalone macro controller |"
             echo "| \`marco-sdk-${VER}.zip\` | SDK library |"
             echo "| \`xpath-${VER}.zip\` | XPath utility |"
+            echo "| \`prompts-${VER}.zip\` | Prompt templates |"
             echo "| \`changelog.md\` | Full project changelog |"
             echo "| \`install.ps1\` | PowerShell installer (Windows) |"
             echo "| \`install.sh\` | Bash installer (Linux/macOS) |"
