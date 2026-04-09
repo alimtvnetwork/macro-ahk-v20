@@ -19,6 +19,7 @@ import { bindGroupedKvDbManager } from "./handlers/grouped-kv-handler";
 import { bindFileStorageDbManager, onFileStorageChange } from "./handlers/file-storage-handler";
 import { bindStorageBrowserDbManager } from "./handlers/storage-browser-handler";
 import { bindUpdaterDbManager } from "./handlers/updater-handler";
+import { bindLibraryDbManager } from "./handlers/library-handler";
 import {
     rehydrateState,
     setCurrentSessionId,
@@ -241,6 +242,7 @@ function bindAllHandlers(manager: DbManager): void {
     });
     bindStorageBrowserDbManager(manager);
     bindUpdaterDbManager(manager);
+    bindLibraryDbManager(manager);
 }
 
 /**
