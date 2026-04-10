@@ -70,6 +70,8 @@ import {
   Settings2,
   Users,
   ArrowUpCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { ProjectGroupPanel } from "./ProjectGroupPanel";
 import { VersionHistory } from "./VersionHistory";
@@ -700,6 +702,7 @@ export function LibraryView() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<AssetType | "all">("all");
+  const [page, setPage] = useState(0);
   const [promoteOpen, setPromoteOpen] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<SharedAsset | null>(null);
   const [importExportLoading, setImportExportLoading] = useState(false);
@@ -797,12 +800,16 @@ export function LibraryView() {
     input.click();
   }, [loadData]);
 
-  // Filter assets
+  // Filter + paginate assets
+  const PAGE_SIZE = 50;
   const filtered = assets.filter(a => {
     if (filterType !== "all" && a.Type !== filterType) return false;
     if (search && !a.Name.toLowerCase().includes(search.toLowerCase()) && !a.Slug.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages - 1);
+  const paged = filtered.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
 
   const linksForAsset = (assetId: number) => links.filter(l => l.SharedAssetId === assetId);
 
@@ -894,12 +901,12 @@ export function LibraryView() {
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={e => { setSearch(e.target.value); setPage(0); }}
                 placeholder="Search assets…"
                 className="h-8 text-sm pl-8"
               />
             </div>
-            <Tabs value={filterType} onValueChange={v => setFilterType(v as AssetType | "all")}>
+            <Tabs value={filterType} onValueChange={v => { setFilterType(v as AssetType | "all"); setPage(0); }}>
               <TabsList className="h-8">
                 <TabsTrigger value="all" className="text-xs px-2 h-6">All</TabsTrigger>
                 <TabsTrigger value="prompt" className="text-xs px-2 h-6">Prompts</TabsTrigger>
@@ -932,18 +939,54 @@ export function LibraryView() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filtered.map(asset => (
-                <AssetCard
-                  key={asset.Id}
-                  asset={asset}
-                  links={linksForAsset(asset.Id)}
-                  onSync={handleSync}
-                  onDelete={handleDelete}
-                  onViewDetail={setSelectedAsset}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {paged.map(asset => (
+                  <AssetCard
+                    key={asset.Id}
+                    asset={asset}
+                    links={linksForAsset(asset.Id)}
+                    onSync={handleSync}
+                    onDelete={handleDelete}
+                    onViewDetail={setSelectedAsset}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-2">
+                  <p className="text-xs text-muted-foreground">
+                    Showing {safePage * PAGE_SIZE + 1}–{Math.min((safePage + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 px-2 text-xs gap-1"
+                      disabled={safePage === 0}
+                      onClick={() => setPage(p => Math.max(0, p - 1))}
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                      Previous
+                    </Button>
+                    <span className="text-xs text-muted-foreground px-2">
+                      Page {safePage + 1} of {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 px-2 text-xs gap-1"
+                      disabled={safePage >= totalPages - 1}
+                      onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                    >
+                      Next
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </TabsContent>
 
