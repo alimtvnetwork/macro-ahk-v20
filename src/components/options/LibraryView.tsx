@@ -814,6 +814,40 @@ export function LibraryView() {
   const safePage = Math.min(page, totalPages - 1);
   const paged = filtered.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+
+      if (e.key === "/" && !isInput && activeTab === "assets") {
+        e.preventDefault();
+        const searchInput = document.querySelector<HTMLInputElement>('[placeholder="Search assets…"]');
+        searchInput?.focus();
+        return;
+      }
+
+      if (e.key === "Escape" && isInput) {
+        (target as HTMLInputElement).blur();
+        return;
+      }
+
+      if (isInput) return;
+
+      if (e.key === "ArrowLeft" && safePage > 0) {
+        setPage(p => p - 1);
+      } else if (e.key === "ArrowRight" && safePage < totalPages - 1) {
+        setPage(p => p + 1);
+      }
+
+      if (e.key === "n" && !e.metaKey && !e.ctrlKey && activeTab === "assets") {
+        setPromoteOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [activeTab, safePage, totalPages]);
+
   const linksForAsset = (assetId: number) => links.filter(l => l.SharedAssetId === assetId);
 
   const handleLinkStateChange = useCallback(async (link: AssetLink, newState: LinkState) => {
