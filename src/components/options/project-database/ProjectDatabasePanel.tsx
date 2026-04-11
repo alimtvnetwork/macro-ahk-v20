@@ -87,6 +87,7 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
   }, [projectSlug]);
 
   const fetchUserDbCount = useCallback(async () => {
+    if (!projectSlug) return;
     try {
       const result = await sendMessage<{ isOk: boolean; rows?: Array<{ IsDefault?: number }> }>({
         type: "PROJECT_API",
@@ -106,6 +107,11 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
   }, [projectSlug]);
 
   const refreshTables = useCallback(async () => {
+    if (!projectSlug) {
+      setTables([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const result = await sendMessage<{ isOk: boolean; tables?: TableInfo[] }>({
