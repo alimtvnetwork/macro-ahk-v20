@@ -20,6 +20,8 @@ export interface ErrorModel {
   operation: string;
   /** Stack trace if available */
   stackTrace?: string;
+  /** Sourcemap-resolved stack trace if available */
+  resolvedStackTrace?: string;
   /** Nested error details if present */
   innerError?: string;
   /** Serialized context payload (safe request params) */
@@ -51,6 +53,7 @@ export function createErrorModel(
   const isError = error instanceof Error;
   const message = isError ? error.message : String(error);
   const stackTrace = isError ? error.stack : undefined;
+  const resolvedStackTrace = isError ? getResolvedStackTrace(error) : undefined;
   const causeValue = isError ? (error as unknown as { cause?: unknown }).cause : undefined;
   const innerError = causeValue ? String(causeValue) : undefined;
 
@@ -61,6 +64,7 @@ export function createErrorModel(
     source: context.source,
     operation: context.operation,
     stackTrace,
+    resolvedStackTrace,
     innerError,
     contextJson: context.contextJson,
     namespace: context.namespace,
@@ -106,9 +110,11 @@ export function formatErrorForClipboard(error: ErrorModel): string {
   if (error.contextJson) {
     lines.push("", "### Context", "```json", tryPrettyJson(error.contextJson), "```");
   }
-  // Always include stack trace when available — essential for debugging
+  if (error.resolvedStackTrace) {
+    lines.push("", "### Stack Trace (Source Mapped)", "```", error.resolvedStackTrace, "```");
+  }
   if (error.stackTrace) {
-    lines.push("", "### Stack Trace", "```", error.stackTrace, "```");
+    lines.push("", error.resolvedStackTrace ? "### Raw Stack Trace" : "### Stack Trace", "```", error.stackTrace, "```");
   }
 
   return lines.join("\n");
@@ -121,4 +127,9 @@ function tryPrettyJson(str: string): string {
   } catch {
     return str;
   }
+}
+
+function getResolvedStackTrace(error: Error): string | undefined {
+  const resolvedStack = (error as unknown as { resolvedStack?: string }).resolvedStack;
+  return typeof resolvedStack === "string" && resolvedStack.trim() ? resolvedStack : undefined;
 }

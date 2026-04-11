@@ -117,7 +117,7 @@ export function ErrorModal({ error, open, onOpenChange }: ErrorModalProps) {
             )}
 
             {/* Stack trace — collapsible */}
-            {error.stackTrace && (
+            {(error.resolvedStackTrace || error.stackTrace) && (
               <Collapsible open={showStack} onOpenChange={setShowStack}>
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 px-1.5">
@@ -127,7 +127,7 @@ export function ErrorModal({ error, open, onOpenChange }: ErrorModalProps) {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <pre className="text-[10px] bg-muted/50 rounded p-2 whitespace-pre-wrap break-all font-mono mt-1 max-h-40 overflow-auto">
-                    {error.stackTrace}
+                    {error.resolvedStackTrace ?? error.stackTrace}
                   </pre>
                 </CollapsibleContent>
               </Collapsible>

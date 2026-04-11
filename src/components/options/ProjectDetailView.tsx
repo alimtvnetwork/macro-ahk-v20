@@ -320,7 +320,7 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
 
             <TabsContent value="storage" className="mt-4" forceMount={activeTab === "storage" ? true : undefined}>
               <Suspense fallback={<TabFallback />}>
-                <ProjectStoragePanel projectId={project.id} projectSlug={project.slug || ""} />
+                <ProjectStoragePanel projectId={project.id} projectSlug={projectSlug} />
               </Suspense>
             </TabsContent>
 
