@@ -148,6 +148,11 @@ export function getProjectNameFromDom(): string | null {
 }
 
 export function getDisplayProjectName(): string {
+  // Priority 0: User-configured custom display name (settings)
+  if (state.customDisplayName) {
+    return state.customDisplayName;
+  }
+
   // Priority 1: API-resolved project name (source of truth)
   if (state.projectNameFromApi) {
     return state.projectNameFromApi;
