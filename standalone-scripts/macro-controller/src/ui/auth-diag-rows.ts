@@ -92,12 +92,23 @@ export function updateBridgeRow(deps: AuthDiagDeps, bridgeRow: DiagRowElements):
     bridgeRow.valEl.textContent = 'OK via ' + bridge.source;
     bridgeRow.valEl.style.color = '#4ade80';
     _removeHelpIcon(bridgeRow);
+  } else if (_isServiceWorkerSuspended(bridge.error || '')) {
+    bridgeRow.iconEl.textContent = '💤';
+    bridgeRow.valEl.textContent = 'Idle — service worker suspended';
+    bridgeRow.valEl.style.color = '#fbbf24';
+    _appendHelpIcon(bridgeRow, _getBridgeErrorHelp(bridge.error || ''));
   } else {
     bridgeRow.iconEl.textContent = '❌';
     bridgeRow.valEl.textContent = 'FAILED' + (bridge.error ? ' — ' + bridge.error : '');
     bridgeRow.valEl.style.color = '#f87171';
     _appendHelpIcon(bridgeRow, _getBridgeErrorHelp(bridge.error || ''));
   }
+}
+
+/** Check if the bridge error is due to normal MV3 service worker suspension. */
+function _isServiceWorkerSuspended(error: string): boolean {
+  const lower = error.toLowerCase();
+  return lower.includes('extension context invalidated') || lower.includes('receiving end does not exist');
 }
 
 /** Map known bridge errors to user-friendly help text. */
