@@ -25,6 +25,7 @@ export interface ChromeRef {
     };
     cookies?: {
         getAll: (details: Record<string, unknown>) => Promise<Array<{ name: string; value: string; domain: string; expirationDate?: number }>>;
+        get: (details: Record<string, unknown>) => Promise<{ name: string; value: string; domain: string; expirationDate?: number } | null>;
     };
     tabs?: {
         query: (queryInfo: Record<string, unknown>) => Promise<Array<{ id?: number; url?: string }>>;
