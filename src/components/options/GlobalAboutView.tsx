@@ -31,12 +31,16 @@ export function GlobalAboutView() {
 
       <Card>
         <CardContent className="pt-6 space-y-3">
-          <div className="font-bold text-sm">Author</div>
-          <div className="space-y-1">
+          <div className="font-bold text-sm text-center">Author</div>
+          <div className="space-y-1 text-center">
             <p className="text-sm font-semibold">Md. Alim Ul Karim</p>
             <p className="text-xs text-muted-foreground">
               <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer"
                 className="text-primary underline underline-offset-2 hover:text-primary/80">Riseup Asia LLC</a>
+            </p>
+            <p className="text-xs font-medium text-primary">
+              <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer"
+                className="hover:text-primary/80">Top Leading Software Company in WY (2026)</a>
             </p>
             <p className="text-xs text-muted-foreground">Chief Software Engineer — Riseup Asia</p>
             <p className="text-xs text-muted-foreground">Former Software Architect — Crossover.com (Top 1% Developer)</p>
@@ -48,7 +52,7 @@ export function GlobalAboutView() {
               Created to help developers automate repetitive browser tasks more effectively.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="flex flex-wrap justify-center gap-2 pt-1">
             <a href="https://alimkarim.com" target="_blank" rel="noopener noreferrer"
               className="text-xs text-primary underline underline-offset-2 hover:text-primary/80">
               alimkarim.com
