@@ -93,10 +93,25 @@ export function updateBridgeRow(deps: AuthDiagDeps, bridgeRow: DiagRowElements):
     bridgeRow.valEl.style.color = '#4ade80';
     _removeHelpIcon(bridgeRow);
   } else if (_isServiceWorkerSuspended(bridge.error || '')) {
-    bridgeRow.iconEl.textContent = '💤';
-    bridgeRow.valEl.textContent = 'Idle — service worker suspended';
+    // Auto-wake: show reconnecting state, then ping to wake service worker
+    bridgeRow.iconEl.textContent = '🔄';
+    bridgeRow.valEl.textContent = 'Reconnecting…';
     bridgeRow.valEl.style.color = '#fbbf24';
-    _appendHelpIcon(bridgeRow, _getBridgeErrorHelp(bridge.error || ''));
+    _removeHelpIcon(bridgeRow);
+
+    deps.wakeBridge().then(function (alive: boolean) {
+      if (alive) {
+        bridgeRow.iconEl.textContent = '✅';
+        bridgeRow.valEl.textContent = 'OK — reconnected after idle';
+        bridgeRow.valEl.style.color = '#4ade80';
+        _removeHelpIcon(bridgeRow);
+      } else {
+        bridgeRow.iconEl.textContent = '💤';
+        bridgeRow.valEl.textContent = 'Idle — service worker suspended';
+        bridgeRow.valEl.style.color = '#fbbf24';
+        _appendHelpIcon(bridgeRow, _getBridgeErrorHelp(bridge.error || ''));
+      }
+    });
   } else {
     bridgeRow.iconEl.textContent = '❌';
     bridgeRow.valEl.textContent = 'FAILED' + (bridge.error ? ' — ' + bridge.error : '');

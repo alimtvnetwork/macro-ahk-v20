@@ -26,6 +26,7 @@ import {
   recoverAuthOnce,
   refreshBearerTokenFromBestSource,
   resolveToken,
+  wakeBridge,
 } from '../auth';
 import { setRecordRefreshOutcome } from '../auth';
 import { showToast } from '../toast';
@@ -132,6 +133,7 @@ function _buildAuthDiagnostics(): { row: HTMLElement; updateAuthDiagRow: () => v
     getSessionCookieNames: getSessionCookieNames,
     getLastBridgeOutcome: getLastBridgeOutcome,
     refreshFromBestSource: refreshBearerTokenFromBestSource,
+    wakeBridge: wakeBridge,
   });
   nsWrite('_internal.updateAuthDiag', authDiagResult.updateAuthDiagRow);
   setRecordRefreshOutcome(recordRefreshOutcome);

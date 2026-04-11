@@ -39,6 +39,7 @@ export interface AuthDiagDeps {
   getSessionCookieNames: () => string[];
   getLastBridgeOutcome: () => { attempted: boolean; success: boolean; source: string; error: string };
   refreshFromBestSource: (callback: (token: string, source: string) => void) => void;
+  wakeBridge: () => Promise<boolean>;
 }
 
 export interface AuthDiagResult {

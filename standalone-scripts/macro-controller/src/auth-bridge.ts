@@ -381,3 +381,45 @@ export function isRelayActive(): Promise<boolean> {
     window.postMessage({ source: 'marco-controller', type: 'GET_TOKEN', requestId: pingId }, '*');
   });
 }
+
+/**
+ * Wake the service worker by sending a lightweight ping via the content script relay.
+ * If the relay responds (even with an error), the bridge outcome is refreshed.
+ * Returns true if the bridge is alive after the wake attempt.
+ */
+export function wakeBridge(): Promise<boolean> {
+  return new Promise(function (resolve) {
+    const pingId = 'wake-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+    let settled = false;
+
+    function finish(alive: boolean): void {
+      if (settled) return;
+      settled = true;
+      window.removeEventListener('message', onResponse);
+      if (timer) clearTimeout(timer);
+      resolve(alive);
+    }
+
+    function onResponse(event: MessageEvent): void {
+      if (!event.data || event.data.source !== 'marco-extension') return;
+      if (event.data.requestId !== pingId) return;
+
+      const payload = unwrapRelayPayload((event.data as { payload?: unknown }).payload);
+      const errorMsg = typeof payload.errorMessage === 'string' ? payload.errorMessage : '';
+
+      if (errorMsg && isTransportFailure(errorMsg)) {
+        // Bridge still broken after wake attempt
+        finish(false);
+      } else {
+        // Got a response — service worker is awake, refresh outcome
+        recordBridgeOutcome(true, 'extension-bridge[WAKE]');
+        finish(true);
+      }
+    }
+
+    window.addEventListener('message', onResponse);
+    window.postMessage({ source: 'marco-controller', type: 'GET_TOKEN', requestId: pingId }, '*');
+
+    const timer = setTimeout(function () { finish(false); }, 3000);
+  });
+}
