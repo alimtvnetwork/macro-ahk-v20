@@ -137,6 +137,7 @@ export const state: ControllerState = {
   workspaceName: _cachedWsName,
   projectNameFromApi: '',
   projectNameFromDom: '',
+  customDisplayName: (() => { try { return localStorage.getItem('marco_custom_display_name') || ''; } catch { return ''; } })(),
   hasFreeCredit: false,
   lastStatusCheck: 0,
   statusRefreshId: null,
