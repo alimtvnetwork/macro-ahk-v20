@@ -83,16 +83,17 @@ export function updateTitleBarWorkspaceName(): void {
     || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
   const projectName = getDisplayProjectName();
 
-  if (wsName) {
-    el.textContent = wsName;
-    el.style.color = '#fbbf24';
-    el.style.opacity = '1';
-    el.title = 'Workspace: ' + wsName + (projectName ? ' | Project: ' + projectName : '') + ' — click to re-detect';
-  } else if (projectName && projectName !== 'Unknown Project') {
+  // Title bar prioritizes project name; workspace shown in status bar (line 2)
+  if (projectName && projectName !== 'Unknown Project') {
     el.textContent = projectName;
     el.style.color = '#fbbf24';
+    el.style.opacity = '1';
+    el.title = 'Project: ' + projectName + (wsName ? ' | Workspace: ' + wsName : '') + ' — click to re-detect';
+  } else if (wsName) {
+    el.textContent = wsName;
+    el.style.color = '#fbbf24';
     el.style.opacity = '0.7';
-    el.title = 'Project: ' + projectName + ' (workspace not yet detected) — click to re-detect';
+    el.title = 'Workspace: ' + wsName + ' (project name not yet resolved) — click to re-detect';
   } else {
     el.textContent = '⟳ detecting…';
     el.style.color = '#9ca3af';

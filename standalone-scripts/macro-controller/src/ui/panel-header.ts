@@ -131,19 +131,18 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
   const wsNameEl = document.createElement('div');
   wsNameEl.id = 'loop-title-ws-name';
   wsNameEl.style.cssText = CssFragment.FontSize + tFontTiny + ';color:#fbbf24;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;cursor:pointer;border-bottom:1px dotted rgba(251,191,36,0.4);transition:color 0.15s;margin-right:4px;';
-  wsNameEl.title = 'Workspace name — click to re-detect';
+  wsNameEl.title = 'Project name — click to re-detect workspace';
 
+  const projectName = getDisplayProjectName();
   const wsName = state.workspaceName
     || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
-  const projectName = getDisplayProjectName();
 
-  if (wsName) {
-    wsNameEl.textContent = wsName;
-    wsNameEl.title = 'Workspace: ' + wsName + (projectName ? ' | Project: ' + projectName : '') + ' — click to re-detect';
-  } else if (projectName && projectName !== 'Unknown Project') {
+  if (projectName && projectName !== 'Unknown Project') {
     wsNameEl.textContent = projectName;
-    wsNameEl.title = 'Project: ' + projectName + ' (workspace not yet detected) — click to re-detect';
-    wsNameEl.style.opacity = '0.7';
+    wsNameEl.title = 'Project: ' + projectName + (wsName ? ' | Workspace: ' + wsName : '') + ' — click to re-detect';
+  } else if (wsName) {
+    wsNameEl.textContent = wsName;
+    wsNameEl.title = 'Workspace: ' + wsName + ' (project name not yet resolved) — click to re-detect';
   } else {
     const wsShimmer = document.createElement('span');
     wsShimmer.className = 'marco-skeleton';
@@ -165,8 +164,9 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
       wsNameEl.style.opacity = '1';
       const ws = state.workspaceName || '';
       const name = getDisplayProjectName();
-      wsNameEl.textContent = ws || name || '❌ unknown';
-      wsNameEl.title = (ws ? 'Workspace: ' + ws : '') + (name ? ' | Project: ' + name : '') + ' — click to re-detect';
+      // Title bar prioritizes project name; workspace shown in tooltip
+      wsNameEl.textContent = (name && name !== 'Unknown Project') ? name : ws || '❌ unknown';
+      wsNameEl.title = (name ? 'Project: ' + name : '') + (ws ? ' | Workspace: ' + ws : '') + ' — click to re-detect';
       if (ws) {
         log('Title bar: ✅ Workspace re-detected: "' + ws + '"', 'success');
         showToast('Workspace: ' + ws, 'success');
@@ -179,7 +179,8 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
       wsNameEl.textContent = '❌ failed';
       setTimeout(function() {
         wsNameEl.style.color = '#fbbf24';
-        wsNameEl.textContent = state.workspaceName || getDisplayProjectName() || '⟳ detecting…';
+        const fallbackName = getDisplayProjectName();
+        wsNameEl.textContent = (fallbackName && fallbackName !== 'Unknown Project') ? fallbackName : state.workspaceName || '⟳ detecting…';
       }, 2000);
     });
   };
