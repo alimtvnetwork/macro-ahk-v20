@@ -771,29 +771,32 @@ function buildSkipMessage(reason: SkipReason, scriptName: string): string {
  * health to DEGRADED so the user knows docs-style access won't work.
  */
 async function bootstrapNamespaceRoot(tabId: number): Promise<void> {
-    const bootstrapCode = `;(function(){
-if(!window.RiseupAsiaMacroExt){window.RiseupAsiaMacroExt={Projects:{}};}
-else if(!window.RiseupAsiaMacroExt.Projects){window.RiseupAsiaMacroExt.Projects={};}
-})();`;
-
     try {
-        // Attempt MAIN world ONLY — no fallback. This is a hard requirement.
+        // Execute directly in MAIN world — NO <script> element indirection.
+        // The previous approach created a <script textContent=...> tag which
+        // CSP blocks on pages with script-src restrictions (no 'unsafe-inline').
+        // chrome.scripting.executeScript({ func, world: "MAIN" }) already runs
+        // the func in the page's MAIN world, so we set the global directly.
         await chrome.scripting.executeScript({
             target: { tabId },
-            func: (code: string) => {
-                const s = document.createElement("script");
-                s.textContent = code;
-                (document.head || document.documentElement).appendChild(s);
-                s.remove();
+            func: () => {
+                const win = window as unknown as Record<string, unknown>;
+                if (!win.RiseupAsiaMacroExt) {
+                    win.RiseupAsiaMacroExt = { Projects: {} };
+                } else {
+                    const ext = win.RiseupAsiaMacroExt as Record<string, unknown>;
+                    if (!ext.Projects) {
+                        ext.Projects = {};
+                    }
+                }
             },
-            args: [bootstrapCode],
             world: "MAIN" as chrome.scripting.ExecutionWorld,
         });
         console.log("[injection:bootstrap] ✅ RiseupAsiaMacroExt root bootstrapped in MAIN world (tab %d)", tabId);
     } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        logCaughtError(BgLogTag.INJECTION_BOOTSTRAP, `CRITICAL — Failed to bootstrap namespace\n  Path: chrome.scripting.executeScript → tabId=${tabId}, world=MAIN\n  Missing: window.RiseupAsiaMacroExt root namespace object\n  Reason: ${msg} — CSP is blocking inline script execution in MAIN world`, err);
-        transitionHealth("DEGRADED", "RiseupAsiaMacroExt MAIN world bootstrap blocked by CSP");
+        logCaughtError(BgLogTag.INJECTION_BOOTSTRAP, `CRITICAL — Failed to bootstrap namespace\n  Path: chrome.scripting.executeScript → tabId=${tabId}, world=MAIN\n  Missing: window.RiseupAsiaMacroExt root namespace object\n  Reason: ${msg} — chrome.scripting.executeScript itself was blocked (not CSP — likely tab closed or restricted page)`, err);
+        transitionHealth("DEGRADED", "RiseupAsiaMacroExt MAIN world bootstrap failed");
 
         // Also inject a visible console warning into the page
         try {
@@ -801,10 +804,9 @@ else if(!window.RiseupAsiaMacroExt.Projects){window.RiseupAsiaMacroExt.Projects=
                 target: { tabId },
                 func: () => {
                     console.error(
-                        "%c[Marco Extension] ⚠️ MAIN world namespace blocked by CSP",
+                        "%c[Marco Extension] ⚠️ MAIN world namespace bootstrap failed",
                         "color: red; font-weight: bold; font-size: 14px;",
                         "\n\nRiseupAsiaMacroExt.Projects.* will NOT be available in the console.",
-                        "\nThis page's Content Security Policy is blocking inline script execution.",
                         "\n\nWorkaround: Use window.marco.* API directly (available in the injected script world).",
                     );
                 },
