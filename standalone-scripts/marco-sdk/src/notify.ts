@@ -110,9 +110,16 @@ function resolveColors(): Record<string, ToastColors> {
     let errorBorder = "#ef4444";
 
     try {
-        const themeRoot = (window as unknown as Record<string, Record<string, unknown>>).__MARCO_THEME__ || {};
+        interface ThemeStatusColors { errorBg?: string; errorPale?: string; warningBg?: string; successBg?: string }
+        interface ThemeToastGroup { bg?: string; border?: string; text?: string }
+        interface ThemeColors { warning?: string; success?: string; error?: string; status?: ThemeStatusColors; toast?: { info?: ThemeToastGroup } }
+        interface ThemePreset { colors?: ThemeColors }
+        interface ThemeRoot { presets?: Record<string, ThemePreset>; activePreset?: string; colors?: ThemeColors }
+
+        const themeRoot = ((window as unknown as Record<string, unknown>).__MARCO_THEME__ || {}) as ThemeRoot;
         const presets = themeRoot.presets || {};
-        const theme = presets.dark || presets[themeRoot.activePreset || "dark"] || themeRoot || {};
+        const activeKey = themeRoot.activePreset || "dark";
+        const theme: ThemePreset = presets.dark || presets[activeKey] || {};
         const TC = theme.colors || {};
         const TSt = TC.status || {};
         const TToast = TC.toast || {};
