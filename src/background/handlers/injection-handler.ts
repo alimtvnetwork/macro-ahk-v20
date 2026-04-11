@@ -99,6 +99,25 @@ export async function handleInjectScripts(
 
     const isForceRun = msg.forceReload === true;
 
+    // ── Early guard: skip injection on restricted URLs (chrome://, edge://, about:, etc.) ──
+    try {
+        const tab = await chrome.tabs.get(msg.tabId);
+        const tabUrl = tab.url ?? "";
+        if (/^(chrome|edge|brave|opera|about|devtools|chrome-extension):\/\//i.test(tabUrl)) {
+            console.warn("[injection] BLOCKED — cannot inject into restricted URL: %s (tabId=%d)", tabUrl, msg.tabId);
+            return {
+                results: (msg.scripts as Array<{ id?: string }>).map((s) => ({
+                    scriptId: s.id ?? "unknown",
+                    success: false,
+                    error: `Cannot inject into restricted URL: ${tabUrl}`,
+                })) as InjectionResult[],
+            };
+        }
+    } catch (tabErr) {
+        console.warn("[injection] BLOCKED — tab %d is inaccessible (closed or discarded): %s", msg.tabId, (tabErr as Error).message);
+        return { results: [] };
+    }
+
     console.log("[injection] ── PIPELINE START ── tabId=%d, raw scripts=%d, forceReload=%s", msg.tabId, msg.scripts.length, isForceRun);
 
     // Show loading spinner toast at start of injection
