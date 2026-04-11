@@ -1,0 +1,16 @@
+{
+  "version": "2.118.0",
+  "branch": "release/v2.118.0",
+  "sourceBranch": "main",
+  "commit": "9eedbcb4a61e3ac7d64965dcdc1d6c6855014292",
+  "tag": "v2.118.0",
+  "assets": [],
+  "changelog": [
+    "Version bump: 2.117.0 → 2.118.0 (all version files synced)",
+    "CI: root `pnpm install` now always uses `--no-frozen-lockfile` (fixes missing lockfile error)"
+  ],
+  "draft": false,
+  "preRelease": false,
+  "createdAt": "2026-04-11T06:34:42Z",
+  "isLatest": false
+}
