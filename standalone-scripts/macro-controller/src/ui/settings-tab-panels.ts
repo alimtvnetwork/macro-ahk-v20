@@ -22,6 +22,7 @@ import {
   cPrimaryLight,
   cSectionHeader,
   cWarning,
+  state,
 } from '../shared-state';
 import type { SettingsDeps, MakeFieldFn } from './settings-ui';
 import { CssFragment } from '../types';
@@ -282,11 +283,22 @@ export function buildGeneralPanel(
 ): GeneralPanelResult {
   const panel = document.createElement('div');
   const promptsCfg = getPromptsConfig();
+
+  // Custom display name field
+  const displayNameField = makeField('Custom Display Name', state.customDisplayName || '', {
+    hint: 'Override the project name shown in the title bar. Leave empty to auto-detect.',
+  });
+
   const fields = [
     { key: 'pasteTargetXPath', label: 'Chatbox / Paste Target XPath', value: promptsCfg.pasteTargetXPath || '' },
     { key: 'pasteTargetSelector', label: 'Chatbox CSS Selector (fallback)', value: promptsCfg.pasteTargetSelector || '' }
   ];
   const inputs: Record<string, HTMLInputElement> = {};
+
+  // Add custom display name as first input
+  inputs['customDisplayName'] = displayNameField.input;
+  panel.appendChild(displayNameField.row);
+
   fields.forEach(function(f) {
     const field = makeField(f.label, f.value);
     inputs[f.key] = field.input;
