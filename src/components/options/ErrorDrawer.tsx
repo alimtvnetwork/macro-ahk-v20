@@ -179,6 +179,16 @@ export function ErrorDrawer({ open, onOpenChange }: ErrorDrawerProps) {
     toast.success(`Copied ${errorEntries.length} entries`);
   }, [errorEntries]);
 
+  const handleClearAll = useCallback(async () => {
+    try {
+      await sendMessage({ type: "CLEAR_ERRORS" });
+      toast.success("All errors cleared");
+      await refresh();
+    } catch {
+      toast.error("Failed to clear errors");
+    }
+  }, [refresh]);
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[420px] sm:w-[480px] flex flex-col p-0">
