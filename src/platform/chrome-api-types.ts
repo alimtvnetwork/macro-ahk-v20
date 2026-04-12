@@ -8,19 +8,21 @@
 
 /* eslint-disable @typescript-eslint/no-namespace */
 
+import type { SerializableValue } from "./platform-adapter";
+
 export {};
 
 declare global {
     namespace chrome {
         namespace runtime {
             const id: string | undefined;
-            function sendMessage(message: Record<string, unknown>): Promise<unknown>;
+            function sendMessage(message: Record<string, SerializableValue>): Promise<SerializableValue>;
             function getURL(path: string): string;
         }
         namespace storage {
             namespace local {
-                function get(key: string): Promise<Record<string, unknown>>;
-                function set(items: Record<string, unknown>): Promise<void>;
+                function get(key: string): Promise<Record<string, SerializableValue>>;
+                function set(items: Record<string, SerializableValue>): Promise<void>;
                 function remove(key: string): Promise<void>;
             }
         }

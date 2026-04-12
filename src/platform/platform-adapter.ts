@@ -5,16 +5,25 @@
  * in both the Chrome extension and the browser preview.
  */
 
+/** Primitive values allowed in message payloads and storage. */
+export type SerializableValue =
+    | string
+    | number
+    | boolean
+    | null
+    | SerializableValue[]
+    | { [key: string]: SerializableValue };
+
 /** Typed message payload sent to the background service worker. */
 export interface MessagePayload {
     type: string;
-    [key: string]: unknown;
+    [key: string]: SerializableValue;
 }
 
 /** Platform-agnostic storage interface. */
 export interface PlatformStorage {
-    get(key: string): Promise<unknown>;
-    set(key: string, value: unknown): Promise<void>;
+    get<T extends SerializableValue = SerializableValue>(key: string): Promise<T | null>;
+    set<T extends SerializableValue = SerializableValue>(key: string, value: T): Promise<void>;
     remove(key: string): Promise<void>;
 }
 
@@ -35,7 +44,7 @@ export interface PlatformAdapter {
     readonly target: "extension" | "preview";
 
     /** Sends a typed message to the background service worker. */
-    sendMessage<T = unknown>(message: MessagePayload): Promise<T>;
+    sendMessage<T = void>(message: MessagePayload): Promise<T>;
 
     /** Platform-scoped storage operations. */
     readonly storage: PlatformStorage;
