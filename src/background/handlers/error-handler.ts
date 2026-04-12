@@ -13,6 +13,7 @@ import type { MessageRequest, OkResponse } from "../../shared/messages";
 import type { DbManager } from "../db-manager";
 import { setHealthState } from "../state-manager";
 import { getCurrentSessionId } from "./logging-handler";
+import type { SqlRow } from "./handler-types";
 
 let dbManager: DbManager | null = null;
 
@@ -41,8 +42,8 @@ function getErrorsDb() {
 }
 
 /** Collects all rows from a prepared statement. */
-function collectRows(stmt: { step(): boolean; getAsObject(): unknown; free(): void }): unknown[] {
-    const rows: unknown[] = [];
+function collectRows(stmt: { step(): boolean; getAsObject(): SqlRow; free(): void }): SqlRow[] {
+    const rows: SqlRow[] = [];
     while (stmt.step()) {
         rows.push(stmt.getAsObject());
     }
@@ -55,7 +56,7 @@ function collectRows(stmt: { step(): boolean; getAsObject(): unknown; free(): vo
 /* ------------------------------------------------------------------ */
 
 /** Returns currently active (unresolved) errors. */
-export async function handleGetActiveErrors(): Promise<{ errors: unknown[] }> {
+export async function handleGetActiveErrors(): Promise<{ errors: SqlRow[] }> {
     const db = getErrorsDb();
     const errors = queryUnresolvedErrors(db);
     const hasErrors = errors.length > 0;
@@ -66,7 +67,7 @@ export async function handleGetActiveErrors(): Promise<{ errors: unknown[] }> {
 }
 
 /** Queries unresolved error rows for the current session, newest first. */
-function queryUnresolvedErrors(db: ReturnType<typeof getErrorsDb>): unknown[] {
+function queryUnresolvedErrors(db: ReturnType<typeof getErrorsDb>): SqlRow[] {
     const currentSessionId = getCurrentSessionId();
 
     if (currentSessionId === null) {

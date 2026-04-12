@@ -9,6 +9,7 @@
  * @see .lovable/memory/features/projects/configuration-seeding.md — Configuration seeding
  */
 
+import type { MessageRequest } from "../../shared/messages";
 import { initProjectDb } from "../project-db-manager";
 import {
     readConfigFromDb,
@@ -17,16 +18,15 @@ import {
     CONFIG_TABLES_SCHEMA,
 } from "../config-seeder";
 
-interface ConfigMsg {
-    type: string;
-    project: string;  // slug
+interface ConfigMsg extends MessageRequest {
+    project: string;
     section?: string;
     key?: string;
     value?: string;
     valueType?: string;
 }
 
-export async function handleProjectConfigRead(msg: unknown): Promise<unknown> {
+export async function handleProjectConfigRead(msg: MessageRequest): Promise<{ isOk: boolean; rows?: ReturnType<typeof readConfigFromDb>; errorMessage?: string }> {
     const m = msg as ConfigMsg;
     if (!m.project) return { isOk: false, errorMessage: "Missing project slug" };
 
@@ -35,7 +35,7 @@ export async function handleProjectConfigRead(msg: unknown): Promise<unknown> {
     return { isOk: true, rows };
 }
 
-export async function handleProjectConfigUpdate(msg: unknown): Promise<unknown> {
+export async function handleProjectConfigUpdate(msg: MessageRequest): Promise<{ isOk: boolean; errorMessage?: string }> {
     const m = msg as ConfigMsg;
     if (!m.project || !m.section || !m.key)
         return { isOk: false, errorMessage: "Missing project, section, or key" };
@@ -45,7 +45,7 @@ export async function handleProjectConfigUpdate(msg: unknown): Promise<unknown> 
     return { isOk: ok };
 }
 
-export async function handleProjectConfigReconstruct(msg: unknown): Promise<unknown> {
+export async function handleProjectConfigReconstruct(msg: MessageRequest): Promise<{ isOk: boolean; config?: ReturnType<typeof reconstructConfigFromDb>; errorMessage?: string }> {
     const m = msg as ConfigMsg;
     if (!m.project) return { isOk: false, errorMessage: "Missing project slug" };
 

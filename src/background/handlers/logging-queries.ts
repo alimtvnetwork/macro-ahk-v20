@@ -7,15 +7,17 @@
  * @see spec/05-chrome-extension/06-logging-architecture.md — Logging architecture
  */
 
+import type { SqlRow } from "./handler-types";
+
 /* ------------------------------------------------------------------ */
 /*  Row Collection                                                     */
 /* ------------------------------------------------------------------ */
 
 /** Collects all rows from a prepared statement into an array. */
 export function collectRows(
-    stmt: { step(): boolean; getAsObject(): unknown; free(): void },
-): unknown[] {
-    const rows: unknown[] = [];
+    stmt: { step(): boolean; getAsObject(): SqlRow; free(): void },
+): SqlRow[] {
+    const rows: SqlRow[] = [];
 
     while (stmt.step()) {
         rows.push(stmt.getAsObject());
@@ -32,7 +34,7 @@ export function collectRows(
 /** Statement result shape from sql.js exec(). */
 interface ExecResult {
     columns: string[];
-    values: unknown[][];
+    values: Array<Array<string | number | Uint8Array | null>>;
 }
 
 /** Allowed table names for dynamic SQL queries (defense-in-depth). */
@@ -59,15 +61,15 @@ export function countTable(
 /** Prepared statement interface for sql.js. */
 interface PreparedDb {
     prepare(sql: string): {
-        bind(params: unknown[]): void;
+        bind(params: Array<string | number | null>): void;
         step(): boolean;
-        getAsObject(): unknown;
+        getAsObject(): SqlRow;
         free(): void;
     };
 }
 
 /** Queries logs filtered by source. */
-export function queryWithSource(db: PreparedDb, source: string, limit: number): unknown[] {
+export function queryWithSource(db: PreparedDb, source: string, limit: number): SqlRow[] {
     const stmt = db.prepare(
         "SELECT * FROM Logs WHERE Source = ? ORDER BY Timestamp DESC LIMIT ?",
     );
@@ -76,7 +78,7 @@ export function queryWithSource(db: PreparedDb, source: string, limit: number): 
 }
 
 /** Queries all logs without filter. */
-export function queryAll(db: PreparedDb, limit: number): unknown[] {
+export function queryAll(db: PreparedDb, limit: number): SqlRow[] {
     const stmt = db.prepare("SELECT * FROM Logs ORDER BY Timestamp DESC LIMIT ?");
     stmt.bind([limit]);
     return collectRows(stmt);
