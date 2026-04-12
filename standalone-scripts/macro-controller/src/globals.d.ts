@@ -124,36 +124,34 @@ interface MarcoSDK {
     getSource(): Promise<string>;
     refresh(): Promise<string | null>;
     isExpired(): Promise<boolean>;
-    getJwtPayload(): Promise<Record<string, unknown> | null>;
+    getJwtPayload(): Promise<Record<string, string | number | boolean | null> | null>;
     getLastAuthDiag(): MarcoSDKAuthResolutionDiag | null;
   };
   authUtils?: MarcoSDKAuthTokenUtils;
   api?: MarcoSDKApiModule;
   notify?: {
-    toast(message: string, level?: string, opts?: Record<string, unknown>): void;
+    toast(message: string, level?: string, opts?: { duration?: number; position?: string }): void;
     dismissAll(): void;
-    onError(callback: (error: unknown) => void): void;
-    getRecentErrors(): unknown[];
+    onError(callback: (error: Error | string) => void): void;
+    getRecentErrors(): Array<Error | string>;
     _setStopLoopCallback(fn: () => void): void;
     _setVersion(v: string): void;
-    [key: string]: unknown;
   };
   prompts?: MarcoSDKPromptsApi;
   utils?: {
     withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T>;
-    withRetry<T>(fn: () => Promise<T>, options: Record<string, unknown>): Promise<T>;
-    createConcurrencyLock<T>(): unknown;
+    withRetry<T>(fn: () => Promise<T>, options: { maxRetries?: number; backoffMs?: number }): Promise<T>;
+    createConcurrencyLock<T>(): { acquire: () => Promise<void>; release: () => void };
     delay(ms: number): Promise<void>;
-    pollUntil<T>(condition: () => T | null | undefined | false, options?: Record<string, unknown>): Promise<T | null>;
-    waitForElement(options: Record<string, unknown>): Promise<Element | null>;
-    debounce<A extends unknown[]>(fn: (...args: A) => void, ms: number): (...args: A) => void;
-    throttle<A extends unknown[]>(fn: (...args: A) => void, ms: number): (...args: A) => void;
+    pollUntil<T>(condition: () => T | null | undefined | false, options?: { intervalMs?: number; timeoutMs?: number }): Promise<T | null>;
+    waitForElement(options: { selector?: string; xpath?: string; timeoutMs?: number }): Promise<Element | null>;
+    debounce<A extends Array<string | number | boolean>>(fn: (...args: A) => void, ms: number): (...args: A) => void;
+    throttle<A extends Array<string | number | boolean>>(fn: (...args: A) => void, ms: number): (...args: A) => void;
     safeJsonParse<T>(json: string, fallback: T): T;
     formatDuration(ms: number): string;
     uid(prefix?: string): string;
     deepClone<T>(value: T): T;
-    isObject(value: unknown): value is Record<string, unknown>;
-    [key: string]: unknown;
+    isObject(value: string | number | boolean | object | null | undefined): value is Record<string, string | number | boolean | null>;
   };
 }
 

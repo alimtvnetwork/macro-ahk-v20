@@ -29,7 +29,6 @@ export interface ColumnValidation {
   format?: string;
   pattern?: string;
   flags?: string;
-  [key: string]: unknown;
 }
 
 export interface ForeignKeyDef {

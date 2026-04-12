@@ -81,7 +81,8 @@ export interface MarkViewedResponse {
   project?: { workspace_id?: string; name?: string; title?: string };
   name?: string;
   title?: string;
-  [key: string]: unknown;
+  status?: string;
+  message?: string;
 }
 
 /** Credit Balance API Response (GET /workspaces/{id}/credit-balance) */
@@ -92,7 +93,7 @@ export interface CreditBalanceResponse {
   daily_remaining: number;
   daily_limit: number;
   total_billing_period_used: number;
-  expiring_grants: unknown[];
+  expiring_grants: Array<{ amount: number; expires_at: string }>;
   grant_type_balances: GrantTypeBalance[];
 }
 
@@ -117,5 +118,9 @@ export interface DiagnosticDump {
   workspaceFromApi: boolean;
   currentWsName: string;
   currentWsId: string;
-  [key: string]: unknown;
+  loopRunning: boolean;
+  tokenSource: string;
+  creditBarVisible: boolean;
+  lastCreditCheckAt: string;
+  lastError: string;
 }

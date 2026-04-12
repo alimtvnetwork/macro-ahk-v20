@@ -45,5 +45,6 @@ export interface WorkspaceMatchCandidate {
 export interface ExtensionResponse {
   entries?: Array<{ key: string; value: string }>;
   isOk?: boolean;
-  [key: string]: unknown;
+  errorMessage?: string;
+  status?: string;
 }
