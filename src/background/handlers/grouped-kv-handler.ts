@@ -9,6 +9,7 @@
 
 import type { Database as SqlJsDatabase } from "sql.js";
 import type { DbManager } from "../db-manager";
+import type { MessageRequest } from "../../shared/messages";
 
 let dbManager: DbManager | null = null;
 
@@ -25,8 +26,8 @@ function markDirty(): void {
     dbManager?.markDirty();
 }
 
-export async function handleGkvGet(msg: unknown): Promise<{ value: string | null }> {
-    const { group, key } = msg as { group: string; key: string };
+export async function handleGkvGet(msg: MessageRequest): Promise<{ value: string | null }> {
+    const { group, key } = msg as MessageRequest & { group: string; key: string };
     const db = getDb();
     const result = db.exec(
         "SELECT Value FROM GroupedKv WHERE GroupName = ? AND Key = ?",
@@ -39,8 +40,8 @@ export async function handleGkvGet(msg: unknown): Promise<{ value: string | null
     return { value };
 }
 
-export async function handleGkvSet(msg: unknown): Promise<{ isOk: true }> {
-    const { group, key, value } = msg as { group: string; key: string; value?: string };
+export async function handleGkvSet(msg: MessageRequest): Promise<{ isOk: true }> {
+    const { group, key, value } = msg as MessageRequest & { group: string; key: string; value?: string };
     const db = getDb();
     db.run(
         `INSERT OR REPLACE INTO GroupedKv (GroupName, Key, Value, UpdatedAt) VALUES (?, ?, ?, datetime('now'))`,
@@ -50,8 +51,8 @@ export async function handleGkvSet(msg: unknown): Promise<{ isOk: true }> {
     return { isOk: true };
 }
 
-export async function handleGkvDelete(msg: unknown): Promise<{ isOk: true }> {
-    const { group, key } = msg as { group: string; key: string };
+export async function handleGkvDelete(msg: MessageRequest): Promise<{ isOk: true }> {
+    const { group, key } = msg as MessageRequest & { group: string; key: string };
     const db = getDb();
     db.run("DELETE FROM GroupedKv WHERE GroupName = ? AND Key = ?", [group, key]);
     markDirty();
@@ -59,9 +60,9 @@ export async function handleGkvDelete(msg: unknown): Promise<{ isOk: true }> {
 }
 
 export async function handleGkvList(
-    msg: unknown,
+    msg: MessageRequest,
 ): Promise<{ entries: Array<{ key: string; value: string }> }> {
-    const { group } = msg as { group: string };
+    const { group } = msg as MessageRequest & { group: string };
     const db = getDb();
     const stmt = db.prepare(
         "SELECT Key, Value FROM GroupedKv WHERE GroupName = ? ORDER BY Key ASC",
@@ -76,8 +77,8 @@ export async function handleGkvList(
     return { entries };
 }
 
-export async function handleGkvClearGroup(msg: unknown): Promise<{ isOk: true }> {
-    const { group } = msg as { group: string };
+export async function handleGkvClearGroup(msg: MessageRequest): Promise<{ isOk: true }> {
+    const { group } = msg as MessageRequest & { group: string };
     const db = getDb();
     db.run("DELETE FROM GroupedKv WHERE GroupName = ?", [group]);
     markDirty();

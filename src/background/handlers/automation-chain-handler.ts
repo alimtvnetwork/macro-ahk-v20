@@ -15,6 +15,7 @@ import {
 } from "../project-db-manager";
 
 import { type MessageRequest } from "../../shared/messages";
+import type { SqlRow } from "./handler-types";
 
 /* ------------------------------------------------------------------ */
 /*  Schema                                                             */
@@ -37,20 +38,40 @@ CREATE TABLE IF NOT EXISTS AutomationChains (
 `;
 
 /* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
+/*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
-async function getProjectChainDb(projectSlug: string) {
-    if (!hasProjectDb(projectSlug)) {
-        await initProjectDb(projectSlug);
-    }
-    const db = getProjectDb(projectSlug);
-    db.run(CHAIN_TABLE_DDL);
-    return db;
+interface ChainMessage extends MessageRequest {
+    project?: string;
+    chain?: ChainInput;
+    chainId?: string;
+    chains?: ChainInput[];
 }
 
-function resolveProject(msg: Record<string, unknown>): string {
-    return (msg.project as string) || "__system__";
+interface ChainInput {
+    id?: string;
+    projectId?: string;
+    name?: string;
+    slug?: string;
+    steps?: JsonValue[];
+    triggerType?: string;
+    triggerConfig?: JsonValue;
+    enabled?: boolean;
+}
+
+type JsonValue = string | number | boolean | null | undefined | JsonValue[] | { [key: string]: JsonValue };
+
+interface ChainOutput {
+    id: string;
+    projectId: string;
+    name: string;
+    slug: string;
+    steps: JsonValue[];
+    triggerType: string;
+    triggerConfig: JsonValue;
+    enabled: boolean;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface ChainRow {
@@ -66,15 +87,32 @@ interface ChainRow {
     UpdatedAt: string;
 }
 
-function rowToChain(r: Record<string, unknown>) {
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+async function getProjectChainDb(projectSlug: string) {
+    if (!hasProjectDb(projectSlug)) {
+        await initProjectDb(projectSlug);
+    }
+    const db = getProjectDb(projectSlug);
+    db.run(CHAIN_TABLE_DDL);
+    return db;
+}
+
+function resolveProject(msg: ChainMessage): string {
+    return msg.project || "__system__";
+}
+
+function rowToChain(r: SqlRow): ChainOutput {
     return {
         id: String(r.Id),
         projectId: (r.ProjectId as string) || "default",
         name: r.Name as string,
         slug: r.Slug as string,
-        steps: (() => { try { return JSON.parse(r.StepsJson as string); } catch { return []; } })(),
+        steps: (() => { try { return JSON.parse(r.StepsJson as string) as JsonValue[]; } catch { return []; } })(),
         triggerType: (r.TriggerType as string) || "manual",
-        triggerConfig: (() => { try { return JSON.parse((r.TriggerConfigJson as string) || "{}"); } catch { return {}; } })(),
+        triggerConfig: (() => { try { return JSON.parse((r.TriggerConfigJson as string) || "{}") as JsonValue; } catch { return {}; } })(),
         enabled: !!(r.Enabled as number),
         createdAt: r.CreatedAt as string,
         updatedAt: r.UpdatedAt as string,
@@ -85,13 +123,13 @@ function rowToChain(r: Record<string, unknown>) {
 /*  GET_AUTOMATION_CHAINS                                              */
 /* ------------------------------------------------------------------ */
 
-export async function handleGetAutomationChains(msg?: MessageRequest): Promise<unknown> {
-    const project = resolveProject((msg ?? {}) as Record<string, unknown>);
+export async function handleGetAutomationChains(msg?: MessageRequest): Promise<{ isOk: true; chains: ChainOutput[] }> {
+    const project = resolveProject((msg ?? {}) as ChainMessage);
     const db = await getProjectChainDb(project);
     const stmt = db.prepare("SELECT * FROM AutomationChains ORDER BY Id");
-    const chains: unknown[] = [];
+    const chains: ChainOutput[] = [];
     while (stmt.step()) {
-        chains.push(rowToChain(stmt.getAsObject()));
+        chains.push(rowToChain(stmt.getAsObject() as SqlRow));
     }
     stmt.free();
     return { isOk: true, chains };
@@ -101,10 +139,10 @@ export async function handleGetAutomationChains(msg?: MessageRequest): Promise<u
 /*  SAVE_AUTOMATION_CHAIN (create or update)                           */
 /* ------------------------------------------------------------------ */
 
-export async function handleSaveAutomationChain(msg: MessageRequest): Promise<unknown> {
-    const raw = msg as unknown as Record<string, unknown>;
+export async function handleSaveAutomationChain(msg: MessageRequest): Promise<{ isOk: boolean; errorMessage?: string }> {
+    const raw = msg as ChainMessage;
     const project = resolveProject(raw);
-    const chain = raw.chain as Record<string, unknown>;
+    const chain = raw.chain;
     if (!chain || !chain.name || !chain.slug) {
         return { isOk: false, errorMessage: "Chain name and slug are required" };
     }
@@ -112,9 +150,9 @@ export async function handleSaveAutomationChain(msg: MessageRequest): Promise<un
     const db = await getProjectChainDb(project);
     const stepsJson = JSON.stringify(chain.steps ?? []);
     const triggerConfigJson = JSON.stringify(chain.triggerConfig ?? {});
-    const triggerType = (chain.triggerType as string) || "manual";
+    const triggerType = chain.triggerType || "manual";
     const enabled = chain.enabled !== false ? 1 : 0;
-    const projectId = (chain.projectId as string) || "default";
+    const projectId = chain.projectId || "default";
 
     if (chain.id) {
         // Update
@@ -143,10 +181,10 @@ export async function handleSaveAutomationChain(msg: MessageRequest): Promise<un
 /*  DELETE_AUTOMATION_CHAIN                                            */
 /* ------------------------------------------------------------------ */
 
-export async function handleDeleteAutomationChain(msg: MessageRequest): Promise<unknown> {
-    const raw = msg as unknown as Record<string, unknown>;
+export async function handleDeleteAutomationChain(msg: MessageRequest): Promise<{ isOk: boolean; errorMessage?: string }> {
+    const raw = msg as ChainMessage;
     const project = resolveProject(raw);
-    const chainId = raw.chainId as string;
+    const chainId = raw.chainId;
     if (!chainId) {
         return { isOk: false, errorMessage: "Missing chainId" };
     }
@@ -161,10 +199,10 @@ export async function handleDeleteAutomationChain(msg: MessageRequest): Promise<
 /*  TOGGLE_AUTOMATION_CHAIN                                            */
 /* ------------------------------------------------------------------ */
 
-export async function handleToggleAutomationChain(msg: MessageRequest): Promise<unknown> {
-    const raw = msg as unknown as Record<string, unknown>;
+export async function handleToggleAutomationChain(msg: MessageRequest): Promise<{ isOk: boolean; errorMessage?: string }> {
+    const raw = msg as ChainMessage;
     const project = resolveProject(raw);
-    const chainId = raw.chainId as string;
+    const chainId = raw.chainId;
     if (!chainId) {
         return { isOk: false, errorMessage: "Missing chainId" };
     }
@@ -182,10 +220,10 @@ export async function handleToggleAutomationChain(msg: MessageRequest): Promise<
 /*  IMPORT_AUTOMATION_CHAINS (bulk insert)                             */
 /* ------------------------------------------------------------------ */
 
-export async function handleImportAutomationChains(msg: MessageRequest): Promise<unknown> {
-    const raw = msg as unknown as Record<string, unknown>;
+export async function handleImportAutomationChains(msg: MessageRequest): Promise<{ isOk: boolean; imported?: number; errorMessage?: string }> {
+    const raw = msg as ChainMessage;
     const project = resolveProject(raw);
-    const chains = raw.chains as Array<Record<string, unknown>>;
+    const chains = raw.chains;
     if (!Array.isArray(chains)) {
         return { isOk: false, errorMessage: "Expected chains array" };
     }
@@ -194,13 +232,13 @@ export async function handleImportAutomationChains(msg: MessageRequest): Promise
     let imported = 0;
 
     for (const c of chains) {
-        const name = (c.name as string) || "Imported";
-        const slug = (c.slug as string) || `chain-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        const name = c.name || "Imported";
+        const slug = c.slug || `chain-${Date.now()}-${Math.random().toString(36).slice(2)}`;
         const stepsJson = JSON.stringify(c.steps ?? []);
-        const triggerType = (c.triggerType as string) || "manual";
+        const triggerType = c.triggerType || "manual";
         const triggerConfigJson = JSON.stringify(c.triggerConfig ?? {});
         const enabled = c.enabled !== false ? 1 : 0;
-        const projectId = (c.projectId as string) || "default";
+        const projectId = c.projectId || "default";
 
         db.run(
             `INSERT INTO AutomationChains (ProjectId, Name, Slug, StepsJson, TriggerType, TriggerConfigJson, Enabled)

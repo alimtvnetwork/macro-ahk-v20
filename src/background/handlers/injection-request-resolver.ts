@@ -16,6 +16,7 @@ import { ensureBuiltinScriptsExist } from "../builtin-script-guard";
 import { persistInjectionWarn } from "../injection-diagnostics";
 import { readAllProjects } from "./project-helpers";
 import { logBgWarnError, BgLogTag } from "../bg-logger";
+import type { JsonRecord } from "./handler-types";
 
 /** Executable script plus its resolved config and theme JSON payloads. */
 export interface PreparedInjectionScript {
@@ -35,7 +36,7 @@ export interface InjectionResolveResult {
 /** Resolves popup-provided scripts into executable injection inputs. */
 // eslint-disable-next-line max-lines-per-function -- resolver with diagnostics logging
 export async function resolveInjectionRequestScripts(
-    scripts: unknown[],
+    scripts: Array<ScriptEntry | InjectableScript | Record<string, string | number | boolean | null>>,
 ): Promise<InjectionResolveResult> {
     const hasOnlyProjectEntries = scripts.length > 0 && scripts.every(isProjectScriptEntry);
 
@@ -61,7 +62,7 @@ export async function resolveInjectionRequestScripts(
         );
         for (let i = 0; i < scripts.length; i++) {
             if (!isInjectableScript(scripts[i])) {
-                const raw = scripts[i] as Record<string, unknown>;
+                const raw = scripts[i] as Record<string, string | number | boolean | null>;
                 skipped.push({
                     scriptId: String(raw?.id ?? raw?.path ?? `unknown-${i}`),
                     scriptName: String(raw?.name ?? raw?.path ?? `script-${i}`),
@@ -124,16 +125,16 @@ function buildScriptBindings(entries: ScriptEntry[]): ScriptBindingResolved[] {
 }
 
 /** Returns true when the value is a stored project script entry. */
-function isProjectScriptEntry(value: unknown): value is ScriptEntry {
+function isProjectScriptEntry(value: ScriptEntry | InjectableScript | Record<string, string | number | boolean | null>): value is ScriptEntry {
     return typeof value === "object"
         && value !== null
         && typeof (value as ScriptEntry).path === "string"
         && typeof (value as ScriptEntry).order === "number"
-        && !("code" in (value as Record<string, unknown>));
+        && !("code" in value);
 }
 
 /** Returns true when the value is already an executable injection script. */
-function isInjectableScript(value: unknown): value is InjectableScript {
+function isInjectableScript(value: ScriptEntry | InjectableScript | Record<string, string | number | boolean | null>): value is InjectableScript {
     return typeof value === "object"
         && value !== null
         && typeof (value as InjectableScript).id === "string"
