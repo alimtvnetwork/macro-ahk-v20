@@ -44,7 +44,9 @@ export function addActivityLog(time: string | null, level: string, message: stri
 
 function _buildLogEntryHtml(entry: ActivityLogEntry): string {
   let color = cLogDefault;
-  if (entry.level === 'ERROR' || entry.level === 'error') color = cLogError;
+  if (entry.level === 'ERROR' || entry.level === 'error') {
+    color = cLogError;
+  }
   else if (entry.level === 'INFO') color = cLogInfo;
   else if (entry.level === 'success') color = cLogSuccess;
   else if (entry.level === 'DEBUG') color = cLogDebug;
@@ -67,7 +69,9 @@ function _buildLogEntryHtml(entry: ActivityLogEntry): string {
 
 export function updateActivityLogUI(didTrim: boolean): void {
   const logContainer = document.getElementById('loop-activity-log-content');
-  if (!logContainer) return;
+  if (!logContainer) {
+    return;
+  }
 
   const total = activityLogLines.length;
   if (total === 0) {
@@ -87,13 +91,17 @@ export function updateActivityLogUI(didTrim: boolean): void {
   }
 
   const newCount = total - logRenderState.count;
-  if (newCount <= 0) return;
+  if (newCount <= 0) {
+    return;
+  }
 
   const frag = document.createDocumentFragment();
   for (let j = total - 1; j >= total - newCount; j--) {
     const div = document.createElement('div');
     div.innerHTML = _buildLogEntryHtml(activityLogLines[j]);
-    if (div.firstChild) frag.appendChild(div.firstChild);
+    if (div.firstChild) {
+      frag.appendChild(div.firstChild);
+    }
   }
   logContainer.insertBefore(frag, logContainer.firstChild);
   logRenderState.count = total;

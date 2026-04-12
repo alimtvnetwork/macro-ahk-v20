@@ -32,7 +32,9 @@ function normalizeWorkspaceName(name: string): string {
 
 function findExactWorkspaceMatch(name: string, wsList: WorkspaceCredit[]): WorkspaceCredit | null {
   const normalized = normalizeWorkspaceName(name);
-  if (!normalized || !wsList || wsList.length === 0) return null;
+  if (!normalized || !wsList || wsList.length === 0) {
+    return null;
+  }
 
   for (const ws of wsList) {
     const wsName = (ws.fullName || ws.name || '') as string;
@@ -62,7 +64,9 @@ function restoreOnFailure(
 }
 
 function syncCurrentWsFromName(wsList: WorkspaceCredit[]): void {
-  if (!state.workspaceName || !wsList || wsList.length === 0) return;
+  if (!state.workspaceName || !wsList || wsList.length === 0) {
+    return;
+  }
   const matched = findExactWorkspaceMatch(state.workspaceName, wsList);
   if (matched) { loopCreditState.currentWs = matched; }
 }

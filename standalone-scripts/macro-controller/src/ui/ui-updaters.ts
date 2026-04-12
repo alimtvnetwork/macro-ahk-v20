@@ -72,12 +72,16 @@ export function updateProjectNameDisplay(): void {
  */
 export function updateTitleBarWorkspaceName(): void {
   const el = document.getElementById('loop-title-ws-name');
-  if (!el) return;
+  if (!el) {
+    return;
+  }
 
   clearSkeletons(el);
 
   const syncIcon = document.getElementById('loop-ws-sync-icon');
-  if (syncIcon) syncIcon.remove();
+  if (syncIcon) {
+    syncIcon.remove();
+  }
 
   const wsName = state.workspaceName
     || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
@@ -119,7 +123,9 @@ export function updateButtons(): void {
  * Button click animation — color flash only, no scale (v1.56).
  */
 export function animateBtn(btn: HTMLElement): void {
-  if (!btn) return;
+  if (!btn) {
+    return;
+  }
   const origBg = btn.style.background || '';
   btn.style.transition = 'filter 100ms ease, background 150ms ease, opacity 100ms ease';
   btn.style.filter = 'brightness(0.75)';
@@ -138,10 +144,14 @@ export function animateBtn(btn: HTMLElement): void {
  * Consistent hover feedback — color transition only, no scale/translate (v1.56).
  */
 export function attachButtonHoverFx(btn: HTMLElement): void {
-  if (!btn) return;
+  if (!btn) {
+    return;
+  }
   btn.style.transition = 'filter 150ms ease, background-color 150ms ease, box-shadow 150ms ease';
   btn.onmouseenter = function() {
-    if ((btn as HTMLButtonElement).disabled) return;
+    if ((btn as HTMLButtonElement).disabled) {
+      return;
+    }
     btn.style.filter = 'brightness(1.12)';
     btn.style.boxShadow = '0 2px 8px rgba(0,0,0,.3)';
   };
@@ -181,9 +191,13 @@ export function destroyPanel(): void {
   try { nsCall('__loopStop', 'api.loop.stop'); } catch (e) { log('destroyPanel: loop stop failed — ' + (e instanceof Error ? e.message : String(e)), 'warn'); }
 
   const marker = document.getElementById(IDS.SCRIPT_MARKER);
-  if (marker) marker.remove();
+  if (marker) {
+    marker.remove();
+  }
   const container = document.getElementById(IDS.CONTAINER);
-  if (container) container.remove();
+  if (container) {
+    container.remove();
+  }
 
   log('Teardown complete — re-inject script to restore controller', 'success');
 }

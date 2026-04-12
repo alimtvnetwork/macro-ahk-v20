@@ -60,7 +60,9 @@ export function clickByXPath(xpath: string, label: string): boolean {
 }
 
 export function insertTextIntoElement(xpath: string, text: string, label: string): boolean {
-  if (!xpath || !text) return false;
+  if (!xpath || !text) {
+    return false;
+  }
   const el = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue as HTMLElement;
   if (!el) { log('Auto-Attach: Element not found for ' + label + ': ' + xpath, 'warn'); return false; }
   el.focus();

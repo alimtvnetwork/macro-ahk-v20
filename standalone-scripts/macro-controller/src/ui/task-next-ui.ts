@@ -143,7 +143,9 @@ function findButtonByXPath(): HTMLElement | null {
   try {
     const result = document.evaluate(taskNextState.settings.buttonXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
     const btn = result.singleNodeValue;
-    if (btn && (btn as HTMLElement).tagName && !(btn as HTMLButtonElement).disabled) return btn as HTMLElement;
+    if (btn && (btn as HTMLElement).tagName && !(btn as HTMLButtonElement).disabled) {
+      return btn as HTMLElement;
+    }
   } catch (e) { log('Task Next: XPath evaluation failed — ' + (e instanceof Error ? e.message : String(e)), 'warn'); }
   return null;
 }
@@ -164,10 +166,14 @@ function findButtonBySelectors(): HTMLElement | null {
   for (const selector of sendSelectors) {
     try {
       const el = document.querySelector(selector);
-      if (!el) continue;
+      if (!el) {
+        continue;
+      }
 
       const btn = el.tagName === 'BUTTON' ? el : el.closest('button');
-      if (!btn || (btn as HTMLButtonElement).disabled) continue;
+      if (!btn || (btn as HTMLButtonElement).disabled) {
+        continue;
+      }
 
       log('Task Next: Found submit button via selector: ' + selector, 'info');
       return btn as HTMLElement;

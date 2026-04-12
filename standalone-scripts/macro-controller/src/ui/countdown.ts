@@ -36,22 +36,32 @@ export function createCountdownCtx(
 
 /** Resolve countdown color based on seconds remaining. */
 function countdownColor(secs: number): string {
-  if (secs <= 10) return '#ef4444';
-  if (secs <= 30) return '#f59e0b';
+  if (secs <= 10) {
+    return '#ef4444';
+  }
+  if (secs <= 30) {
+    return '#f59e0b';
+  }
   return '#fbbf24';
 }
 
 /** Resolve progress bar color based on percentage. */
 function progressColor(pct: number): string {
-  if (pct > 80) return '#ef4444';
-  if (pct > 50) return '#f59e0b';
+  if (pct > 80) {
+    return '#ef4444';
+  }
+  if (pct > 50) {
+    return '#f59e0b';
+  }
   return '#10b981';
 }
 
 /** Update inline countdown text element if present. */
 function updateInlineCountdown(secs: number): void {
   const inlineEl = document.getElementById('marco-countdown-text');
-  if (!inlineEl) return;
+  if (!inlineEl) {
+    return;
+  }
   inlineEl.textContent = secs + 's';
   inlineEl.style.color = countdownColor(secs);
 }
@@ -59,7 +69,9 @@ function updateInlineCountdown(secs: number): void {
 /** Update progress bar element if present. */
 function updateProgressBar(secs: number): void {
   const barEl = document.getElementById('marco-progress-bar');
-  if (!barEl) return;
+  if (!barEl) {
+    return;
+  }
   const totalSec = Math.floor(TIMING.LOOP_INTERVAL / 1000);
   const pct = totalSec > 0 ? Math.max(0, Math.min(100, ((totalSec - secs) / totalSec) * 100)) : 0;
   barEl.style.width = pct + '%';
@@ -72,7 +84,9 @@ export function startCountdownTick(ctx: CountdownCtx) {
   ctx.countdownTickId = setInterval(function() {
     if (!state.running) { stopCountdownTick(ctx); return; }
     const secs = state.countdown;
-    if (secs === ctx.lastCountdownVal) return;
+    if (secs === ctx.lastCountdownVal) {
+      return;
+    }
     ctx.lastCountdownVal = secs;
     ctx.countdownBadge.textContent = secs + 's';
     ctx.countdownBadge.style.color = countdownColor(secs);

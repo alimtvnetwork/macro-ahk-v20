@@ -165,7 +165,9 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
 
   setInterval(function () {
     const isVisible = diagBody.style.display !== 'none';
-    if (isVisible) updateAuthDiagRow();
+    if (isVisible) {
+      updateAuthDiagRow();
+    }
   }, 10000);
 
   return { row: col.section, updateAuthDiagRow };

@@ -73,7 +73,9 @@ function saveStateBeforeReinject(): void {
 export function restoreReinjectState(): { restored: boolean; loopWasRunning: boolean } {
   try {
     const tsStr = localStorage.getItem(REINJECT_KEYS.timestamp);
-    if (!tsStr) return { restored: false, loopWasRunning: false };
+    if (!tsStr) {
+      return { restored: false, loopWasRunning: false }
+    }
 
     const ts = parseInt(tsStr, 10);
     const age = Date.now() - ts;
@@ -102,7 +104,9 @@ export function restoreReinjectState(): { restored: boolean; loopWasRunning: boo
 export function checkAndRestoreReinjectState(): { restored: boolean; loopWasRunning: boolean; wsName: string; wsId: string } {
   try {
     const tsStr = localStorage.getItem(REINJECT_KEYS.timestamp);
-    if (!tsStr) return { restored: false, loopWasRunning: false, wsName: '', wsId: '' };
+    if (!tsStr) {
+      return { restored: false, loopWasRunning: false, wsName: '', wsId: '' }
+    }
 
     const ts = parseInt(tsStr, 10);
     const age = Date.now() - ts;
@@ -123,8 +127,12 @@ export function checkAndRestoreReinjectState(): { restored: boolean; loopWasRunn
     }
 
     log('Re-inject: restored state (ws=' + wsName + ', loopWas=' + loopWasRunning + ')', 'success');
-    if (wsName) state.workspaceName = wsName;
-    if (wsId && loopCreditState.currentWs) loopCreditState.currentWs.id = wsId;
+    if (wsName) {
+      state.workspaceName = wsName;
+    }
+    if (wsId && loopCreditState.currentWs) {
+      loopCreditState.currentWs.id = wsId;
+    }
 
     if (loopWasRunning) {
       showToast('Script re-injected. Loop was running — click Start to resume.', 'info');

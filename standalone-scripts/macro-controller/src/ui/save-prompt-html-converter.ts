@@ -75,7 +75,9 @@ function convertPreBlock(element: HTMLElement, fallbackText: string): string {
   if (hasCodeElement && codeElement.className) {
     const languageMatch = codeElement.className.match(/language-(\w+)/);
     const hasLanguageMatch = languageMatch !== null;
-    if (hasLanguageMatch) language = languageMatch[1];
+    if (hasLanguageMatch) {
+      language = languageMatch[1];
+    }
   }
 
   const content = hasCodeElement ? codeElement.textContent : fallbackText;

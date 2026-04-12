@@ -28,7 +28,9 @@ export function timingEnd(
   detail?: string,
 ): void {
   const p = _pending.get(phase);
-  if (!p) return;
+  if (!p) {
+    return;
+  }
   _pending.delete(phase);
   _entries.push({
     phase,

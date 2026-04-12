@@ -51,12 +51,16 @@ export interface WsDropdownResult {
 /** Scroll to and highlight the current workspace item in the list. */
 function scrollToCurrentItem(setLoopWsNavIndex: (v: number) => void, label: string): void {
   const listEl = document.getElementById(ID_LOOP_WS_LIST);
-  if (!listEl) return;
+  if (!listEl) {
+    return;
+  }
   const currentItem = listEl.querySelector('.loop-ws-item[data-ws-current="true"]');
   if (currentItem) {
     currentItem.scrollIntoView({ block: 'center', behavior: 'smooth' });
     const idx = parseInt(currentItem.getAttribute('data-ws-idx') || '', 10);
-    if (!isNaN(idx)) setLoopWsNavIndex(idx);
+    if (!isNaN(idx)) {
+      setLoopWsNavIndex(idx);
+    }
     log('✅ Focused & selected: ' + label, 'success');
   } else {
     log('Focus Current: name "' + label + '" not found in rendered list', 'warn');
@@ -347,9 +351,13 @@ function _buildWsSearchInput(
   wsSearchInput.oninput = function() { populateLoopWorkspaceDropdown(); };
   wsSearchInput.onkeydown = function(e: KeyboardEvent) {
     const listEl = document.getElementById(ID_LOOP_WS_LIST);
-    if (!listEl) return;
+    if (!listEl) {
+      return;
+    }
     const items = listEl.querySelectorAll('.loop-ws-item');
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      return;
+    }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setLoopWsNavIndex(getLoopWsNavIndex() < items.length - 1 ? getLoopWsNavIndex() + 1 : 0);

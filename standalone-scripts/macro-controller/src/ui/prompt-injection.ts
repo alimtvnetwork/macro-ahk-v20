@@ -30,7 +30,9 @@ function getByXPathAsElement(xpath: string): Element | null {
 
 // CQ16: Extracted from openPromptCreationModal closure
 function getSelectedCategory(catSelect: HTMLSelectElement, catCustomInput: HTMLInputElement): string {
-  if (catSelect.value === '__custom__') return catCustomInput.value.trim();
+  if (catSelect.value === '__custom__') {
+    return catCustomInput.value.trim();
+  }
   return catSelect.value;
 }
 
@@ -44,7 +46,9 @@ interface FileHandlerRefs {
 
 // CQ16: Extracted from openPromptCreationModal closure
 function handleFile(file: File, refs: FileHandlerRefs): void {
-  if (!file) return;
+  if (!file) {
+    return;
+  }
   const ext = (file.name || '').split('.').pop()?.toLowerCase() || '';
   if (!['md', 'txt', 'prompt'].includes(ext)) { showPasteToast('❌ Unsupported file type: .' + ext, true); return; }
   if (file.size > 50 * 1024) { showPasteToast('❌ File too large (max 50KB)', true); return; }
@@ -82,7 +86,9 @@ function onEscHandler(overlay: HTMLElement): (e: KeyboardEvent) => void {
  */
 export function openPromptCreationModal(_ctx: PromptContext, _taskNextDeps: TaskNextDeps, editPrompt: EditablePrompt | null, prefillData?: { name?: string; text?: string; category?: string }): void {
   const existing = document.getElementById('marco-prompt-modal');
-  if (existing) existing.remove();
+  if (existing) {
+    existing.remove();
+  }
 
   const isEdit = !!(editPrompt && editPrompt.id);
   const initialData = isEdit ? editPrompt : (prefillData || {});
@@ -176,7 +182,9 @@ function _buildTitleAndContent(body: HTMLElement, initialData: Record<string, un
   charCount.style.cssText = 'text-align:right;font-size:10px;color:' + cPanelFgDim + ';margin-top:2px;margin-bottom:8px;';
   charCount.textContent = '0 chars';
   contentArea.oninput = function() { charCount.textContent = contentArea.value.length + ' chars'; };
-  if (initialData.text) charCount.textContent = contentArea.value.length + ' chars';
+  if (initialData.text) {
+    charCount.textContent = contentArea.value.length + ' chars';
+  }
   body.appendChild(charCount);
 
   return { titleInput, contentArea, charCount };
@@ -196,7 +204,9 @@ function _buildFileDropZone(body: HTMLElement, contentArea: HTMLTextAreaElement,
   dropZone.addEventListener('drop', function(e: DragEvent) {
     e.preventDefault(); e.stopPropagation();
     (this as HTMLElement).style.borderColor = CSS_BORDER_PRIMARY; (this as HTMLElement).style.background = 'transparent';
-    if (e.dataTransfer && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0], fileRefs);
+    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+      handleFile(e.dataTransfer.files[0], fileRefs);
+    }
   });
   body.appendChild(dropZone);
   body.appendChild(fileInput);
@@ -264,8 +274,12 @@ function _buildCategorySelect(initialData: Record<string, unknown>): { catWrap: 
 
   catSelect.onchange = function() {
     catCustomInput.style.display = catSelect.value === '__custom__' ? 'block' : 'none';
-    if (catSelect.value !== '__custom__') catCustomInput.value = '';
-    if (catSelect.value === '__custom__') catCustomInput.focus();
+    if (catSelect.value !== '__custom__') {
+      catCustomInput.value = '';
+    }
+    if (catSelect.value === '__custom__') {
+      catCustomInput.focus();
+    }
   };
 
   const initialCat = ((initialData.category as string) || '').trim();
@@ -327,8 +341,12 @@ function _buildPromptModalFooter(
 
     const category = getSelectedCategory(catSelect, catCustomInput);
     const promptPayload: Record<string, string> = { name: name, text: text, source: 'user' };
-    if (category) promptPayload.category = category;
-    if (isEdit && editPrompt!.id) promptPayload.id = editPrompt!.id;
+    if (category) {
+      promptPayload.category = category;
+    }
+    if (isEdit && editPrompt!.id) {
+      promptPayload.id = editPrompt!.id;
+    }
 
     sendToExtension('SAVE_PROMPT', { prompt: promptPayload }).then(function(resp: Record<string, unknown>) {
       (saveBtn as HTMLButtonElement).disabled = false;

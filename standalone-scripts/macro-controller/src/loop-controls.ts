@@ -172,12 +172,16 @@ function scheduleTimersAfterCheck(checkPromise: Promise<void> | undefined): void
 // startLoop
 // ============================================
 export function startLoop(direction: LoopDirection | string): boolean {
-  if (!validateLoopPreconditions()) return false;
+  if (!validateLoopPreconditions()) {
+    return false;
+  }
 
   initLoopState(direction);
   logLoopStartInfo();
 
-  if (!verifyControllerInjection()) return false;
+  if (!verifyControllerInjection()) {
+    return false;
+  }
 
   mc().updateUI();
   handleAuthAndStartCheck();
@@ -189,7 +193,9 @@ export function startLoop(direction: LoopDirection | string): boolean {
 // stopLoop
 // ============================================
 export function stopLoop(): boolean {
-  if (!state.running) return false;
+  if (!state.running) {
+    return false;
+  }
 
   state.running = false;
   state.isDelegating = false;
@@ -227,7 +233,9 @@ function refreshStatusStopped(): void {
 
 function triggerBackgroundCreditFetch(): void {
   const token = resolveToken();
-  if (!token) return;
+  if (!token) {
+    return;
+  }
 
   logSub('No workspace + no credits — triggering background credit fetch', 1);
   fetchLoopCreditsAsync(false).then(function() {
@@ -293,7 +301,9 @@ export function refreshStatus(): void {
 }
 
 export function startStatusRefresh(): void {
-  if (state.statusRefreshId) return;
+  if (state.statusRefreshId) {
+    return;
+  }
   const intervalMs = state.running ? (TIMING.WS_CHECK_INTERVAL || 5000) : 30000;
   log('Starting workspace auto-check (every ' + (intervalMs / 1000) + 's)', 'success');
   state.statusRefreshId = setInterval(refreshStatus, intervalMs);

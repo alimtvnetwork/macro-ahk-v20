@@ -64,11 +64,15 @@ const nsCache = new NamespaceCache();
  * Safe to call multiple times — idempotent.
  */
 export function getNamespace(): MacroControllerNamespace | null {
-  if (nsCache.ns) return nsCache.ns;
+  if (nsCache.ns) {
+    return nsCache.ns;
+  }
 
   try {
     const root = RiseupAsiaMacroExt;
-    if (!root || !root.Projects) return null;
+    if (!root || !root.Projects) {
+      return null;
+    }
 
     if (!root.Projects.MacroController) {
       root.Projects.MacroController = {};
@@ -77,17 +81,37 @@ export function getNamespace(): MacroControllerNamespace | null {
     const mc = root.Projects.MacroController as Record<string, Record<string, unknown>>;
 
     // Ensure sub-objects exist
-    if (!mc.meta) mc.meta = {};
-    if (!mc.api) mc.api = {};
+    if (!mc.meta) {
+      mc.meta = {}
+    }
+    if (!mc.api) {
+      mc.api = {}
+    }
     const api = mc.api as Record<string, unknown>;
-    if (!api.loop) api.loop = {};
-    if (!api.credits) api.credits = {};
-    if (!api.auth) api.auth = {};
-    if (!api.workspace) api.workspace = {};
-    if (!api.ui) api.ui = {};
-    if (!api.config) api.config = {};
-    if (!api.autoAttach) api.autoAttach = {};
-    if (!mc._internal) mc._internal = {};
+    if (!api.loop) {
+      api.loop = {}
+    }
+    if (!api.credits) {
+      api.credits = {}
+    }
+    if (!api.auth) {
+      api.auth = {}
+    }
+    if (!api.workspace) {
+      api.workspace = {}
+    }
+    if (!api.ui) {
+      api.ui = {}
+    }
+    if (!api.config) {
+      api.config = {}
+    }
+    if (!api.autoAttach) {
+      api.autoAttach = {}
+    }
+    if (!mc._internal) {
+      mc._internal = {}
+    }
 
     // Set meta
     (mc.meta as Record<string, string>).version = VERSION;
@@ -116,7 +140,9 @@ export function getNamespace(): MacroControllerNamespace | null {
 export function dualWrite(_windowKey: string, nsPath: string, value: unknown): void {
   // Write to namespace
   const ns = getNamespace();
-  if (!ns) return;
+  if (!ns) {
+    return;
+  }
 
   const parts = nsPath.split('.');
   let obj: Record<string, unknown> = ns;
@@ -191,5 +217,7 @@ export function nsRead(_windowKey: string, nsPath: string): unknown {
  */
 export function nsCall(_windowKey: string, nsPath: string, ...args: unknown[]): unknown {
   const fn = nsRead(_windowKey, nsPath);
-  if (typeof fn === 'function') return (fn as (...a: unknown[]) => unknown)(...args);
+  if (typeof fn === 'function') {
+    return (fn as (...a: unknown[]) => unknown)(...args);
+  }
 }

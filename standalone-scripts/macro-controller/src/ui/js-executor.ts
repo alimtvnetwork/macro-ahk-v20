@@ -35,7 +35,9 @@ export function addLoopJsHistoryEntry(code: string, success: boolean, resultText
   const isDuplicate = loopJsHistory.length > 0 && loopJsHistory[0].code === code;
   if (!isDuplicate) {
     loopJsHistory.unshift(entry);
-    if (loopJsHistory.length > LOOP_JS_HISTORY_MAX) loopJsHistory.pop();
+    if (loopJsHistory.length > LOOP_JS_HISTORY_MAX) {
+      loopJsHistory.pop();
+    }
     logSub('JS history updated: ' + loopJsHistory.length + ' entries');
   }
   jsHistoryState.index = -1;
@@ -44,7 +46,9 @@ export function addLoopJsHistoryEntry(code: string, success: boolean, resultText
 
 export function renderLoopJsHistory(): void {
   const el = document.getElementById('loop-js-history');
-  if (!el) return;
+  if (!el) {
+    return;
+  }
   if (loopJsHistory.length === 0) {
     el.innerHTML = '<span style="color:#64748b;font-size:10px;">No commands yet</span>';
     return;
@@ -80,7 +84,9 @@ export function renderLoopJsHistory(): void {
 
 export function navigateLoopJsHistory(direction: string): void {
   const ta = document.getElementById(IDS.JS_EXECUTOR) as HTMLTextAreaElement | null;
-  if (!ta || loopJsHistory.length === 0) return;
+  if (!ta || loopJsHistory.length === 0) {
+    return;
+  }
   if (direction === 'up') {
     if (jsHistoryState.index < loopJsHistory.length - 1) {
       jsHistoryState.index++;

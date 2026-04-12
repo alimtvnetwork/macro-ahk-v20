@@ -24,7 +24,9 @@ const STYLE_ID = 'marco-db-json-styles';
 /* ------------------------------------------------------------------ */
 
 function injectJsonStyles(): void {
-  if (document.getElementById(STYLE_ID)) return;
+  if (document.getElementById(STYLE_ID)) {
+    return;
+  }
   const s = document.createElement('style');
   s.id = STYLE_ID;
   s.textContent = `
@@ -80,8 +82,12 @@ function injectJsonStyles(): void {
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text) e.textContent = text;
+  if (cls) {
+    e.className = cls;
+  }
+  if (text) {
+    e.textContent = text;
+  }
   return e;
 }
 

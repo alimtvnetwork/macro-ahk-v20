@@ -53,7 +53,9 @@ export function detectWorkspaceViaProjectDialog(callerFn?: string, perWs?: Works
   log(fn + ': Tier 2 — Opening project dialog to read workspace name...', 'check');
   logSub('ProjectButtonXPath: ' + CONFIG.PROJECT_BUTTON_XPATH, 1);
   logSub('WorkspaceNameXPath: ' + CONFIG.WORKSPACE_XPATH, 1);
-  if (keepDialogOpen) logSub('keepDialogOpen=true — caller will close dialog after Step 3', 1);
+  if (keepDialogOpen) {
+    logSub('keepDialogOpen=true — caller will close dialog after Step 3', 1);
+  }
 
   return findProjectButtonWithRetry(fn, 3, 1000).then(function(btn: Element | null) {
     if (!btn) {
@@ -159,13 +161,19 @@ function resolveChosenWorkspace(
   for (const c of matchedCandidates) {
     const key = c.matched.id || normalizeWorkspaceName(c.matched.fullName || c.matched.name || '');
     const existing = uniqueById[key];
-    if (!existing || (!existing.selected && c.selected)) uniqueById[key] = c;
+    if (!existing || (!existing.selected && c.selected)) {
+      uniqueById[key] = c;
+    }
   }
 
   const uniqueMatches = Object.values(uniqueById);
   const selected = uniqueMatches.find(m => m.selected);
-  if (selected) return selected;
-  if (uniqueMatches.length === 1) return uniqueMatches[0];
+  if (selected) {
+    return selected;
+  }
+  if (uniqueMatches.length === 1) {
+    return uniqueMatches[0];
+  }
 
   if (uniqueMatches.length === 0 && perWs.length === 1) {
     log(fn + ': XPath candidates not cleanly matchable, but only one workspace exists — selecting it', 'warn');
@@ -206,7 +214,9 @@ function handlePollTimeout(
     state.workspaceName = cssFallback.matched.fullName || cssFallback.matched.name;
     loopCreditState.currentWs = cssFallback.matched;
     log(fn + ': ⚠️ Workspace detected via CSS fallback: "' + cssFallback.rawName + '" → ' + state.workspaceName, 'warn');
-    if (!keepDialogOpen) closeProjectDialogSafe(btn);
+    if (!keepDialogOpen) {
+      closeProjectDialogSafe(btn);
+    }
     resolve();
     return;
   }

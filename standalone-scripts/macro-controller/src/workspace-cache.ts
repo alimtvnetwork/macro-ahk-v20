@@ -20,13 +20,19 @@ function resolveProjectId(): string {
     const href = window.location.href;
     // Pattern 1: /projects/{uuid}
     const projMatch = href.match(/\/projects\/([a-f0-9-]{36})/i);
-    if (projMatch) return projMatch[1];
+    if (projMatch) {
+      return projMatch[1];
+    }
     // Pattern 2: {id}-preview--{uuid}.lovable.app
     const previewMatch = href.match(/([a-f0-9-]{36})\.lovable(?:project)?\.(?:app|com)/i);
-    if (previewMatch) return previewMatch[1];
+    if (previewMatch) {
+      return previewMatch[1];
+    }
     // Pattern 3: id-preview--{uuid}
     const altMatch = href.match(/id-preview--([a-f0-9-]{36})/i);
-    if (altMatch) return altMatch[1];
+    if (altMatch) {
+      return altMatch[1];
+    }
   } catch (_e) { console.debug('[RiseupAsia] [resolveProjectId] URL parse failed: ' + (_e instanceof Error ? _e.message : String(_e))); }
   return '_default';
 }

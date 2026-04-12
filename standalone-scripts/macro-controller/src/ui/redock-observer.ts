@@ -57,10 +57,14 @@ const redockState = new RedockState();
  */
 export function startRedockObserver(ctx: PanelLayoutCtx): void {
   // Already docked into XPath target — nothing to do
-  if (redockState.docked) return;
+  if (redockState.docked) {
+    return;
+  }
 
   // Try immediate dock
-  if (tryRedock(ctx)) return;
+  if (tryRedock(ctx)) {
+    return;
+  }
 
   // Cancel any previous poll
 
@@ -87,10 +91,14 @@ export function startRedockObserver(ctx: PanelLayoutCtx): void {
  */
 function tryRedock(ctx: PanelLayoutCtx): boolean {
   const target = getByXPath(CONFIG.CONTROLS_XPATH);
-  if (!target) return false;
+  if (!target) {
+    return false;
+  }
 
   const ui = document.getElementById(IDS.CONTAINER);
-  if (!ui) return false;
+  if (!ui) {
+    return false;
+  }
 
   // Already inside the target — just mark as docked
   if (target.contains(ui)) {

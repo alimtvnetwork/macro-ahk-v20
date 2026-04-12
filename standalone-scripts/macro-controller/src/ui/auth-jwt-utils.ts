@@ -101,7 +101,9 @@ function formatTimestamp(epochSeconds: number): string {
   const isSameDay = d.getFullYear() === now.getFullYear()
     && d.getMonth() === now.getMonth()
     && d.getDate() === now.getDate();
-  if (isSameDay) return timeStr;
+  if (isSameDay) {
+    return timeStr;
+  }
   const monthDay = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   return monthDay + ' ' + timeStr;
 }

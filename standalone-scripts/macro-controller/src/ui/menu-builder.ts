@@ -181,7 +181,9 @@ function _addExportSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLEl
   }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '🔧', 'Diagnostic Dump', 'Run diagnostic dump', function() {
     const result = nsCall('__loopDiag', 'api.loop.diagnostics');
-    if (result === undefined) log('Diagnostic dump not available', 'warn');
+    if (result === undefined) {
+      log('Diagnostic dump not available', 'warn');
+    }
   }));
   menuDropdown.appendChild(exportMenu.el);
 }

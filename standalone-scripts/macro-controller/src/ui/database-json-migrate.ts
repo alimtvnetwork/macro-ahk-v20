@@ -42,7 +42,9 @@ function validateSingleTable(t: NonNullable<JsonSchema['tables']>[number], logEl
 
 /** Validate table definitions, returning the number of issues found. */
 function validateTables(tables: JsonSchema['tables'], logEl: HTMLElement): number {
-  if (!tables) return 0;
+  if (!tables) {
+    return 0;
+  }
   let issues = 0;
   for (const t of tables) {
     issues += validateSingleTable(t, logEl);
@@ -53,7 +55,9 @@ function validateTables(tables: JsonSchema['tables'], logEl: HTMLElement): numbe
 /** Validate migration definitions, returning the number of issues found. */
 function validateMigrations(migrations: JsonSchema['migrations'], logEl: HTMLElement): number {
   let issues = 0;
-  if (!migrations) return 0;
+  if (!migrations) {
+    return 0;
+  }
   for (const m of migrations) {
     if (!m.table || !m.action) {
       appendLog(logEl, 'err', 'Migration missing table or action');
@@ -112,7 +116,9 @@ export function validateSchema(raw: string, logEl: HTMLElement): JsonSchema | nu
 // eslint-disable-next-line max-lines-per-function
 export function applySchema(raw: string, logEl: HTMLElement, statusBar: HTMLElement): void {
   const schema = validateSchema(raw, logEl);
-  if (!schema) return;
+  if (!schema) {
+    return;
+  }
 
   appendLog(logEl, 'info', '— Applying schema —');
   let pending = 0;

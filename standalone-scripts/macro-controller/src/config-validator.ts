@@ -205,7 +205,9 @@ function validateFieldType(
   label: string,
 ): void {
   const val = obj[field];
-  if (val === undefined || val === null) return;
+  if (val === undefined || val === null) {
+    return;
+  }
   const actual = Array.isArray(val) ? 'array' : typeof val;
   if (actual !== expected) {
     warn(label + '.' + field + ': expected ' + expected + ', got ' + actual + ' — using default');

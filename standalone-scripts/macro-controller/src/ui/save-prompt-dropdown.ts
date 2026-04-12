@@ -54,7 +54,9 @@ export function createPromptsDropdown(): HTMLElement {
     const isVisible = dropdown.style.display !== 'none';
     const isOutsideClick = !dropdown.contains(event.target as Node);
     const shouldClose = isVisible && isOutsideClick;
-    if (shouldClose) dropdown.style.display = 'none';
+    if (shouldClose) {
+      dropdown.style.display = 'none';
+    }
   });
 
   return dropdown;

@@ -158,7 +158,9 @@ async function processSuccessData(
   autoDetectFn?: (token: string) => Promise<void>,
 ): Promise<void> {
   const isParseOk = parseLoopApiResponse(data);
-  if (!isParseOk) return;
+  if (!isParseOk) {
+    return;
+  }
 
   const freshToken = resolveToken();
   dualWrite('__loopResolvedToken', '_internal.resolvedToken', freshToken);
@@ -210,7 +212,9 @@ export function fetchLoopCredits(
       return data;
     })
     .then(async function (data: Record<string, unknown> | undefined) {
-      if (!data) return;
+      if (!data) {
+        return;
+      }
       await processSuccessData(data, autoDetectFn);
     })
     .catch(function (err: Error) {

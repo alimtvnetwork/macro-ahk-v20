@@ -112,9 +112,13 @@ export function buildPresetRow(
 // ── ETA Formatting ──
 
 export function formatEta(ms: number): string {
-  if (ms < 1000) return ms + 'ms';
+  if (ms < 1000) {
+    return ms + 'ms';
+  }
   const secs = Math.ceil(ms / 1000);
-  if (secs < 60) return secs + 's';
+  if (secs < 60) {
+    return secs + 's';
+  }
   const mins = Math.floor(secs / 60);
   const remSecs = secs % 60;
   return mins + 'm ' + (remSecs > 0 ? remSecs + 's' : '');
@@ -205,7 +209,9 @@ export function buildTokenRow(): HTMLElement {
       }
       resolveToken();
       const lbl = document.getElementById('rename-auth-label');
-      if (lbl) lbl.textContent = 'Auth: ' + getLastTokenSource();
+      if (lbl) {
+        lbl.textContent = 'Auth: ' + getLastTokenSource();
+      }
       (tokenRefreshBtn as HTMLButtonElement).disabled = false;
       tokenRefreshBtn.style.opacity = '1';
     });

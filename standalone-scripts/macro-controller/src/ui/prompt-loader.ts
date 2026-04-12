@@ -156,7 +156,9 @@ interface RelayCtx {
 
 // CQ16: Extracted from sendToExtension closure
 function finishRelay(ctx: RelayCtx, resp: ExtensionResponse): void {
-  if (ctx.settled) return;
+  if (ctx.settled) {
+    return;
+  }
   ctx.settled = true;
   window.removeEventListener('message', ctx._onResponse!);
   clearTimeout(ctx.timeout);
@@ -221,7 +223,9 @@ export function sendToExtension(type: string, payload: Record<string, unknown>):
  */
 function tryLoadByMessage(type: string): Promise<PromptEntry[] | null> {
   return sendToExtension(type, {}).then(function(response: ExtensionResponse) {
-    if (!response) return null;
+    if (!response) {
+      return null;
+    }
     const prompts = normalizePromptEntries((response.prompts) as Partial<PromptEntry>[]);
     return prompts.length > 0 ? prompts : null;
   });

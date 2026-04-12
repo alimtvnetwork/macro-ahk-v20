@@ -35,12 +35,16 @@ function mc() { return MacroController.getInstance(); }
  * See: spec/17-app-issues/workspace-name-binding-bug.md (RCA-3)
  */
 export function isKnownWorkspaceName(name: string): boolean {
-  if (!name) return false;
+  if (!name) {
+    return false;
+  }
   const perWs = loopCreditState.perWorkspace || [];
   // Issue 84 Fix 1: When workspace list is not yet loaded, allow the name through
   // so that fetchWorkspaceNameFromNav() and the observer can set an early workspace
   // name. Previously this returned false, blocking ALL name detection until credits loaded.
-  if (perWs.length === 0) return true;
+  if (perWs.length === 0) {
+    return true;
+  }
   for (const ws of perWs) {
     if (ws.fullName === name) { return true; }
     if (ws.name === name) { return true; }
@@ -126,9 +130,15 @@ function collectFromNavButtons(): NavCandidate[] {
   const navButtons = document.querySelectorAll('nav button, nav a, nav span, [role="navigation"] button');
   for (const el of navButtons) {
     const text = (el.textContent || '').trim();
-    if (!text || text.length < 2 || text.length > 60) continue;
-    if (/^(Projects?|Settings|Home|Menu|Sign|Log|Help|Docs|\+|×|☰|⋮)$/i.test(text)) continue;
-    if (text.length <= 2 && /[^a-zA-Z0-9]/.test(text)) continue;
+    if (!text || text.length < 2 || text.length > 60) {
+      continue;
+    }
+    if (/^(Projects?|Settings|Home|Menu|Sign|Log|Help|Docs|\+|×|☰|⋮)$/i.test(text)) {
+      continue;
+    }
+    if (text.length <= 2 && /[^a-zA-Z0-9]/.test(text)) {
+      continue;
+    }
     const rect = el.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0 && rect.top < 80) {
       results.push({ el, text, y: rect.top, x: rect.left });
@@ -143,7 +153,9 @@ function collectFromTopNav(): NavCandidate[] {
   const topNavEls = document.querySelectorAll('nav div span, nav div p, nav div a, header span, header a');
   for (const el2 of topNavEls) {
     const text2 = (el2.textContent || '').trim();
-    if (!text2 || text2.length < 3 || text2.length > 60) continue;
+    if (!text2 || text2.length < 3 || text2.length > 60) {
+      continue;
+    }
     const rect2 = el2.getBoundingClientRect();
     if (rect2.width > 0 && rect2.height > 0 && rect2.top < 80 && rect2.left < 400 && el2.children.length <= 1) {
       results.push({ el: el2, text: text2, y: rect2.top, x: rect2.left });
@@ -166,14 +178,20 @@ export function fetchWorkspaceNameFromNav(): boolean {
   const hasXpath = navXpath && navXpath.indexOf('__') !== 0 && navXpath !== '';
   try {
     let el: Node | null = null;
-    if (hasXpath) el = getByXPath(navXpath);
-    if (!el) el = autoDiscoverWorkspaceNavElement();
+    if (hasXpath) {
+      el = getByXPath(navXpath);
+    }
+    if (!el) {
+      el = autoDiscoverWorkspaceNavElement();
+    }
 
     if (el) {
       const name = (el.textContent || '').trim();
       if (name) {
         const accepted = tryApplyWorkspaceName(name, 'Nav');
-        if (accepted) mc().updateUI();
+        if (accepted) {
+          mc().updateUI();
+        }
         return accepted;
       }
     }
@@ -253,7 +271,9 @@ function resolveNavElement(): Node | Element | null {
 
   if (hasXpath) {
     navEl = getByXPath(navXpath);
-    if (navEl) logSub('Workspace nav element found via XPath', 1);
+    if (navEl) {
+      logSub('Workspace nav element found via XPath', 1);
+    }
   }
 
   if (!navEl) {
@@ -282,7 +302,9 @@ function scheduleObserverRetry(): void {
 
 /** Apply the workspace name read during observer initialization. */
 function applyInitialObserverName(name: string): void {
-  if (!name) return;
+  if (!name) {
+    return;
+  }
   if (name === state.workspaceName) {
     logSub('Workspace name already set: ' + name, 1);
     return;
@@ -325,10 +347,14 @@ function handleObserverMutation(navEl: Node | Element): void {
     const oldName = state.workspaceName;
     state.workspaceName = newName;
     log('⚡ Workspace changed (observer): "' + oldName + '" → "' + newName + '"', 'success');
-    if (oldName) addWorkspaceChangeEntry(oldName, newName);
+    if (oldName) {
+      addWorkspaceChangeEntry(oldName, newName);
+    }
 
     state.workspaceJustChanged = true;
-    if (state.workspaceChangedTimer) clearTimeout(state.workspaceChangedTimer);
+    if (state.workspaceChangedTimer) {
+      clearTimeout(state.workspaceChangedTimer);
+    }
     state.workspaceChangedTimer = setTimeout(function () {
       state.workspaceJustChanged = false;
       mc().updateUI();
@@ -395,7 +421,9 @@ export function addWorkspaceChangeEntry(fromName: string, toName: string): void 
       projectName: projectName,
       projectId: projectId,
     });
-    if (history.length > WS_HISTORY_MAX_ENTRIES) history = history.slice(history.length - WS_HISTORY_MAX_ENTRIES);
+    if (history.length > WS_HISTORY_MAX_ENTRIES) {
+      history = history.slice(history.length - WS_HISTORY_MAX_ENTRIES);
+    }
     safeSetItem(key, JSON.stringify(history));
     log('Workspace changed: "' + fromName + '" → "' + toName + '" (project=' + projectName + ', key=' + key + ')', 'success');
     mc().updateUI();

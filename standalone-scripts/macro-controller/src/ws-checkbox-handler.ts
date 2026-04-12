@@ -93,12 +93,16 @@ export function handleWsCheckboxClick(
 /** Sync checkbox visuals in the workspace list to match checked state. */
 function syncCheckboxVisuals(): void {
   const listEl = document.getElementById(ID_LOOP_WS_LIST);
-  if (!listEl) return;
+  if (!listEl) {
+    return;
+  }
 
   const items = listEl.querySelectorAll(SEL_LOOP_WS_ITEM);
   for (const item of items) {
     const cb = item.querySelector('.loop-ws-checkbox');
-    if (!cb) continue;
+    if (!cb) {
+      continue;
+    }
 
     const wsId = item.getAttribute(ATTR_DATA_WS_ID);
     const isChecked = !!getLoopWsCheckedIds()[wsId!];
@@ -201,7 +205,9 @@ function highlightActiveItem(item: Element): void {
 /** Update the selected-workspace indicator element from the active item. */
 function updateSelectedIndicator(item: Element): void {
   const selectedEl = document.getElementById('loop-ws-selected');
-  if (!selectedEl) return;
+  if (!selectedEl) {
+    return;
+  }
 
   const wsId = item.getAttribute(ATTR_DATA_WS_ID) || '';
   const wsName = item.getAttribute('data-ws-name') || '';
@@ -231,7 +237,9 @@ function resetItemStyles(item: Element): void {
 export function setLoopWsNavIndex(idx: number): void {
   navState().setIndex(idx);
   const listEl = document.getElementById(ID_LOOP_WS_LIST);
-  if (!listEl) return;
+  if (!listEl) {
+    return;
+  }
 
   const items = listEl.querySelectorAll(SEL_LOOP_WS_ITEM);
   for (const [itemIndex, item] of Array.from(items).entries()) {

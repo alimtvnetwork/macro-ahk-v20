@@ -146,8 +146,12 @@ export function buildLoopTooltipText(ws: WorkspaceCredit): string {
   lines.push('  Role: ' + (ws.role || 'N/A'));
   if (ws.raw) {
     const r = ws.raw;
-    if (r.last_trial_credit_period) lines.push('  Trial Period: ' + r.last_trial_credit_period);
-    if (r.subscription_status) lines.push('  Subscription: ' + r.subscription_status);
+    if (r.last_trial_credit_period) {
+      lines.push('  Trial Period: ' + r.last_trial_credit_period);
+    }
+    if (r.subscription_status) {
+      lines.push('  Subscription: ' + r.subscription_status);
+    }
   }
   return lines.join('\n');
 }
@@ -177,8 +181,12 @@ function readFilterState(filter: string): WsFilterState {
 
 /** Check if a workspace matches the current name (fuzzy). */
 function isCurrentWorkspace(ws: WorkspaceCredit, currentName: string): boolean {
-  if (!currentName) return false;
-  if (ws.fullName === currentName || ws.name === currentName) return true;
+  if (!currentName) {
+    return false;
+  }
+  if (ws.fullName === currentName || ws.name === currentName) {
+    return true;
+  }
   const lcn = currentName.toLowerCase();
   return (ws.fullName || '').toLowerCase().indexOf(lcn) !== -1 ||
          lcn.indexOf((ws.fullName || '').toLowerCase()) !== -1;
@@ -189,25 +197,43 @@ function passesFilters(ws: WorkspaceCredit, fs: WsFilterState): boolean {
   const matchesText = !fs.filter ||
     ws.fullName.toLowerCase().indexOf(fs.filter.toLowerCase()) !== -1 ||
     ws.name.toLowerCase().indexOf(fs.filter.toLowerCase()) !== -1;
-  if (!matchesText) return false;
-  if (fs.freeOnly && (ws.dailyFree || 0) <= 0) return false;
-  if (fs.rolloverOnly && (ws.rollover || 0) <= 0) return false;
-  if (fs.billingOnly && (ws.billingAvailable || 0) <= 0) return false;
-  if (fs.minCredits > 0 && (ws.available || 0) < fs.minCredits) return false;
+  if (!matchesText) {
+    return false;
+  }
+  if (fs.freeOnly && (ws.dailyFree || 0) <= 0) {
+    return false;
+  }
+  if (fs.rolloverOnly && (ws.rollover || 0) <= 0) {
+    return false;
+  }
+  if (fs.billingOnly && (ws.billingAvailable || 0) <= 0) {
+    return false;
+  }
+  if (fs.minCredits > 0 && (ws.available || 0) < fs.minCredits) {
+    return false;
+  }
   return true;
 }
 
 /** Resolve the status emoji for a workspace row. */
 function wsStatusEmoji(isCurrent: boolean, available: number, limitInt: number): string {
-  if (isCurrent) return '📍';
-  if (available <= 0) return '🔴';
-  if (available <= limitInt * 0.2) return '🟡';
+  if (isCurrent) {
+    return '📍';
+  }
+  if (available <= 0) {
+    return '🔴';
+  }
+  if (available <= limitInt * 0.2) {
+    return '🟡';
+  }
   return '🟢';
 }
 
 /** Compute row background style. */
 function wsRowBgStyle(isCurrent: boolean, isSel: boolean): string {
-  if (isCurrent) return 'background:' + cPrimaryHL + ';border-left:3px solid #a78bfa;';
+  if (isCurrent) {
+    return 'background:' + cPrimaryHL + ';border-left:3px solid #a78bfa;';
+  }
   return isSel ? 'border-left:3px solid #facc15;' : 'border-left:3px solid transparent;';
 }
 
@@ -281,7 +307,9 @@ export function renderLoopWorkspaceList(
   filter: string,
 ): void {
   const listEl = document.getElementById('loop-ws-list');
-  if (!listEl) return;
+  if (!listEl) {
+    return;
+  }
 
   let count = 0;
   let currentIdx = -1;
@@ -289,16 +317,22 @@ export function renderLoopWorkspaceList(
 
   for (const ws of workspaces) {
     const mtc = Math.round(ws.totalCredits || calcTotalCredits(ws.freeGranted, ws.dailyLimit, ws.limit, ws.topupLimit, ws.rolloverLimit));
-    if (mtc > maxTotalCredits) maxTotalCredits = mtc;
+    if (mtc > maxTotalCredits) {
+      maxTotalCredits = mtc;
+    }
   }
 
   const frag = document.createDocumentFragment();
   const fs = readFilterState(filter);
 
   for (const [wsIndex, ws] of workspaces.entries()) {
-    if (!passesFilters(ws, fs)) continue;
+    if (!passesFilters(ws, fs)) {
+      continue;
+    }
     const isCurrent = isCurrentWorkspace(ws, currentName);
-    if (isCurrent) currentIdx = count;
+    if (isCurrent) {
+      currentIdx = count;
+    }
     frag.appendChild(buildWsRow(ws, wsIndex, isCurrent, count, maxTotalCredits));
     count++;
   }
@@ -369,7 +403,9 @@ function attachWsListEventDelegation(
 function _createClickHandler(): (e: MouseEvent) => void {
   return function (e: MouseEvent) {
     const item = (e.target as HTMLElement).closest(SEL_LOOP_WS_ITEM) as HTMLElement | null;
-    if (!item) return;
+    if (!item) {
+      return;
+    }
     if ((e.target as HTMLElement).classList && (e.target as HTMLElement).classList.contains('loop-ws-checkbox')) {
       e.preventDefault();
       e.stopPropagation();
@@ -388,7 +424,9 @@ function _createClickHandler(): (e: MouseEvent) => void {
 function _createDblClickHandler(): (e: MouseEvent) => void {
   return function (e: MouseEvent) {
     const item = (e.target as HTMLElement).closest(SEL_LOOP_WS_ITEM) as HTMLElement | null;
-    if (!item) return;
+    if (!item) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     if (item.getAttribute(ATTR_WS_CURRENT) === 'true') {
@@ -403,7 +441,9 @@ function _createDblClickHandler(): (e: MouseEvent) => void {
 function _createCtxHandler(): (e: MouseEvent) => void {
   return function (e: MouseEvent) {
     const item = (e.target as HTMLElement).closest(SEL_LOOP_WS_ITEM) as HTMLElement | null;
-    if (!item) return;
+    if (!item) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     showWsContextMenu(
@@ -417,11 +457,15 @@ function _createCtxHandler(): (e: MouseEvent) => void {
 function _createHoverHandler(): (e: MouseEvent) => void {
   return function (e: MouseEvent) {
     const item = (e.target as HTMLElement).closest(SEL_LOOP_WS_ITEM) as HTMLElement | null;
-    if (!item || item.getAttribute(ATTR_WS_CURRENT) === 'true') return;
+    if (!item || item.getAttribute(ATTR_WS_CURRENT) === 'true') {
+      return;
+    }
     const selEl = document.getElementById(ID_LOOP_WS_SELECTED);
     const selId = selEl ? selEl.getAttribute(ATTR_SELECTED_ID) : '';
     const itemId = item.getAttribute(ATTR_WS_ID);
-    if (selId && selId === itemId) return;
+    if (selId && selId === itemId) {
+      return;
+    }
     item.style.background = 'rgba(59,130,246,0.15)';
   };
 }
@@ -429,11 +473,15 @@ function _createHoverHandler(): (e: MouseEvent) => void {
 function _createOutHandler(): (e: MouseEvent) => void {
   return function (e: MouseEvent) {
     const item = (e.target as HTMLElement).closest(SEL_LOOP_WS_ITEM) as HTMLElement | null;
-    if (!item || item.getAttribute(ATTR_WS_CURRENT) === 'true') return;
+    if (!item || item.getAttribute(ATTR_WS_CURRENT) === 'true') {
+      return;
+    }
     const selEl = document.getElementById(ID_LOOP_WS_SELECTED);
     const selId = selEl ? selEl.getAttribute(ATTR_SELECTED_ID) : '';
     const itemId = item.getAttribute(ATTR_WS_ID);
-    if (selId && selId === itemId) return;
+    if (selId && selId === itemId) {
+      return;
+    }
     item.style.background = 'transparent';
   };
 }
@@ -498,7 +546,9 @@ export const wsRenderStats = {
  */
 export function populateLoopWorkspaceDropdown(): void {
   const listEl = document.getElementById('loop-ws-list');
-  if (!listEl) return;
+  if (!listEl) {
+    return;
+  }
   const workspaces = loopCreditState.perWorkspace || [];
   if (workspaces.length === 0) {
     if (dropdownState().getHash() === '_empty') { dropdownState().recordSkip(); return; }

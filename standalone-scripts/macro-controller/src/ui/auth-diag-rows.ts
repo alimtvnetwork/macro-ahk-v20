@@ -147,7 +147,9 @@ function _appendHelpIcon(diagRow: DiagRowElements, helpText: string): void {
 /** Remove existing help icon from a row. */
 function _removeHelpIcon(diagRow: DiagRowElements): void {
   const existing = diagRow.row.querySelector('[data-help-icon]');
-  if (existing) existing.remove();
+  if (existing) {
+    existing.remove();
+  }
 }
 
 export function updateSourceRow(deps: AuthDiagDeps, srcRow: DiagRowElements, headerBadge: HTMLElement): void {

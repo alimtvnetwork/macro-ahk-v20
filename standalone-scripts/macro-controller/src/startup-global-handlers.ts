@@ -21,10 +21,14 @@ import type { DiagnosticDump } from './types';
 export function setupGlobalErrorHandlers(): void {
   window.addEventListener('error', function (event: ErrorEvent) {
     const hasNoMessage = !event || !event.message;
-    if (hasNoMessage) return;
+    if (hasNoMessage) {
+      return;
+    }
 
     const isUnrelatedFile = event.filename && event.filename.indexOf('macro') === -1 && event.filename.indexOf('blob:') === -1;
-    if (isUnrelatedFile) return;
+    if (isUnrelatedFile) {
+      return;
+    }
 
     const errMsg = event.message || 'Unknown error';
     const stack = event.error && event.error.stack ? event.error.stack : (event.filename + ':' + event.lineno);
@@ -40,7 +44,9 @@ export function setupGlobalErrorHandlers(): void {
 
   window.addEventListener('unhandledrejection', function (event: PromiseRejectionEvent) {
     const hasNoReason = !event || !event.reason;
-    if (hasNoReason) return;
+    if (hasNoReason) {
+      return;
+    }
 
     const errMsg = event.reason.message || String(event.reason);
     const stack = event.reason.stack || '';

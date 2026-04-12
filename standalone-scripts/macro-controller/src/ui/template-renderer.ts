@@ -111,7 +111,9 @@ function processEachBlocks(html: string, data: Record<string, unknown>): string 
 
   return html.replace(eachPattern, (_, key, body) => {
     const items = data[key];
-    if (!Array.isArray(items) || items.length === 0) return '';
+    if (!Array.isArray(items) || items.length === 0) {
+      return '';
+    }
 
     return items.map((item, index) => {
       let rendered = body;
@@ -164,7 +166,11 @@ function replaceVariables(html: string, data: Record<string, unknown>): string {
 
 /** Truthiness check matching Handlebars conventions */
 function isTruthy(value: unknown): boolean {
-  if (value === undefined || value === null || value === false || value === 0 || value === '') return false;
-  if (Array.isArray(value) && value.length === 0) return false;
+  if (value === undefined || value === null || value === false || value === 0 || value === '') {
+    return false;
+  }
+  if (Array.isArray(value) && value.length === 0) {
+    return false;
+  }
   return true;
 }

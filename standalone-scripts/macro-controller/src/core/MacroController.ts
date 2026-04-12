@@ -155,7 +155,9 @@ export class MacroController {
         log('[MacroController] Self-healing: auto-registering AuthManager from persisted factory', 'warn');
         this._auth = factory();
       }
-      if (!this._auth) throw this._notRegisteredError('AuthManager');
+      if (!this._auth) {
+        throw this._notRegisteredError('AuthManager');
+      }
     }
     return this._auth;
   }
@@ -167,7 +169,9 @@ export class MacroController {
         log('[MacroController] Self-healing: auto-registering CreditManager from persisted factory', 'warn');
         this._credits = factory();
       }
-      if (!this._credits) throw this._notRegisteredError('CreditManager');
+      if (!this._credits) {
+        throw this._notRegisteredError('CreditManager');
+      }
     }
     return this._credits;
   }
@@ -179,7 +183,9 @@ export class MacroController {
         log('[MacroController] Self-healing: auto-registering WorkspaceManager from persisted factory', 'warn');
         this._workspaces = factory();
       }
-      if (!this._workspaces) throw this._notRegisteredError('WorkspaceManager');
+      if (!this._workspaces) {
+        throw this._notRegisteredError('WorkspaceManager');
+      }
     }
     return this._workspaces;
   }
@@ -191,7 +197,9 @@ export class MacroController {
         log('[MacroController] Self-healing: auto-registering LoopEngine from persisted factory', 'warn');
         this._loop = factory();
       }
-      if (!this._loop) throw this._notRegisteredError('LoopEngine');
+      if (!this._loop) {
+        throw this._notRegisteredError('LoopEngine');
+      }
     }
     return this._loop;
   }
@@ -284,12 +292,16 @@ export class MacroController {
 
   /** Safe UI update — no-op if UIManager not yet registered. */
   updateUI(): void {
-    if (this._ui) this._ui.update();
+    if (this._ui) {
+      this._ui.update();
+    }
   }
 
   /** Lightweight UI update — status/buttons only, no workspace list rebuild. */
   updateUILight(): void {
-    if (this._ui) this._ui.updateLight();
+    if (this._ui) {
+      this._ui.updateLight();
+    }
   }
 
   // ---- Lifecycle ----

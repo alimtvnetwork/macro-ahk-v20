@@ -251,7 +251,9 @@ function _createRenameTitleBar(panel: HTMLElement, count: number): HTMLElement {
 
   let isDragging = false, dragOffX = 0, dragOffY = 0;
   const onDragMouseDown = function(e: MouseEvent) {
-    if (e.target === closeBtnTitle) return;
+    if (e.target === closeBtnTitle) {
+      return;
+    }
     isDragging = true;
     dragOffX = e.clientX - panel.getBoundingClientRect().left;
     dragOffY = e.clientY - panel.getBoundingClientRect().top;
@@ -259,7 +261,9 @@ function _createRenameTitleBar(panel: HTMLElement, count: number): HTMLElement {
     e.preventDefault();
   };
   const onDragMouseMove = function(e: MouseEvent) {
-    if (!isDragging) return;
+    if (!isDragging) {
+      return;
+    }
     panel.style.left = (e.clientX - dragOffX) + 'px';
     panel.style.top = (e.clientY - dragOffY) + 'px';
     panel.style.right = 'auto';
@@ -366,9 +370,15 @@ function _detectVarsAndRenderStarts(
   let html = '';
   if (hasDollar || hasHash || hasStar) {
     html += '<div style="font-size:8px;color:#94a3b8;margin-bottom:3px;">Start Numbers:</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
-    if (hasDollar) html += buildStartNumInput('$', 'rename-start-dollar', startDollar, '#facc15');
-    if (hasHash) html += buildStartNumInput('#', 'rename-start-hash', startHash, cPrimaryLight);
-    if (hasStar) html += buildStartNumInput('**', 'rename-start-star', startStar, '#34d399');
+    if (hasDollar) {
+      html += buildStartNumInput('$', 'rename-start-dollar', startDollar, '#facc15');
+    }
+    if (hasHash) {
+      html += buildStartNumInput('#', 'rename-start-hash', startHash, cPrimaryLight);
+    }
+    if (hasStar) {
+      html += buildStartNumInput('**', 'rename-start-star', startStar, '#34d399');
+    }
     html += '</div>';
   }
   container.innerHTML = html;

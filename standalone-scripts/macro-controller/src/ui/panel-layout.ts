@@ -49,7 +49,9 @@ function savePanelGeometry(ui: HTMLElement): void {
 function loadPanelGeometry(): PanelGeometry | null {
   try {
     const raw = localStorage.getItem(LS_PANEL_GEOMETRY);
-    if (!raw) return null;
+    if (!raw) {
+      return null;
+    }
     return JSON.parse(raw) as PanelGeometry;
   } catch (_e) { logSub('Failed to parse panel geometry: ' + (_e instanceof Error ? _e.message : String(_e)), 1); return null; }
 }
@@ -164,7 +166,9 @@ export function setBackdropOpacity(opacity: number): void {
   const clamped = Math.min(1, Math.max(0, opacity));
   try { localStorage.setItem(LS_BACKDROP_OPACITY, String(clamped)); } catch (_e) { logSub('Failed to save backdrop opacity: ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
   const backdrop = document.getElementById(BACKDROP_ID);
-  if (!backdrop) return;
+  if (!backdrop) {
+    return;
+  }
   if (clamped === 0) {
     backdrop.remove();
     return;
@@ -173,14 +177,18 @@ export function setBackdropOpacity(opacity: number): void {
 }
 
 export function enableFloating(ctx: PanelLayoutCtx) {
-  if (ctx.isFloating) return;
+  if (ctx.isFloating) {
+    return;
+  }
   log('Switching MacroLoop panel to floating mode', 'info');
   ctx.isFloating = true;
 
   const opacity = getBackdropOpacity();
   if (opacity === 0) {
     const existingBackdrop = document.getElementById(BACKDROP_ID);
-    if (existingBackdrop) existingBackdrop.remove();
+    if (existingBackdrop) {
+      existingBackdrop.remove();
+    }
   } else if (!document.getElementById(BACKDROP_ID)) {
     const backdrop = document.createElement('div');
     backdrop.id = BACKDROP_ID;
@@ -200,8 +208,12 @@ export function enableFloating(ctx: PanelLayoutCtx) {
     ctx.ui.style.left = geo.left;
     ctx.ui.style.right = 'auto';
     ctx.ui.style.bottom = 'auto';
-    if (geo.width) ctx.ui.style.width = geo.width;
-    if (geo.height) ctx.ui.style.height = geo.height;
+    if (geo.width) {
+      ctx.ui.style.width = geo.width;
+    }
+    if (geo.height) {
+      ctx.ui.style.height = geo.height;
+    }
     log('Restored panel geometry from localStorage', 'info');
   } else {
     ctx.ui.style.width = PANEL_DEFAULT_WIDTH + 'px';
@@ -219,13 +231,17 @@ export function enableFloating(ctx: PanelLayoutCtx) {
  * when the XPath target appears after the panel was mounted to body.
  */
 export function disableFloating(ctx: PanelLayoutCtx): void {
-  if (!ctx.isFloating) return;
+  if (!ctx.isFloating) {
+    return;
+  }
   log('Switching MacroLoop panel from floating to docked mode', 'info');
   ctx.isFloating = false;
 
   // Remove backdrop when docking
   const backdrop = document.getElementById('marco-panel-backdrop');
-  if (backdrop) backdrop.remove();
+  if (backdrop) {
+    backdrop.remove();
+  }
   ctx.ui.style.position = 'relative';
   ctx.ui.style.zIndex = '';
   ctx.ui.style.margin = '8px 0';
@@ -272,13 +288,17 @@ export function startDragHandler(ctx: PanelLayoutCtx, e: PointerEvent) {
 
 export function setupDragListeners(ctx: PanelLayoutCtx) {
   window.addEventListener('resize', function() {
-    if (!ctx.isFloating) return;
+    if (!ctx.isFloating) {
+      return;
+    }
     keepPanelInViewport(ctx);
     savePanelGeometry(ctx.ui);
   });
 
   document.addEventListener('pointermove', function(e) {
-    if (!ctx.isDragging) return;
+    if (!ctx.isDragging) {
+      return;
+    }
     ctx.ui.style.left = (e.clientX - ctx.dragOffsetX) + 'px';
     ctx.ui.style.top = (e.clientY - ctx.dragOffsetY) + 'px';
     ctx.ui.style.right = 'auto';
@@ -288,7 +308,9 @@ export function setupDragListeners(ctx: PanelLayoutCtx) {
   });
 
   document.addEventListener('pointerup', function(e) {
-    if (!ctx.isDragging) return;
+    if (!ctx.isDragging) {
+      return;
+    }
     ctx.isDragging = false;
     if ((e.target as HTMLElement).releasePointerCapture && ctx.dragPointerId != null) {
       try { (e.target as HTMLElement).releasePointerCapture(ctx.dragPointerId); } catch (ex) { logSub('releasePointerCapture (drag) failed: ' + (ex instanceof Error ? ex.message : String(ex)), 1); }
@@ -303,16 +325,24 @@ export function setupDragListeners(ctx: PanelLayoutCtx) {
 export function applyResizeResponsiveLayout(ctx: PanelLayoutCtx, panelHeight: number) {
   const extra = Math.max(0, panelHeight - ctx.resizeStartH);
   const wsListEl = document.getElementById('loop-ws-list');
-  if (wsListEl) wsListEl.style.maxHeight = (160 + Math.floor(extra * 0.75)) + 'px';
+  if (wsListEl) {
+    wsListEl.style.maxHeight = (160 + Math.floor(extra * 0.75)) + 'px';
+  }
 
   const activityPanelEl = document.getElementById('loop-activity-log-panel');
-  if (activityPanelEl) activityPanelEl.style.maxHeight = (120 + Math.floor(extra * 0.35)) + 'px';
+  if (activityPanelEl) {
+    activityPanelEl.style.maxHeight = (120 + Math.floor(extra * 0.35)) + 'px';
+  }
 
   const wsHistoryPanelEl = document.getElementById('loop-ws-history-panel');
-  if (wsHistoryPanelEl) wsHistoryPanelEl.style.maxHeight = (120 + Math.floor(extra * 0.35)) + 'px';
+  if (wsHistoryPanelEl) {
+    wsHistoryPanelEl.style.maxHeight = (120 + Math.floor(extra * 0.35)) + 'px';
+  }
 
   const jsHistoryEl = document.getElementById('loop-js-history');
-  if (jsHistoryEl) jsHistoryEl.style.maxHeight = (80 + Math.floor(extra * 0.25)) + 'px';
+  if (jsHistoryEl) {
+    jsHistoryEl.style.maxHeight = (80 + Math.floor(extra * 0.25)) + 'px';
+  }
 }
 
 export function createResizeHandle(ctx: PanelLayoutCtx, type: string): HTMLElement {
@@ -366,7 +396,9 @@ export function createResizeHandle(ctx: PanelLayoutCtx, type: string): HTMLEleme
 
 export function setupResizeListeners(ctx: PanelLayoutCtx) {
   document.addEventListener('pointermove', function(e) {
-    if (!ctx.isResizing) return;
+    if (!ctx.isResizing) {
+      return;
+    }
     e.preventDefault();
 
     const dx = e.clientX - ctx.resizeStartX;
@@ -390,7 +422,9 @@ export function setupResizeListeners(ctx: PanelLayoutCtx) {
   });
 
   document.addEventListener('pointerup', function(e) {
-    if (!ctx.isResizing) return;
+    if (!ctx.isResizing) {
+      return;
+    }
     ctx.isResizing = false;
     if ((e.target as HTMLElement).releasePointerCapture && ctx.resizePointerId != null) {
       try { (e.target as HTMLElement).releasePointerCapture(ctx.resizePointerId); } catch (ex) { logSub('releasePointerCapture (resize) failed: ' + (ex instanceof Error ? ex.message : String(ex)), 1); }

@@ -40,17 +40,25 @@ export function resolveWsTier(plan: string, subStatus: string, billingLimit: num
   const s = (subStatus || '').toLowerCase().trim();
 
   // Lite / ktlo plan
-  if (p === 'ktlo' || p === 'lite') return 'LITE';
+  if (p === 'ktlo' || p === 'lite') {
+    return 'LITE';
+  }
 
   // Has billing = was/is pro
   if (billingLimit > 0 || (p && p !== 'free')) {
-    if (s === 'active') return 'PRO';
-    if (s === 'canceled' || s === 'cancelled' || s === 'past_due') return 'EXPIRED';
+    if (s === 'active') {
+      return 'PRO';
+    }
+    if (s === 'canceled' || s === 'cancelled' || s === 'past_due') {
+      return 'EXPIRED';
+    }
     return 'PRO'; // default if billing exists
   }
 
   // Free plan + canceled sub = expired trial/pro
-  if (s === 'canceled' || s === 'cancelled') return 'EXPIRED';
+  if (s === 'canceled' || s === 'cancelled') {
+    return 'EXPIRED';
+  }
 
   return 'FREE';
 }
@@ -126,7 +134,9 @@ function aggregateCreditTotals(perWs: import('./types').WorkspaceCredit[]): void
 // matchCurrentWorkspace — find current ws by name
 // ============================================
 function matchCurrentWorkspace(perWs: import('./types').WorkspaceCredit[]): void {
-  if (!state.workspaceName || perWs.length === 0) return;
+  if (!state.workspaceName || perWs.length === 0) {
+    return;
+  }
   for (const ws of perWs) {
     if (ws.fullName === state.workspaceName || ws.name === state.workspaceName) {
       loopCreditState.currentWs = ws;
@@ -141,7 +151,9 @@ function matchCurrentWorkspace(perWs: import('./types').WorkspaceCredit[]): void
 function buildWsByIdIndex(perWs: import('./types').WorkspaceCredit[]): void {
   loopCreditState.wsById = {};
   for (const ws of perWs) {
-    if (ws.id) loopCreditState.wsById[ws.id] = ws;
+    if (ws.id) {
+      loopCreditState.wsById[ws.id] = ws;
+    }
   }
 }
 

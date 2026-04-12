@@ -50,9 +50,13 @@ export function setupPersistenceObserver(createUI: () => void): void {
   // MC-04 fix: Use childList-only (no subtree) on a narrow parent.
   const observer = new MutationObserver(function (_mutations: MutationRecord[]) {
     const isBothPresent = !!document.getElementById(IDS.SCRIPT_MARKER) && !!document.getElementById(IDS.CONTAINER);
-    if (isBothPresent) return;
+    if (isBothPresent) {
+      return;
+    }
 
-    if (reinjectDebounce) clearTimeout(reinjectDebounce);
+    if (reinjectDebounce) {
+      clearTimeout(reinjectDebounce);
+    }
     reinjectDebounce = setTimeout(function () {
       log('SPA navigation detected - checking UI state', 'check');
       tryReinjectUI(createUI);

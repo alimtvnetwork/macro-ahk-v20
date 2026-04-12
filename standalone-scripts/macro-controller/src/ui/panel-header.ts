@@ -100,11 +100,15 @@ function _buildTitleElements(deps: PanelBuilderDeps, plCtx: PanelLayoutCtx) {
 
 function _setupTitleDragHandlers(titleRow: HTMLElement, plCtx: PanelLayoutCtx, hideBtn: HTMLElement, panelToggleSpan: HTMLElement): void {
   titleRow.onpointerdown = function(e: PointerEvent) {
-    if (e.target === hideBtn || e.target === panelToggleSpan) return;
+    if (e.target === hideBtn || e.target === panelToggleSpan) {
+      return;
+    }
     startDragHandler(plCtx, e);
   };
   titleRow.onpointerup = function(e: PointerEvent) {
-    if (e.target === hideBtn || e.target === panelToggleSpan) return;
+    if (e.target === hideBtn || e.target === panelToggleSpan) {
+      return;
+    }
     const dx = Math.abs(e.clientX - plCtx.dragStartPos.x);
     const dy = Math.abs(e.clientY - plCtx.dragStartPos.y);
     if (dx < 5 && dy < 5) { toggleMinimize(plCtx); }

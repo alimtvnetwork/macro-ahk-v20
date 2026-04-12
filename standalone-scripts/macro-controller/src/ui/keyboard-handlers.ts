@@ -56,7 +56,9 @@ function isOnProjectPageForShortcut(): boolean {
       || host.endsWith('.lovableproject.com')
     );
 
-    if (!isSupportedHost) return false;
+    if (!isSupportedHost) {
+      return false;
+    }
 
     const isSettings = path.includes('/settings');
     const isProjectPath = path.includes('/projects/');
@@ -76,7 +78,9 @@ const TASK_NEXT_PRESETS: Record<string, number> = {
 
 /** Handle Ctrl+Shift digit shortcuts for Task Next presets. Returns true if handled. */
 function handleTaskNextShortcut(e: KeyboardEvent, taskNextDeps?: TaskNextDeps): boolean {
-  if (!e.ctrlKey || !e.shiftKey || e.altKey || !taskNextDeps) return false;
+  if (!e.ctrlKey || !e.shiftKey || e.altKey || !taskNextDeps) {
+    return false;
+  }
 
   const preset = TASK_NEXT_PRESETS[e.key];
   if (preset !== undefined) {
@@ -111,7 +115,9 @@ function handleCtrlOnlyShortcut(e: KeyboardEvent, deps: KeyboardHandlerDeps): bo
     jsBody.style.display = hidden ? '' : 'none';
     if (hidden) {
       const ta = document.getElementById('marco-js-executor');
-      if (ta) ta.focus();
+      if (ta) {
+        ta.focus();
+      }
     }
     return true;
   }
@@ -132,7 +138,9 @@ function handleCtrlAltShortcut(e: KeyboardEvent, deps: KeyboardHandlerDeps): boo
     e.preventDefault();
     const isHidden = ui.style.display === 'none';
     log('Ctrl+Alt+H pressed on MacroLoop, isHidden=' + isHidden);
-    if (isHidden) restorePanel(plCtx);
+    if (isHidden) {
+      restorePanel(plCtx);
+    }
     return true;
   }
 
@@ -162,8 +170,12 @@ function handleCtrlAltShortcut(e: KeyboardEvent, deps: KeyboardHandlerDeps): boo
  */
 export function registerKeyboardHandlers(deps: KeyboardHandlerDeps): void {
   document.addEventListener('keydown', function(e: KeyboardEvent) {
-    if (handleTaskNextShortcut(e, deps.taskNextDeps)) return;
-    if (!e.ctrlKey) return;
+    if (handleTaskNextShortcut(e, deps.taskNextDeps)) {
+      return;
+    }
+    if (!e.ctrlKey) {
+      return;
+    }
     if (!e.altKey && !e.shiftKey) { handleCtrlOnlyShortcut(e, deps); return; }
     if (e.altKey && !e.shiftKey) { handleCtrlAltShortcut(e, deps); }
   });

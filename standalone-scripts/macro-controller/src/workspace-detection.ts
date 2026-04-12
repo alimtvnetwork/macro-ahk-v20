@@ -269,7 +269,9 @@ async function processTier1Response(
 // ============================================
 /** Handle single-workspace case. Returns true if resolved. */
 function handleSingleWorkspace(fn: string, perWs: import('./types').WorkspaceCredit[]): boolean {
-  if (perWs.length !== 1) return false;
+  if (perWs.length !== 1) {
+    return false;
+  }
   if (!state.workspaceName) {
     state.workspaceName = perWs[0].fullName || perWs[0].name;
     state.workspaceFromApi = true;
@@ -284,7 +286,9 @@ function handleSingleWorkspace(fn: string, perWs: import('./types').WorkspaceCre
 
 /** Check if workspace is already authoritatively set. Returns true if resolved. */
 function checkAuthoritativeGuard(fn: string, perWs: import('./types').WorkspaceCredit[]): boolean {
-  if (!state.workspaceFromApi || !state.workspaceName) return false;
+  if (!state.workspaceFromApi || !state.workspaceName) {
+    return false;
+  }
   const matched = matchWorkspaceByName(state.workspaceName, perWs);
   if (matched) {
     loopCreditState.currentWs = matched;
@@ -314,8 +318,12 @@ export async function autoDetectLoopCurrentWorkspace(
     return;
   }
 
-  if (checkAuthoritativeGuard(fn, perWs)) return;
-  if (handleSingleWorkspace(fn, perWs)) return;
+  if (checkAuthoritativeGuard(fn, perWs)) {
+    return;
+  }
+  if (handleSingleWorkspace(fn, perWs)) {
+    return;
+  }
 
   const projectId = extractProjectIdFromUrl();
   const token = bearerToken || resolveToken();
@@ -338,7 +346,9 @@ export async function autoDetectLoopCurrentWorkspace(
     const resp = await window.marco!.api!.workspace.markViewed(projectId, { baseUrl: CREDIT_API_BASE });
     await processTier1Response(fn, resp, perWs, skipDialog);
   } catch (err) {
-    if (state.isManualCheck) return;
+    if (state.isManualCheck) {
+      return;
+    }
     log(fn + ': Tier 1 NETWORK ERROR: ' + (err instanceof Error ? err.message : String(err)) + ' — falling to passive fallback', 'warn');
     await fallbackDetect(fn, perWs, skipDialog);
   }

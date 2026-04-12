@@ -229,17 +229,25 @@ function _applyXPathSettings(xpResult: XPathPanelResult): void {
     CONFIG[k] = xpResult.inputs[k].value;
   }
   const pInp = document.getElementById('xpath-project-btn') as HTMLInputElement;
-  if (pInp) pInp.value = CONFIG.PROJECT_BUTTON_XPATH;
+  if (pInp) {
+    pInp.value = CONFIG.PROJECT_BUTTON_XPATH;
+  }
   const prInp = document.getElementById('xpath-progress-bar') as HTMLInputElement;
-  if (prInp) prInp.value = CONFIG.PROGRESS_XPATH;
+  if (prInp) {
+    prInp.value = CONFIG.PROGRESS_XPATH;
+  }
   const wInp = document.getElementById('xpath-workspace-name') as HTMLInputElement;
-  if (wInp) wInp.value = CONFIG.WORKSPACE_XPATH;
+  if (wInp) {
+    wInp.value = CONFIG.WORKSPACE_XPATH;
+  }
 }
 
 function _applyTimingSettings(tmResult: TimingPanelResult): void {
   for (const k in tmResult.inputs) {
     const val = parseInt(tmResult.inputs[k].value, 10);
-    if (!isNaN(val) && val >= 0) TIMING[k] = val;
+    if (!isNaN(val) && val >= 0) {
+      TIMING[k] = val;
+    }
   }
 }
 
@@ -248,7 +256,9 @@ function _applyTaskNextSettings(tnResult: TaskNextPanelResult, taskNextDeps: Tas
     const isNum = k !== 'buttonXPath' && k !== 'promptSlug';
     if (isNum) {
       const v = parseInt(tnResult.inputs[k].value, 10);
-      if (!isNaN(v)) taskNextState.settings[k] = v;
+      if (!isNaN(v)) {
+        taskNextState.settings[k] = v;
+      }
     } else {
       taskNextState.settings[k] = tnResult.inputs[k].value;
     }

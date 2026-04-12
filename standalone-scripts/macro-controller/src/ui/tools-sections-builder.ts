@@ -212,9 +212,13 @@ function _buildJsLogsSection(): HTMLElement {
     e.preventDefault(); e.stopPropagation();
     copyLogsToClipboard();
     const countEl = document.getElementById(ID_LOOP_LOG_COUNT);
-    if (countEl) countEl.textContent = 'Copied! (' + getAllLogs().length + ' entries)';
+    if (countEl) {
+      countEl.textContent = 'Copied! (' + getAllLogs().length + ' entries)';
+    }
     setTimeout(function() {
-      if (countEl) countEl.textContent = 'JS Logs (' + getAllLogs().length + ' entries)';
+      if (countEl) {
+        countEl.textContent = 'JS Logs (' + getAllLogs().length + ' entries)';
+      }
     }, 2000);
   };
 
@@ -232,7 +236,9 @@ function _buildJsLogsSection(): HTMLElement {
     e.preventDefault(); e.stopPropagation();
     clearAllLogs();
     const countEl = document.getElementById(ID_LOOP_LOG_COUNT);
-    if (countEl) countEl.textContent = 'JS Logs (0 entries)';
+    if (countEl) {
+      countEl.textContent = 'JS Logs (0 entries)';
+    }
   };
 
   logExportRow.appendChild(logLabel);
@@ -301,7 +307,9 @@ function _buildRecentErrorsSection(): HTMLElement {
     recentErrors.length = 0;
     _renderRecentErrorsList(errListContainer);
     const countEl = document.getElementById('loop-recent-errors-count');
-    if (countEl) countEl.textContent = '0 error(s)';
+    if (countEl) {
+      countEl.textContent = '0 error(s)';
+    }
   };
 
   errHeaderBtns.appendChild(copyAllErrBtn);
@@ -318,7 +326,9 @@ function _buildRecentErrorsSection(): HTMLElement {
   onRecentErrorsChange(function() {
     _renderRecentErrorsList(errListContainer);
     const countEl = document.getElementById('loop-recent-errors-count');
-    if (countEl) countEl.textContent = recentErrors.length + ' error(s)';
+    if (countEl) {
+      countEl.textContent = recentErrors.length + ' error(s)';
+    }
   });
 
   return errCol.section;

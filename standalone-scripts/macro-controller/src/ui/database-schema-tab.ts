@@ -178,7 +178,9 @@ function buildColumnMainRow(
     option.value = colType;
     option.textContent = colType;
     const isSelected = colType === col.type;
-    if (isSelected) option.selected = true;
+    if (isSelected) {
+      option.selected = true;
+    }
     typeSelect.appendChild(option);
   }
   typeSelect.onchange = () => { col.type = typeSelect.value as ColumnEntry['type']; };
@@ -219,7 +221,9 @@ function buildColumnExtras(
 
   const valPanel = el('div', 'marco-schema-val-panel');
   valPanel.style.display = col.validation ? 'block' : 'none';
-  if (col.validation) renderValidationPanel(valPanel, col);
+  if (col.validation) {
+    renderValidationPanel(valPanel, col);
+  }
 
   const valToggle = el('button', 'marco-schema-btn marco-schema-btn-sm',
     col.validation ? '📏 Validation ✓' : '📏 Validation');
@@ -240,7 +244,9 @@ function buildColumnExtras(
 
   const fkPanel = el('div', 'marco-schema-fk-panel');
   fkPanel.style.display = col.foreignKey ? 'block' : 'none';
-  if (col.foreignKey) renderFkPanel(fkPanel, col, existingTables);
+  if (col.foreignKey) {
+    renderFkPanel(fkPanel, col, existingTables);
+  }
 
   const fkToggle = el('button', 'marco-schema-btn marco-schema-btn-sm',
     col.foreignKey ? '🔗 FK ✓' : '🔗 FK');

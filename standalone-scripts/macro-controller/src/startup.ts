@@ -361,7 +361,9 @@ function handleTokenFailure(tokenResult: { waitedMs: number; reason: string }): 
 function logAuthDiag(): void {
   try {
     const authDiag = window.marco?.auth?.getLastAuthDiag?.();
-    if (!authDiag) return;
+    if (!authDiag) {
+      return;
+    }
 
     const bridgeTag = authDiag.bridgeOutcome === 'hit' ? '✅ bridge hit'
       : authDiag.bridgeOutcome === 'timeout' ? '⏱ bridge timeout'
@@ -414,7 +416,9 @@ function handleCreditSuccess(tier1Data: MarkViewedResponse | null): void {
   timingStart('workspace', 'Workspace Detection');
 
   const isResolved = tier1Data !== null && resolveTier1Workspace(tier1Data);
-  if (isResolved) return;
+  if (isResolved) {
+    return;
+  }
 
   log('Startup: Tier 1 prefetch did not resolve workspace — falling back to autoDetect', 'info');
   const freshToken = resolveToken();
@@ -515,7 +519,9 @@ function resolveTier1Workspace(tier1Data: MarkViewedResponse): boolean {
   }
 
   const hasNoWsId = !wsId;
-  if (hasNoWsId) return false;
+  if (hasNoWsId) {
+    return false;
+  }
 
   const wsById = loopCreditState.wsById || {};
   const perWs = loopCreditState.perWorkspace || [];
@@ -533,7 +539,9 @@ function resolveTier1Workspace(tier1Data: MarkViewedResponse): boolean {
   }
 
   const hasNoMatch = !matched;
-  if (hasNoMatch) return false;
+  if (hasNoMatch) {
+    return false;
+  }
 
   state.workspaceName = matched!.fullName || matched!.name;
   state.workspaceFromApi = true;
@@ -654,7 +662,9 @@ function setupAuthResync(): void {
 }
 
 function tryAutoAuthResync(trigger: string): void {
-  if (authResyncState.inFlight) return;
+  if (authResyncState.inFlight) {
+    return;
+  }
   authResyncState.inFlight = true;
 
   log(AUTH_AUTO_RESYNC + trigger + '): checking bridge for restored session...', 'check');
@@ -673,7 +683,9 @@ function tryAutoAuthResync(trigger: string): void {
     updateAuthBadge(true, getLastTokenSource());
     log(AUTH_AUTO_RESYNC + trigger + '): ✅ token restored from ' + getLastTokenSource(), 'success');
 
-    if (state.running) return;
+    if (state.running) {
+      return;
+    }
 
     fetchLoopCreditsAsync(false)
       .then(function () {

@@ -132,7 +132,9 @@ function renderTableListItems(
     const item = createTableListItem(table);
 
     item.onclick = () => {
-      if (activeItem) activeItem.classList.remove('active');
+      if (activeItem) {
+        activeItem.classList.remove('active');
+      }
       item.classList.add('active');
       activeItem = item;
       loadTableData(table.name, 0, content, statusBar);

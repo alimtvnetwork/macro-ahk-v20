@@ -233,7 +233,9 @@ export function buildConfigDbPanel(
 
     const sections: Record<string, Array<{ key: string; value: string; valueType: string }>> = {};
     for (const row of rows) {
-      if (!sections[row.section]) sections[row.section] = [];
+      if (!sections[row.section]) {
+        sections[row.section] = [];
+      }
       sections[row.section].push({ key: row.key, value: row.value, valueType: row.valueType });
     }
 
@@ -265,9 +267,15 @@ function renderConfigSection(
   for (const entry of entries) {
     const isMultiline = entry.valueType === 'object' || entry.valueType === 'array' || entry.value.length > 80;
     const fieldOpts: { type?: string; hint?: string; multiline?: boolean } = {};
-    if (isMultiline) fieldOpts.multiline = true;
-    if (entry.valueType === 'number') fieldOpts.type = 'number';
-    if (entry.valueType === 'boolean') fieldOpts.type = 'text';
+    if (isMultiline) {
+      fieldOpts.multiline = true;
+    }
+    if (entry.valueType === 'number') {
+      fieldOpts.type = 'number';
+    }
+    if (entry.valueType === 'boolean') {
+      fieldOpts.type = 'text';
+    }
     fieldOpts.hint = entry.valueType;
 
     const field = makeField(entry.key, entry.value, fieldOpts);

@@ -69,7 +69,9 @@ const CSS_BORDER_1PX_SOLID_RGBA_255_255_255_0_08 = ';border:1px solid rgba(255,2
 
 function focusCurrentWorkspaceInList(): void {
   const listEl = document.getElementById('loop-ws-list');
-  if (!listEl) return;
+  if (!listEl) {
+    return;
+  }
   const currentName = state.workspaceName;
   if (!currentName) {
     log('Credits: no current workspace name to focus', 'warn');

@@ -33,7 +33,9 @@ const shimmerState = new ShimmerState();
 
 /** Inject the shimmer keyframe animation into <head> (idempotent). */
 export function injectSkeletonStyles(): void {
-  if (shimmerState.injected) return;
+  if (shimmerState.injected) {
+    return;
+  }
   shimmerState.injected = true;
 
   const style = document.createElement('style');

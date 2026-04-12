@@ -234,7 +234,9 @@ export function ensureProjectDialogOpen(): boolean {
 
   for (const [buttonIndex, btn] of buttons.entries()) {
     const clickResult = tryClickVisibleButton(btn as Element, buttonIndex);
-    if (clickResult !== null) return clickResult;
+    if (clickResult !== null) {
+      return clickResult;
+    }
   }
 
   logError('PROJECT', 'BUTTON NOT FOUND! (\' + buttons.length + \' matches but none are valid)');

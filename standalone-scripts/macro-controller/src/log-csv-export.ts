@@ -14,7 +14,9 @@ import { log } from './logging';
 // ── CSV Helpers ──
 
 function csvVal(v: string | number | boolean | null | undefined): string {
-  if (v === null || v === undefined) return '';
+  if (v === null || v === undefined) {
+    return '';
+  }
   const s = String(v);
   if (s.indexOf(',') !== -1 || s.indexOf('"') !== -1 || s.indexOf('\n') !== -1) {
     return '"' + s.replace(/"/g, '""') + '"';

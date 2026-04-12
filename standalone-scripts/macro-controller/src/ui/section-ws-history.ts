@@ -54,13 +54,19 @@ export function createWsHistorySection(deps: WsHistoryDeps): WsHistoryResult {
   const origClick = wsHistoryCol.header.onclick as (() => void) | null;
 
   wsHistoryCol.header.onclick = function () {
-    if (origClick) origClick();
+    if (origClick) {
+      origClick();
+    }
     const isVisible = wsHistoryCol.body.style.display !== 'none';
-    if (isVisible) renderWsHistory();
+    if (isVisible) {
+      renderWsHistory();
+    }
   };
 
   const isInitiallyVisible = wsHistoryCol.body.style.display !== 'none';
-  if (isInitiallyVisible) renderWsHistory();
+  if (isInitiallyVisible) {
+    renderWsHistory();
+  }
 
   return { section: wsHistoryCol.section, renderWsHistory };
 }

@@ -14,7 +14,9 @@ import { showToast } from '../toast';
 // ── Prompt entry normalization ──
 // eslint-disable-next-line sonarjs/cognitive-complexity -- field-by-field validation with optional property copying
 export function normalizePromptEntries(entries: Partial<PromptEntry & { order?: number }>[]): PromptEntry[] {
-  if (!Array.isArray(entries)) return [];
+  if (!Array.isArray(entries)) {
+    return [];
+  }
   const out: PromptEntry[] = [];
   let droppedCount = 0;
   for (const p of entries) {
@@ -97,7 +99,9 @@ export function showPasteToast(message: string, isError: boolean): void {
   // Enforce max stack — remove oldest if at limit
   while (container.children.length >= TOAST_MAX_STACK) {
     const oldest = container.lastElementChild;
-    if (oldest) oldest.remove();
+    if (oldest) {
+      oldest.remove();
+    }
   }
 
   const toast = document.createElement('div');
@@ -153,11 +157,15 @@ export function findPasteTarget(promptsCfg: PromptsCfg, getByXPath: (xpath: stri
   let el: Element | null = null;
   if (promptsCfg.pasteTargetXPath) {
     el = getByXPath(promptsCfg.pasteTargetXPath);
-    if (el) return el;
+    if (el) {
+      return el;
+    }
   }
   if (promptsCfg.pasteTargetSelector) {
     el = document.querySelector(promptsCfg.pasteTargetSelector);
-    if (el) return el;
+    if (el) {
+      return el;
+    }
   }
   const selectors = [
     'form textarea[placeholder]',
@@ -255,7 +263,9 @@ export function pasteIntoEditor(rawText: string, promptsCfg: PromptsCfg, getByXP
       pasteIntoTextarea(target, text);
     } else {
       const ok = pasteIntoContentEditable(target, text);
-      if (!ok) return false;
+      if (!ok) {
+        return false;
+      }
     }
 
     log('Prompt injected: "' + text.substring(0, 80) + '..." (' + text.length + ' total chars)', 'success');
