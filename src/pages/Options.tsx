@@ -20,20 +20,20 @@ import { toast } from "sonner";
 import { PanelRightOpen, Loader2 } from "lucide-react";
 
 // Lazy-loaded heavy panels
-const ProjectDetailView = lazy(() => import("@/components/options/ProjectDetailView").then(m => ({ default: m.ProjectDetailView })));
-const GlobalScriptsView = lazy(() => import("@/components/options/GlobalScriptsView").then(m => ({ default: m.GlobalScriptsView })));
-const ScriptBundleDetailView = lazy(() => import("@/components/options/ScriptBundleDetailView").then(m => ({ default: m.ScriptBundleDetailView })));
-const GlobalDiagnosticsView = lazy(() => import("@/components/options/GlobalDiagnosticsView").then(m => ({ default: m.GlobalDiagnosticsView })));
-const GlobalAboutView = lazy(() => import("@/components/options/GlobalAboutView").then(m => ({ default: m.GlobalAboutView })));
-const SettingsView = lazy(() => import("@/components/options/SettingsView").then(m => ({ default: m.SettingsView })));
-const StorageBrowserView = lazy(() => import("@/components/options/StorageBrowserView").then(m => ({ default: m.StorageBrowserView })));
-const ApiExplorerView = lazy(() => import("@/components/options/ApiExplorerView").then(m => ({ default: m.ApiExplorerView })));
-const PromptManagerPanel = lazy(() => import("@/components/options/PromptManagerPanel").then(m => ({ default: m.PromptManagerPanel })));
-const PromptChainPanel = lazy(() => import("@/components/options/PromptChainPanel").then(m => ({ default: m.PromptChainPanel })));
-const UpdaterManagementView = lazy(() => import("@/components/options/UpdaterManagementView").then(m => ({ default: m.UpdaterManagementView })));
-const AutomationView = lazy(() => import("@/components/automation/AutomationView").then(m => ({ default: m.AutomationView })));
-const ActivityLogTimeline = lazy(() => import("@/components/options/ActivityLogTimeline").then(m => ({ default: m.ActivityLogTimeline })));
-const LibraryView = lazy(() => import("@/components/options/LibraryView").then(m => ({ default: m.LibraryView })));
+const ProjectDetailView = lazy(() => import("@/components/options/ProjectDetailView"));
+const GlobalScriptsView = lazy(() => import("@/components/options/GlobalScriptsView"));
+const ScriptBundleDetailView = lazy(() => import("@/components/options/ScriptBundleDetailView"));
+const GlobalDiagnosticsView = lazy(() => import("@/components/options/GlobalDiagnosticsView"));
+const GlobalAboutView = lazy(() => import("@/components/options/GlobalAboutView"));
+const SettingsView = lazy(() => import("@/components/options/SettingsView"));
+const StorageBrowserView = lazy(() => import("@/components/options/StorageBrowserView"));
+const ApiExplorerView = lazy(() => import("@/components/options/ApiExplorerView"));
+const PromptManagerPanel = lazy(() => import("@/components/options/PromptManagerPanel"));
+const PromptChainPanel = lazy(() => import("@/components/options/PromptChainPanel"));
+const UpdaterManagementView = lazy(() => import("@/components/options/UpdaterManagementView"));
+const AutomationView = lazy(() => import("@/components/automation/AutomationView"));
+const ActivityLogTimeline = lazy(() => import("@/components/options/ActivityLogTimeline"));
+const LibraryView = lazy(() => import("@/components/options/LibraryView"));
 
 function LazyFallback() {
   return (
