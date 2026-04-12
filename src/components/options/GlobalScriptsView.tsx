@@ -63,8 +63,8 @@ export function GlobalScriptsView({
 
   return (
     <ScriptBundlesListView
-      scripts={scripts}
-      configs={configs}
+      scripts={scripts ?? []}
+      configs={configs ?? []}
       loading={scriptsLoading}
       onNew={onNewScript}
       onEdit={onEditScript}
