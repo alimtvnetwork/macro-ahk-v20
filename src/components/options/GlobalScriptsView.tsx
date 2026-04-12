@@ -1,5 +1,5 @@
 import { ScriptBundlesListView } from "./ScriptBundlesListView";
-import type { StoredScript, StoredConfig } from "@/hooks/use-projects-scripts";
+import type { StoredConfig, StoredScript } from "@/hooks/use-projects-scripts";
 import { toast } from "sonner";
 
 /* ------------------------------------------------------------------ */
