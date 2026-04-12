@@ -27,6 +27,7 @@ import {
 } from "../schema-meta-engine";
 
 import { type MessageRequest } from "../../shared/messages";
+import type { JsonRecord } from "./handler-types";
 
 /* ------------------------------------------------------------------ */
 /*  APPLY_JSON_SCHEMA                                                  */
@@ -37,8 +38,8 @@ interface ApplyJsonSchemaMessage extends MessageRequest {
     schema: JsonSchemaDef;
 }
 
-export async function handleApplyJsonSchema(msg: MessageRequest): Promise<unknown> {
-    const { project, schema } = msg as unknown as ApplyJsonSchemaMessage;
+export async function handleApplyJsonSchema(msg: MessageRequest): Promise<{ isOk: boolean; result?: ReturnType<typeof applyJsonSchema>; errorMessage?: string }> {
+    const { project, schema } = msg as ApplyJsonSchemaMessage;
 
     if (!project || typeof project !== "string") {
         return { isOk: false, errorMessage: "Missing 'project' (slug)" };
@@ -72,8 +73,18 @@ interface GenerateSchemaDocsMessage extends MessageRequest {
     format?: "markdown" | "prisma" | "both" | "meta";
 }
 
-export async function handleGenerateSchemaDocs(msg: MessageRequest): Promise<unknown> {
-    const { project, format = "both" } = msg as unknown as GenerateSchemaDocsMessage;
+interface SchemaDocsResponse {
+    isOk: boolean;
+    errorMessage?: string;
+    markdown?: string;
+    prisma?: string;
+    tables?: ReturnType<typeof getMetaTables>;
+    columns?: ReturnType<typeof getMetaColumns>;
+    relations?: ReturnType<typeof getMetaRelations>;
+}
+
+export async function handleGenerateSchemaDocs(msg: MessageRequest): Promise<SchemaDocsResponse> {
+    const { project, format = "both" } = msg as GenerateSchemaDocsMessage;
 
     if (!project || typeof project !== "string") {
         return { isOk: false, errorMessage: "Missing 'project' (slug)" };
@@ -85,7 +96,7 @@ export async function handleGenerateSchemaDocs(msg: MessageRequest): Promise<unk
     const db = getProjectDb(project);
     ensureMetaTables(db);
 
-    const response: Record<string, unknown> = { isOk: true };
+    const response: SchemaDocsResponse = { isOk: true };
 
     if (format === "markdown" || format === "both") {
         response.markdown = generateMarkdownDocs(db);

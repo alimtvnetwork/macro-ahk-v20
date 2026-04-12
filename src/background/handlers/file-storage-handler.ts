@@ -11,6 +11,8 @@
 
 import type { Database as SqlJsDatabase } from "sql.js";
 import type { DbManager } from "../db-manager";
+import type { MessageRequest } from "../../shared/messages";
+
 let dbManager: DbManager | null = null;
 let onFilesChanged: ((projectId: string) => void) | null = null;
 
@@ -44,8 +46,8 @@ export interface FileEntry {
     createdAt: string;
 }
 
-export async function handleFileSave(msg: unknown): Promise<{ isOk: true; id: string }> {
-    const { projectId, filename, mimeType, dataBase64 } = msg as {
+export async function handleFileSave(msg: MessageRequest): Promise<{ isOk: true; id: string }> {
+    const { projectId, filename, mimeType, dataBase64 } = msg as MessageRequest & {
         projectId: string;
         filename: string;
         mimeType?: string;
@@ -67,8 +69,8 @@ export async function handleFileSave(msg: unknown): Promise<{ isOk: true; id: st
     return { isOk: true, id };
 }
 
-export async function handleFileGet(msg: unknown): Promise<{ file: (FileEntry & { dataBase64: string }) | null }> {
-    const { fileId } = msg as { fileId: string };
+export async function handleFileGet(msg: MessageRequest): Promise<{ file: (FileEntry & { dataBase64: string }) | null }> {
+    const { fileId } = msg as MessageRequest & { fileId: string };
     const db = getDb();
     const result = db.exec(
         "SELECT Id, ProjectId, Filename, MimeType, Data, Size, CreatedAt FROM ProjectFiles WHERE Id = ?",
@@ -93,8 +95,8 @@ export async function handleFileGet(msg: unknown): Promise<{ file: (FileEntry & 
     };
 }
 
-export async function handleFileList(msg: unknown): Promise<{ files: FileEntry[] }> {
-    const { projectId } = msg as { projectId: string };
+export async function handleFileList(msg: MessageRequest): Promise<{ files: FileEntry[] }> {
+    const { projectId } = msg as MessageRequest & { projectId: string };
     const db = getDb();
     const stmt = db.prepare(
         "SELECT Id, ProjectId, Filename, MimeType, Size, CreatedAt FROM ProjectFiles WHERE ProjectId = ? ORDER BY CreatedAt DESC",
@@ -116,8 +118,8 @@ export async function handleFileList(msg: unknown): Promise<{ files: FileEntry[]
     return { files };
 }
 
-export async function handleFileDelete(msg: unknown): Promise<{ isOk: true }> {
-    const { fileId } = msg as { fileId: string };
+export async function handleFileDelete(msg: MessageRequest): Promise<{ isOk: true }> {
+    const { fileId } = msg as MessageRequest & { fileId: string };
     const db = getDb();
     db.run("DELETE FROM ProjectFiles WHERE Id = ?", [fileId]);
     markDirty();
