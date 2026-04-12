@@ -268,7 +268,7 @@ export const BROADCAST_TYPES = new Set<MessageType>([
 ]);
 
 function getProjectIdHint(message: MessageRequest): string | undefined {
-    const maybeProjectId = (message as unknown as Record<string, unknown>).projectId;
+    const maybeProjectId = (message as Record<string, string | undefined>).projectId;
     return typeof maybeProjectId === "string" && maybeProjectId.length > 0
         ? maybeProjectId
         : undefined;
@@ -283,12 +283,12 @@ function getTabUrlHint(
         return senderUrl;
     }
 
-    const maybeTabUrl = (message as unknown as Record<string, unknown>).tabUrl;
+    const maybeTabUrl = (message as Record<string, string | undefined>).tabUrl;
     if (typeof maybeTabUrl === "string" && maybeTabUrl.length > 0) {
         return maybeTabUrl;
     }
 
-    const maybePageUrl = (message as unknown as Record<string, unknown>).pageUrl;
+    const maybePageUrl = (message as Record<string, string | undefined>).pageUrl;
     return typeof maybePageUrl === "string" && maybePageUrl.length > 0
         ? maybePageUrl
         : undefined;

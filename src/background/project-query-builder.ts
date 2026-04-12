@@ -7,6 +7,7 @@
  * See spec/05-chrome-extension/67-project-scoped-database-and-rest-api.md
  */
 
+import type { SqlValue } from "sql.js";
 import type { Database as SqlJsDatabase } from "sql.js";
 import { ensureMetaTables } from "./schema-meta-engine";
 
@@ -15,7 +16,7 @@ import { ensureMetaTables } from "./schema-meta-engine";
 /* ------------------------------------------------------------------ */
 
 export interface WhereClause {
-    [column: string]: unknown;
+    [column: string]: SqlValue | Record<string, SqlValue>;
 }
 
 export interface OrderByClause {
@@ -66,13 +67,13 @@ function assertValidTable(name: string): void {
 /*  WHERE builder                                                      */
 /* ------------------------------------------------------------------ */
 
-function buildWhere(where?: WhereClause): { clause: string; params: unknown[] } {
+function buildWhere(where?: WhereClause): { clause: string; params: SqlValue[] } {
     if (!where || Object.keys(where).length === 0) {
         return { clause: "", params: [] };
     }
 
     const conditions: string[] = [];
-    const params: unknown[] = [];
+    const params: SqlValue[] = [];
 
     for (const [col, val] of Object.entries(where)) {
         if (typeof val === 'object' && val !== null) {
@@ -113,7 +114,7 @@ function buildOrderBy(orderBy?: OrderByClause): string {
 /*  Row collector                                                      */
 /* ------------------------------------------------------------------ */
 
-function collectRows(db: SqlJsDatabase, sql: string, params: unknown[]): Record<string, unknown>[] {
+function collectRows(db: SqlJsDatabase, sql: string, params: SqlValue[]): Record<string, SqlValue>[] {
     const stmt = db.prepare(sql);
     if (params.length > 0) stmt.bind(params);
 

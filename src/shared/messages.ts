@@ -6,6 +6,8 @@
  * @see spec/05-chrome-extension/18-message-protocol.md — Full message protocol spec
  */
 
+import type { JsonValue } from "../background/handlers/handler-types";
+
 export enum MessageType {
     // ─── Config & Auth (from Spec 05) ───
     GET_CONFIG = "GET_CONFIG",
@@ -366,20 +368,20 @@ export type MessageRequest =
     | { type: MessageType.GET_ACTIVE_PROJECT }
     | { type: MessageType.SET_ACTIVE_PROJECT; projectId: string }
     | { type: MessageType.GET_ALL_PROJECTS }
-    | { type: MessageType.SAVE_PROJECT; project: unknown }
+    | { type: MessageType.SAVE_PROJECT; project: Record<string, JsonValue> }
     | { type: MessageType.DELETE_PROJECT; projectId: string }
     | { type: MessageType.DUPLICATE_PROJECT; projectId: string }
     | { type: MessageType.IMPORT_PROJECT; json: string }
     | { type: MessageType.EXPORT_PROJECT; projectId: string }
     | { type: MessageType.GET_ALL_SCRIPTS }
-    | { type: MessageType.SAVE_SCRIPT; script: unknown }
+    | { type: MessageType.SAVE_SCRIPT; script: Record<string, JsonValue> }
     | { type: MessageType.DELETE_SCRIPT; id: string }
     | { type: MessageType.TOGGLE_SCRIPT; id: string }
     | { type: MessageType.GET_ALL_CONFIGS }
-    | { type: MessageType.SAVE_CONFIG; config: unknown }
+    | { type: MessageType.SAVE_CONFIG; config: Record<string, JsonValue> }
     | { type: MessageType.DELETE_CONFIG; id: string }
     | { type: MessageType.GET_SCRIPT_CONFIG; scriptId: string; configId?: string }
-    | { type: MessageType.INJECT_SCRIPTS; tabId: number; scripts: unknown[]; forceReload?: boolean }
+    | { type: MessageType.INJECT_SCRIPTS; tabId: number; scripts: Record<string, JsonValue>[]; forceReload?: boolean }
     | { type: MessageType.GET_TAB_INJECTIONS; tabId: number }
     | { type: MessageType.GET_ACTIVE_ERRORS }
     | { type: MessageType.CLEAR_ERRORS }
@@ -405,12 +407,12 @@ export type MessageRequest =
     | { type: MessageType.GET_RUN_STATS }
     | { type: MessageType.CLEAR_RUN_STATS }
     | { type: MessageType.GET_PROMPTS }
-    | { type: MessageType.SAVE_PROMPT; prompt: unknown }
+    | { type: MessageType.SAVE_PROMPT; prompt: Record<string, JsonValue> }
     | { type: MessageType.DELETE_PROMPT; promptId: string }
     | { type: MessageType.REORDER_PROMPTS; promptIds: string[] }
     | { type: MessageType.RESEED_PROMPTS }
     | { type: MessageType.GET_PROMPT_CHAINS }
-    | { type: MessageType.SAVE_PROMPT_CHAIN; chain: unknown }
+    | { type: MessageType.SAVE_PROMPT_CHAIN; chain: Record<string, JsonValue> }
     | { type: MessageType.DELETE_PROMPT_CHAIN; chainId: string }
     | { type: MessageType.EXECUTE_CHAIN_STEP; promptText: string; stepIndex: number; totalSteps: number; timeoutSec: number }
     | UserScriptLogRequest
@@ -446,7 +448,7 @@ export type MessageRequest =
     | { type: MessageType.STORAGE_CLEAR_ALL }
     | { type: MessageType.STORAGE_RESEED }
     | { type: MessageType.STORAGE_SESSION_LIST; prefix?: string }
-    | { type: MessageType.STORAGE_SESSION_SET; key: string; value: unknown }
+    | { type: MessageType.STORAGE_SESSION_SET; key: string; value: JsonValue }
     | { type: MessageType.STORAGE_SESSION_DELETE; key: string }
     | { type: MessageType.STORAGE_SESSION_CLEAR; prefix?: string }
     | { type: MessageType.STORAGE_COOKIES_LIST; domain?: string; nameContains?: string }
@@ -468,14 +470,14 @@ export type MessageRequest =
     | { type: MessageType.GET_SCRIPT_INFO; scriptName: string }
     | { type: MessageType.HOT_RELOAD_SCRIPT; scriptName: string }
     // ─── Schema Meta Engine (Issue 85) ───
-    | { type: MessageType.APPLY_JSON_SCHEMA; project: string; schema: unknown }
+    | { type: MessageType.APPLY_JSON_SCHEMA; project: string; schema: Record<string, JsonValue> }
     | { type: MessageType.GENERATE_SCHEMA_DOCS; project: string; format?: "markdown" | "prisma" | "both" | "meta" }
     // ─── Automation Chains (Spec 21) ───
     | { type: MessageType.GET_AUTOMATION_CHAINS; project?: string }
-    | { type: MessageType.SAVE_AUTOMATION_CHAIN; project?: string; chain: unknown }
+    | { type: MessageType.SAVE_AUTOMATION_CHAIN; project?: string; chain: Record<string, JsonValue> }
     | { type: MessageType.DELETE_AUTOMATION_CHAIN; project?: string; chainId: string }
     | { type: MessageType.TOGGLE_AUTOMATION_CHAIN; project?: string; chainId: string }
-    | { type: MessageType.IMPORT_AUTOMATION_CHAINS; project?: string; chains: unknown[] }
+    | { type: MessageType.IMPORT_AUTOMATION_CHAINS; project?: string; chains: Record<string, JsonValue>[] }
     // ─── Cache Management (Issue 88) ───
     | { type: MessageType.INVALIDATE_CACHE }
     | { type: MessageType.GET_CACHE_STATS };
@@ -505,7 +507,7 @@ export interface UserScriptLogRequest {
 export interface UserScriptDataSetRequest {
     type: MessageType.USER_SCRIPT_DATA_SET;
     key: string;
-    value: unknown;
+    value: JsonValue;
     projectId: string;
     scriptId: string;
 }

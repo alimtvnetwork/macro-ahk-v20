@@ -20,6 +20,7 @@
  * @see .lovable/memory/features/projects/configuration-seeding.md — Hash-based seeding strategy
  */
 
+import type { JsonValue } from "./handlers/handler-types";
 import type { ProjectDbManager } from "./project-db-manager";
 import { logCaughtError, BgLogTag} from "./bg-logger";
 
@@ -280,7 +281,7 @@ export function reconstructConfigFromDb(manager: ProjectDbManager): Record<strin
     return result;
 }
 
-function deserializeValue(value: string, valueType: string): unknown {
+function deserializeValue(value: string, valueType: string): JsonValue {
     switch (valueType) {
         case "number": return Number(value);
         case "boolean": return value === "true";

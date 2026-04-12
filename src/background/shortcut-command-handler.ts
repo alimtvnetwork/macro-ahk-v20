@@ -7,6 +7,8 @@
  * @see spec/05-chrome-extension/18-message-protocol.md — Message types
  */
 
+import type { ScriptEntry } from "../shared/project-types";
+import type { InjectionResult } from "../shared/injection-types";
 import { MessageType } from "../shared/messages";
 import { handleMessage } from "./message-router";
 import { logCaughtError, logBgWarnError, BgLogTag} from "./bg-logger";
@@ -18,7 +20,7 @@ interface ActiveProjectResponse {
     activeProject?: {
         id?: string;
         name?: string;
-        scripts?: unknown[];
+        scripts?: ScriptEntry[];
     } | null;
 }
 
@@ -77,7 +79,7 @@ async function runScriptsFromShortcut(forceReload: boolean): Promise<void> {
 
         console.log("[Marco] Shortcut: injecting %d scripts into tab %d", scripts.length, activeTabId);
 
-        const response = await sendInternalMessage<{ results?: unknown[] }>({
+        const response = await sendInternalMessage<{ results?: InjectionResult[] }>({
             type: MessageType.INJECT_SCRIPTS,
             tabId: activeTabId,
             scripts,
@@ -85,7 +87,7 @@ async function runScriptsFromShortcut(forceReload: boolean): Promise<void> {
         });
 
         const elapsed = Math.round(performance.now() - t0);
-        const resultCount = response?.results ? (response.results as unknown[]).length : 0;
+        const resultCount = response?.results ? response.results.length : 0;
 
         console.log("[Marco] Shortcut: injection complete — %d results in %dms", resultCount, elapsed);
     } catch (runError) {
@@ -108,7 +110,7 @@ async function getActiveTabId(): Promise<number | null> {
 }
 
 /** Loads active project scripts used by popup run injection. */
-async function getActiveProjectScripts(): Promise<unknown[]> {
+async function getActiveProjectScripts(): Promise<ScriptEntry[]> {
     const response = await sendInternalMessage<ActiveProjectResponse>({
         type: MessageType.GET_ACTIVE_PROJECT,
     });
