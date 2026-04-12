@@ -9,6 +9,7 @@
  */
 
 import type { MacroControllerConfig, MacroThemeRoot, PromptEntry } from './types';
+import type { NamespaceValue } from './api-namespace';
 
 interface XPathUtilsAPI {
   version: string;
@@ -30,7 +31,7 @@ interface MacroControllerFacade {
   credits?: ManagerInstance;
   loop?: ManagerInstance;
   workspaces?: ManagerInstance;
-  [key: string]: ManagerInstance | ((...args: ManagerInstance[]) => ManagerInstance) | undefined;
+  [key: string]: ManagerInstance | ((...args: ManagerInstance[]) => ManagerInstance) | string | boolean | undefined;
 }
 
 /** Opaque manager type — typed enough to pass through register/factory calls. */
@@ -61,7 +62,7 @@ interface MarcoSDKPromptsApi {
   preWarm(): Promise<MarcoSDKPromptEntry[]>;
 }
 
-interface MarcoSDKApiResponse<T = unknown> {
+interface MarcoSDKApiResponse<T = Record<string, string | number | boolean | null>> {
   readonly ok: boolean;
   readonly status: number;
   readonly data: T;
@@ -91,7 +92,7 @@ interface MarcoSDKApiWorkspace {
 }
 
 interface MarcoSDKApiModule {
-  call<T = unknown>(path: string, options?: MarcoSDKApiCallOptions): Promise<MarcoSDKApiResponse<T>>;
+  call<T = Record<string, string | number | boolean | null>>(path: string, options?: MarcoSDKApiCallOptions): Promise<MarcoSDKApiResponse<T>>;
   credits: MarcoSDKApiCredits;
   workspace: MarcoSDKApiWorkspace;
 }
@@ -188,8 +189,8 @@ declare global {
 
   interface RiseupAsiaProject {
     meta?: { version?: string };
-    api?: Record<string, unknown>;
-    _internal?: Record<string, unknown>;
+    api?: Record<string, NamespaceValue>;
+    _internal?: Record<string, NamespaceValue>;
     cookies?: {
       bindings?: Array<RiseupAsiaCookieBinding>;
     };
