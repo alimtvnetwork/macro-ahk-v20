@@ -13,6 +13,7 @@
  */
 
 import { log } from './logging';
+import { logDebug } from './error-utils';
 import { getLastSessionBridgeSource } from './shared-state';
 import {
   getBearerTokenFromSessionBridge,
@@ -171,7 +172,7 @@ function resolveTokenTtlMs(): number {
       return overrides.tokenTtlMs;
     }
   } catch (_e) {
-    console.debug('[RiseupAsia] [getTokenTtlMs] Config override read failed: ' + (_e instanceof Error ? _e.message : String(_e)));
+    logDebug('getTokenTtlMs', 'Config override read failed: ' + (_e instanceof Error ? _e.message : String(_e)));
   }
 
   try {
@@ -182,7 +183,7 @@ function resolveTokenTtlMs(): number {
       return cfg.authBridge.tokenTtlMs;
     }
   } catch (_e) {
-    console.debug('[RiseupAsia] [getTokenTtlMs] __MARCO_CONFIG__ read failed: ' + (_e instanceof Error ? _e.message : String(_e)));
+    logDebug('getTokenTtlMs', '__MARCO_CONFIG__ read failed: ' + (_e instanceof Error ? _e.message : String(_e)));
   }
 
   return DEFAULT_TOKEN_TTL_MS;

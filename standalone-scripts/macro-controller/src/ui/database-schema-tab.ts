@@ -9,6 +9,7 @@
  */
 
 import { log } from '../logging';
+import { logDebug } from '../error-utils';
 import { sendToExtension } from './prompt-manager';
 import type { ExtensionCallbackResponse } from '../types';
 import { injectSchemaStyles } from './database-schema-styles';
@@ -441,7 +442,7 @@ function buildTableEntry(
       const colInfo = el('div', 'marco-schema-table-cols',
         columns.map(column => column.Name + ' (' + column.Type + ')').join(', '));
       info.appendChild(colInfo);
-    } catch (_e) { console.debug('[RiseupAsia] [database-schema-tab] Column JSON parse failed: ' + (_e instanceof Error ? _e.message : String(_e))); }
+    } catch (_e) { logDebug('database-schema-tab', 'Column JSON parse failed: ' + (_e instanceof Error ? _e.message : String(_e))); }
   }
 
   entry.appendChild(info);

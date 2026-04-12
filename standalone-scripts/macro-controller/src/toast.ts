@@ -16,6 +16,7 @@
  */
 
 import { pushOverlayError } from './ui/error-overlay';
+import { logDebug } from './error-utils';
 
 import { VERSION } from './shared-state';
 import { log } from './logging';
@@ -169,7 +170,7 @@ class ToastManager {
       try {
         listener();
       } catch (_e) {
-        console.debug('[RiseupAsia] [ToastManager] Error change listener threw: ' + (_e instanceof Error ? _e.message : String(_e)));
+        logDebug('ToastManager', 'Error change listener threw: ' + (_e instanceof Error ? _e.message : String(_e)));
       }
     }
   }

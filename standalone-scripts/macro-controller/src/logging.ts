@@ -1,5 +1,5 @@
  
-import { toErrorMessage, logError } from './error-utils';
+import { toErrorMessage, logError, logDebug } from './error-utils';
 /**
  * MacroLoop Controller — Logging Module
  * Phase 6: for-of conversions, newline-before-return, curly braces (CQ13–CQ15)
@@ -288,7 +288,7 @@ export function clearAllLogs(): void {
     const key = getLogStorageKey();
     localStorage.removeItem(key);
   } catch (_e) {
-    console.debug('[RiseupAsia] [clearAllLogs] localStorage.removeItem failed: ' + (_e instanceof Error ? _e.message : String(_e)));
+    logDebug('clearAllLogs', 'localStorage.removeItem failed: ' + (_e instanceof Error ? _e.message : String(_e)));
   }
 }
 
