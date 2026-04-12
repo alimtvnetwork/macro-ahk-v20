@@ -9,7 +9,7 @@
  * in index.css. If not, it remains visible (display: block) and we show a
  * diagnostic toast so the user knows CSS failed to inject.
  */
-import React, { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { toast } from "sonner";
 
 type Theme = "dark";
@@ -91,20 +91,18 @@ function applyEmergencyDarkStyles() {
   document.body.style.color = "hsl(220, 14%, 92%)";
 }
 
-export const ThemeProvider = React.forwardRef<HTMLDivElement, { children: React.ReactNode }>(
-  function ThemeProvider({ children }, _ref) {
-    useEffect(() => {
-      enforceDarkClass();
-      validateCssInjection();
-    }, []);
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    enforceDarkClass();
+    validateCssInjection();
+  }, []);
 
-    return (
-      <ThemeContext.Provider value={{ theme: "dark" }}>
-        {children}
-      </ThemeContext.Provider>
-    );
-  },
-);
+  return (
+    <ThemeContext.Provider value={{ theme: "dark" }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
 
 export function useTheme() {
   return useContext(ThemeContext);
