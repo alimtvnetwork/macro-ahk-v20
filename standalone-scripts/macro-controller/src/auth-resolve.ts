@@ -153,7 +153,7 @@ export function getBearerTokenFromSessionBridge(): string {
   try {
     for (const key of SESSION_BRIDGE_KEYS) {
       const raw = localStorage.getItem(key) || '';
-      const token = utils.extractBearerTokenFromUnknown(raw);
+      const token = utils.extractBearerTokenFromRaw(raw);
 
       if (!token) {
         if (raw.length >= 10) {
@@ -461,7 +461,7 @@ export function invalidateSessionBridgeKey(token: string): string {
   for (const key of SESSION_BRIDGE_KEYS) {
     try {
       const stored = localStorage.getItem(key) || '';
-      const normalizedStored = utils.extractBearerTokenFromUnknown(stored);
+      const normalizedStored = utils.extractBearerTokenFromRaw(stored);
 
       if (normalizedStored === '' || normalizedStored !== normalizedTarget) {
         continue;

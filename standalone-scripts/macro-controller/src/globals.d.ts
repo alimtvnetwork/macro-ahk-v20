@@ -92,7 +92,7 @@ interface MarcoSDKAuthTokenUtils {
   normalizeBearerToken(raw: string): string;
   isJwtToken(raw: string): boolean;
   isUsableToken(raw: string): boolean;
-  extractBearerTokenFromUnknown(raw: unknown): string;
+  extractBearerTokenFromRaw(raw: string): string;
   scanSupabaseLocalStorage(
     onFound?: (key: string, tokenLength: number) => void,
     onScanError?: (error: unknown) => void,
