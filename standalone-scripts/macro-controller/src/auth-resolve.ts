@@ -57,17 +57,14 @@ function getAuthUtils(): MarcoSDKAuthTokenUtils {
 
       return token.startsWith('eyJ') && token.split('.').length === 3;
     },
-    extractBearerTokenFromUnknown(raw: unknown): string {
-      if (typeof raw !== 'string') {
-        return '';
-      }
+    extractBearerTokenFromRaw(raw: string): string {
       const normalized = this.normalizeBearerToken(raw);
       if (this.isUsableToken(normalized)) {
         return normalized;
       }
 
       try {
-        const parsed = JSON.parse(raw) as Record<string, unknown>;
+        const parsed = JSON.parse(raw) as Record<string, string>;
         if (parsed === null || typeof parsed !== 'object') {
           return '';
         }
@@ -82,7 +79,7 @@ function getAuthUtils(): MarcoSDKAuthTokenUtils {
           }
         }
       } catch (e: unknown) {
-        log('auth-resolve: fallback extractBearerTokenFromUnknown JSON parse failed — ' + toErrorMessage(e), 'debug');
+        log('auth-resolve: fallback extractBearerTokenFromRaw JSON parse failed — ' + toErrorMessage(e), 'debug');
       }
 
       return '';
@@ -109,8 +106,8 @@ export function isUsableToken(raw: string): boolean {
   return getAuthUtils().isUsableToken(raw);
 }
 
-export function extractBearerTokenFromUnknown(raw: unknown): string {
-  return getAuthUtils().extractBearerTokenFromUnknown(raw);
+export function extractBearerTokenFromRaw(raw: string): string {
+  return getAuthUtils().extractBearerTokenFromRaw(raw);
 }
 
 // ============================================
@@ -156,7 +153,7 @@ export function getBearerTokenFromSessionBridge(): string {
   try {
     for (const key of SESSION_BRIDGE_KEYS) {
       const raw = localStorage.getItem(key) || '';
-      const token = utils.extractBearerTokenFromUnknown(raw);
+      const token = utils.extractBearerTokenFromRaw(raw);
 
       if (!token) {
         if (raw.length >= 10) {
@@ -310,8 +307,8 @@ export function getBearerTokenFromCookie(): string {
     cookieDiagState.lastAt = now;
     logCookieDiagnostics(fn, cookies, sessionNames, rawCookie, result.hasTarget);
   } catch (e: unknown) {
-    logError('fn', EXCEPTION reading cookies: ' + toErrorMessage(e));
-    logError('fn', This may happen in sandboxed iframes or restricted contexts);
+    logError(fn, 'EXCEPTION reading cookies: ' + toErrorMessage(e));
+    logError(fn, 'This may happen in sandboxed iframes or restricted contexts');
   }
 
   return '';
@@ -464,7 +461,7 @@ export function invalidateSessionBridgeKey(token: string): string {
   for (const key of SESSION_BRIDGE_KEYS) {
     try {
       const stored = localStorage.getItem(key) || '';
-      const normalizedStored = utils.extractBearerTokenFromUnknown(stored);
+      const normalizedStored = utils.extractBearerTokenFromRaw(stored);
 
       if (normalizedStored === '' || normalizedStored !== normalizedTarget) {
         continue;

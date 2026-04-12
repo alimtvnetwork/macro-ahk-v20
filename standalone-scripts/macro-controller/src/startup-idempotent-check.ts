@@ -74,19 +74,7 @@ function handleGlobalsIntact(marker: HTMLElement): IdempotentResult {
 
 function attemptUiRecovery(marker: HTMLElement): IdempotentResult {
   try {
-    const existingController = nsRead('__mc', 'api.mc') as {
-      ui?: { create?: () => void; update?: () => void } | null;
-      hasUI?: boolean;
-      registerUI?: (ui: unknown) => void;
-      registerAuth?: (a: unknown) => void;
-      registerCredits?: (c: unknown) => void;
-      registerLoop?: (l: unknown) => void;
-      registerWorkspaces?: (ws: unknown) => void;
-      auth?: unknown;
-      credits?: unknown;
-      loop?: unknown;
-      workspaces?: unknown;
-    } | null;
+    const existingController = nsRead('__mc', 'api.mc') as MacroControllerFacade | null;
 
     healAllManagers(existingController);
 
@@ -122,7 +110,7 @@ function healAllManagers(existingController: MacroControllerFacade): void {
 
   // Self-heal UIManager
   if (!existingController.ui) {
-    const savedUIFactory = nsRead('__createUIManager', '_internal.createUIManager') as (() => unknown) | null;
+    const savedUIFactory = nsRead('__createUIManager', '_internal.createUIManager') as (() => ManagerInstance) | null;
     if (savedUIFactory && typeof existingController.registerUI === 'function') {
       console.warn(LOG_MACROLOOP_V + VERSION + '] Self-healing: auto-registering UIManager from persisted factory');
       existingController.registerUI(savedUIFactory());
@@ -149,12 +137,12 @@ function healAllManagers(existingController: MacroControllerFacade): void {
 }
 
 function healManager(
-  _controller: unknown,
+  _controller: MacroControllerFacade,
   label: string,
   nsKey: string,
   winKey: string,
-  getter: () => unknown,
-  register: ((m: unknown) => void) | undefined,
+  getter: () => ManagerInstance,
+  register: ((m: ManagerInstance) => void) | undefined,
 ): void {
   if (typeof register !== 'function') {
     return;
@@ -162,7 +150,7 @@ function healManager(
   let has = false;
   try { has = !!getter(); } catch (_e) { logSub('Self-heal getter threw for ' + label + ': ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
   if (!has) {
-    const factory = nsRead(winKey, nsKey) as (() => unknown) | null;
+    const factory = nsRead(winKey, nsKey) as (() => ManagerInstance) | null;
     if (factory) {
       console.warn(LOG_MACROLOOP_V + VERSION + '] Self-healing: auto-registering ' + label + ' from persisted factory');
       register(factory());

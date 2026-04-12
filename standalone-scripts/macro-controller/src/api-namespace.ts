@@ -26,19 +26,26 @@ export interface MacroControllerNamespace {
     displayName: string;
   };
   api: {
-    loop: Record<string, unknown>;
-    credits: Record<string, unknown>;
-    auth: Record<string, unknown>;
-    workspace: Record<string, unknown>;
-    ui: Record<string, unknown>;
-    config: Record<string, unknown>;
-    autoAttach: Record<string, unknown>;
-    mc: unknown;
-    [key: string]: unknown;
+    loop: Record<string, NamespaceValue>;
+    credits: Record<string, NamespaceValue>;
+    auth: Record<string, NamespaceValue>;
+    workspace: Record<string, NamespaceValue>;
+    ui: Record<string, NamespaceValue>;
+    config: Record<string, NamespaceValue>;
+    autoAttach: Record<string, NamespaceValue>;
+    mc: NamespaceValue;
+    [key: string]: NamespaceValue;
   };
-  _internal: Record<string, unknown>;
-  [key: string]: unknown;
+  _internal: Record<string, NamespaceValue>;
+  [key: string]: NamespaceValue;
 }
+
+/** Generic namespace value — replaces explicit `unknown` across namespace operations. */
+export type NamespaceValue = string | number | boolean | null | undefined | object | NamespaceFunction | Record<string, NamespaceValue>;
+
+/** Callable namespace function signature. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type NamespaceFunction = (...args: any[]) => any;
 
 /* ------------------------------------------------------------------ */
 /*  Namespace resolution                                               */
@@ -137,7 +144,7 @@ export function getNamespace(): MacroControllerNamespace | null {
  * @param nsPath     — namespace path, e.g. 'api.loop.start'
  * @param value      — the value to set
  */
-export function dualWrite(_windowKey: string, nsPath: string, value: unknown): void {
+export function dualWrite(_windowKey: string, nsPath: string, value: NamespaceValue): void {
   // Write to namespace
   const ns = getNamespace();
   if (!ns) {
@@ -145,13 +152,13 @@ export function dualWrite(_windowKey: string, nsPath: string, value: unknown): v
   }
 
   const parts = nsPath.split('.');
-  let obj: Record<string, unknown> = ns;
+  let obj: Record<string, NamespaceValue> = ns;
 
   for (const part of parts.slice(0, -1)) {
     if (!obj[part]) {
       obj[part] = {};
     }
-    obj = obj[part] as Record<string, unknown>;
+    obj = obj[part] as Record<string, NamespaceValue>;
   }
 
   obj[parts[parts.length - 1]] = value;
@@ -161,7 +168,7 @@ export function dualWrite(_windowKey: string, nsPath: string, value: unknown): v
  * Batch write from a mapping array.
  * @param entries — Array of [windowKey, nsPath, value]
  */
-export function dualWriteAll(entries: Array<[string, string, unknown]>): void {
+export function dualWriteAll(entries: Array<[string, string, NamespaceValue]>): void {
   for (const [windowKey, nsPath, value] of entries) {
     dualWrite(windowKey, nsPath, value);
   }
@@ -191,17 +198,17 @@ export function initNamespace(): MacroControllerNamespace | null {
  * @param _windowKey — legacy key (kept for grep-ability)
  * @param nsPath     — namespace path, e.g. '_internal.updateStartStopBtn'
  */
-export function nsRead(_windowKey: string, nsPath: string): unknown {
+export function nsRead(_windowKey: string, nsPath: string): NamespaceValue {
   const ns = getNamespace();
   if (ns) {
     const parts = nsPath.split('.');
-    let obj: unknown = ns;
+    let obj: NamespaceValue = ns;
 
     for (const part of parts) {
       if (obj == null) {
         break;
       }
-      obj = (obj as Record<string, unknown>)[part];
+      obj = (obj as Record<string, NamespaceValue>)[part];
     }
 
     if (obj !== undefined) {
@@ -215,9 +222,9 @@ export function nsRead(_windowKey: string, nsPath: string): unknown {
  * Call a function from the namespace.
  * No-op if the function doesn't exist.
  */
-export function nsCall(_windowKey: string, nsPath: string, ...args: unknown[]): unknown {
+export function nsCall(_windowKey: string, nsPath: string, ...args: NamespaceValue[]): NamespaceValue {
   const fn = nsRead(_windowKey, nsPath);
   if (typeof fn === 'function') {
-    return (fn as (...a: unknown[]) => unknown)(...args);
+    return (fn as NamespaceFunction)(...args);
   }
 }

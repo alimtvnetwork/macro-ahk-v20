@@ -12,7 +12,7 @@ export {
   normalizeBearerToken,
   isJwtToken,
   isUsableToken,
-  extractBearerTokenFromUnknown,
+  extractBearerTokenFromRaw,
   getLastTokenSource,
   setLastTokenSource,
   getBearerTokenFromSessionBridge,
