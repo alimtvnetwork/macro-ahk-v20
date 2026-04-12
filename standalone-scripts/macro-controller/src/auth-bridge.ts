@@ -9,8 +9,8 @@
 
 import { log } from './logging';
 import { getLastSessionBridgeSource } from './shared-state';
-import {
 import { logError } from './error-utils';
+import {
   extractBearerTokenFromUnknown,
   getBearerTokenFromSessionBridge,
   getSessionCookieNames,
