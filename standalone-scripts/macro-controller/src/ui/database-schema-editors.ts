@@ -253,7 +253,7 @@ function renderValidationTestArea(panel: HTMLElement, col: ColumnEntry): void {
 
 function addValField(
   panel: HTMLElement,
-  validation: Record<string, unknown>,
+  validation: ValidationRules,
   key: string,
   label: string,
   placeholder?: string,

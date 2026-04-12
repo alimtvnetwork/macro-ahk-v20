@@ -338,8 +338,8 @@ function validateCreateTableInput(tableName: string, columns: ColumnEntry[]): st
   return null;
 }
 
-function buildColumnDefinition(column: ColumnEntry): Record<string, unknown> {
-  const definition: Record<string, unknown> = {
+function buildColumnDefinition(column: ColumnEntry): ColumnDefinition {
+  const definition: ColumnDefinition = {
     Name: column.name,
     Type: column.type,
     Nullable: column.nullable,

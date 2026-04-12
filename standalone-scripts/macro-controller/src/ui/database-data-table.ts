@@ -70,7 +70,7 @@ export function buildPagination(
 
 export function buildDataTableElement(
   columns: string[],
-  rows: Record<string, unknown>[],
+  rows: DatabaseRow[],
 ): HTMLElement {
   const wrapper = document.createElement('div');
   wrapper.className = 'marco-db-table-wrapper';
