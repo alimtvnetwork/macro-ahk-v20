@@ -9,7 +9,7 @@
  * in index.css. If not, it remains visible (display: block) and we show a
  * diagnostic toast so the user knows CSS failed to inject.
  */
-import { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { toast } from "sonner";
 
 type Theme = "dark";
