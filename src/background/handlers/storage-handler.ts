@@ -8,6 +8,8 @@
  * @see spec/05-chrome-extension/19-opfs-persistence-strategy.md — OPFS persistence
  */
 
+import type { SqlRow } from "./handler-types";
+import type { SqlValue } from "sql.js";
 import type { MessageRequest } from "../../shared/messages";
 import type { DbManager } from "../db-manager";
 
@@ -34,8 +36,8 @@ function resolveTable(database: "logs" | "errors"): string {
     return database === "errors" ? "Errors" : "Logs";
 }
 
-function collectRows(stmt: { step(): boolean; getAsObject(): unknown; free(): void }): unknown[] {
-    const rows: unknown[] = [];
+function collectRows(stmt: { step(): boolean; getAsObject(): SqlRow; free(): void }): SqlRow[] {
+    const rows: SqlRow[] = [];
     while (stmt.step()) {
         rows.push(stmt.getAsObject());
     }
@@ -54,7 +56,7 @@ function countTable(db: ReturnType<typeof resolveDb>, table: string): number {
     return hasResult ? (result[0].values[0][0] as number) : 0;
 }
 
-export async function handleGetStorageStats(): Promise<unknown> {
+export async function handleGetStorageStats(): Promise<Record<string, unknown>> {
     const mgr = getManager();
     const logsDb = mgr.getLogsDb();
     const errorsDb = mgr.getErrorsDb();
@@ -80,7 +82,7 @@ export async function handleGetStorageStats(): Promise<unknown> {
 // eslint-disable-next-line max-lines-per-function
 export async function handleQueryLogs(
     message: MessageRequest,
-): Promise<{ rows: unknown[]; total: number }> {
+): Promise<{ rows: SqlRow[]; total: number }> {
     const msg = message as MessageRequest & {
         database: "logs" | "errors";
         offset: number;
@@ -95,7 +97,7 @@ export async function handleQueryLogs(
     const table = resolveTable(msg.database);
 
     const conditions: string[] = [];
-    const params: unknown[] = [];
+    const params: SqlValue[] = [];
 
     if (msg.source) {
         conditions.push("source = ?");
@@ -138,7 +140,7 @@ export async function handleQueryLogs(
 
 export async function handleGetLogDetail(
     message: MessageRequest,
-): Promise<{ row: unknown }> {
+): Promise<{ row: SqlRow | null }> {
     const msg = message as MessageRequest & {
         database: "logs" | "errors";
         rowId: number;

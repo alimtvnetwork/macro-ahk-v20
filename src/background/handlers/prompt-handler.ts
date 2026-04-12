@@ -398,7 +398,7 @@ export async function loadBundledDefaultPrompts(): Promise<PromptEntry[] | null>
         const response = await fetch(url);
         if (!response.ok) return null;
 
-        const parsed = await response.json() as { prompts?: Array<{ name?: unknown; text?: unknown; category?: unknown }> } | Array<{ name?: unknown; text?: unknown; category?: unknown }>;
+        const parsed = await response.json() as { prompts?: Array<{ name?: string; text?: string; category?: string }> } | Array<{ name?: string; text?: string; category?: string }>;
         const rawEntries = Array.isArray(parsed)
             ? parsed
             : (Array.isArray(parsed.prompts) ? parsed.prompts : []);
@@ -445,10 +445,10 @@ export async function handleGetPrompts(): Promise<{ prompts: PromptEntry[] }> {
 }
 
 // eslint-disable-next-line max-lines-per-function, sonarjs/cognitive-complexity
-export async function handleSavePrompt(msg: unknown): Promise<{ isOk: true; prompt: PromptEntry }> {
+export async function handleSavePrompt(msg: { prompt: Partial<PromptEntry> }): Promise<{ isOk: true; prompt: PromptEntry }> {
     await migrateFromStorageIfNeeded();
 
-    const input = msg as { prompt: Partial<PromptEntry> };
+    const input = msg;
     const now = new Date().toISOString();
     const db = getDb();
 
@@ -462,7 +462,7 @@ export async function handleSavePrompt(msg: unknown): Promise<{ isOk: true; prom
 
     if (exists && promptId) {
         const setClauses: string[] = [];
-        const values: unknown[] = [];
+        const values: (string | number)[] = [];
 
         if (input.prompt.name !== undefined) { setClauses.push("Name = ?"); values.push(input.prompt.name); }
         if (input.prompt.text !== undefined) { setClauses.push("Text = ?"); values.push(input.prompt.text); }
@@ -516,10 +516,10 @@ export async function handleSavePrompt(msg: unknown): Promise<{ isOk: true; prom
     return { isOk: true, prompt: rowToPrompt(row) };
 }
 
-export async function handleDeletePrompt(msg: unknown): Promise<{ isOk: true }> {
+export async function handleDeletePrompt(msg: { promptId: string }): Promise<{ isOk: true }> {
     await migrateFromStorageIfNeeded();
 
-    const { promptId } = msg as { promptId: string };
+    const { promptId } = msg;
     const numId = Number(promptId);
     const db = getDb();
     // Delete junction entries first
@@ -529,10 +529,10 @@ export async function handleDeletePrompt(msg: unknown): Promise<{ isOk: true }> 
     return { isOk: true };
 }
 
-export async function handleReorderPrompts(msg: unknown): Promise<{ isOk: true }> {
+export async function handleReorderPrompts(msg: { promptIds: string[] }): Promise<{ isOk: true }> {
     await migrateFromStorageIfNeeded();
 
-    const { promptIds } = msg as { promptIds: string[] };
+    const { promptIds } = msg;
     const db = getDb();
 
     for (let i = 0; i < promptIds.length; i++) {

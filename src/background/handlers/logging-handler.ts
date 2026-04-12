@@ -11,6 +11,8 @@
  * @see spec/05-chrome-extension/42-user-script-logging-and-data-bridge.md — User script logging
  */
 
+import type { SqlRow } from "./handler-types";
+import type { SqlValue } from "sql.js";
 import type { MessageRequest, OkResponse } from "../../shared/messages";
 import type { DbManager } from "../db-manager";
 import { collectRows, countTable, queryAll, queryWithSource } from "./logging-queries";
@@ -203,7 +205,7 @@ function normalizeRow(row: Record<string, unknown>): Record<string, unknown> {
     return out;
 }
 
-function normalizeRows(rows: unknown[]): unknown[] {
+function normalizeRows(rows: SqlRow[]): Record<string, SqlValue>[] {
     return rows.map((r) => normalizeRow(r as Record<string, unknown>));
 }
 
@@ -214,7 +216,7 @@ function normalizeRows(rows: unknown[]): unknown[] {
 /** Returns recent log entries, newest first. */
 export async function handleGetRecentLogs(
     message: MessageRequest,
-): Promise<{ logs: unknown[] }> {
+): Promise<{ logs: Record<string, SqlValue>[] }> {
     const msg = message as MessageRequest & { source?: string; limit?: number };
     const logs = normalizeRows(queryRecentLogs(msg.source, msg.limit));
 
@@ -222,7 +224,7 @@ export async function handleGetRecentLogs(
 }
 
 /** Queries the logs table with optional source filter. */
-function queryRecentLogs(source?: string, limit?: number): unknown[] {
+function queryRecentLogs(source?: string, limit?: number): SqlRow[] {
     const db = getLogsDb();
     const maxRows = limit ?? 100;
     const hasSourceFilter = source !== undefined && source !== "";
@@ -238,7 +240,7 @@ function queryRecentLogs(source?: string, limit?: number): unknown[] {
 /* ------------------------------------------------------------------ */
 
 /** Returns log and error count statistics. */
-export async function handleGetLogStats(): Promise<unknown> {
+export async function handleGetLogStats(): Promise<{ logCount: number; errorCount: number; sessionCount: number }> {
     const logCount = countTable(getLogsDb(), "Logs");
     const errorCount = countTable(getErrorsDb(), "Errors");
     // Defensive: Sessions lives in logs.db — catch startup race where schema may not be ready
@@ -260,8 +262,8 @@ export function getCurrentSessionId(): string | null {
 /** Returns all logs and errors for the current session as a copyable report. */
 export async function handleGetSessionLogs(): Promise<{
     sessionId: string;
-    logs: unknown[];
-    errors: unknown[];
+    logs: Record<string, SqlValue>[];
+    errors: Record<string, SqlValue>[];
 }> {
     const sessionId = currentSessionId !== null ? String(currentSessionId) : "no-session";
     const sessionLogs = normalizeRows(querySessionLogs(sessionId));
@@ -280,7 +282,7 @@ export async function handleGetSessionLogs(): Promise<{
 }
 
 /** Queries logs for a specific session. */
-function querySessionLogs(sessionId: string): unknown[] {
+function querySessionLogs(sessionId: string): SqlRow[] {
     const db = getLogsDb();
     const stmt = db.prepare(
         "SELECT * FROM Logs WHERE SessionId = ? ORDER BY Timestamp ASC",
@@ -290,7 +292,7 @@ function querySessionLogs(sessionId: string): unknown[] {
 }
 
 /** Queries errors for a specific session. */
-function querySessionErrors(sessionId: string): unknown[] {
+function querySessionErrors(sessionId: string): SqlRow[] {
     const db = getErrorsDb();
     const stmt = db.prepare(
         "SELECT * FROM Errors WHERE SessionId = ? ORDER BY Timestamp ASC",
@@ -300,7 +302,7 @@ function querySessionErrors(sessionId: string): unknown[] {
 }
 
 /** Queries recent logs across all sessions. */
-function queryRecentLogsAll(limit: number): unknown[] {
+function queryRecentLogsAll(limit: number): SqlRow[] {
     const db = getLogsDb();
     const stmt = db.prepare(
         "SELECT * FROM Logs ORDER BY Timestamp DESC LIMIT ?",
@@ -310,7 +312,7 @@ function queryRecentLogsAll(limit: number): unknown[] {
 }
 
 /** Queries recent errors across all sessions. */
-function queryRecentErrorsAll(limit: number): unknown[] {
+function queryRecentErrorsAll(limit: number): SqlRow[] {
     const db = getErrorsDb();
     const stmt = db.prepare(
         "SELECT * FROM Errors ORDER BY Timestamp DESC LIMIT ?",

@@ -8,6 +8,7 @@
  * @see .lovable/memory/architecture/macro-controller-bridge-spec.md — Bridge architecture
  */
 
+import type { JsonValue } from "./handler-types";
 import type { MessageRequest } from "../../shared/messages";
 import { logBgWarnError, BgLogTag} from "../bg-logger";
 
@@ -26,7 +27,7 @@ const WARN_TOTAL_SIZE_BYTES = 41_943_040; // 40 MB
 /* ------------------------------------------------------------------ */
 
 interface StoreEntry {
-    value: unknown;
+    value: JsonValue;
     updatedAt: string;
     projectId: string;
     scriptId: string;
@@ -86,7 +87,7 @@ function validateKey(key: string): string | null {
 }
 
 /** Validates a value for size constraints. */
-function validateValue(value: unknown): string | null {
+function validateValue(value: JsonValue): string | null {
     const serialized = JSON.stringify(value);
     const sizeBytes = new Blob([serialized]).size;
     const isTooLarge = sizeBytes > MAX_VALUE_SIZE_BYTES;
@@ -123,7 +124,7 @@ export async function handleDataSet(
 ): Promise<{ isOk: boolean; errorMessage?: string }> {
     const msg = message as MessageRequest & {
         key: string;
-        value: unknown;
+        value: JsonValue;
         projectId: string;
         scriptId: string;
     };
@@ -172,7 +173,7 @@ export async function handleDataSet(
 /** Handles USER_SCRIPT_DATA_GET — retrieves a value by key. */
 export async function handleDataGet(
     message: MessageRequest,
-): Promise<{ value: unknown }> {
+): Promise<{ value: JsonValue }> {
     const msg = message as MessageRequest & { key: string };
     const data = await readStore();
     const entry = data[msg.key];
@@ -283,7 +284,7 @@ export async function handleDataClear(
 
 export interface DataStoreEntry {
     key: string;
-    value: unknown;
+    value: JsonValue;
     valuePreview: string;
     sizeBytes: number;
     projectId: string;
