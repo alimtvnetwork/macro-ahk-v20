@@ -1,18 +1,17 @@
-import type { SqlValue } from "@/background/handlers/handler-types";
+/** Primitive value returned by sql.js queries. */
+type SqlJsValue = string | number | Uint8Array | null;
 
 declare module "sql.js" {
-  export type { SqlValue };
-
   export interface Statement {
-    run(params?: SqlValue[]): void;
-    bind(params?: SqlValue[]): boolean;
+    run(params?: SqlJsValue[]): void;
+    bind(params?: SqlJsValue[]): boolean;
     step(): boolean;
-    getAsObject(): Record<string, SqlValue>;
+    getAsObject(): Record<string, SqlJsValue>;
     free(): void;
   }
 
   export interface Database {
-    run(sql: string, params?: SqlValue[]): Database;
+    run(sql: string, params?: SqlJsValue[]): Database;
     exec(sql: string): QueryExecResult[];
     prepare(sql: string): Statement;
     close(): void;
@@ -21,7 +20,7 @@ declare module "sql.js" {
 
   export interface QueryExecResult {
     columns: string[];
-    values: SqlValue[][];
+    values: SqlJsValue[][];
   }
 
   export interface SqlJsStatic {
