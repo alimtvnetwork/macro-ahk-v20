@@ -33,8 +33,17 @@ export function GlobalAboutView() {
         <CardContent className="pt-6 space-y-3">
           <div className="font-bold text-sm text-center">Author</div>
           <div className="space-y-1 text-center">
-            <p className="text-sm font-semibold">Md. Alim Ul Karim</p>
+            <p className="text-sm font-semibold">
+              <a href="https://www.google.com/search?q=alim+ul+karim" target="_blank" rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:text-primary/80">Md. Alim Ul Karim</a>
+            </p>
             <p className="text-xs text-muted-foreground">
+              <a href="https://alimkarim.com" target="_blank" rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:text-primary/80 font-semibold">Creator & Lead Architect</a>
+              {" | "}
+              <a href="https://www.google.com/search?q=alim+ul+karim" target="_blank" rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:text-primary/80">Chief Software Engineer</a>
+              {", "}
               <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer"
                 className="text-primary underline underline-offset-2 hover:text-primary/80">Riseup Asia LLC</a>
             </p>
@@ -42,8 +51,6 @@ export function GlobalAboutView() {
               <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer"
                 className="hover:text-primary/80">Top Leading Software Company in WY (2026)</a>
             </p>
-            <p className="text-xs text-muted-foreground">Chief Software Engineer — Riseup Asia</p>
-            <p className="text-xs text-muted-foreground">Former Software Architect — Crossover.com (Top 1% Developer)</p>
             <p className="text-xs text-muted-foreground">20+ years of programming experience</p>
             <p className="text-xs text-muted-foreground leading-relaxed mt-2">
               Known for inventing an automatic unit test generation tool before AI in 2018 — capable of writing code and unit tests automatically.

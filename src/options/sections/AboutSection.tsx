@@ -26,15 +26,18 @@ export function AboutSection() {
 
             <div className="card">
                 <div className="card-title" style={{ marginBottom: 12 }}>Author</div>
-                <div className="card-meta" style={{ fontWeight: 600 }}>Md. Alim Ul Karim</div>
+                <div className="card-meta" style={{ fontWeight: 600 }}>
+                    <a href="https://www.google.com/search?q=alim+ul+karim" target="_blank" rel="noopener noreferrer">Md. Alim Ul Karim</a>
+                </div>
                 <div className="card-meta" style={{ marginTop: 4 }}>
+                    <a href="https://alimkarim.com" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>Creator & Lead Architect</a>
+                    {" | "}
+                    <a href="https://www.google.com/search?q=alim+ul+karim" target="_blank" rel="noopener noreferrer">Chief Software Engineer</a>
+                    {", "}
                     <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer">Riseup Asia LLC</a>
                 </div>
                 <div className="card-meta" style={{ marginTop: 4 }}>
-                    Chief Software Engineer — Riseup Asia
-                </div>
-                <div className="card-meta" style={{ marginTop: 4 }}>
-                    Former Software Architect — Crossover.com (Top 1% Developer)
+                    <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer">Top Leading Software Company in WY (2026)</a>
                 </div>
                 <div className="card-meta" style={{ marginTop: 4 }}>
                     20+ years of programming experience
