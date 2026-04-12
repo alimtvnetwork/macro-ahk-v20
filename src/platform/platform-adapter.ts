@@ -6,7 +6,7 @@
  */
 
 /** Typed message payload sent to the background service worker. */
-// eslint-disable-next-line @typescript-eslint/no-restricted-types
+
 export interface MessagePayload {
     type: string;
     [key: string]: string | number | boolean | null | undefined | object;
