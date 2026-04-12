@@ -124,7 +124,7 @@ export function ProjectDatabasePanel({ projectId, projectSlug }: ProjectDatabase
         setTables(result.tables);
       }
     } catch (err) {
-      showError(err, "RefreshTables", { type: "PROJECT_API", project: projectSlug });
+      showError(err as Error, "RefreshTables", { type: "PROJECT_API", project: projectSlug });
       setTables([]);
     } finally {
       setLoading(false);
