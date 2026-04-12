@@ -315,12 +315,7 @@ export async function handlePromoteAsset(msg: PromoteMsg): Promise<{
     assetId?: number;
     existingVersion?: string;
 }> {
-    const { slug, name, type, contentJson } = msg as {
-        slug: string;
-        name: string;
-        type: AssetType;
-        contentJson: string;
-    };
+    const { slug, name, type, contentJson } = msg;
     const db = getDb();
     const hash = await computeContentHash(contentJson);
 
@@ -354,7 +349,7 @@ export async function handlePromoteAsset(msg: PromoteMsg): Promise<{
  * Replace an existing library asset with new content (user chose "Replace").
  */
 export async function handleReplaceLibraryAsset(msg: ReplaceMsg): Promise<{ isOk: true; newVersion: string }> {
-    const { assetId, contentJson, name } = msg as { assetId: number; contentJson: string; name?: string };
+    const { assetId, contentJson, name } = msg;
     const db = getDb();
     const hash = await computeContentHash(contentJson);
 
@@ -382,12 +377,7 @@ export async function handleReplaceLibraryAsset(msg: ReplaceMsg): Promise<{ isOk
  * Fork an existing asset as a new library entry (user chose "Fork").
  */
 export async function handleForkLibraryAsset(msg: ForkMsg): Promise<{ assetId: number; slug: string }> {
-    const { originalSlug, name, type, contentJson } = msg as {
-        originalSlug: string;
-        name: string;
-        type: AssetType;
-        contentJson: string;
-    };
+    const { originalSlug, name, type, contentJson } = msg;
     const db = getDb();
     const hash = await computeContentHash(contentJson);
 
@@ -427,7 +417,7 @@ export async function handleGetProjectGroups(): Promise<{ groups: ProjectGroup[]
 }
 
 export async function handleSaveProjectGroup(msg: GroupMsg): Promise<{ groupId: number; cascadedCount: number }> {
-    const { group } = msg as { group: Partial<ProjectGroup> & { Name: string } };
+    const { group } = msg;
     const db = getDb();
 
     if (group.Id) {
@@ -454,7 +444,7 @@ export async function handleSaveProjectGroup(msg: GroupMsg): Promise<{ groupId: 
 }
 
 export async function handleDeleteProjectGroup(msg: GroupIdMsg): Promise<{ isOk: true }> {
-    const { groupId } = msg as { groupId: number };
+    const { groupId } = msg;
     const db = getDb();
     db.run("DELETE FROM ProjectGroup WHERE Id = ?", [groupId]);
     markDirty();
@@ -466,7 +456,7 @@ export async function handleDeleteProjectGroup(msg: GroupIdMsg): Promise<{ isOk:
 /* ------------------------------------------------------------------ */
 
 export async function handleGetGroupMembers(msg: GroupIdMsg): Promise<{ members: ProjectGroupMember[] }> {
-    const { groupId } = msg as { groupId: number };
+    const { groupId } = msg;
     const db = getDb();
     const stmt = db.prepare("SELECT * FROM ProjectGroupMember WHERE GroupId = ?");
     stmt.bind([groupId]);
@@ -479,7 +469,7 @@ export async function handleGetGroupMembers(msg: GroupIdMsg): Promise<{ members:
 }
 
 export async function handleAddGroupMember(msg: GroupMemberMsg): Promise<{ memberId: number }> {
-    const { groupId, projectId } = msg as { groupId: number; projectId: number };
+    const { groupId, projectId } = msg;
     const db = getDb();
     db.run(
         `INSERT OR IGNORE INTO ProjectGroupMember (GroupId, ProjectId) VALUES (?, ?)`,
@@ -492,7 +482,7 @@ export async function handleAddGroupMember(msg: GroupMemberMsg): Promise<{ membe
 }
 
 export async function handleRemoveGroupMember(msg: GroupMemberMsg): Promise<{ isOk: true }> {
-    const { groupId, projectId } = msg as { groupId: number; projectId: number };
+    const { groupId, projectId } = msg;
     const db = getDb();
     db.run("DELETE FROM ProjectGroupMember WHERE GroupId = ? AND ProjectId = ?", [groupId, projectId]);
     markDirty();
@@ -547,7 +537,7 @@ function cascadeSettingsToMembers(db: ReturnType<typeof getDb>, groupId: number,
  * Manual cascade trigger — push current group settings to all members.
  */
 export async function handleCascadeGroupSettings(msg: GroupIdMsg): Promise<{ cascadedCount: number }> {
-    const { groupId } = msg as { groupId: number };
+    const { groupId } = msg;
     const db = getDb();
 
     const result = db.exec("SELECT SharedSettingsJson FROM ProjectGroup WHERE Id = ?", [groupId]);
@@ -582,7 +572,7 @@ export async function handleGetAssetVersions(msg: AssetIdMsg): Promise<{ version
 }
 
 export async function handleRollbackAssetVersion(msg: VersionIdMsg): Promise<{ isOk: true; rolledBackTo: string }> {
-    const { assetId, versionId } = msg as { assetId: number; versionId: number };
+    const { assetId, versionId } = msg;
     const db = getDb();
 
     // Get the target version's content
@@ -724,7 +714,7 @@ function importGroups(db: SqlJsDatabase, groups: LibraryExport["groups"]): void 
 }
 
 export async function handleImportLibrary(msg: ImportMsg): Promise<ImportResult> {
-    const { bundle } = msg as { bundle: LibraryExport };
+    const { bundle } = msg;
     const db = getDb();
     const result: ImportResult = { imported: 0, skipped: 0, conflicts: [] };
 

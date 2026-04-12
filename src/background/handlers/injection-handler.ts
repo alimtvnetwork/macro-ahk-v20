@@ -93,7 +93,7 @@ export async function handleInjectScripts(
 
     const msg = message as MessageRequest & {
         tabId: number;
-        scripts: unknown[];
+        scripts: ScriptEntry[];
         forceReload?: boolean;
     };
 
@@ -1030,7 +1030,7 @@ async function injectProjectNamespaces(tabId: number, allProjects: StoredProject
  * See: .lovable/memory/features/projects/global-project-injection-policy.md
  */
 // eslint-disable-next-line max-lines-per-function, sonarjs/cognitive-complexity
-async function prependDependencyScripts(callerScripts: unknown[], allProjects: StoredProject[]): Promise<unknown[]> {
+async function prependDependencyScripts(callerScripts: ScriptEntry[], allProjects: StoredProject[]): Promise<ScriptEntry[]> {
     const activeId = getActiveProjectId();
     if (!activeId) return callerScripts;
 
@@ -1112,7 +1112,7 @@ async function prependDependencyScripts(callerScripts: unknown[], allProjects: S
     }
 
     // Step 4: Collect scripts in resolved order (skip active project)
-    const depScripts: unknown[] = [];
+    const depScripts: ScriptEntry[] = [];
     for (const projectId of resolution.order) {
         if (projectId === activeId) continue;
         const depProject = allProjects.find((p) => p.id === projectId);
@@ -1163,8 +1163,8 @@ async function prependDependencyScripts(callerScripts: unknown[], allProjects: S
 }
 
 /** Fallback: collects scripts from global projects when topological sort fails. */
-function collectGlobalScripts(globalProjects: StoredProject[]): unknown[] {
-    const scripts: unknown[] = [];
+function collectGlobalScripts(globalProjects: StoredProject[]): ScriptEntry[] {
+    const scripts: ScriptEntry[] = [];
     for (const gp of globalProjects) {
         if (!gp.scripts?.length) continue;
         const baseOrder = -2000 + scripts.length;
