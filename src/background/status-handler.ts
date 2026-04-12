@@ -125,7 +125,7 @@ function buildMissingToken(): StatusResponse["token"] {
 }
 
 /** Logs a cookie access error. */
-function logCookieWarning(error: unknown): void {
+function logCookieWarning(error: CaughtError): void {
     logCaughtError(BgLogTag.STATUS_HANDLER, "Token check failed", error);
 }
 

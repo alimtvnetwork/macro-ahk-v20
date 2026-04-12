@@ -181,7 +181,7 @@ function createUnavailableDbManager(reason: string): DbManager {
 }
 
 /** Formats a stable boot failure message for logs and surfaced errors. */
-function formatBootError(step: string, error: unknown): string {
+function formatBootError(step: string, error: Error | string): string {
     const reason = error instanceof Error ? error.message : String(error);
     return `Boot failed at step '${step}': ${reason}`;
 }

@@ -64,7 +64,7 @@ async function evaluateXPathInTab(
 }
 
 /** Builds an error response from an XPath evaluation failure. */
-function buildXPathError(error: unknown): { found: number; error: string } {
+function buildXPathError(error: Error | string): { found: number; error: string } {
     const errorMessage = error instanceof Error
         ? error.message
         : String(error);

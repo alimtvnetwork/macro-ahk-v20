@@ -756,6 +756,6 @@ function buildMissingCookieMessage(
 /* ------------------------------------------------------------------ */
 
 /** Logs a refresh failure. */
-function logRefreshError(error: unknown): void {
+function logRefreshError(error: CaughtError): void {
     logCaughtError(BgLogTag.CONFIG_AUTH, "Token refresh failed", error);
 }

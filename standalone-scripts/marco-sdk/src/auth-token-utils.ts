@@ -109,7 +109,7 @@ export class AuthTokenUtils {
      */
     static scanSupabaseLocalStorage(
         onFound?: (key: string, tokenLength: number) => void,
-        onScanError?: (error: unknown) => void,
+        onScanError?: (error: Error | string) => void,
     ): string {
         try {
             const keys = AuthTokenUtils.collectLocalStorageKeys();

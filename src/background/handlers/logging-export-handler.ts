@@ -277,6 +277,6 @@ function buildExportFilename(prefix: string, ext: string): string {
 }
 
 /** Logs a ZIP export error. */
-function logZipError(error: unknown): void {
+function logZipError(error: CaughtError): void {
     logCaughtError(BgLogTag.LOGGING, "ZIP export failed", error);
 }

@@ -631,7 +631,7 @@ async function logInjectionSuccess(
 async function logInjectionFailure(
     script: InjectableScript,
     projectId: string | undefined,
-    error: unknown,
+    error: Error | string,
 ): Promise<void> {
     const errorMessage = error instanceof Error
         ? error.message
@@ -727,7 +727,7 @@ function resolveInjectionPath(result: import("../csp-fallback").CspInjectionResu
 function buildErrorResult(
     scriptId: string,
     startTime: number,
-    error: unknown,
+    error: Error | string,
 ): InjectionResult {
     const errorMessage = error instanceof Error
         ? error.message

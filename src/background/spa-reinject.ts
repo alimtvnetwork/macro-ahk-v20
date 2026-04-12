@@ -249,7 +249,7 @@ function logReinjectSuccess(tabId: number, count: number): void {
 }
 
 /** Logs a failed SPA re-injection. */
-function logReinjectError(tabId: number, error: unknown): void {
+function logReinjectError(tabId: number, error: Error | string): void {
     const reason = error instanceof Error ? error.message : String(error);
     console.error(
         `[spa-reinject] Re-inject failed for tab ${tabId}: ${reason}`,

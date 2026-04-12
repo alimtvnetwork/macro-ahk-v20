@@ -160,7 +160,7 @@ function handleFailedFetch(
 
 /** Handles a fetch exception (network error, timeout). */
 function handleFetchException(
-    error: unknown,
+    error: CaughtError,
 ): Record<string, unknown> | null {
     const errorMessage = error instanceof Error
         ? error.message

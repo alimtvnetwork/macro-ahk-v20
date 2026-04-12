@@ -48,7 +48,7 @@ function isRecord(value: PromptChain | Record<string, unknown>): value is Record
     return typeof value === "object" && value !== null;
 }
 
-function toError(error: unknown, fallback: string): Error {
+function toError(error: Error | string | null, fallback: string): Error {
     return error instanceof Error ? error : new Error(fallback);
 }
 
