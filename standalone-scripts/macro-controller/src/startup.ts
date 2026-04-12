@@ -449,7 +449,7 @@ function handleCreditSuccess(tier1Data: MarkViewedResponse | null): void {
 /** Handle credit/workspace load failure. */
 function handleCreditError(err: CaughtError): void {
   const errMsg = err && typeof err === 'object' && 'message' in err ? (err as Error).message : String(err);
-  const axiosStatus = err && typeof err === 'object' && 'response' in err ? (err as { response?: { status?: number; statusText?: string; data?: unknown } }).response : null;
+  const axiosStatus = err && typeof err === 'object' && 'response' in err ? (err as { response?: { status?: number; statusText?: string; data?: string } }).response : null;
   const statusDetail = axiosStatus ? ' [HTTP ' + (axiosStatus.status || '?') + ' ' + (axiosStatus.statusText || '') + ']' : '';
   const responseBody = axiosStatus?.data ? ' body=' + (typeof axiosStatus.data === 'string' ? axiosStatus.data.substring(0, 200) : JSON.stringify(axiosStatus.data).substring(0, 200)) : '';
   const fullDetail = errMsg + statusDetail + responseBody;
@@ -489,7 +489,7 @@ function fetchTier1Prefetch(projectId: string, _token: string): Promise<MarkView
   }
 }
 
-function handleTier1Response(resp: { ok: boolean; status?: number; data?: unknown }): MarkViewedResponse | null {
+function handleTier1Response(resp: { ok: boolean; status?: number; data?: Record<string, string | number | boolean | null> }): MarkViewedResponse | null {
   if (!resp.ok) {
     log('Startup: Tier 1 prefetch HTTP ' + resp.status, 'warn');
     timingEnd(WS_PREFETCH, 'warn', 'HTTP ' + resp.status);

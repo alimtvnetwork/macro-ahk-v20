@@ -54,7 +54,7 @@ interface SdkUtils {
   formatDuration(ms: number): string;
   uid(prefix?: string): string;
   deepClone<T>(value: T): T;
-  isObject(value: unknown): value is Record<string, unknown>;
+  isObject(value: string | number | boolean | object | null | undefined): value is Record<string, string | number | boolean | null>;
 }
 
 function getSdkUtils(): SdkUtils | null {

@@ -171,7 +171,7 @@ function deleteRecord(storeName: string, key: string): Promise<void> {
   }).catch(function (e) { log('[PromptCache] deleteRecord(' + storeName + '/' + key + ') failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
 }
 
-function logWriteError(storeName: string, e: unknown): void {
+function logWriteError(storeName: string, e: CaughtError): void {
   const msg = e instanceof Error ? e.message : String(e);
   log('[PromptCache] Write to ' + storeName + ' failed: ' + msg, 'warn');
 }

@@ -56,7 +56,7 @@ export function normalizeNewlines(text: string): string {
 }
 
 // ── JSON parse with truncation recovery ──
-export function parseWithRecovery(content: string): unknown {
+export function parseWithRecovery(content: string): Record<string, string | number | boolean | null> | Array<Record<string, string | number | boolean | null>> | null {
   try {
     return JSON.parse(content);
   } catch (e) {
