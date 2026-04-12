@@ -109,8 +109,8 @@ export interface ProjectGroupMember {
 /*  SharedAsset CRUD                                                   */
 /* ------------------------------------------------------------------ */
 
-export async function handleGetSharedAssets(msg: unknown): Promise<{ assets: SharedAsset[] }> {
-    const { assetType } = (msg as { assetType?: AssetType });
+export async function handleGetSharedAssets(msg: AssetTypeMsg): Promise<{ assets: SharedAsset[] }> {
+    const { assetType } = msg;
     const db = getDb();
     const sql = assetType
         ? "SELECT * FROM SharedAsset WHERE Type = ? ORDER BY Name ASC"
@@ -118,22 +118,18 @@ export async function handleGetSharedAssets(msg: unknown): Promise<{ assets: Sha
     const params = assetType ? [assetType] : [];
     const stmt = db.prepare(sql);
     stmt.bind(params);
-    const assets: SharedAsset[] = [];
-    while (stmt.step()) {
-        assets.push(stmt.getAsObject() as unknown as SharedAsset);
-    }
-    stmt.free();
+    const assets = collectTypedRows(stmt) as SharedAsset[];
     return { assets };
 }
 
-export async function handleGetSharedAsset(msg: unknown): Promise<{ asset: SharedAsset | null }> {
-    const { assetId } = msg as { assetId: number };
+export async function handleGetSharedAsset(msg: AssetIdMsg): Promise<{ asset: SharedAsset | null }> {
+    const { assetId } = msg;
     const db = getDb();
     const result = db.exec("SELECT * FROM SharedAsset WHERE Id = ?", [assetId]);
     if (result.length === 0 || result[0].values.length === 0) return { asset: null };
     const cols = result[0].columns;
     const vals = result[0].values[0];
-    const asset = Object.fromEntries(cols.map((c, i) => [c, vals[i]])) as unknown as SharedAsset;
+    const asset = Object.fromEntries(cols.map((c, i) => [c, vals[i]])) as SharedAsset;
     return { asset };
 }
 
