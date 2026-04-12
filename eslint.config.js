@@ -107,6 +107,19 @@ export default tseslint.config(
       "max-lines-per-function": ["warn", { max: 40, skipBlankLines: true, skipComments: true }],
     },
   },
+  // --- Platform files — unknown ban enforced as error (fully cleaned) ---
+  {
+    files: ["src/platform/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-restricted-types": ["error", {
+        types: {
+          unknown: {
+            message: "Use a specific type instead of `unknown`. Define an interface or use a concrete type.",
+          },
+        },
+      }],
+    },
+  },
   // --- Standalone scripts (non-controller) — raise to 50 ---
   {
     files: ["standalone-scripts/**/src/**/*.ts"],
