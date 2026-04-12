@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- dynamic API explorer types */
-import React, { useState } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,7 +36,7 @@ interface Props {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const EndpointAccordionItem = React.forwardRef<HTMLDivElement, Props>(function EndpointAccordionItem({ endpoint }, ref) {
+export function EndpointAccordionItem({ endpoint }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [showSnippets, setShowSnippets] = useState(false);
   const [requestJson, setRequestJson] = useState(() => {
@@ -262,4 +262,4 @@ export const EndpointAccordionItem = React.forwardRef<HTMLDivElement, Props>(fun
       )}
     </div>
   );
-});
+}
