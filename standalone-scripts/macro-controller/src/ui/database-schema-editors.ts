@@ -154,7 +154,7 @@ function testRegexValidation(value: string, validation: ColumnValidation): Valid
     return isMatch
       ? { pass: true, reason: 'Matches pattern' }
       : { pass: false, reason: 'Does not match pattern' };
-  } catch (error: unknown) {
+  } catch (error) {
     return { pass: false, reason: 'Invalid regex: ' + (error as Error).message };
   }
 }

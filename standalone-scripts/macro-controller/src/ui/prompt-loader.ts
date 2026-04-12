@@ -117,7 +117,7 @@ export function invalidatePromptCache(): void {
   // Also invalidate SDK cache if available
   const sdk = window.marco as { prompts?: { invalidateCache(): Promise<void> } } | undefined;
   if (sdk && sdk.prompts && typeof sdk.prompts.invalidateCache === 'function') {
-    sdk.prompts.invalidateCache().catch(function(e: unknown) { log('[PromptLoader] SDK cache invalidation failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
+    sdk.prompts.invalidateCache().catch(function (e) { log('[PromptLoader] SDK cache invalidation failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
   }
   clearPromptCache().then(function() {
     log('[PromptCache] Cache cleared (invalidated)', 'info');
@@ -138,7 +138,7 @@ export function clearLoadedPrompts(): void {
   // Also invalidate SDK cache
   const sdk = window.marco as { prompts?: { invalidateCache(): Promise<void> } } | undefined;
   if (sdk && sdk.prompts && typeof sdk.prompts.invalidateCache === 'function') {
-    sdk.prompts.invalidateCache().catch(function(e: unknown) { log('[PromptLoader] SDK cache invalidation failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
+    sdk.prompts.invalidateCache().catch(function (e) { log('[PromptLoader] SDK cache invalidation failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
   }
 }
 
@@ -271,7 +271,7 @@ export function loadPromptsFromJson(): Promise<PromptEntry[] | null> {
       return Promise.resolve(promptLoaderState.loadedJsonPrompts);
     }
     log('[PromptLoad] Fetching via SDK marco.prompts.getAll()...', 'info');
-    return sdk.prompts.getAll().then(function(entries: unknown[]) {
+    return sdk.prompts.getAll().then(function(entries: MarcoSDKPromptEntry[]) {
       const prompts = normalizePromptEntries(entries as Partial<PromptEntry>[]);
       const elapsed = Date.now() - loadStartMs;
       if (prompts.length > 0) {
@@ -284,7 +284,7 @@ export function loadPromptsFromJson(): Promise<PromptEntry[] | null> {
       promptLoaderState.loadedJsonPrompts = DEFAULT_PROMPTS;
       promptLoaderState.flushPendingCallbacks(DEFAULT_PROMPTS);
       return DEFAULT_PROMPTS;
-    }).catch(function(e: unknown) {
+    }).catch(function (e) {
       const elapsed = Date.now() - loadStartMs;
       log('[PromptLoad] ❌ SDK prompts.getAll() failed (' + elapsed + 'ms): ' + (e instanceof Error ? e.message : String(e)) + ' — using defaults', 'warn');
       promptLoaderState.loadedJsonPrompts = DEFAULT_PROMPTS;

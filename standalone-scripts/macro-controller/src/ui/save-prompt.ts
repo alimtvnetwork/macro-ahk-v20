@@ -99,7 +99,7 @@ export function findSavePromptContainer(): Element | null {
       log('Save Prompt: Container found via XPath', 'check');
       return xpathResult as Element;
     }
-  } catch (_e: unknown) { log('Save Prompt: XPath eval error: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn'); }
+  } catch (_e) { log('Save Prompt: XPath eval error: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn'); }
 
   return findContainerViaCssFallback();
 }
@@ -128,7 +128,7 @@ function findContainerViaCssFallback(): Element | null {
           return element;
         }
       }
-    } catch (_e: unknown) { log('Save Prompt: CSS selector error at fallback #' + (fallbackIndex + 1) + ': ' + (_e instanceof Error ? _e.message : String(_e)), 'warn'); }
+    } catch (_e) { log('Save Prompt: CSS selector error at fallback #' + (fallbackIndex + 1) + ': ' + (_e instanceof Error ? _e.message : String(_e)), 'warn'); }
   }
 
   return null;
@@ -186,7 +186,7 @@ function tryInjectSavePrompt(ctx: InjectCtx): boolean {
     log('Save Prompt + Prompts buttons injected into chatbox toolbar', 'info');
 
     return true;
-  } catch (e: unknown) {
+  } catch (e) {
     logError('savePrompt', 'Prompt save failed', e);
     showToast('❌ Prompt save failed', 'error');
     return false;

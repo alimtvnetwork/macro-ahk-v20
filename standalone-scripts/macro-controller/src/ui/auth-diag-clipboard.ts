@@ -32,7 +32,7 @@ export function buildHeaderControls(
     navigator.clipboard.writeText(text).then(function () {
       copyButton.textContent = '✅';
       setTimeout(function () { copyButton.textContent = '📋'; }, 1500);
-    }).catch(function (e: unknown) {
+    }).catch(function (e) {
       logError('copyAuthDiag', 'Clipboard write failed', e);
       showToast('❌ Clipboard write failed', 'error');
       copyButton.textContent = '❌';
@@ -74,7 +74,7 @@ function buildDiagnosticClipboardText(
         : 'bridge skipped';
       lines.push('SDK Auth: ' + authDiag.source + ' · ' + bridgeTag + ' · ' + Math.round(authDiag.durationMs) + 'ms');
     }
-  } catch (e: unknown) {
+  } catch (e) {
     logError('buildAuthDiag', 'SDK auth diagnostics unavailable', e);
     // SDK not available
   }

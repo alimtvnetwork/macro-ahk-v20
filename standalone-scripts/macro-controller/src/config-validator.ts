@@ -33,15 +33,18 @@ function warn(msg: string): void {
  * Recursively merge `source` into `target`, preferring source values.
  * Arrays are replaced (not merged). Only plain objects are recursed.
  */
-function deepMerge<T extends Record<string, unknown>>(target: T, source: Partial<T>): T {
-  const result = { ...target } as Record<string, unknown>;
+/** Internal record type for deep-merge key iteration. */
+type MergeableRecord = Record<string, string | number | boolean | null | undefined | object>;
+
+function deepMerge<T extends MergeableRecord>(target: T, source: Partial<T>): T {
+  const result = { ...target } as MergeableRecord;
 
   for (const key of Object.keys(source)) {
-    const srcVal = (source as Record<string, unknown>)[key];
+    const srcVal = (source as MergeableRecord)[key];
     const tgtVal = result[key];
 
     if (isPlainObject(srcVal) && isPlainObject(tgtVal)) {
-      result[key] = deepMerge(tgtVal as Record<string, unknown>, srcVal as Record<string, unknown>);
+      result[key] = deepMerge(tgtVal as MergeableRecord, srcVal as MergeableRecord);
     } else if (srcVal !== undefined) {
       result[key] = srcVal;
     }
@@ -50,7 +53,7 @@ function deepMerge<T extends Record<string, unknown>>(target: T, source: Partial
   return result as T;
 }
 
-function isPlainObject(v: unknown): v is Record<string, unknown> {
+function isPlainObject(v: string | number | boolean | object | null | undefined): v is Record<string, string | number | boolean | null | object> {
   return v !== null && typeof v === 'object' && !Array.isArray(v);
 }
 
@@ -138,11 +141,11 @@ export function validateConfig(raw: Partial<MacroControllerConfig>): MacroContro
   }
 
   // Type-check critical fields
-  validateFieldType(raw as Record<string, unknown>, 'macroLoop', 'object', 'Config');
-  validateFieldType(raw as Record<string, unknown>, 'general', 'object', 'Config');
-  validateFieldType(raw as Record<string, unknown>, 'autoAttach', 'object', 'Config');
+  validateFieldType(raw as MergeableRecord, 'macroLoop', 'object', 'Config');
+  validateFieldType(raw as MergeableRecord, 'general', 'object', 'Config');
+  validateFieldType(raw as MergeableRecord, 'autoAttach', 'object', 'Config');
 
-  return deepMerge(DEFAULT_CONFIG as Record<string, unknown>, raw as Record<string, unknown>) as unknown as MacroControllerConfig;
+  return deepMerge(DEFAULT_CONFIG as MergeableRecord, raw as MergeableRecord) as MacroControllerConfig;
 }
 
 /**
@@ -166,12 +169,12 @@ export function validateTheme(raw: Partial<MacroThemeRoot>): MacroThemeRoot {
   }
 
   // Ensure presets object has at least the active preset
-  const merged = deepMerge(DEFAULT_THEME as Record<string, unknown>, raw as Record<string, unknown>) as unknown as MacroThemeRoot;
+  const merged = deepMerge(DEFAULT_THEME as MergeableRecord, raw as MergeableRecord) as MacroThemeRoot;
   const activeKey = (merged.activePreset || 'dark') as string;
 
-  if (merged.presets && !(merged.presets as Record<string, unknown>)[activeKey]) {
+  if (merged.presets && !(merged.presets as MergeableRecord)[activeKey]) {
     warn('Theme: active preset "' + activeKey + '" not found in presets — using default');
-    (merged.presets as Record<string, unknown>)[activeKey] = DEFAULT_THEME_PRESET;
+    (merged.presets as MergeableRecord)[activeKey] = DEFAULT_THEME_PRESET;
   }
 
   return merged;
@@ -188,7 +191,7 @@ function validateSchemaVersion(label: string, version: number, supported: number
 }
 
 function validateFieldType(
-  obj: Record<string, unknown>,
+  obj: MergeableRecord,
   field: string,
   expected: string,
   label: string,

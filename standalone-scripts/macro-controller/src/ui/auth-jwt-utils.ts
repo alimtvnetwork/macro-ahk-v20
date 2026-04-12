@@ -84,7 +84,7 @@ export function decodeJwtPayload(token: string): JwtInfo {
       sub: (payload.sub || payload.email || '—').toString().substring(0, 30),
       error: isExpired ? 'Token expired' : '',
     };
-  } catch (e: unknown) {
+  } catch (e) {
     failResult.error = 'Decode failed: ' + toErrorMessage(e);
     return failResult;
   }

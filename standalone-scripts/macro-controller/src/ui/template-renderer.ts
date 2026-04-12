@@ -165,7 +165,7 @@ function replaceVariables(html: string, data: Record<string, unknown>): string {
 }
 
 /** Truthiness check matching Handlebars conventions */
-function isTruthy(value: unknown): boolean {
+function isTruthy(value: string | number | boolean | null | undefined | object): boolean {
   if (value === undefined || value === null || value === false || value === 0 || value === '') {
     return false;
   }

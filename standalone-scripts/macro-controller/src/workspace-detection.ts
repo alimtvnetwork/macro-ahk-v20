@@ -194,7 +194,7 @@ function matchWorkspaceById(
 interface SdkApiResponse {
   readonly ok: boolean;
   readonly status: number;
-  readonly data: unknown;
+  readonly data: Record<string, string | number | boolean | null>;
   readonly headers: Record<string, string>;
 }
 

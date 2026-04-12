@@ -126,7 +126,7 @@ export async function runAutoAttachGroup(
     try {
       await navigator.clipboard.writeText('AUTO_ATTACH_FILE:' + filePath);
       log('Auto-Attach: File path written to clipboard for AHK: ' + filePath, 'info');
-    } catch (e: unknown) {
+    } catch (e) {
       log('Auto-Attach: Clipboard write failed: ' + toErrorMessage(e), 'warn');
     }
 

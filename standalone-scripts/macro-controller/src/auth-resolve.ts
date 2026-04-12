@@ -78,7 +78,7 @@ function getAuthUtils(): MarcoSDKAuthTokenUtils {
             return nested;
           }
         }
-      } catch (e: unknown) {
+      } catch (e) {
         log('auth-resolve: fallback extractBearerTokenFromRaw JSON parse failed — ' + toErrorMessage(e), 'debug');
       }
 
@@ -175,7 +175,7 @@ export function getBearerTokenFromSessionBridge(): string {
         setLastSessionBridgeSource(key);
         log('resolveToken: ✅ Found Supabase auth in localStorage[' + key + '] (len=' + tokenLength + ')', 'success');
       },
-      (scanErr: unknown) => {
+      (scanErr) => {
         log('resolveToken: Supabase localStorage scan failed — ' + toErrorMessage(scanErr), 'warn');
       },
     );
@@ -183,7 +183,7 @@ export function getBearerTokenFromSessionBridge(): string {
     if (supabaseToken) {
       return supabaseToken;
     }
-  } catch (e: unknown) {
+  } catch (e) {
     log('resolveToken: localStorage bridge unavailable — ' + toErrorMessage(e), 'warn');
   }
 
@@ -252,7 +252,7 @@ export function getSessionCookieNames(): string[] {
     }
 
     return Array.from(new Set(names.concat(FALLBACK_SESSION_COOKIE_NAMES)));
-  } catch (e: unknown) {
+  } catch (e) {
     log('getSessionCookieNames: failed to read config — ' + toErrorMessage(e), 'warn');
 
     return FALLBACK_SESSION_COOKIE_NAMES;
@@ -306,7 +306,7 @@ export function getBearerTokenFromCookie(): string {
 
     cookieDiagState.lastAt = now;
     logCookieDiagnostics(fn, cookies, sessionNames, rawCookie, result.hasTarget);
-  } catch (e: unknown) {
+  } catch (e) {
     logError(fn, 'EXCEPTION reading cookies: ' + toErrorMessage(e));
     logError(fn, 'This may happen in sandboxed iframes or restricted contexts');
   }
@@ -356,7 +356,7 @@ export function getTokenSavedAt(): number {
     const raw = localStorage.getItem(TOKEN_SAVED_AT_KEY) || '0';
 
     return parseInt(raw, 10) || 0;
-  } catch (e: unknown) {
+  } catch (e) {
     log('getTokenSavedAt: localStorage read failed — ' + toErrorMessage(e), 'warn');
 
     return 0;
@@ -397,7 +397,7 @@ export function persistResolvedBearerToken(token: string): boolean {
     updateAuthBadge(true, tokenSourceState.value || 'persisted');
 
     return true;
-  } catch (e: unknown) {
+  } catch (e) {
     log('resolveToken: failed to persist token to localStorage — ' + toErrorMessage(e), 'warn');
 
     return false;
@@ -445,7 +445,7 @@ export function markBearerTokenExpired(controller: string): void {
     for (const key of SESSION_BRIDGE_KEYS) {
       localStorage.removeItem(key);
     }
-  } catch (e: unknown) {
+  } catch (e) {
     log('markBearerTokenExpired: localStorage cleanup failed — ' + toErrorMessage(e), 'warn');
   }
 
@@ -469,7 +469,7 @@ export function invalidateSessionBridgeKey(token: string): string {
 
       localStorage.removeItem(key);
       removedKeys.push(key);
-    } catch (e: unknown) {
+    } catch (e) {
       log('invalidateSessionBridgeKey: failed to check/remove localStorage[' + key + '] — ' + toErrorMessage(e), 'warn');
     }
   }

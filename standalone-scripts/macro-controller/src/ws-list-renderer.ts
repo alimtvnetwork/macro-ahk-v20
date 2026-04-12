@@ -67,7 +67,7 @@ class WsListViewState {
       const stored: string | null = localStorage.getItem('ml_compact_mode');
 
       return stored === null ? true : stored === 'true';
-    } catch (e: unknown) {
+    } catch (e) {
 
 logError('getExpanded', 'Failed to read expanded state from localStorage', e);
 

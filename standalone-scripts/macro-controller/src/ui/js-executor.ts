@@ -124,7 +124,7 @@ export function executeJs(): void {
     }
     log('JS execution completed successfully', 'success');
     addLoopJsHistoryEntry(code, true, resultStr.substring(0, 100));
-  } catch(e: unknown) {
+  } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     logError('JS execution error', '' + msg);
     addLoopJsHistoryEntry(code, false, msg);

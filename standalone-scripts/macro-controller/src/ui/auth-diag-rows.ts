@@ -72,7 +72,7 @@ function detectBindingsSource(): boolean {
   try {
     const root = RiseupAsiaMacroExt;
     return root !== undefined && root.Projects !== undefined && Object.keys(root.Projects).length > 0;
-  } catch (e: unknown) {
+  } catch (e) {
     logError('hasActiveProject', 'Failed to check active projects', e);
     return false;
   }

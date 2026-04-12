@@ -56,7 +56,7 @@ export function normalizeNewlines(text: string): string {
 }
 
 // ── JSON parse with truncation recovery ──
-export function parseWithRecovery(content: string): unknown {
+export function parseWithRecovery(content: string): Record<string, string | number | boolean | null> | Array<Record<string, string | number | boolean | null>> | null {
   try {
     return JSON.parse(content);
   } catch (e) {
@@ -271,7 +271,7 @@ export function pasteIntoEditor(rawText: string, promptsCfg: PromptsCfg, getByXP
     log('Prompt injected: "' + text.substring(0, 80) + '..." (' + text.length + ' total chars)', 'success');
     showPasteToast('✓ Prompt injected (' + text.length + ' chars)', false);
     return true;
-  } catch (e: unknown) {
+  } catch (e) {
     const errMsg = toErrorMessage(e);
     logError('Prompt inject failed', '' + errMsg);
     navigator.clipboard.writeText(text).then(function() {

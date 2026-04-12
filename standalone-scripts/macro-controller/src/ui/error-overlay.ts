@@ -672,7 +672,7 @@ function handleCopyAll(): void {
 
   navigator.clipboard.writeText(lines.join('\n')).then(function () {
     log('[ErrorOverlay] Copied ' + overlayState.errors.length + ' errors to clipboard', 'success');
-  }).catch(function (err: unknown) {
+  }).catch(function (err) {
     log('[ErrorOverlay] Clipboard copy failed: ' + toErrorMessage(err), 'warn');
   });
 }

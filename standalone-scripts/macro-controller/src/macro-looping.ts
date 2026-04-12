@@ -1,5 +1,5 @@
  
-declare const chrome: { runtime: { sendMessage: (msg: unknown, cb?: (resp: unknown) => void) => void } };
+declare const chrome: { runtime: { sendMessage: (msg: Record<string, string | number | boolean>, cb?: (resp: Record<string, string | number | boolean>) => void) => void } };
 /**
  * MacroLoop Controller — Thin Orchestrator (V2 Phase 02)
  *
@@ -78,7 +78,7 @@ const DOMAIN_GUARD = 'domain-guard';
     ['__loopGetRenameDelay', 'api.workspace.getRenameDelay', function() { return getRenameDelayMs(); }],
     ['__loopSetRenameDelay', 'api.workspace.setRenameDelay', function(ms: number) { setRenameDelayMs(ms); }],
     ['__loopCancelRename', 'api.workspace.cancelRename', function() { cancelRename(); }],
-    ['__loopUndoRename', 'api.workspace.undoRename', function() { undoLastRename(function(_r: unknown, done: boolean) { if (done) populateLoopWorkspaceDropdown(); }); }],
+    ['__loopUndoRename', 'api.workspace.undoRename', function() { undoLastRename(function(_r: boolean, done: boolean) { if (done) populateLoopWorkspaceDropdown(); }); }],
     ['__loopRenameHistory', 'api.workspace.renameHistory', function() { return getRenameHistory(); }],
   ]);
 

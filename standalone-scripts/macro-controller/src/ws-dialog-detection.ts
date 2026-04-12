@@ -290,7 +290,7 @@ function findWorkspaceNameViaCss(_fn: string, perWs: WorkspaceCredit[]): { match
           return result;
         }
       }
-    } catch (e: unknown) {
+    } catch (e) {
       logSub('CSS fallback [' + (si + 1) + '/' + selectors.length + ']: "' + sel + '" → ERROR: ' + toErrorMessage(e), 2);
     }
   }
@@ -319,7 +319,7 @@ export function closeProjectDialogSafe(btn: Element): void {
       logSub('Closing project dialog after workspace read', 1);
       reactClick(btn, CONFIG.PROJECT_BUTTON_XPATH);
     }
-  } catch (e: unknown) {
+  } catch (e) {
     logSub('Error closing dialog: ' + toErrorMessage(e), 1);
   }
 }

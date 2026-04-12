@@ -119,7 +119,7 @@ function buildTableBody(
   return tbody;
 }
 
-function buildTableCell(value: unknown): HTMLTableCellElement {
+function buildTableCell(value: string | number | boolean | null | undefined): HTMLTableCellElement {
   const cell = document.createElement('td');
   const isNullish = value === null || value === undefined;
 

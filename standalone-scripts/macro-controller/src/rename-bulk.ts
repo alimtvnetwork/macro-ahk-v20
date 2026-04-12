@@ -128,7 +128,7 @@ export class BulkRenameManager {
         this.history = JSON.parse(saved!);
         log('[Rename] Restored ' + this.history.length + ' undo entries from localStorage', 'success');
       }
-    } catch (_e: unknown) {
+    } catch (_e) {
       log('[Rename] Failed to restore undo history: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn');
     }
   }
@@ -136,7 +136,7 @@ export class BulkRenameManager {
   private persistHistory(): void {
     try {
       localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(this.history));
-    } catch (_e: unknown) {
+    } catch (_e) {
       log('[Rename] Failed to persist undo history: ' + (_e instanceof Error ? _e.message : String(_e)), 'warn');
     }
   }

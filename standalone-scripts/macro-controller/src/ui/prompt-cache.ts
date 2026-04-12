@@ -132,7 +132,7 @@ function readRecord<T>(storeName: string, key: string): Promise<T | null> {
         resolve(null);
       }
     });
-  }).catch(function(e: unknown) { log('[PromptCache] readRecord(' + storeName + ') IndexedDB open failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); return null; });
+  }).catch(function (e) { log('[PromptCache] readRecord(' + storeName + ') IndexedDB open failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); return null; });
 }
 
 /** Write a record to a store. */
@@ -168,10 +168,10 @@ function deleteRecord(storeName: string, key: string): Promise<void> {
         resolve();
       }
     });
-  }).catch(function(e: unknown) { log('[PromptCache] deleteRecord(' + storeName + '/' + key + ') failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
+  }).catch(function (e) { log('[PromptCache] deleteRecord(' + storeName + '/' + key + ') failed: ' + (e instanceof Error ? e.message : String(e)), 'warn'); });
 }
 
-function logWriteError(storeName: string, e: unknown): void {
+function logWriteError(storeName: string, e: CaughtError): void {
   const msg = e instanceof Error ? e.message : String(e);
   log('[PromptCache] Write to ' + storeName + ' failed: ' + msg, 'warn');
 }

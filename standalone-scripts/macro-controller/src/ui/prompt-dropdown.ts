@@ -156,7 +156,7 @@ function handleLoadClick(btn: HTMLElement, ctx: PromptContext, taskNextDeps: Tas
   forceLoadFromDb().then(function() {
     log('[PromptDropdown] Manual load complete — re-rendering', 'success');
     renderPromptsDropdown(ctx, taskNextDeps);
-  }).catch(function(err: unknown) {
+  }).catch(function (err) {
     logError('PromptDropdown', 'Manual load failed: ' + (err instanceof Error ? err.message : String(err)));
     btn.textContent = '↻ Load';
     btn.style.pointerEvents = '';

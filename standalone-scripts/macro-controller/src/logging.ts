@@ -32,7 +32,7 @@ export function safeSetItem(key: string, value: string): boolean {
     localStorage.setItem(key, value);
 
     return true;
-  } catch (e: unknown) {
+  } catch (e) {
     logError('safeSetItem', 'localStorage setItem failed', e);
     const isQuotaError = (
       e instanceof DOMException &&
@@ -307,7 +307,7 @@ export function copyLogsToClipboard(): void {
   const text = formatLogsForExport();
   navigator.clipboard.writeText(text).then(function () {
     log('Copied ' + getAllLogs().length + ' log entries to clipboard', 'success');
-  }).catch(function (err: unknown) {
+  }).catch(function (err) {
     log('Clipboard copy failed: ' + toErrorMessage(err), 'warn');
   });
 }

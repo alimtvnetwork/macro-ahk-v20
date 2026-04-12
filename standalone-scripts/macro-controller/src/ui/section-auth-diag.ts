@@ -92,7 +92,7 @@ function performAuthDiagUpdate(ctx: AuthDiagUpdateCtx): void {
         ctx.headerBadge.title = 'No token from any source · ' + Math.round(diag.durationMs) + 'ms';
       }
     }
-  } catch (e: unknown) {
+  } catch (e) {
     logError('renderAuthDiag', 'Auth diagnostics render failed', e);
     showToast('❌ Auth diagnostics render failed', 'error');
     // SDK not available
@@ -113,7 +113,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
     const isHidden = diagBody.style.display === 'none';
     diagBody.style.display = isHidden ? 'flex' : 'none';
     col.toggle.textContent = isHidden ? '[-]' : '[+]';
-    try { localStorage.setItem('ml_collapse_auth_diag', isHidden ? 'expanded' : 'collapsed'); } catch (_e: unknown) { logSub('Failed to persist auth diag collapse state: ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
+    try { localStorage.setItem('ml_collapse_auth_diag', isHidden ? 'expanded' : 'collapsed'); } catch (_e) { logSub('Failed to persist auth diag collapse state: ' + (_e instanceof Error ? _e.message : String(_e)), 1); }
   };
 
   const dimStyle = 'color:' + cPanelFgDim + ';';

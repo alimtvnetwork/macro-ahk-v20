@@ -57,7 +57,7 @@ class DomCache {
       const el = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
       this._cache.set(xpath, { element: el, timestamp: Date.now() });
       return el;
-    } catch (e: unknown) {
+    } catch (e) {
       logError('DomCache.getOne', 'XPath evaluation failed', e);
       return null;
     }
@@ -89,7 +89,7 @@ class DomCache {
       }
       this._cacheMulti.set(xpath, { elements: nodes, timestamp: Date.now() });
       return nodes;
-    } catch (e: unknown) {
+    } catch (e) {
       logError('DomCache.getAll', 'XPath multi-evaluation failed', e);
       return [];
     }
