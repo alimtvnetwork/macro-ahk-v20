@@ -5,11 +5,20 @@
  * in both the Chrome extension and the browser preview.
  */
 
-/** Typed message payload sent to the background service worker. */
+/** JSON-serializable value used inside message payloads. */
+export type SerializableValue =
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | SerializableValue[]
+    | { [key: string]: SerializableValue };
 
+/** Typed message payload sent to the background service worker. */
 export interface MessagePayload {
     type: string;
-    [key: string]: string | number | boolean | null | undefined | object;
+    [key: string]: SerializableValue | object;
 }
 
 /** Platform-agnostic storage interface. */
