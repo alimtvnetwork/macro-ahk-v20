@@ -108,7 +108,7 @@ function keyToLabel(key: IDBValidKey): string {
   if (typeof key === "string") return key;
   if (typeof key === "number" || typeof key === "bigint") return String(key);
   if (key instanceof Date) return key.toISOString();
-  return toPrettyJson(key);
+  return toPrettyJson(key as unknown as JsonValue);
 }
 
 function createTxDonePromise(tx: IDBTransaction): Promise<void> {
@@ -805,7 +805,7 @@ function IndexedDbPanel() {
   const handleSaveRecord = async () => {
     if (!selectedDatabase || !selectedStore || !editorRecord) return;
     try {
-      await saveIndexedRecord(selectedDatabase, selectedStore, editorRecord.key, parseEditorValue(editorValue));
+      await saveIndexedRecord(selectedDatabase, selectedStore, editorRecord.key, parseEditorValue(editorValue) as JsonValue);
       toast.success("IndexedDB record updated");
       setEditorOpen(false);
       void loadSelectedDatabase();

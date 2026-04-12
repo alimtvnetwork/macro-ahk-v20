@@ -65,7 +65,7 @@ function JsonTreeNode({ label, value, depth = 0 }: { label: string; value: JsonV
                         <JsonTreeNode
                             key={key}
                             label={isArray ? `[${key}]` : key}
-                            value={val}
+                            value={val as JsonValue}
                             depth={depth + 1}
                         />
                     ))}

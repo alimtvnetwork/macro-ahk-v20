@@ -240,7 +240,7 @@ export async function exportAllAsSqliteZip(): Promise<void> {
 
   const prompts: PromptEntry[] = Array.isArray(promptsRes.prompts)
     ? promptsRes.prompts.map((raw, i) => {
-        const r = raw as Record<string, unknown>;
+        const r = raw as unknown as Record<string, unknown>;
         return {
           id: String(r.id ?? ""),
           name: (r.name as string) ?? "",
@@ -666,7 +666,7 @@ export async function exportPromptsAsSqliteZip(): Promise<void> {
   const result = await sendMessage<{ prompts?: PromptEntry[] }>({ type: "GET_PROMPTS" });
   const prompts: PromptEntry[] = Array.isArray(result.prompts)
     ? result.prompts.map((raw, i) => {
-        const r = raw as Record<string, unknown>;
+        const r = raw as unknown as Record<string, unknown>;
         return {
           id: String(r.id ?? ""),
           name: (r.name as string) ?? "",
@@ -713,7 +713,7 @@ export async function importPromptsFromSqliteZip(file: File): Promise<{ promptCo
   const existing = await sendMessage<{ prompts?: PromptEntry[] }>({ type: "GET_PROMPTS" });
   const existingList = Array.isArray(existing.prompts) ? existing.prompts : [];
   for (const raw of existingList) {
-    const r = raw as Record<string, unknown>;
+    const r = raw as unknown as Record<string, unknown>;
     if (r.isDefault !== true && typeof r.id === "string") {
       await sendMessage({ type: "DELETE_PROMPT", promptId: r.id });
     }

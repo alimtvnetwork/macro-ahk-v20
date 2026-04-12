@@ -42,7 +42,7 @@ interface LogRow {
   detail?: string;
   message?: string;
   error_code?: string;
-  [key: string]: JsonValue;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 export function useStatus() {

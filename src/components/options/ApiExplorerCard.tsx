@@ -124,7 +124,7 @@ export function ApiExplorerCard() {
     setLoading(true);
     try {
       const response = await sendMessage<unknown>(message as any);
-      setResponseJson(toPrettyJson(response));
+      setResponseJson(toPrettyJson(response as JsonValue));
     } catch (error) {
       setResponseJson(toPrettyJson({
         isOk: false,
