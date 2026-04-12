@@ -251,9 +251,9 @@ function updateFilterColumns(
 
 function fetchCountAndRender(
   tableName: string,
-  rows: Record<string, unknown>[],
+  rows: DatabaseRow[],
   page: number,
-  whereClause: Record<string, unknown> | undefined,
+  whereClause: DatabaseRow | Record<string, DatabaseRow> | undefined,
   content: HTMLElement,
   statusBar: HTMLElement,
 ): void {
@@ -284,7 +284,7 @@ function renderDataError(
 
 function renderDataTable(
   tableName: string,
-  rows: Record<string, unknown>[],
+  rows: DatabaseRow[],
   page: number,
   totalCount: number,
   content: HTMLElement,

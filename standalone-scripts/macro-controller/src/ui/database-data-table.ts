@@ -102,7 +102,7 @@ function buildTableHeader(columns: string[]): HTMLElement {
 
 function buildTableBody(
   columns: string[],
-  rows: Record<string, unknown>[],
+  rows: DatabaseRow[],
 ): HTMLElement {
   const tbody = document.createElement('tbody');
 

@@ -13,7 +13,7 @@ export interface JsonColumnDef {
   nullable?: boolean;
   unique?: boolean;
   default?: string;
-  validation?: Record<string, unknown>;
+  validation?: ValidationRules;
 }
 
 export interface JsonForeignKey {

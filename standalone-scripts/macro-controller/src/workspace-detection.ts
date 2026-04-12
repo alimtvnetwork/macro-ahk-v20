@@ -123,7 +123,7 @@ function fallbackDetect(
 // extractWorkspaceIdFromResponse — parses workspace_id from mark-viewed data
 // ============================================
 
-function extractWorkspaceIdFromResponse(data: Record<string, unknown>): string {
+function extractWorkspaceIdFromResponse(data: MarkViewedResponse): string {
   const project = data.project as Record<string, unknown> | undefined;
 
   return (data.workspace_id as string)
@@ -228,7 +228,7 @@ async function processTier1Response(
     return;
   }
 
-  const data = resp.data as Record<string, unknown> | null;
+  const data = resp.data as MarkViewedResponse | null;
 
   if (!data) {
     log(fn + ': Tier 1 — empty response body — falling to passive fallback', 'warn');
