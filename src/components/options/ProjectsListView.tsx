@@ -476,7 +476,7 @@ interface ProjectCardProps {
 function ProjectCard({ project, index, onEdit, onDuplicate, onDelete }: ProjectCardProps) {
   const [exporting, setExporting] = useState(false);
   const urlCount = project.targetUrls?.length ?? 0;
-  const scriptCount = project.scripts.length;
+  const scriptCount = project.scripts?.length ?? 0;
   const configCount = project.configs?.length ?? 0;
 
   const handleExport = async () => {
