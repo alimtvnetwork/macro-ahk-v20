@@ -1,0 +1,76 @@
+%%{init: {'theme': 'dark', 'themeVariables': {'darkMode': true, 'background': '#222222', 'primaryColor': '#F5A623', 'primaryTextColor': '#1a1a1a', 'lineColor': '#666', 'fontSize': '13px'}}}%%
+
+flowchart TD
+    classDef spec fill:#10B981,stroke:#10B981,color:#fff,stroke-width:2px,font-weight:bold
+    classDef specSub fill:#2a2a2a,stroke:#10B981,color:#e0e0e0,stroke-width:1px
+    classDef violation fill:#F43F5E,stroke:#F43F5E,color:#fff,stroke-width:2px,font-weight:bold
+    classDef violationSub fill:#2a2a2a,stroke:#F43F5E,color:#e0e0e0,stroke-width:1px
+    classDef root fill:#F5A623,stroke:#F5A623,color:#1a1a1a,stroke-width:0px,font-weight:bold,font-size:15px
+    classDef impact fill:#8B5CF6,stroke:#8B5CF6,color:#fff,stroke-width:2px,font-weight:bold
+    classDef impactSub fill:#2a2a2a,stroke:#8B5CF6,color:#e0e0e0,stroke-width:1px
+    classDef fix fill:#0EA5E9,stroke:#0EA5E9,color:#fff,stroke-width:2px,font-weight:bold
+    classDef fixSub fill:#2a2a2a,stroke:#0EA5E9,color:#e0e0e0,stroke-width:1px
+
+    subgraph LEGEND ["Color Legend"]
+        direction TB
+        L0(["Green = Spec (correct behavior)"]):::spec
+        L1(["Red = Violation (code inconsistency)"]):::violation
+        L2(["Purple = Impact (user-facing error)"]):::impact
+        L3(["Blue = Required Fix"]):::fix
+    end
+    style LEGEND fill:#1a1a1a,stroke:#555,color:#e0e0e0,stroke-width:1px
+
+    LEGEND ~~~ ROOT
+    ROOT(["Auth + Retry Inconsistency Map"]):::root
+
+    ROOT --> SPEC & V1 & V2 & V3 & V4 & IMPACT & FIX
+
+    %% What the spec says
+    SPEC(["SPEC: Pipeline Workflow"]):::spec
+    SPEC --> SPEC1(["Injection pipeline has NO retry logic"]):::specSub
+    SPEC --> SPEC2(["Auth failure = HARD FAIL, stop pipeline"]):::specSub
+    SPEC --> SPEC3(["Credit fetch: single retry on 401 via getBearerToken force"]):::specSub
+    SPEC --> SPEC4(["No exponential backoff in controller"]):::specSub
+
+    %% Violation 1: loop-cycle.ts retry backoff
+    V1(["VIOLATION 1: loop-cycle.ts"]):::violation
+    V1 --> V1A(["handleCycleFetchError has exponential backoff"]):::violationSub
+    V1A --> V1B(["retryCount++ up to maxRetries=3"]):::violationSub
+    V1B --> V1C(["backoffMs = 2000 * 2^retryCount"]):::violationSub
+    V1C --> V1D(["Schedules setTimeout to re-run runCycle"]):::violationSub
+    V1D --> V1E(["On final failure: stops entire loop"]):::violationSub
+
+    %% Violation 2: state has retry fields
+    V2(["VIOLATION 2: shared-state-runtime.ts"]):::violation
+    V2 --> V2A(["retryCount: 0 in ControllerState"]):::violationSub
+    V2 --> V2B(["maxRetries: 3 hardcoded"]):::violationSub
+    V2 --> V2C(["retryBackoffMs: 2000 hardcoded"]):::violationSub
+    V2 --> V2D(["__cycleRetryPending: boolean flag"]):::violationSub
+
+    %% Violation 3: credit-fetch.ts recursive retry
+    V3(["VIOLATION 3: credit-fetch.ts"]):::violation
+    V3 --> V3A(["fetchLoopCredits calls itself recursively"]):::violationSub
+    V3A --> V3B(["On 401: handleAuthRecovery then fetchLoopCredits isRetry=true"]):::violationSub
+    V3B --> V3C(["fetchLoopCreditsAsync also retries via handleAsyncAuthFailure"]):::violationSub
+
+    %% Violation 4: credit-balance.ts retry
+    V4(["VIOLATION 4: credit-balance.ts"]):::violation
+    V4 --> V4A(["fetchCreditBalance calls recoverAuthOnce on 401"]):::violationSub
+    V4A --> V4B(["Then calls fetchCreditBalance wsId, true recursively"]):::violationSub
+
+    %% Impact
+    IMPACT(["USER IMPACT"]):::impact
+    IMPACT --> I1(["Auth failed toast after 12s timeout"]):::impactSub
+    IMPACT --> I2(["Multiple retry attempts compound the 12s wait"]):::impactSub
+    IMPACT --> I3(["Exponential backoff creates 2s+4s+8s delays"]):::impactSub
+    IMPACT --> I4(["Token recovery called from 4 different paths simultaneously"]):::impactSub
+    IMPACT --> I5(["Race conditions between retry paths corrupt token state"]):::impactSub
+
+    %% Fix
+    FIX(["REQUIRED FIXES"]):::fix
+    FIX --> F1(["Remove exponential backoff from loop-cycle.ts"]):::fixSub
+    FIX --> F2(["Remove retryCount/maxRetries/retryBackoffMs from state"]):::fixSub
+    FIX --> F3(["Remove __cycleRetryPending flag"]):::fixSub
+    FIX --> F4(["Auth failure in cycle = skip cycle, log error, continue"]):::fixSub
+    FIX --> F5(["Credit fetch: fail fast, no recursive self-call"]):::fixSub
+    FIX --> F6(["Single getBearerToken call per operation, no recovery retry"]):::fixSub

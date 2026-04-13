@@ -78,10 +78,10 @@ export interface MacroLoopConfig {
   elementIds?: MacroLoopElementIds;
 }
 
-export interface RetryConfig {
-  maxRetries?: number;
-  backoffMs?: number;
-}
+/**
+ * @deprecated REMOVED — retry logic is forbidden per issue #88.
+ * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
+ */
 
 export interface MacroLoopTiming {
   loopIntervalMs?: number;
@@ -141,13 +141,11 @@ export interface CreditBalanceConfigInput {
 
 export interface GeneralConfig {
   logLevel?: string;
-  maxRetries?: number;
 }
 
 /** Default general config values. */
 export const DEFAULT_GENERAL_CONFIG: Required<GeneralConfig> = {
   logLevel: 'info',
-  maxRetries: 3,
 };
 
 export interface AutoAttachConfig {
@@ -436,14 +434,12 @@ export interface ControllerState {
   workspaceFromApi: boolean;
   workspaceFromCache: boolean;
   isManualCheck: boolean;
-  retryCount: number;
-  maxRetries: number;
-  retryBackoffMs: number;
-  lastRetryError: string | null;
-  /** Internal: true while a loop cycle fetch is in-flight. */
+  /**
+   * Internal: true while a loop cycle fetch is in-flight.
+   * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
+   * NO RETRY FIELDS — cycle failures are transient; the loop interval is the natural retry.
+   */
   __cycleInFlight: boolean;
-  /** Internal: true while a retry is scheduled. */
-  __cycleRetryPending: boolean;
 }
 
 // Forward import for PromptsConfig → PromptEntry dependency
