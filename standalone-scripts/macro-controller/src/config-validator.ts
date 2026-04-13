@@ -172,8 +172,9 @@ export function validateTheme(raw: Partial<MacroThemeRoot>): MacroThemeRoot {
   // Ensure presets object has at least the active preset
   const merged = deepMerge(DEFAULT_THEME as MergeableRecord, raw as MergeableRecord) as MacroThemeRoot;
   const activeKey = (merged.activePreset || 'dark') as string;
+  const isActivePresetMissing = merged.presets && !(merged.presets as MergeableRecord)[activeKey];
 
-  if (merged.presets && !(merged.presets as MergeableRecord)[activeKey]) {
+  if (isActivePresetMissing) {
     warn('Theme: active preset "' + activeKey + '" not found in presets — using default');
     (merged.presets as MergeableRecord)[activeKey] = DEFAULT_THEME_PRESET;
   }
