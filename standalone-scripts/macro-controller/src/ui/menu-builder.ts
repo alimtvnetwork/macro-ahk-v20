@@ -11,6 +11,7 @@ import { showDatabaseModal } from './database-modal';
 import { exportWorkspacesAsCsv } from '../logging';
 import { VERSION, cPanelBg, cPanelFgDim, cPanelFgMuted, cPrimary, cBtnMenuBg, cBtnMenuFg, cSectionHeader, lDropdownRadius, lDropdownShadow, tFontSm, trFast, autoAttachCfg, state } from '../shared-state';
 import { LoopDirection, type AutoAttachGroupRuntime } from '../types';
+import type { AutoAttachRawConfig } from '../types/api-data-types';
 import { showToast } from '../toast';
 import { dualWrite, nsCall, nsRead } from '../api-namespace';
 import { refreshBearerTokenFromBestSource, getAuthDebugSnapshot } from '../auth';
