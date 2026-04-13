@@ -13,7 +13,7 @@
  */
 
 import { log, logSub } from './logging';
-import { resolveToken, markBearerTokenExpired, recoverAuthOnce } from './auth';
+import { getBearerToken, markBearerTokenExpired } from './auth';
 import { showToast } from './toast';
 import { CREDIT_API_BASE, state } from './shared-state';
 import { extractProjectIdFromUrl } from './workspace-detection';
@@ -92,7 +92,11 @@ export async function resolveWorkspaceId(): Promise<string | null> {
     return null;
   }
 
-  const token = resolveToken();
+  /**
+   * Uses getBearerToken() (Auth Bridge) instead of raw resolveToken().
+   * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/01-deep-audit.md (RCA-3)
+   */
+  const token = await getBearerToken();
 
   if (!token) {
     log('CreditBalance: No bearer token — cannot resolve workspace', 'warn');
@@ -169,7 +173,7 @@ export async function fetchCreditBalance(
 
   creditBalanceState.lastBalanceCallAt = Date.now();
 
-  const token = resolveToken();
+  const token = await getBearerToken();
 
   if (!token) {
     log('CreditBalance: No bearer token', 'warn');
@@ -180,8 +184,10 @@ export async function fetchCreditBalance(
   log('CreditBalance: GET /workspaces/' + wsId + '/credit-balance' + (isRetry ? ' (RETRY)' : ''), 'check');
 
   /**
-   * Sequential auth recovery — NO recursive fetchCreditBalance() call.
+   * Sequential auth recovery via getBearerToken({ force: true }).
+   * NO recursive fetchCreditBalance() call. NO direct recoverAuthOnce().
    * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
+   * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/01-deep-audit.md (RCA-3)
    */
   try {
     const resp = await window.marco!.api!.credits.fetchBalance(wsId, { baseUrl: CREDIT_API_BASE });
@@ -189,11 +195,11 @@ export async function fetchCreditBalance(
     if (!resp.ok) {
       if (isAuthFailure(resp.status) && !isRetry) {
         markBearerTokenExpired('credit-balance');
-        log('CreditBalance: Auth ' + resp.status + ' — recovering...', 'warn');
-        const newToken = await recoverAuthOnce();
+        log('CreditBalance: Auth ' + resp.status + ' — forcing token refresh...', 'warn');
+        const newToken = await getBearerToken({ force: true });
 
         if (!newToken) {
-          logError('CreditBalance', 'Auth recovery failed — skipping');
+          logError('CreditBalance', 'Token refresh failed — skipping');
 
           return null;
         }
