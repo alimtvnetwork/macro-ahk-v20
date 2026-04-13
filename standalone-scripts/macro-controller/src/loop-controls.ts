@@ -14,7 +14,7 @@ import { LoopDirection } from './types';
 import { getByXPath } from './xpath-utils';
 import { fetchLoopCreditsAsync, syncCreditStateFromApi } from './credit-fetch';
 import { MacroController } from './core/MacroController';
-import { getBearerToken, getLastTokenSource } from './auth';
+import { getLastTokenSource } from './auth';
 import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isOnProjectPage, isUserTypingInPrompt, pollForDialogReady } from './dom-helpers';
 import { CONFIG, IDS, TIMING, loopCreditState, state } from './shared-state';
 import { runCycle } from './loop-cycle';

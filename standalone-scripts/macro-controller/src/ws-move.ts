@@ -231,7 +231,7 @@ async function handleMoveAuthFailure(
   projectId: string,
   targetWorkspaceId: string,
   targetWorkspaceName: string,
-  token: string,
+  _token: string,
   status: number,
 ): Promise<void> {
   markBearerTokenExpired('ws-move');

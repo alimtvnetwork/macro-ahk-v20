@@ -174,7 +174,7 @@ function processWorkspacesAndMove(
 // ============================================
 
 async function handleAdjacentAuthFailure(
-  token: string,
+  _token: string,
   status: number,
 ): Promise<void> {
   markBearerTokenExpired('ws-adjacent');

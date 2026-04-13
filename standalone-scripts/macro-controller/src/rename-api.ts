@@ -128,7 +128,7 @@ function handleCreditLimitFallback(
 }
 
 async function handleRenameAuthRecovery(
-  token: string,
+  _token: string,
   wsId: string,
 ): Promise<string | null> {
   const isExhausted = getAuthRecoveryExhausted();
