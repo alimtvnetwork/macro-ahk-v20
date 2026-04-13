@@ -423,10 +423,8 @@ function handleCreditSuccess(tier1Data: MarkViewedResponse | null): void {
   }
 
   log('Startup: Tier 1 prefetch did not resolve workspace — falling back to autoDetect', 'info');
-  // Token already resolved by gate — reuse synchronously
   const freshToken = resolveToken();
   autoDetectLoopCurrentWorkspace(freshToken, { skipDialog: true }).then(function () {
-  }).then(function () {
     const shouldRetryWorkspace = state.running;
     timingEnd(
       'workspace',
@@ -605,23 +603,12 @@ function scheduleWorkspaceRetry(attempt: number): void {
     }
 
     if (!retryToken) {
-      retryToken = '';
-      // Token will be resolved via getBearerToken below
+      retryToken = resolveToken();
     }
 
     if (!retryToken) {
-      // Try the unified bridge as final fallback
-      getBearerToken().then(function (bridgeToken: string) {
-        if (!bridgeToken) {
-          log(STARTUP_RETRY + attempt + ' — no token available, moving to next retry', 'warn');
-          scheduleWorkspaceRetry(attempt + 1);
-          return;
-        }
-        doWorkspaceRetry(attempt, bridgeToken);
-      }).catch(function () {
-        log(STARTUP_RETRY + attempt + ' — getBearerToken failed, moving to next retry', 'warn');
-        scheduleWorkspaceRetry(attempt + 1);
-      });
+      log(STARTUP_RETRY + attempt + ' — no token available after cookie fallback, moving to next retry', 'warn');
+      scheduleWorkspaceRetry(attempt + 1);
       return;
     }
 

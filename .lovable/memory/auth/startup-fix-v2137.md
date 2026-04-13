@@ -1,20 +1,26 @@
 # Memory: auth/startup-fix-v2137
 Updated: 2026-04-13
 
-## Fix Applied (v2.137.0)
+## Startup fix aligned to v1.133 diagram
 
-### Root Cause
-Three compounding issues caused slow/broken startup:
-1. `AUTH_READY_TIMEOUT_MS` was 12s (v1.133 used 2s) — gate waited far too long
-2. `launchCreditAndWorkspaceLoad()` re-entered auth via async `getBearerToken()` after the gate already resolved the token — double auth gating
-3. Root auth surface (`api.auth.getToken`, `AuthManager.getToken`) exposed legacy `resolveToken` instead of unified `getBearerToken`
+### What was wrong
+The startup path still deviated from the v1.133 working flow even after the first pass:
+1. `handleCreditSuccess()` had a malformed promise chain around `autoDetectLoopCurrentWorkspace(...)`
+2. `scheduleWorkspaceRetry()` still re-entered the async auth bridge via `getBearerToken()` instead of following the v1.133 sync reuse path
+3. `AuthManager.recoverOnce()` still exposed legacy `recoverAuthOnce()` instead of the unified forced-recovery contract
+4. Startup still imported both `resolveToken` and `getBearerToken`, but only retry/resync should use async bridge recovery
 
-### Changes
-1. **startup-token-gate.ts**: `AUTH_READY_TIMEOUT_MS` reduced from 12s → 2s
-2. **startup.ts**: Replaced async `getBearerToken()` calls with synchronous `resolveToken()` in `launchCreditAndWorkspaceLoad` and `handleCreditSuccess` — token is already resolved by the gate, no re-entry needed
-3. **macro-looping.ts**: Auth global `api.auth.getToken` now exposes `getBearerToken` (unified contract) instead of `resolveToken`
-4. **AuthManager.ts**: `getToken()` returns `Promise<string>` via `getBearerToken()` instead of sync `resolveToken()`
-5. **MacroController.ts**: `AuthManagerInterface.getToken()` updated to `Promise<string>`
+### Final aligned behavior
+- `ensureTokenReady()` remains the single startup auth gate
+- After the gate succeeds, startup reuses the resolved token synchronously with `resolveToken()` for:
+  - Tier 1 prefetch startup path
+  - workspace auto-detect fallback
+  - startup workspace retry fallback after cookie read
+- `getBearerToken()` remains only for:
+  - auth auto-resync on focus/visibility
+- `AuthManager.getToken()` uses `getBearerToken()`
+- `AuthManager.recoverOnce()` uses `getBearerToken({ force: true })`
 
-### Design Rule
-After `ensureTokenReady()` succeeds, always use synchronous `resolveToken()` for immediate token reuse. Reserve async `getBearerToken()` for operational paths that need TTL-aware recovery (API calls, loop cycles, UI controls).
+### Validation
+- `tsc --noEmit -p tsconfig.macro.build.json` passes
+- Startup root path now matches the RCA diagram’s v1.133 lane: gate once, then sync token reuse
