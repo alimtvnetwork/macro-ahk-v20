@@ -14,10 +14,11 @@ import { LoopDirection } from './types';
 import { getByXPath } from './xpath-utils';
 import { fetchLoopCreditsAsync, syncCreditStateFromApi } from './credit-fetch';
 import { MacroController } from './core/MacroController';
-import { resolveToken } from './auth';
+import { resolveToken, getLastTokenSource } from './auth';
 import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isOnProjectPage, isUserTypingInPrompt, pollForDialogReady } from './dom-helpers';
 import { CONFIG, IDS, TIMING, loopCreditState, state } from './shared-state';
 import { runCycle } from './loop-cycle';
+import { logError } from './error-utils';
 import { ensureTokenReady, AUTH_READY_TIMEOUT_MS } from './startup-token-gate';
 
 const NS_UPDATESTARTSTOPBTN = '_internal.updateStartStopBtn';

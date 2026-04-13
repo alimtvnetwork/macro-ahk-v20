@@ -95,7 +95,7 @@ export function createCheckButton(deps: CheckButtonDeps): CheckButtonResult {
 }
 
 function _handleCheckClick(ctx: CheckButtonCtx): void {
-  const { checkBtn, updateAuthBadge } = ctx;
+  const { checkBtn } = ctx;
   if (ctx.checkInFlight) {
     log('Check cooldown: already in flight', 'warn');
     return;
