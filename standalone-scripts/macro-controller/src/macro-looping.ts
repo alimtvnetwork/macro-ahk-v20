@@ -17,7 +17,7 @@ declare const chrome: { runtime: { sendMessage: (msg: Record<string, string | nu
 import { VERSION, loopCreditState, getLoopWsCheckedIds } from './shared-state';
 import { log } from './logging';
 import { initXPathUtils, hasXPathUtils, updateProjectButtonXPath, updateProgressXPath, updateWorkspaceXPath } from './xpath-utils';
-import { resolveToken } from './auth';
+import { getBearerToken } from './auth';
 import { fetchLoopCredits } from './credit-fetch';
 import { autoDetectLoopCurrentWorkspace } from './workspace-detection';
 import { createUI, PanelBuilderDeps } from './ui/panel-builder';
@@ -64,7 +64,7 @@ const DOMAIN_GUARD = 'domain-guard';
   timingEnd('idempotent', 'ok');
 
   // ── Auth global ──
-  dualWrite('__loopGetBearerToken', 'api.auth.getToken', resolveToken);
+  dualWrite('__loopGetBearerToken', 'api.auth.getToken', getBearerToken);
 
   // ── Credit fetch wrapper ──
   const fetchLoopCreditsWithDetect = function(isRetry?: boolean) {

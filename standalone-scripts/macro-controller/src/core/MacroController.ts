@@ -32,7 +32,7 @@ import { logError } from '../error-utils';
 // ============================================
 
 export interface AuthManagerInterface {
-  getToken(): string;
+  getToken(): Promise<string>;
   refreshToken(callback: (token: string, source: string) => void): void;
   getLastSource(): string;
   verifySession(context: string): void;

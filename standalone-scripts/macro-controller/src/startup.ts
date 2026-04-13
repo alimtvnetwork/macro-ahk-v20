@@ -24,7 +24,7 @@ import {
   getLastTokenSource,
   setLastTokenSource,
   getBearerTokenFromCookie,
-  getBearerToken,
+  resolveToken,
 } from './auth';
 import {
   IDS,
@@ -390,24 +390,23 @@ function launchCreditAndWorkspaceLoad(): void {
 
   timingStart(WS_PREFETCH, 'WS Tier1 Prefetch');
   const currentProjectId = extractProjectIdFromUrl();
+  // Token is already resolved by ensureTokenReady — reuse synchronously, no re-entry
+  const startupToken = resolveToken();
+  let tier1Data: MarkViewedResponse | null = null;
 
-  getBearerToken().catch(() => '').then(function (startupToken) {
-    let tier1Data: MarkViewedResponse | null = null;
+  const tier1Promise = (currentProjectId && startupToken)
+    ? fetchTier1Prefetch(currentProjectId, startupToken).then(function (data) {
+        tier1Data = data;
+        return data;
+      })
+    : Promise.resolve(null).then(function () {
+        timingEnd(WS_PREFETCH, 'warn', 'No projectId or token');
+        return null;
+      });
 
-    const tier1Promise = (currentProjectId && startupToken)
-      ? fetchTier1Prefetch(currentProjectId, startupToken).then(function (data) {
-          tier1Data = data;
-          return data;
-        })
-      : Promise.resolve(null).then(function () {
-          timingEnd(WS_PREFETCH, 'warn', 'No projectId or token');
-          return null;
-        });
-
-    Promise.all([creditPromise, tier1Promise])
-      .then(function () { handleCreditSuccess(tier1Data); })
-      .catch(function (err) { handleCreditError(err); });
-  });
+  Promise.all([creditPromise, tier1Promise])
+    .then(function () { handleCreditSuccess(tier1Data); })
+    .catch(function (err) { handleCreditError(err); });
 }
 
 /** Handle successful credit + workspace load. */
@@ -423,8 +422,9 @@ function handleCreditSuccess(tier1Data: MarkViewedResponse | null): void {
   }
 
   log('Startup: Tier 1 prefetch did not resolve workspace — falling back to autoDetect', 'info');
-  getBearerToken().then(function (freshToken) {
-    return autoDetectLoopCurrentWorkspace(freshToken, { skipDialog: true });
+  // Token already resolved by gate — reuse synchronously
+  const freshToken = resolveToken();
+  autoDetectLoopCurrentWorkspace(freshToken, { skipDialog: true }).then(function () {
   }).then(function () {
     const shouldRetryWorkspace = state.running;
     timingEnd(

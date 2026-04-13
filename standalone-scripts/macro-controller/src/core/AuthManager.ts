@@ -10,13 +10,13 @@
 import type { AuthManagerInterface } from './MacroController';
 import { verifyWorkspaceSessionAfterFailure } from '../workspace-management';
 
-import { getLastTokenSource, getBearerTokenFromCookie, getBearerTokenFromSessionBridge, invalidateSessionBridgeKey, markBearerTokenExpired, persistResolvedBearerToken, recoverAuthOnce, refreshBearerTokenFromBestSource, requestTokenFromExtension, resolveToken, setLastTokenSource, updateAuthBadge } from '../auth';
+import { getLastTokenSource, getBearerTokenFromCookie, getBearerTokenFromSessionBridge, invalidateSessionBridgeKey, markBearerTokenExpired, persistResolvedBearerToken, recoverAuthOnce, refreshBearerTokenFromBestSource, requestTokenFromExtension, resolveToken, setLastTokenSource, updateAuthBadge, getBearerToken } from '../auth';
 
 export class AuthManager implements AuthManagerInterface {
 
-  /** Synchronous token resolution — returns cached/localStorage/cookie token or '' */
-  getToken(): string {
-    return resolveToken();
+  /** Unified token retrieval — returns TTL-aware cached token or recovers */
+  getToken(): Promise<string> {
+    return getBearerToken();
   }
 
   /** Async refresh from best source (waterfall: localStorage → extension bridge → cookie) */
