@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Macro Controller",
-  "version": "2.135.0",
-  "version_name": "2.135.0",
+  "version": "2.136.0",
+  "version_name": "2.136.0",
   "description": "Browser automation for workspace and credit management",
   "permissions": [
     "contextMenus",
