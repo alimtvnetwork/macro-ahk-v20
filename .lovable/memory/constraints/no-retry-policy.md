@@ -46,3 +46,15 @@ if (!resp.ok && isAuthFailure(resp.status)) {
 // fetchCreditBalance(wsId, true);   // ← NEVER DO THIS
 // state.retryCount++;               // ← NEVER DO THIS
 ```
+
+## Unified Auth Contract (v2.136)
+
+All runtime auth consumers MUST use `getBearerToken()` for token resolution. No module may call `resolveToken()` or `recoverAuthOnce()` directly for operational token needs. The only allowed patterns are:
+
+1. **Normal token read**: `const token = await getBearerToken()`
+2. **One forced refresh after 401/403**: `const token = await getBearerToken({ force: true })`
+3. **Cycle path**: fail this cycle immediately on auth error — no recovery, no second attempt
+
+`resolveToken()` remains available for diagnostic/display only. `recoverAuthOnce()` is deprecated.
+
+Files migrated in v2.136: loop-cycle, credit-fetch, credit-balance, startup, ws-move, rename-api, ws-adjacent, loop-controls, panel-header, check-button, ws-dropdown-builder, auth-diag-rows, panel-sections.
