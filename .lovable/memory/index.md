@@ -39,3 +39,4 @@ MV3 suspension errors (context invalidated, receiving end missing) are operation
 - [Bridge diagnostics MV3](mem://features/macro-controller/bridge-diagnostics-mv3) — MV3 suspension shown as idle (yellow) not failed (red), auto-wake via wakeBridge()
 - [Custom display name](mem://features/macro-controller/custom-display-name) — User-configurable project name in Settings → General, persisted in localStorage, highest priority in title bar
 - [No-retry policy](mem://constraints/no-retry-policy) — NEVER add retry/backoff to cycle/credit/auth. Loop interval is natural retry. Issue #88.
+- [Startup fix v2.137](mem://auth/startup-fix-v2137) — Gate timeout 12s→2s, removed double auth re-entry in startup, migrated root auth surface to getBearerToken
