@@ -20,7 +20,7 @@
  */
 
 import { log, logSub } from './logging';
-import { resolveToken, invalidateSessionBridgeKey, markBearerTokenExpired, getLastTokenSource, getAuthDebugSnapshot, getBearerToken } from './auth';
+import { markBearerTokenExpired, getLastTokenSource, getAuthDebugSnapshot, getBearerToken } from './auth';
 import { showToast } from './toast';
 import { dualWrite, nsCall } from './api-namespace';
 
@@ -102,12 +102,10 @@ function emitAuthFailureToast(status: number, statusText: string): void {
 // ============================================
 
 async function handleAuthRecovery(
-  token: string,
   status: number,
   statusText: string,
 ): Promise<string | null> {
   markBearerTokenExpired('credit-fetch');
-  if (token) { invalidateSessionBridgeKey(token); }
 
   log('Credit API: Auth ' + status + ' — forcing token refresh before retry...', 'warn');
   showToast('Auth ' + status + ' — recovering session...', 'warn', {
@@ -169,7 +167,7 @@ async function processSuccessData(
     return;
   }
 
-  const freshToken = resolveToken();
+  const freshToken = await getBearerToken();
   dualWrite('__loopResolvedToken', '_internal.resolvedToken', freshToken);
 
   if (autoDetectFn) {
@@ -197,52 +195,46 @@ async function processSuccessData(
  * v2.136: Sequential auth recovery — NO recursive self-call.
  * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
  */
-export function fetchLoopCredits(
+export async function fetchLoopCredits(
   isRetry?: boolean,
   autoDetectFn?: (token: string) => Promise<void>,
-): void {
-  const token = resolveToken();
+): Promise<void> {
+  const token = await getBearerToken();
   logCreditPreflight(token, isRetry);
 
-  apiFetchWorkspaces()
-    .then(async function (resp: SdkApiResponse): Promise<WorkspacesApiResponse | undefined> {
-      if (!resp.ok) {
-        if (isAuthFailure(resp.status) && !isRetry) {
-          const recovered = await handleAuthRecovery(token, resp.status, '');
-          if (!recovered) { mc().updateUI(); return undefined; }
+  try {
+    const resp = await apiFetchWorkspaces();
 
-          // Sequential retry with recovered token — NOT a recursive self-call
-          const retryResp = await apiFetchWorkspaces();
-          if (!retryResp.ok) {
-            handleNonAuthError(retryResp);
-            return undefined;
-          }
-          return retryResp.data as WorkspacesApiResponse;
+    if (!resp.ok) {
+      if (isAuthFailure(resp.status) && !isRetry) {
+        const recovered = await handleAuthRecovery(resp.status, '');
+        if (!recovered) { mc().updateUI(); return; }
+
+        // Sequential retry with recovered token — NOT a recursive self-call
+        const retryResp = await apiFetchWorkspaces();
+        if (!retryResp.ok) {
+          handleNonAuthError(retryResp);
+          return;
         }
-
-        handleNonAuthError(resp);
-        throw new Error('HTTP ' + resp.status);
-      }
-
-      const data = resp.data as WorkspacesApiResponse;
-      logSub('Credit API: response received, data keys=' + Object.keys(data).join(','), 1);
-
-      return data;
-    })
-    .then(async function (data: WorkspacesApiResponse | undefined) {
-      if (!data) {
+        await processSuccessData(retryResp.data as WorkspacesApiResponse, autoDetectFn);
         return;
       }
-      await processSuccessData(data, autoDetectFn);
-    })
-    .catch(function (err: Error) {
-      logError('Credit API failed', '' + err.message);
-      logSub('Token source: ' + getLastTokenSource(), 1);
-      logSub('isRetry: ' + (isRetry ? 'YES' : 'NO'), 1);
-      logSub('Hint: If 401/403, the token may be expired. Check extension bridge or re-login.', 1);
-      nsCall('__loopUpdateAuthDiag', NS_UPDATEAUTHDIAG);
-      mc().updateUI();
-    });
+
+      handleNonAuthError(resp);
+      return;
+    }
+
+    const data = resp.data as WorkspacesApiResponse;
+    logSub('Credit API: response received, data keys=' + Object.keys(data).join(','), 1);
+    await processSuccessData(data, autoDetectFn);
+  } catch (err) {
+    logError('Credit API failed', '' + (err as Error).message);
+    logSub('Token source: ' + getLastTokenSource(), 1);
+    logSub('isRetry: ' + (isRetry ? 'YES' : 'NO'), 1);
+    logSub('Hint: If 401/403, the token may be expired. Check extension bridge or re-login.', 1);
+    nsCall('__loopUpdateAuthDiag', NS_UPDATEAUTHDIAG);
+    mc().updateUI();
+  }
 }
 
 // ============================================
@@ -280,24 +272,12 @@ export function fetchLoopCreditsAsync(isRetry?: boolean): Promise<void> {
   return promise;
 }
 
-// CQ4: Extracted — resolve token with TTL-aware getBearerToken
-async function resolveTokenWithRecovery(isRetry?: boolean): Promise<string> {
-  if (isRetry) {
-    log('Credit API (async): retry — forcing token refresh', 'check');
-
-    return getBearerToken({ force: true });
-  }
-
-  return getBearerToken();
-}
-
 /**
- * handleAsyncAuthFailure — sequential recovery, NO recursive self-call.
+ * handleAsyncAuthFailure — sequential recovery via getBearerToken({ force: true }).
  * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
  */
-async function handleAsyncAuthFailure(resp: SdkApiResponse, token: string): Promise<void> {
+async function handleAsyncAuthFailure(resp: SdkApiResponse): Promise<void> {
   markBearerTokenExpired('credit-fetch-async');
-  if (token) { invalidateSessionBridgeKey(token); }
 
   log('Credit API (async): Auth ' + resp.status + ' — forcing token refresh...', 'warn');
   showToast('Auth ' + resp.status + ' — recovering session...', 'warn', { noStop: true });
@@ -311,7 +291,6 @@ async function handleAsyncAuthFailure(resp: SdkApiResponse, token: string): Prom
 
   log('Credit API (async): Token refreshed — retrying once sequentially', 'check');
 
-  // Sequential retry — NOT a recursive fetchLoopCreditsAsync(true) call
   const retryResp = await apiFetchWorkspaces();
 
   if (!retryResp.ok) {
@@ -325,7 +304,7 @@ async function handleAsyncAuthFailure(resp: SdkApiResponse, token: string): Prom
 }
 
 async function doFetchLoopCreditsAsync(isRetry?: boolean): Promise<void> {
-  const token = await resolveTokenWithRecovery(isRetry);
+  const token = await getBearerToken(isRetry ? { force: true } : undefined);
 
   log('Credit API (async): GET /user/workspaces' + (isRetry ? ' (RETRY after recovery)' : ''), 'check');
 
@@ -339,7 +318,7 @@ async function doFetchLoopCreditsAsync(isRetry?: boolean): Promise<void> {
 
   if (!resp.ok) {
     if (isAuthFailure(resp.status) && !isRetry) {
-      return handleAsyncAuthFailure(resp, token);
+      return handleAsyncAuthFailure(resp);
     }
 
     if (isAuthFailure(resp.status)) { markBearerTokenExpired('credit-fetch-async'); }
