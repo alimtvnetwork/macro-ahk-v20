@@ -23,9 +23,9 @@ import {
   getLastTokenSource,
   getLastBridgeOutcome,
   getSessionCookieNames,
-  recoverAuthOnce,
   refreshBearerTokenFromBestSource,
   resolveToken,
+  getBearerToken,
 } from '../auth';
 import { setRecordRefreshOutcome } from '../auth';
 import { showToast } from '../toast';
@@ -128,7 +128,7 @@ function _buildAuthDiagnostics(): { row: HTMLElement; updateAuthDiagRow: () => v
   const authDiagResult = createAuthDiagRow({
     getLastTokenSource: function() { return getLastTokenSource(); },
     resolveToken: resolveToken,
-    recoverAuthOnce: recoverAuthOnce,
+    getBearerToken: getBearerToken,
     getSessionCookieNames: getSessionCookieNames,
     getLastBridgeOutcome: getLastBridgeOutcome,
     refreshFromBestSource: refreshBearerTokenFromBestSource,

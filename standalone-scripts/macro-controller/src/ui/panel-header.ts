@@ -17,8 +17,8 @@ import { log, getDisplayProjectName } from '../logging';
 import {
   getLastTokenSource,
   refreshBearerTokenFromBestSource,
-  resolveToken,
   updateAuthBadge,
+  getBearerToken,
 } from '../auth';
 import { showToast } from '../toast';
 import { showAboutModal } from './about-modal';
@@ -164,9 +164,10 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
     e.stopPropagation();
     wsNameEl.textContent = '⏳ detecting…';
     wsNameEl.style.color = '#9ca3af';
-    const token = resolveToken();
     state.workspaceFromApi = false;
-    deps.autoDetectLoopCurrentWorkspace(token).then(function() {
+    getBearerToken().then(function(token) {
+      return deps.autoDetectLoopCurrentWorkspace(token);
+    }).then(function() {
       wsNameEl.style.color = '#fbbf24';
       wsNameEl.style.opacity = '1';
       const ws = state.workspaceName || '';
@@ -220,10 +221,11 @@ function buildAuthBadge(): HTMLElement {
       }
     });
   });
-  const currentToken = resolveToken();
-  if (currentToken) {
-    authBadge.textContent = '🟢';
-    authBadge.title = 'Auth: token available (' + (getLastTokenSource() || 'cached') + ') — click to refresh';
-  }
+  getBearerToken().then(function(currentToken) {
+    if (currentToken) {
+      authBadge.textContent = '🟢';
+      authBadge.title = 'Auth: token available (' + (getLastTokenSource() || 'cached') + ') — click to refresh';
+    }
+  }).catch(function() { /* no token yet — badge stays red */ });
   return authBadge;
 }

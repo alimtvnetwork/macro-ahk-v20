@@ -6,8 +6,7 @@
 import { log } from '../logging';
 import { logError } from '../error-utils';
 import { showToast } from '../toast';
-import { resolveToken, getLastTokenSource } from '../auth';
-import { ensureTokenReady, AUTH_READY_TIMEOUT_MS } from '../startup-token-gate';
+import { getBearerToken, getLastTokenSource } from '../auth';
 import { isOnProjectPage } from '../dom-helpers';
 import { runCheck } from '../loop-engine';
 
@@ -123,26 +122,18 @@ function _handleCheckClick(ctx: CheckButtonCtx): void {
     }
   }, 15000);
 
-  const existingToken = resolveToken();
-  if (existingToken) {
-    log('Manual Check: ✅ Token already available (' + getLastTokenSource() + ') — skipping bridge wait', 'success');
-    ctx.updateAuthBadge(true, getLastTokenSource());
+  ctx.checkBtn.textContent = '⏳ Auth…';
+  log('Manual Check: Step 0 — resolving auth via getBearerToken...', 'check');
+  getBearerToken().then(function(token) {
+    if (token) {
+      log('Manual Check: ✅ Auth resolved from ' + getLastTokenSource(), 'success');
+      ctx.updateAuthBadge(true, getLastTokenSource());
+    } else {
+      log('Manual Check: ⚠️ No auth token — workspace/credit fetch may fail', 'warn');
+      ctx.updateAuthBadge(false, 'none');
+      showToast('⚠️ No auth token — check may be incomplete', 'warn');
+    }
     ctx.checkBtn.textContent = '⏳ Checking…';
     doRunCheck(ctx);
-  } else {
-    ctx.checkBtn.textContent = '⏳ Auth…';
-    log('Manual Check: Step 0 — waiting for auth-ready state...', 'check');
-    ensureTokenReady(AUTH_READY_TIMEOUT_MS).then(function(tokenResult) {
-      if (tokenResult.token) {
-        log('Manual Check: ✅ Auth resolved from ' + getLastTokenSource(), 'success');
-        ctx.updateAuthBadge(true, getLastTokenSource());
-      } else {
-        log('Manual Check: ⚠️ No auth token after wait — workspace/credit fetch may fail', 'warn');
-        ctx.updateAuthBadge(false, 'none');
-        showToast('⚠️ No auth token — check may be incomplete', 'warn');
-      }
-      ctx.checkBtn.textContent = '⏳ Checking…';
-      doRunCheck(ctx);
-    });
-  }
+  });
 }

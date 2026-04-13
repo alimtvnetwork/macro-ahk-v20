@@ -14,7 +14,7 @@
 
 import { MacroController } from './core/MacroController';
 import { log, logSub } from './logging';
-import { resolveToken, invalidateSessionBridgeKey, recoverAuthOnce } from './auth';
+import { getBearerToken, markBearerTokenExpired } from './auth';
 import { extractProjectIdFromUrl } from './workspace-detection';
 import { showToast } from './toast';
 import { CREDIT_API_BASE, state } from './shared-state';
@@ -103,7 +103,7 @@ async function probeSessionWithToken(context: string, token: string): Promise<vo
 // ============================================
 
 export async function verifyWorkspaceSessionAfterFailure(context: string): Promise<void> {
-  const token = resolveToken();
+  const token = await getBearerToken();
 
   if (token) {
     await probeSessionWithToken(context, token);
@@ -111,11 +111,10 @@ export async function verifyWorkspaceSessionAfterFailure(context: string): Promi
     return;
   }
 
-  log(LOG_SESSIONCHECK + context + '] No bearer token — recovering before probe', 'warn');
+  log(LOG_SESSIONCHECK + context + '] No bearer token — forcing refresh before probe', 'warn');
 
   try {
-    const recoveredToken = await recoverAuthOnce();
-    const fallbackToken = recoveredToken || resolveToken();
+    const fallbackToken = await getBearerToken({ force: true });
 
     if (!fallbackToken) {
       logError('unknown', LOG_SESSIONCHECK + context + '] Recovery failed — skipping unauthenticated session probe');
@@ -235,32 +234,19 @@ async function handleMoveAuthFailure(
   token: string,
   status: number,
 ): Promise<void> {
-  const invalidatedKey = invalidateSessionBridgeKey(token);
-  log('Move got ' + status + ' — invalidated "' + invalidatedKey + '", retrying with fallback', 'warn');
-  showToast('Move auth ' + status + ' — token "' + invalidatedKey + '" expired, retrying...', 'warn', { noStop: true });
+  markBearerTokenExpired('ws-move');
+  log('Move got ' + status + ' — forcing token refresh before retry', 'warn');
+  showToast('Move auth ' + status + ' — recovering session...', 'warn', { noStop: true });
 
-  const fallbackToken = resolveToken();
+  const refreshedToken = await getBearerToken({ force: true });
 
-  if (fallbackToken) {
-    await executeMove(projectId, targetWorkspaceId, targetWorkspaceName, true);
+  if (!refreshedToken) {
+    handleMoveNoToken();
 
     return;
   }
 
-  try {
-    const recoveredToken = await recoverAuthOnce();
-    const refreshedToken = recoveredToken || resolveToken();
-
-    if (!refreshedToken) {
-      handleMoveNoToken();
-
-      return;
-    }
-
-    await executeMove(projectId, targetWorkspaceId, targetWorkspaceName, true);
-  } catch {
-    handleMoveNoToken();
-  }
+  await executeMove(projectId, targetWorkspaceId, targetWorkspaceName, true);
 }
 
 // ============================================
@@ -273,7 +259,7 @@ async function executeMove(
   targetWorkspaceName: string,
   isRetry: boolean,
 ): Promise<void> {
-  const token = resolveToken();
+  const token = await getBearerToken();
 
   if (!token) {
     handleMoveNoToken();
@@ -346,19 +332,12 @@ export async function moveToWorkspace(targetWorkspaceId: string, targetWorkspace
     return;
   }
 
-  let token = resolveToken();
+  let token = await getBearerToken();
 
   if (!token) {
-    log('No bearer token — recovering before move request', 'warn');
+    log('No bearer token — forcing refresh before move request', 'warn');
 
-    try {
-      const recoveredToken = await recoverAuthOnce();
-      token = recoveredToken || resolveToken();
-    } catch {
-      handleMoveNoToken();
-
-      return;
-    }
+    token = await getBearerToken({ force: true });
 
     if (!token) {
       handleMoveNoToken();

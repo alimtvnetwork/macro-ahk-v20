@@ -12,7 +12,7 @@
 
 import { MacroController } from './core/MacroController';
 import { log, logSub } from './logging';
-import { resolveToken, invalidateSessionBridgeKey, recoverAuthOnce } from './auth';
+import { getBearerToken, markBearerTokenExpired } from './auth';
 import { parseLoopApiResponse } from './credit-parser';
 import type { WorkspacesApiResponse } from './types';
 import { showToast } from './toast';
@@ -177,20 +177,11 @@ async function handleAdjacentAuthFailure(
   token: string,
   status: number,
 ): Promise<void> {
-  const invalidatedKey = invalidateSessionBridgeKey(token);
-  log('moveToAdjacentWorkspace: Auth ' + status + ' — invalidated "' + invalidatedKey + '", retrying with fallback', 'warn');
-  showToast('Workspace fetch auth ' + status + ' — token "' + invalidatedKey + '" expired, retrying...', 'warn', { noStop: true });
+  markBearerTokenExpired('ws-adjacent');
+  log('moveToAdjacentWorkspace: Auth ' + status + ' — forcing token refresh before retry', 'warn');
+  showToast('Workspace fetch auth ' + status + ' — recovering session...', 'warn', { noStop: true });
 
-  const fallbackToken = resolveToken();
-
-  if (fallbackToken) {
-    await doFetchWorkspacesForMove(false, true);
-
-    return;
-  }
-
-  const recoveredToken = await recoverAuthOnce();
-  const refreshedToken = recoveredToken || resolveToken();
+  const refreshedToken = await getBearerToken({ force: true });
 
   if (!refreshedToken) {
     handleNoTokenFailure();
@@ -209,7 +200,7 @@ async function doFetchWorkspacesForMove(
   _unused: boolean,
   isRetry: boolean,
 ): Promise<void> {
-  const token = resolveToken();
+  const token = await getBearerToken();
 
   if (!token) {
     if (isRetry) {
@@ -218,9 +209,8 @@ async function doFetchWorkspacesForMove(
       return;
     }
 
-    log('moveToAdjacentWorkspace: no token — recovering before request', 'warn');
-    const recoveredToken = await recoverAuthOnce();
-    const refreshedToken = recoveredToken || resolveToken();
+    log('moveToAdjacentWorkspace: no token — forcing refresh before request', 'warn');
+    const refreshedToken = await getBearerToken({ force: true });
 
     if (!refreshedToken) {
       handleNoTokenFailure();
@@ -304,19 +294,12 @@ export async function moveToAdjacentWorkspace(direction: string): Promise<void> 
   log('moveToAdjacentWorkspace(' + direction + '): Fetching fresh workspace data before move...', 'delegate');
   updateLoopMoveStatus('loading', 'Fetching workspaces...');
 
-  let token = resolveToken();
+  let token = await getBearerToken();
 
   if (!token) {
-    log('moveToAdjacentWorkspace: no token — recovering before initial fetch', 'warn');
+    log('moveToAdjacentWorkspace: no token — forcing refresh before initial fetch', 'warn');
 
-    try {
-      const recoveredToken = await recoverAuthOnce();
-      token = recoveredToken || resolveToken();
-    } catch {
-      handleNoTokenFailure();
-
-      return;
-    }
+    token = await getBearerToken({ force: true });
 
     if (!token) {
       handleNoTokenFailure();

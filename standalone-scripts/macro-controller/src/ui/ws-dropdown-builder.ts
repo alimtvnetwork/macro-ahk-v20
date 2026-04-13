@@ -15,7 +15,7 @@
 import { log, logSub } from '../logging';
 import { createWorkspaceListSkeleton } from './skeleton';
 import { cPanelBg, cPrimary, cPrimaryBorderA, cPrimaryBgAS, cPrimaryHL, cPrimaryLighter, cInputBg, cInputBorder, cInputFg, loopCreditState, getLoopWsCheckedIds, setLoopWsCheckedIds, setLoopWsLastCheckedIdx, state } from '../shared-state';
-import { resolveToken } from '../auth';
+import { getBearerToken } from '../auth';
 import type { RenameHistoryEntry, UndoRenameResults } from '../types';
 import { logError } from '../error-utils';
 
@@ -75,8 +75,6 @@ function handleFocusCurrent(
   autoDetectLoopCurrentWorkspace: (token: string) => Promise<void>,
 ): void {
   // Always re-detect from API to ensure current workspace is accurate
-  const token = resolveToken();
-
   // If we have workspaces loaded but no current name, detect first
   if ((loopCreditState.perWorkspace || []).length === 0) {
     log('Focus Current: no workspaces loaded, fetching...', 'check');
@@ -85,7 +83,9 @@ function handleFocusCurrent(
   }
 
   log('Focus Current: re-detecting current workspace via API...', 'check');
-  autoDetectLoopCurrentWorkspace(token).then(function() {
+  getBearerToken().then(function(token) {
+    return autoDetectLoopCurrentWorkspace(token);
+  }).then(function() {
     const currentName = state.workspaceName
       || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
 

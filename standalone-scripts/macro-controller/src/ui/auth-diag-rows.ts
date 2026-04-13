@@ -281,7 +281,7 @@ function buildRefreshButton(deps: AuthDiagDeps, onUpdate: () => void): HTMLButto
   button.onclick = function () {
     button.disabled = true;
     button.textContent = '⏳ Refreshing…';
-    deps.recoverAuthOnce().then(function (token: string) {
+    deps.getBearerToken({ force: true }).then(function (token: string) {
       const source = token ? deps.getLastTokenSource() : 'none';
       const hasToken = !!token;
       recordRefreshOutcome(hasToken, source, token ? '' : 'No token from any source');

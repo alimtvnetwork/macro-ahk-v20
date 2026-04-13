@@ -14,7 +14,7 @@ import { LoopDirection } from './types';
 import { getByXPath } from './xpath-utils';
 import { fetchLoopCreditsAsync, syncCreditStateFromApi } from './credit-fetch';
 import { MacroController } from './core/MacroController';
-import { resolveToken, getLastTokenSource } from './auth';
+import { getBearerToken, getLastTokenSource } from './auth';
 import { checkSystemBusy, closeProjectDialog, ensureProjectDialogOpen, isOnProjectPage, isUserTypingInPrompt, pollForDialogReady } from './dom-helpers';
 import { CONFIG, IDS, TIMING, loopCreditState, state } from './shared-state';
 import { runCycle } from './loop-cycle';
@@ -231,12 +231,7 @@ function refreshStatusStopped(): void {
 }
 
 function triggerBackgroundCreditFetch(): void {
-  const token = resolveToken();
-  if (!token) {
-    return;
-  }
-
-  logSub('No workspace + no credits — triggering background credit fetch', 1);
+  logSub('No workspace + no credits — triggering background credit fetch via getBearerToken', 1);
   fetchLoopCreditsAsync(false).then(function() {
     syncCreditStateFromApi();
     mc().updateUI();

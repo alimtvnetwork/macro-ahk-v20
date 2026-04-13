@@ -35,7 +35,7 @@ export { recordRefreshOutcome } from './auth-jwt-utils';
 export interface AuthDiagDeps {
   getLastTokenSource: () => string;
   resolveToken: () => string;
-  recoverAuthOnce: () => Promise<string>;
+  getBearerToken: (options?: { force?: boolean }) => Promise<string>;
   getSessionCookieNames: () => string[];
   getLastBridgeOutcome: () => { attempted: boolean; success: boolean; source: string; error: string };
   refreshFromBestSource: (callback: (token: string, source: string) => void) => void;

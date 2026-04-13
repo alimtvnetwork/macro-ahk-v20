@@ -27,7 +27,7 @@ vi.mock('../auth', () => ({
   resolveToken: vi.fn(() => 'mock-token'),
   refreshBearerTokenFromBestSource: vi.fn(),
   updateAuthBadge: vi.fn(),
-  recoverAuthOnce: vi.fn(),
+  getBearerToken: vi.fn(() => Promise.resolve('mock-token')),
   getSessionCookieNames: vi.fn(() => []),
   getLastBridgeOutcome: vi.fn(() => null),
   setRecordRefreshOutcome: vi.fn(),

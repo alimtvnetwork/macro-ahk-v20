@@ -20,12 +20,11 @@ import { showToast, dismissAllToasts } from './toast';
 import { updateStartupToast } from './startup-toast';
 import { toErrorMessage , logError, type CaughtError } from './error-utils';
 import {
-  resolveToken,
-  refreshBearerTokenFromBestSource,
   updateAuthBadge,
   getLastTokenSource,
   setLastTokenSource,
   getBearerTokenFromCookie,
+  getBearerToken,
 } from './auth';
 import {
   IDS,
@@ -391,7 +390,7 @@ function launchCreditAndWorkspaceLoad(): void {
 
   timingStart(WS_PREFETCH, 'WS Tier1 Prefetch');
   const currentProjectId = extractProjectIdFromUrl();
-  const startupToken = resolveToken();
+  const startupToken = await getBearerToken().catch(() => '');
   let tier1Data: MarkViewedResponse | null = null;
 
   const tier1Promise = (currentProjectId && startupToken)
@@ -422,8 +421,9 @@ function handleCreditSuccess(tier1Data: MarkViewedResponse | null): void {
   }
 
   log('Startup: Tier 1 prefetch did not resolve workspace — falling back to autoDetect', 'info');
-  const freshToken = resolveToken();
-  autoDetectLoopCurrentWorkspace(freshToken, { skipDialog: true }).then(function () {
+  getBearerToken().then(function (freshToken) {
+    return autoDetectLoopCurrentWorkspace(freshToken, { skipDialog: true });
+  }).then(function () {
     const shouldRetryWorkspace = state.running;
     timingEnd(
       'workspace',
@@ -602,35 +602,50 @@ function scheduleWorkspaceRetry(attempt: number): void {
     }
 
     if (!retryToken) {
-      retryToken = resolveToken();
+      retryToken = '';
+      // Token will be resolved via getBearerToken below
     }
 
     if (!retryToken) {
-      log(STARTUP_RETRY + attempt + ' — no token available after cookie fallback, moving to next retry', 'warn');
-      scheduleWorkspaceRetry(attempt + 1);
+      // Try the unified bridge as final fallback
+      getBearerToken().then(function (bridgeToken) {
+        if (!bridgeToken) {
+          log(STARTUP_RETRY + attempt + ' — no token available, moving to next retry', 'warn');
+          scheduleWorkspaceRetry(attempt + 1);
+          return;
+        }
+        doWorkspaceRetry(attempt, bridgeToken);
+      }).catch(function () {
+        log(STARTUP_RETRY + attempt + ' — getBearerToken failed, moving to next retry', 'warn');
+        scheduleWorkspaceRetry(attempt + 1);
+      });
       return;
     }
 
-    log(STARTUP_RETRY + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' — re-fetching credits + workspace detection...', 'check');
-    state.workspaceFromApi = false;
-
-    fetchLoopCreditsAsync(false).then(function () {
-      return autoDetectLoopCurrentWorkspace(retryToken, { skipDialog: true });
-    }).then(function () {
-      syncCreditStateFromApi();
-      updateUI();
-      if (state.workspaceName) {
-        log('Startup: ✅ Retry #' + attempt + ' succeeded — workspace: "' + state.workspaceName + '"', 'success');
-        cacheWorkspaceName(state.workspaceName, loopCreditState.currentWs ? loopCreditState.currentWs.id : undefined);
-      } else {
-        log(STARTUP_RETRY + attempt + ' — workspace still empty, scheduling next retry', 'warn');
-        scheduleWorkspaceRetry(attempt + 1);
-      }
-    }).catch(function (err) {
-      log(STARTUP_RETRY + attempt + ' failed: ' + toErrorMessage(err) + ' — scheduling next retry', 'warn');
-      scheduleWorkspaceRetry(attempt + 1);
-    });
+    doWorkspaceRetry(attempt, retryToken);
   }, delayMs);
+}
+
+function doWorkspaceRetry(attempt: number, retryToken: string): void {
+  log(STARTUP_RETRY + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' — re-fetching credits + workspace detection...', 'check');
+  state.workspaceFromApi = false;
+
+  fetchLoopCreditsAsync(false).then(function () {
+    return autoDetectLoopCurrentWorkspace(retryToken, { skipDialog: true });
+  }).then(function () {
+    syncCreditStateFromApi();
+    updateUI();
+    if (state.workspaceName) {
+      log('Startup: ✅ Retry #' + attempt + ' succeeded — workspace: "' + state.workspaceName + '"', 'success');
+      cacheWorkspaceName(state.workspaceName, loopCreditState.currentWs ? loopCreditState.currentWs.id : undefined);
+    } else {
+      log(STARTUP_RETRY + attempt + ' — workspace still empty, scheduling next retry', 'warn');
+      scheduleWorkspaceRetry(attempt + 1);
+    }
+  }).catch(function (err) {
+    log(STARTUP_RETRY + attempt + ' failed: ' + toErrorMessage(err) + ' — scheduling next retry', 'warn');
+    scheduleWorkspaceRetry(attempt + 1);
+  });
 }
 
 // ── Auth Auto-Resync (CQ11: singleton) ──
@@ -668,9 +683,9 @@ function tryAutoAuthResync(trigger: string): void {
   }
   authResyncState.inFlight = true;
 
-  log(AUTH_AUTO_RESYNC + trigger + '): checking bridge for restored session...', 'check');
+  log(AUTH_AUTO_RESYNC + trigger + '): checking auth bridge for restored session...', 'check');
 
-  refreshBearerTokenFromBestSource(function (token: string, source: string) {
+  getBearerToken().then(function (token: string) {
     authResyncState.inFlight = false;
     const hasNoToken = !token;
 
@@ -680,7 +695,7 @@ function tryAutoAuthResync(trigger: string): void {
       return;
     }
 
-    setLastTokenSource(source || getLastTokenSource() || 'bridge');
+    setLastTokenSource(getLastTokenSource() || 'bridge');
     updateAuthBadge(true, getLastTokenSource());
     log(AUTH_AUTO_RESYNC + trigger + '): ✅ token restored from ' + getLastTokenSource(), 'success');
 
@@ -700,6 +715,9 @@ function tryAutoAuthResync(trigger: string): void {
       .catch(function (err: Error) {
         log(AUTH_AUTO_RESYNC + trigger + '): UI refresh failed: ' + (err && err.message ? err.message : String(err)), 'warn');
       });
+  }).catch(function () {
+    authResyncState.inFlight = false;
+    log(AUTH_AUTO_RESYNC + trigger + '): auth bridge failed', 'warn');
   });
 }
 

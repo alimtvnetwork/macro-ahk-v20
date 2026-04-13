@@ -13,7 +13,7 @@
  */
 
 import { log, logSub } from './logging';
-import { resolveToken, recoverAuthOnce, invalidateSessionBridgeKey } from './auth';
+import { getBearerToken, markBearerTokenExpired } from './auth';
 import { showToast } from './toast';
 import { CREDIT_API_BASE } from './shared-state';
 import { hasForbidden, addForbidden, removeForbidden } from './rename-forbidden-cache';
@@ -139,32 +139,24 @@ async function handleRenameAuthRecovery(
     return null;
   }
 
-  const invalidatedKey = invalidateSessionBridgeKey(token);
-  log('[Rename] Got 401 — invalidated "' + invalidatedKey + '", recovering auth...', 'warn');
+  markBearerTokenExpired('rename-api');
+  log('[Rename] Got 401 — forcing token refresh...', 'warn');
   showToast('Rename auth 401 — recovering session...', 'warn', {
     requestDetail: { method: 'PUT', url: API_USER_WORKSPACES_ + wsId, status: 401 },
   });
 
-  try {
-    const recoveredToken = await recoverAuthOnce();
-    const fallbackToken = recoveredToken || resolveToken();
+  const fallbackToken = await getBearerToken({ force: true });
 
-    if (fallbackToken) {
-      log('[Rename] Auth recovered — retrying with new token', 'info');
+  if (fallbackToken) {
+    log('[Rename] Auth recovered — retrying with new token', 'info');
 
-      return fallbackToken;
-    }
-
-    log('[Rename] Auth recovery produced no token — marking exhausted for batch', 'warn');
-    setAuthRecoveryExhausted(true);
-
-    return null;
-  } catch {
-    log('[Rename] Auth recovery error — marking exhausted for batch', 'warn');
-    setAuthRecoveryExhausted(true);
-
-    return null;
+    return fallbackToken;
   }
+
+  log('[Rename] Auth recovery produced no token — marking exhausted for batch', 'warn');
+  setAuthRecoveryExhausted(true);
+
+  return null;
 }
 
 function handleRenameError(
@@ -274,17 +266,12 @@ export async function renameWorkspace(wsId: string, newName: string, forceRetry?
     throw new Error('FORBIDDEN_CACHED');
   }
 
-  let token = resolveToken();
+  let token = await getBearerToken();
 
   if (!token) {
     log('[Rename] No bearer token — recovering before request', 'warn');
 
-    try {
-      const recoveredToken = await recoverAuthOnce();
-      token = recoveredToken || resolveToken();
-    } catch {
-      throw rejectNoBearerToken(wsId);
-    }
+    token = await getBearerToken({ force: true });
 
     if (!token) {
       throw rejectNoBearerToken(wsId);
