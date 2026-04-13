@@ -627,27 +627,25 @@ function scheduleWorkspaceRetry(attempt: number): void {
 }
 
 function doWorkspaceRetry(attempt: number, retryToken: string): void {
-    }
+  log(STARTUP_RETRY + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' — re-fetching credits + workspace detection...', 'check');
+  state.workspaceFromApi = false;
 
-    log(STARTUP_RETRY + attempt + '/' + STARTUP_WS_MAX_RETRIES + ' — re-fetching credits + workspace detection...', 'check');
-    state.workspaceFromApi = false;
-
-    fetchLoopCreditsAsync(false).then(function () {
-      return autoDetectLoopCurrentWorkspace(retryToken, { skipDialog: true });
-    }).then(function () {
-      syncCreditStateFromApi();
-      updateUI();
-      if (state.workspaceName) {
-        log('Startup: ✅ Retry #' + attempt + ' succeeded — workspace: "' + state.workspaceName + '"', 'success');
-        cacheWorkspaceName(state.workspaceName, loopCreditState.currentWs ? loopCreditState.currentWs.id : undefined);
-      } else {
-        log(STARTUP_RETRY + attempt + ' — workspace still empty, scheduling next retry', 'warn');
-        scheduleWorkspaceRetry(attempt + 1);
-      }
-    }).catch(function (err) {
-      log(STARTUP_RETRY + attempt + ' failed: ' + toErrorMessage(err) + ' — scheduling next retry', 'warn');
+  fetchLoopCreditsAsync(false).then(function () {
+    return autoDetectLoopCurrentWorkspace(retryToken, { skipDialog: true });
+  }).then(function () {
+    syncCreditStateFromApi();
+    updateUI();
+    if (state.workspaceName) {
+      log('Startup: ✅ Retry #' + attempt + ' succeeded — workspace: "' + state.workspaceName + '"', 'success');
+      cacheWorkspaceName(state.workspaceName, loopCreditState.currentWs ? loopCreditState.currentWs.id : undefined);
+    } else {
+      log(STARTUP_RETRY + attempt + ' — workspace still empty, scheduling next retry', 'warn');
       scheduleWorkspaceRetry(attempt + 1);
-    });
+    }
+  }).catch(function (err) {
+    log(STARTUP_RETRY + attempt + ' failed: ' + toErrorMessage(err) + ' — scheduling next retry', 'warn');
+    scheduleWorkspaceRetry(attempt + 1);
+  });
 }
 
 // ── Auth Auto-Resync (CQ11: singleton) ──
