@@ -10,7 +10,7 @@
 import type { AuthManagerInterface } from './MacroController';
 import { verifyWorkspaceSessionAfterFailure } from '../workspace-management';
 
-import { getLastTokenSource, getBearerTokenFromCookie, getBearerTokenFromSessionBridge, invalidateSessionBridgeKey, markBearerTokenExpired, persistResolvedBearerToken, recoverAuthOnce, refreshBearerTokenFromBestSource, requestTokenFromExtension, setLastTokenSource, updateAuthBadge, getBearerToken } from '../auth';
+import { getLastTokenSource, getBearerTokenFromCookie, getBearerTokenFromSessionBridge, invalidateSessionBridgeKey, markBearerTokenExpired, persistResolvedBearerToken, refreshBearerTokenFromBestSource, requestTokenFromExtension, setLastTokenSource, updateAuthBadge, getBearerToken } from '../auth';
 
 export class AuthManager implements AuthManagerInterface {
 
@@ -69,9 +69,9 @@ export class AuthManager implements AuthManagerInterface {
     requestTokenFromExtension(forceRefresh, onDone);
   }
 
-  /** Single-flight auth recovery (RCA-4 fix) */
+  /** Forced auth recovery via unified contract */
   recoverOnce(): Promise<string> {
-    return recoverAuthOnce();
+    return getBearerToken({ force: true });
   }
 
   /** Verify session health after a failed API call */
