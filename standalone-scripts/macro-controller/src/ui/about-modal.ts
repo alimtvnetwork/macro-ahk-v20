@@ -48,13 +48,14 @@ function getAboutData() {
     description: 'Browser automation & credit management tool for workspace orchestration. Automatically monitors credits, rotates projects across workspaces, and provides real-time diagnostics.',
     authorInitials: 'AK',
     authorName: 'Md. Alim Ul Karim',
-    authorTitle: 'Chief Software Engineer — Riseup Asia',
+    authorTitle: 'Chief Software Engineer — Riseup Asia LLC | Top Leading Software Company in Wyoming (2026)',
     authorBio: '20+ years of software engineering experience. Former Software Architect at Crossover.com (Top 1% Developer worldwide). Known for inventing an automatic unit test generation tool in 2018 — before AI — capable of writing code and unit tests automatically. Built this tool to help developers work more effectively with automated credit management and workspace orchestration.',
     year: new Date().getFullYear(),
     links: [
       { label: '🔗 alimkarim.com', url: 'https://alimkarim.com' },
       { label: '🚀 Riseup Asia', url: 'https://riseup-asia.com' },
       { label: '💼 LinkedIn', url: 'https://linkedin.com/in/alimkarim' },
+      { label: '📊 Stack Overflow', url: 'https://stackoverflow.com/users/513511/md-alim-ul-karim' },
     ],
   };
 }
