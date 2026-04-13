@@ -8,7 +8,7 @@
  */
 
 import { el } from './database-schema-helpers';
-import type { FieldValue } from '../types';
+
 
 const ID_MARCO_SCHEMA_VAL_ROW = 'marco-schema-val-row';
 const ID_MARCO_SCHEMA_VAL_LABEL = 'marco-schema-val-label';

@@ -19,7 +19,7 @@
  */
 
 import { VERSION, state, loopCreditState } from '../shared-state';
-import type { WorkspaceCredit, LoopCreditState, WorkspacesApiResponse, DiagnosticDump } from '../types';
+import type { WorkspaceCredit, LoopCreditState, WorkspacesApiResponse } from '../types';
 import { log } from '../logging';
 import { domCache } from '../dom-cache';
 import { nsRead } from '../api-namespace';
