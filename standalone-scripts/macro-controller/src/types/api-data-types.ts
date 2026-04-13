@@ -80,3 +80,111 @@ export interface ColumnDefinition {
   unique?: boolean;
   validation?: ValidationRules;
 }
+
+/* ================================================================== */
+/*  Template Rendering                                                 */
+/* ================================================================== */
+
+/**
+ * Data context passed to the template renderer.
+ * Values can be primitives, arrays (for {{#each}}), or nested objects.
+ */
+export type TemplateData = Record<string, FieldValue | undefined | FieldValue[] | TemplateDataItem[] | TemplateData>;
+
+/** A single item in a template {{#each}} array. */
+export type TemplateDataItem = Record<string, FieldValue>;
+
+/* ================================================================== */
+/*  Extension Messaging Payload                                        */
+/* ================================================================== */
+
+/**
+ * Payload sent to the extension via sendToExtension().
+ * Keys are message-specific; values are always primitives.
+ */
+export type ExtensionPayload = Record<string, FieldValue | undefined>;
+
+/* ================================================================== */
+/*  Prompt Form Data (modal initial values)                            */
+/* ================================================================== */
+
+/**
+ * Initial data for the prompt creation/edit modal form.
+ */
+export interface PromptFormData {
+  name?: string;
+  text?: string;
+  category?: string;
+  id?: string;
+  isDefault?: boolean;
+}
+
+/* ================================================================== */
+/*  IDB Record                                                         */
+/* ================================================================== */
+
+/**
+ * A generic IndexedDB record with a string key and primitive values.
+ */
+export type IdbRecord = Record<string, FieldValue | undefined>;
+
+/* ================================================================== */
+/*  Window Global Accessors                                            */
+/* ================================================================== */
+
+/**
+ * Typed accessor for `window.marco_config_overrides`.
+ * Used by auth-recovery to read optional TTL overrides.
+ */
+export interface MarcoConfigOverrides {
+  tokenTtlMs?: number;
+}
+
+/**
+ * Typed augmentation for startup state with internal timeout tracking.
+ */
+export interface StartupStateWithTimeout {
+  __uiTimeoutId?: number;
+}
+
+/* ================================================================== */
+/*  Namespace Traversal                                                */
+/* ================================================================== */
+
+/** Shape of Projects.MacroController sub-namespace during bootstrapping. */
+export interface MacroControllerNamespaceShape {
+  meta?: Record<string, string | number | boolean>;
+  api?: MacroControllerApiShape;
+  _internal?: Record<string, string | number | boolean | object>;
+  cookies?: { bindings?: Array<{ role?: string; cookieName?: string }> };
+  [key: string]: string | number | boolean | object | undefined;
+}
+
+/** Shape of the api sub-namespace under MacroController. */
+export interface MacroControllerApiShape {
+  loop?: Record<string, string | number | boolean | object>;
+  config?: Record<string, string | number | boolean | object>;
+  autoAttach?: Record<string, string | number | boolean | object>;
+  ui?: Record<string, string | number | boolean | object>;
+  [key: string]: string | number | boolean | object | undefined;
+}
+
+/* ================================================================== */
+/*  Workspace Probe Response                                           */
+/* ================================================================== */
+
+/**
+ * Data from a workspace session probe API response.
+ */
+export interface WorkspaceProbeData {
+  workspaces?: Array<Record<string, FieldValue>>;
+  [key: string]: FieldValue | Array<Record<string, FieldValue>> | undefined;
+}
+  name: string;
+  type: string;
+  primaryKey?: boolean;
+  notNull?: boolean;
+  defaultValue?: string | number | boolean | null;
+  unique?: boolean;
+  validation?: ValidationRules;
+}
