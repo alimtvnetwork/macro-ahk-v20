@@ -64,7 +64,7 @@ function isPlainObject(v: string | number | boolean | object | null | undefined)
 
 const DEFAULT_MACRO_LOOP = {
   creditBarWidthPx: 160,
-  retry: { maxRetries: 3, backoffMs: 2000 },
+  // retry config REMOVED per issue #88 — no retry/backoff in controller
   timing: {
     loopIntervalMs: 100000,
     countdownIntervalMs: 1000,

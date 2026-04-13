@@ -333,7 +333,5 @@ export {
   state,
 } from './shared-state-runtime';
 
-// Re-import state to wire retry config from validated config
-import { state as _state } from './shared-state-runtime';
-_state.maxRetries = (loopCfg.retry && loopCfg.retry.maxRetries) || 3;
-_state.retryBackoffMs = (loopCfg.retry && loopCfg.retry.backoffMs) || 2000;
+// Retry config REMOVED per issue #88 — no retry/backoff in controller.
+// @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
