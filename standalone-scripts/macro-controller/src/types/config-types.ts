@@ -71,7 +71,6 @@ export interface ComboShortcuts {
 
 export interface MacroLoopConfig {
   creditBarWidthPx?: number;
-  retry?: RetryConfig;
   timing?: MacroLoopTiming;
   urls?: MacroLoopUrls;
   xpaths?: MacroLoopXPaths;

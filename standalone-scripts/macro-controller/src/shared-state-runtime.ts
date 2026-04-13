@@ -134,11 +134,6 @@ const _cachedWsName = getCachedWorkspaceName();
  * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
  */
 
-// Seed workspace name from project-scoped localStorage cache for UI-first strategy
-import { getCachedWorkspaceName, migrateLegacyCache } from './workspace-cache';
-migrateLegacyCache(); // one-time migration from old non-scoped keys
-const _cachedWsName = getCachedWorkspaceName();
-
 export const state: ControllerState = {
   running: false,
   direction: LoopDirection.Down,
