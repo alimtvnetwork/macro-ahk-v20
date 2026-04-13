@@ -144,6 +144,12 @@ export interface GeneralConfig {
   maxRetries?: number;
 }
 
+/** Default general config values. */
+export const DEFAULT_GENERAL_CONFIG: Required<GeneralConfig> = {
+  logLevel: 'info',
+  maxRetries: 3,
+};
+
 export interface AutoAttachConfig {
   timing?: AutoAttachTiming;
   groups?: AutoAttachGroup[];

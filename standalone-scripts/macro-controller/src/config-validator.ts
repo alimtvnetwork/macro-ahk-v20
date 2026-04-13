@@ -10,6 +10,7 @@
  */
 
 import type { MacroControllerConfig, MacroThemeRoot, ThemePreset } from './types';
+import { DEFAULT_GENERAL_CONFIG } from './types';
 
 // ── Supported schema versions ──
 const SUPPORTED_CONFIG_SCHEMA = 1;
@@ -96,7 +97,7 @@ const DEFAULT_MACRO_LOOP = {
 const DEFAULT_CONFIG: MacroControllerConfig = {
   schemaVersion: SUPPORTED_CONFIG_SCHEMA,
   macroLoop: DEFAULT_MACRO_LOOP as MacroControllerConfig['macroLoop'],
-  general: { logLevel: 'info', maxRetries: 3 },
+  general: DEFAULT_GENERAL_CONFIG,
 };
 
 // ── Default theme ──
