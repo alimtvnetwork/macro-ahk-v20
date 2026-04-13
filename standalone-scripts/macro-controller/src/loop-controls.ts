@@ -53,7 +53,6 @@ function initLoopState(direction: LoopDirection | string): void {
   state.isIdle = true;
   state.isDelegating = false;
   state.__cycleInFlight = false;
-  state.__cycleRetryPending = false;
   state.running = true;
   state.countdown = Math.floor(TIMING.LOOP_INTERVAL / 1000);
   nsCall('__loopUpdateStartStopBtn', NS_UPDATESTARTSTOPBTN, true);
@@ -200,7 +199,6 @@ export function stopLoop(): boolean {
   state.isDelegating = false;
   state.forceDirection = null;
   state.__cycleInFlight = false;
-  state.__cycleRetryPending = false;
 
   if (state.loopIntervalId) { clearInterval(state.loopIntervalId); state.loopIntervalId = null; }
   if (state.countdownIntervalId) { clearInterval(state.countdownIntervalId); state.countdownIntervalId = null; }
