@@ -8,6 +8,8 @@
  * Compiler: scripts/compile-templates.mjs
  */
 
+import type { TemplateData, TemplateDataItem } from '../types/api-data-types';
+
 // ── Types ──
 
 export interface CompiledTemplate {
@@ -72,7 +74,7 @@ export function hasTemplate(name: string): boolean {
  * @returns Rendered HTML string
  * @throws Error if template not found
  */
-export function renderTemplate(name: string, data: Record<string, unknown> = {}): string {
+export function renderTemplate(name: string, data: TemplateData = {}): string {
   const entry = templateState.registry[name];
   if (!entry) {
     throw new Error(`[renderTemplate] Template "${name}" not found. Available: ${Object.keys(templateState.registry).join(', ')}`);
@@ -84,13 +86,13 @@ export function renderTemplate(name: string, data: Record<string, unknown> = {})
  * Render a raw HTML string (not from registry) with data.
  * Useful for inline templates or testing.
  */
-export function renderRawTemplate(html: string, data: Record<string, unknown> = {}): string {
+export function renderRawTemplate(html: string, data: TemplateData = {}): string {
   return hydrate(html, data);
 }
 
 // ── Hydration Logic ──
 
-function hydrate(html: string, data: Record<string, unknown>): string {
+function hydrate(html: string, data: TemplateData): string {
   let result = html;
 
   // 1. Process {{#each items}}...{{/each}} blocks
@@ -106,7 +108,7 @@ function hydrate(html: string, data: Record<string, unknown>): string {
 }
 
 /** Process {{#each items}}...{{/each}} — supports nested {{this.prop}} and {{@index}} */
-function processEachBlocks(html: string, data: Record<string, unknown>): string {
+function processEachBlocks(html: string, data: TemplateData): string {
   const eachPattern = /\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g;
 
   return html.replace(eachPattern, (_, key, body) => {
@@ -124,12 +126,12 @@ function processEachBlocks(html: string, data: Record<string, unknown>): string 
       if (typeof item === 'object' && item !== null) {
         // Replace {{this.prop}} for object items
         rendered = rendered.replace(/\{\{this\.(\w+)\}\}/g, (_: string, prop: string) => {
-          return String((item as Record<string, unknown>)[prop] ?? '');
+          return String((item as TemplateDataItem)[prop] ?? '');
         });
         // Also replace {{prop}} directly within each context
         rendered = rendered.replace(/\{\{(?!#|\/|>|@|this\.)(\w+)\}\}/g, (_: string, prop: string) => {
-          return prop in (item as Record<string, unknown>)
-            ? String((item as Record<string, unknown>)[prop] ?? '')
+          return prop in (item as TemplateDataItem)
+            ? String((item as TemplateDataItem)[prop] ?? '')
             : `{{${prop}}}`;  // Leave unresolved for outer context
         });
       } else {
@@ -143,7 +145,7 @@ function processEachBlocks(html: string, data: Record<string, unknown>): string 
 }
 
 /** Process {{#if cond}}...{{else}}...{{/if}} blocks (non-nested) */
-function processIfBlocks(html: string, data: Record<string, unknown>): string {
+function processIfBlocks(html: string, data: TemplateData): string {
   const ifElsePattern = /\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{else\}\}([\s\S]*?)\{\{\/if\}\}/g;
   let result = html.replace(ifElsePattern, (_, key, truthy, falsy) => {
     return isTruthy(data[key]) ? truthy : falsy;
@@ -158,7 +160,7 @@ function processIfBlocks(html: string, data: Record<string, unknown>): string {
 }
 
 /** Replace simple {{variable}} placeholders */
-function replaceVariables(html: string, data: Record<string, unknown>): string {
+function replaceVariables(html: string, data: TemplateData): string {
   return html.replace(/\{\{(?!#|\/|>|@)(\w+)\}\}/g, (match, key) => {
     return key in data ? String(data[key] ?? '') : match;
   });

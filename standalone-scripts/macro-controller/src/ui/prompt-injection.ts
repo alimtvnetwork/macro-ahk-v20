@@ -137,7 +137,7 @@ interface PromptBodyResult {
   catCustomInput: HTMLInputElement;
 }
 
-function _buildPromptModalBody(initialData: Record<string, unknown>): PromptBodyResult {
+function _buildPromptModalBody(initialData: PromptFormData): PromptBodyResult {
   const body = document.createElement('div');
   body.style.cssText = 'padding:16px 20px;overflow-y:auto;flex:1;';
 
@@ -152,7 +152,7 @@ function _buildPromptModalBody(initialData: Record<string, unknown>): PromptBody
   return { body, titleInput, contentArea, catSelect: catResult.catSelect, catCustomInput: catResult.catCustomInput };
 }
 
-function _buildTitleAndContent(body: HTMLElement, initialData: Record<string, unknown>): { titleInput: HTMLInputElement; contentArea: HTMLTextAreaElement; charCount: HTMLElement } {
+function _buildTitleAndContent(body: HTMLElement, initialData: PromptFormData): { titleInput: HTMLInputElement; contentArea: HTMLTextAreaElement; charCount: HTMLElement } {
   const titleLabel = document.createElement('label');
   titleLabel.textContent = 'Prompt Title';
   titleLabel.style.cssText = CSS_LABEL_BLOCK + cPrimaryLight + CSS_LABEL_SUFFIX;
@@ -160,7 +160,7 @@ function _buildTitleAndContent(body: HTMLElement, initialData: Record<string, un
   const titleInput = document.createElement('input');
   titleInput.type = 'text';
   titleInput.placeholder = 'e.g. Code Review Prompt';
-  titleInput.value = (initialData.name as string) || '';
+  titleInput.value = initialData.name || '';
   titleInput.style.cssText = 'width:100%;padding:8px 12px;background:' + cPanelBg + CSS_BORDER_SOLID + cPrimaryBorderA + CSS_BORDER_RADIUS_COLOR + cPanelFg + ';font-size:13px;margin-bottom:12px;outline:none;box-sizing:border-box;';
   titleInput.onfocus = function() { (this as HTMLElement).style.borderColor = cPrimary; };
   titleInput.onblur = function() { (this as HTMLElement).style.borderColor = CSS_BORDER_PRIMARY_STRONG; };
@@ -172,7 +172,7 @@ function _buildTitleAndContent(body: HTMLElement, initialData: Record<string, un
   body.appendChild(contentLabel);
   const contentArea = document.createElement('textarea');
   contentArea.placeholder = 'Enter your prompt text here…\n\nSupports {{date}}, {{time}} variables.';
-  contentArea.value = (initialData.text as string) || '';
+  contentArea.value = initialData.text || '';
   contentArea.style.cssText = 'width:100%;height:200px;padding:10px 12px;background:' + cPanelBg + CSS_BORDER_SOLID + cPrimaryBorderA + CSS_BORDER_RADIUS_COLOR + cPanelFg + ';font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical;outline:none;box-sizing:border-box;line-height:1.5;';
   contentArea.onfocus = function() { (this as HTMLElement).style.borderColor = cPrimary; };
   contentArea.onblur = function() { (this as HTMLElement).style.borderColor = CSS_BORDER_PRIMARY_STRONG; };
@@ -230,7 +230,7 @@ function _buildVariableReference(body: HTMLElement): void {
 
 // ── Category Select ──
 // eslint-disable-next-line max-lines-per-function
-function _buildCategorySelect(initialData: Record<string, unknown>): { catWrap: HTMLElement; catSelect: HTMLSelectElement; catCustomInput: HTMLInputElement } {
+function _buildCategorySelect(initialData: PromptFormData): { catWrap: HTMLElement; catSelect: HTMLSelectElement; catCustomInput: HTMLInputElement } {
   const catLabel = document.createElement('label');
   catLabel.textContent = 'Category (optional)';
   catLabel.style.cssText = CSS_LABEL_BLOCK + cPrimaryLight + CSS_LABEL_SUFFIX;
@@ -348,7 +348,7 @@ function _buildPromptModalFooter(
       promptPayload.id = editPrompt!.id;
     }
 
-    sendToExtension('SAVE_PROMPT', { prompt: promptPayload }).then(function(resp: Record<string, unknown>) {
+    sendToExtension('SAVE_PROMPT', { prompt: promptPayload }).then(function(resp: ExtensionResponse) {
       (saveBtn as HTMLButtonElement).disabled = false;
       saveBtn.textContent = isEdit ? '💾 Update' : '💾 Save';
       if (resp && resp.isOk) {
