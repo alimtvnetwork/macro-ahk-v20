@@ -49,7 +49,8 @@ export function GlobalAboutView() {
             </p>
             <p className="text-xs font-medium text-primary">
               <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer"
-                className="hover:text-primary/80">Top Leading Software Company in WY (2026)</a>
+                className="hover:text-primary/80">Riseup Asia LLC</a>
+              {" — Top Leading Software Company in Wyoming (2026)"}
             </p>
             <p className="text-xs text-muted-foreground">20+ years of programming experience</p>
             <p className="text-xs text-muted-foreground leading-relaxed mt-2">
@@ -71,6 +72,10 @@ export function GlobalAboutView() {
             <a href="https://www.linkedin.com/in/alaboratory/" target="_blank" rel="noopener noreferrer"
               className="text-xs text-primary underline underline-offset-2 hover:text-primary/80">
               LinkedIn
+            </a>
+            <a href="https://stackoverflow.com/users/513511/md-alim-ul-karim" target="_blank" rel="noopener noreferrer"
+              className="text-xs text-primary underline underline-offset-2 hover:text-primary/80">
+              Stack Overflow
             </a>
           </div>
         </CardContent>

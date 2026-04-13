@@ -37,7 +37,8 @@ export function AboutSection() {
                     <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer">Riseup Asia LLC</a>
                 </div>
                 <div className="card-meta" style={{ marginTop: 4 }}>
-                    <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer">Top Leading Software Company in WY (2026)</a>
+                    <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer">Riseup Asia LLC</a>
+                    {" — Top Leading Software Company in Wyoming (2026)"}
                 </div>
                 <div className="card-meta" style={{ marginTop: 4 }}>
                     20+ years of programming experience
@@ -54,6 +55,8 @@ export function AboutSection() {
                     <a href="https://riseup-asia.com" target="_blank" rel="noopener noreferrer">riseup-asia.com</a>
                     {" • "}
                     <a href="https://www.linkedin.com/in/alaboratory/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    {" • "}
+                    <a href="https://stackoverflow.com/users/513511/md-alim-ul-karim" target="_blank" rel="noopener noreferrer">Stack Overflow</a>
                 </div>
             </div>
 
