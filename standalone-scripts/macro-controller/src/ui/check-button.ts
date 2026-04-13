@@ -7,7 +7,6 @@ import { log } from '../logging';
 import { logError } from '../error-utils';
 import { showToast } from '../toast';
 import { getBearerToken, getLastTokenSource } from '../auth';
-import { ensureTokenReady, AUTH_READY_TIMEOUT_MS } from '../startup-token-gate';
 import { isOnProjectPage } from '../dom-helpers';
 import { runCheck } from '../loop-engine';
 
