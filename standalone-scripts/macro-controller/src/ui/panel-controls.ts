@@ -52,7 +52,8 @@ import {
 } from './prompt-manager';
 
 import type { PanelBuilderDeps } from './panel-builder';
-import type { PromptEntry } from '../types';
+import type { ExtensionResponse, PromptEntry } from '../types';
+import type { ExtensionPayload } from '../types/api-data-types';
 import type { TaskNextDeps } from './task-next-ui';
 import { logError } from '../error-utils';
 import { showToast } from '../toast';

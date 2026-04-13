@@ -7,7 +7,8 @@
  */
 
 import { log, logSub } from '../logging';
-import type { ResolvedPromptsConfig } from '../types';
+import type { ExtensionResponse, ResolvedPromptsConfig } from '../types';
+import type { ExtensionPayload } from '../types/api-data-types';
 import { showPasteToast, pasteIntoEditor } from './prompt-utils';
 
 import { cPanelBg, cPanelFg, cPrimary, cPrimaryLight } from '../shared-state';
