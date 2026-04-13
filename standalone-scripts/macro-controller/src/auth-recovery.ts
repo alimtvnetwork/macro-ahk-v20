@@ -268,14 +268,28 @@ export function refreshBearerTokenFromBestSource(
 ): void {
   const shouldSkipCache = !!(options && options.skipSessionBridgeCache);
   const cookieSourceLabel = buildCookieSourceLabel();
+  const t0 = performance.now();
 
-  const hasCachedToken = attemptLocalStorageTier(shouldSkipCache, onDone);
+  const hasCachedToken = attemptLocalStorageTier(shouldSkipCache, function (token: string, source: string) {
+    const elapsed = (performance.now() - t0).toFixed(1);
+    log('[AuthWaterfall] Tier 1/2 localStorage — ' + elapsed + 'ms ✅', 'success');
+    onDone(token, source);
+  });
 
   if (hasCachedToken) {
     return;
   }
 
-  attemptExtensionBridgeTier(onDone, cookieSourceLabel);
+  log('[AuthWaterfall] Tier 1/2 miss (' + (performance.now() - t0).toFixed(1) + 'ms) — checking relay...', 'check');
+  attemptExtensionBridgeTier(function (token: string, source: string) {
+    const elapsed = (performance.now() - t0).toFixed(1);
+    if (token) {
+      log('[AuthWaterfall] Total waterfall — ' + elapsed + 'ms ✅ via ' + source, 'success');
+    } else {
+      log('[AuthWaterfall] Total waterfall — ' + elapsed + 'ms ❌ exhausted', 'error');
+    }
+    onDone(token, source);
+  }, cookieSourceLabel, t0);
 }
 
 // ============================================
@@ -318,22 +332,25 @@ function attemptLocalStorageTier(
 function attemptExtensionBridgeTier(
   onDone: RefreshCallback,
   cookieSourceLabel: string,
+  t0: number,
 ): void {
   log(
     'refreshToken: Tier 1/2 miss — checking relay health before bridge attempt...',
     'check',
   );
 
+  const tRelay = performance.now();
   isRelayActive().then(function (isRelayAlive) {
-    logRelayStatus(isRelayAlive);
-    attemptBridgeGetToken(onDone, cookieSourceLabel);
+    const relayMs = (performance.now() - tRelay).toFixed(1);
+    logRelayStatus(isRelayAlive, relayMs);
+    attemptBridgeGetToken(onDone, cookieSourceLabel, t0);
   });
 }
 
-function logRelayStatus(isRelayAlive: boolean): void {
+function logRelayStatus(isRelayAlive: boolean, relayMs: string): void {
   if (isRelayAlive) {
     log(
-      'refreshToken: Relay active — attempting extension bridge GET_TOKEN...',
+      'refreshToken: Relay active (' + relayMs + 'ms) — attempting extension bridge GET_TOKEN...',
       'check',
     );
 
@@ -341,7 +358,7 @@ function logRelayStatus(isRelayAlive: boolean): void {
   }
 
   log(
-    'refreshToken: ⚠️ Relay ping timed out (500ms) — attempting bridge anyway before cookie fallback',
+    'refreshToken: ⚠️ Relay ping timed out (' + relayMs + 'ms) — attempting bridge anyway before cookie fallback',
     'warn',
   );
 }
@@ -349,20 +366,24 @@ function logRelayStatus(isRelayAlive: boolean): void {
 function attemptBridgeGetToken(
   onDone: RefreshCallback,
   cookieSourceLabel: string,
+  t0: number,
 ): void {
+  const tBridge = performance.now();
   requestTokenFromExtension(
     false,
     function (cachedToken: string, cachedSource: string) {
+      const bridgeMs = (performance.now() - tBridge).toFixed(1);
       const hasCachedToken = !!cachedToken && persistResolvedBearerToken(cachedToken);
 
       if (hasCachedToken) {
-        log('refreshToken: ✅ Tier 3a — resolved from ' + cachedSource, 'success');
+        log('refreshToken: ✅ Tier 3a GET_TOKEN — ' + bridgeMs + 'ms via ' + cachedSource, 'success');
         onDone(cachedToken, cachedSource);
 
         return;
       }
 
-      attemptBridgeRefreshToken(onDone, cookieSourceLabel);
+      log('[AuthWaterfall] Tier 3a GET_TOKEN miss (' + bridgeMs + 'ms) — trying REFRESH_TOKEN...', 'check');
+      attemptBridgeRefreshToken(onDone, cookieSourceLabel, t0);
     },
   );
 }
@@ -370,20 +391,24 @@ function attemptBridgeGetToken(
 function attemptBridgeRefreshToken(
   onDone: RefreshCallback,
   cookieSourceLabel: string,
+  t0: number,
 ): void {
+  const tRefresh = performance.now();
   requestTokenFromExtension(
     true,
     function (refreshedToken: string, refreshedSource: string) {
+      const refreshMs = (performance.now() - tRefresh).toFixed(1);
       const hasRefreshedToken = !!refreshedToken && persistResolvedBearerToken(refreshedToken);
 
       if (hasRefreshedToken) {
-        log('refreshToken: ✅ Tier 3b — resolved from ' + refreshedSource, 'success');
+        log('refreshToken: ✅ Tier 3b REFRESH_TOKEN — ' + refreshMs + 'ms via ' + refreshedSource, 'success');
         onDone(refreshedToken, refreshedSource);
 
         return;
       }
 
-      attemptCookieFallback(onDone, cookieSourceLabel);
+      log('[AuthWaterfall] Tier 3b REFRESH_TOKEN miss (' + refreshMs + 'ms) — trying cookie...', 'check');
+      attemptCookieFallback(onDone, cookieSourceLabel, t0);
     },
   );
 }
@@ -391,17 +416,21 @@ function attemptBridgeRefreshToken(
 function attemptCookieFallback(
   onDone: RefreshCallback,
   cookieSourceLabel: string,
+  _t0: number,
 ): void {
+  const tCookie = performance.now();
   const cookieToken = getBearerTokenFromCookie();
   const hasCookieToken = !!cookieToken && persistResolvedBearerToken(cookieToken);
+  const cookieMs = (performance.now() - tCookie).toFixed(1);
 
   if (hasCookieToken) {
-    log('refreshToken: ✅ Tier 4 — resolved from cookie', 'success');
+    log('refreshToken: ✅ Tier 4 cookie — ' + cookieMs + 'ms', 'success');
     onDone(cookieToken, cookieSourceLabel);
 
     return;
   }
 
+  log('[AuthWaterfall] Tier 4 cookie miss (' + cookieMs + 'ms)', 'warn');
   logError('refreshToken', '❌ All tiers exhausted — no token found');
   onDone('', 'none');
 }
