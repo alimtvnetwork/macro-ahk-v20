@@ -10,7 +10,7 @@
 import type { AuthManagerInterface } from './MacroController';
 import { verifyWorkspaceSessionAfterFailure } from '../workspace-management';
 
-import { getLastTokenSource, getBearerTokenFromCookie, getBearerTokenFromSessionBridge, invalidateSessionBridgeKey, markBearerTokenExpired, persistResolvedBearerToken, recoverAuthOnce, refreshBearerTokenFromBestSource, requestTokenFromExtension, resolveToken, setLastTokenSource, updateAuthBadge, getBearerToken } from '../auth';
+import { getLastTokenSource, getBearerTokenFromCookie, getBearerTokenFromSessionBridge, invalidateSessionBridgeKey, markBearerTokenExpired, persistResolvedBearerToken, recoverAuthOnce, refreshBearerTokenFromBestSource, requestTokenFromExtension, setLastTokenSource, updateAuthBadge, getBearerToken } from '../auth';
 
 export class AuthManager implements AuthManagerInterface {
 

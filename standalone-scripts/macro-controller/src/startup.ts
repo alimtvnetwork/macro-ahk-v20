@@ -25,6 +25,7 @@ import {
   setLastTokenSource,
   getBearerTokenFromCookie,
   resolveToken,
+  getBearerToken,
 } from './auth';
 import {
   IDS,
@@ -610,7 +611,7 @@ function scheduleWorkspaceRetry(attempt: number): void {
 
     if (!retryToken) {
       // Try the unified bridge as final fallback
-      getBearerToken().then(function (bridgeToken) {
+      getBearerToken().then(function (bridgeToken: string) {
         if (!bridgeToken) {
           log(STARTUP_RETRY + attempt + ' — no token available, moving to next retry', 'warn');
           scheduleWorkspaceRetry(attempt + 1);
