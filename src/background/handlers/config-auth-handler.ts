@@ -447,7 +447,7 @@ async function readTokenCandidateOnce(
 
     const localStorageJwt = await readSupabaseJwtFromPlatformTabs(tabUrlHint);
     if (localStorageJwt !== null) {
-        console.log("[config-auth] token wait: found JWT in platform tab localStorage");
+        console.log("[config-auth] token wait: found JWT in platform tab/frame localStorage");
         return {
             token: localStorageJwt,
             cookieName: "localStorage[sb-*-auth-token]",
@@ -567,7 +567,7 @@ async function readSupabaseJwtFromPlatformTabs(tabUrlHint?: string): Promise<str
 
         try {
             const result = await chrome.scripting.executeScript({
-                target: { tabId: tab.id },
+                target: { tabId: tab.id, allFrames: true },
                 world: "MAIN",
                 func: function scanLocalStorageForJwt(): string | null { // eslint-disable-line sonarjs/cognitive-complexity -- localStorage scan with priority matching
                     try {
@@ -614,9 +614,11 @@ async function readSupabaseJwtFromPlatformTabs(tabUrlHint?: string): Promise<str
                 },
             });
 
-            const token = result?.[0]?.result;
-            if (typeof token === "string" && isLikelyJwt(token)) {
-                return token;
+            for (const entry of result ?? []) {
+                const token = entry?.result;
+                if (typeof token === "string" && isLikelyJwt(token)) {
+                    return token;
+                }
             }
         } catch {
             // Tab may be unavailable or restricted.
@@ -685,8 +687,45 @@ async function resolveSignedUrlTokenCandidate(
         return primaryToken;
     }
 
+    const frameToken = await readSignedUrlTokenFromPlatformFrames(tabUrlHint);
+    if (frameToken) {
+        return frameToken;
+    }
+
     const activeTabUrl = await getActiveTabUrl();
     return extractSignedUrlTokenFromUrl(activeTabUrl);
+}
+
+async function readSignedUrlTokenFromPlatformFrames(tabUrlHint?: string): Promise<string | null> {
+    const tabs = await getActivePlatformTabs(tabUrlHint);
+
+    for (const tab of tabs) {
+        if (typeof tab.id !== "number") {
+            continue;
+        }
+
+        try {
+            const frames = await chrome.webNavigation.getAllFrames({ tabId: tab.id });
+            const seenUrls = new Set<string>();
+
+            for (const frame of frames ?? []) {
+                const frameUrl = typeof frame?.url === "string" ? frame.url : "";
+                if (!frameUrl || seenUrls.has(frameUrl)) {
+                    continue;
+                }
+
+                seenUrls.add(frameUrl);
+                const token = extractSignedUrlTokenFromUrl(frameUrl);
+                if (token) {
+                    return token;
+                }
+            }
+        } catch {
+            // Frame URLs may be unavailable on restricted tabs.
+        }
+    }
+
+    return null;
 }
 
 /** Extracts project ID from a URL string. */

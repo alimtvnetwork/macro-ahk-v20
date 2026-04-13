@@ -2,8 +2,8 @@
 
 **Last Updated**: 2026-04-13
 **Active Codebase**: `marco-script-ahk-v7.latest/` (v7.23)
-**Macro Controller**: v2.134.0
-**Chrome Extension**: v2.134.0
+**Macro Controller**: v2.135.0
+**Chrome Extension**: v2.135.0
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
@@ -12,9 +12,9 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.134.0 + Macro Controller v2.134.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.135.0 + Macro Controller v2.135.0 — Stable
 
-Auth readiness hardened for Lovable session restore timing: startup, background token resolution, loop start, and manual Check now wait for a real JWT restoration window before surfacing no-token warnings. This removes the false 2s auth-failure toast during slow session bootstrap while preserving the existing cookie/localStorage/signed-URL recovery waterfall.
+Auth recovery now also scans all tab frames for localStorage JWTs and signed preview URL tokens, fixing editor-page cases where the live session only exists inside the embedded preview frame while startup still waits on the auth-ready gate.
 
 ### 2026-04-12 Session
 
