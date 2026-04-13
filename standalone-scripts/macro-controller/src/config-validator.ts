@@ -44,7 +44,9 @@ function deepMerge<T extends MergeableRecord>(target: T, source: Partial<T>): T 
     const srcVal = (source as MergeableRecord)[key];
     const tgtVal = result[key];
 
-    if (isPlainObject(srcVal) && isPlainObject(tgtVal)) {
+    const areBothPlainObjects = isPlainObject(srcVal) && isPlainObject(tgtVal);
+
+    if (areBothPlainObjects) {
       result[key] = deepMerge(tgtVal as MergeableRecord, srcVal as MergeableRecord);
     } else if (srcVal !== undefined) {
       result[key] = srcVal;
@@ -199,7 +201,7 @@ function validateFieldType(
   label: string,
 ): void {
   const val = obj[field];
-  if (val === undefined || val === null) {
+  if (val == null) {
     return;
   }
   const actual = Array.isArray(val) ? 'array' : typeof val;
