@@ -128,9 +128,16 @@ import { getCachedWorkspaceName, migrateLegacyCache } from './workspace-cache';
 migrateLegacyCache(); // one-time migration from old non-scoped keys
 const _cachedWsName = getCachedWorkspaceName();
 
-// loopCfg imported at shared-state.ts level — use config-validator defaults
-const _retryMaxRetries = 3;
-const _retryBackoffMs = 2000;
+/**
+ * Controller State — NO RETRY FIELDS.
+ * Cycle failures are transient — the loop interval is the natural retry mechanism.
+ * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
+ */
+
+// Seed workspace name from project-scoped localStorage cache for UI-first strategy
+import { getCachedWorkspaceName, migrateLegacyCache } from './workspace-cache';
+migrateLegacyCache(); // one-time migration from old non-scoped keys
+const _cachedWsName = getCachedWorkspaceName();
 
 export const state: ControllerState = {
   running: false,
@@ -155,10 +162,5 @@ export const state: ControllerState = {
   workspaceFromApi: false,
   workspaceFromCache: !!_cachedWsName,
   isManualCheck: false,
-  retryCount: 0,
-  maxRetries: _retryMaxRetries,
-  retryBackoffMs: _retryBackoffMs,
-  lastRetryError: null,
   __cycleInFlight: false,
-  __cycleRetryPending: false,
 };

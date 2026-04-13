@@ -6,6 +6,14 @@
  *        Falls back to full /user/workspaces when credit-balance API fails.
  * v7.40: Migrated from raw fetch() to httpRequest() (XMLHttpRequest + Promise).
  * v7.50: Migrated to marco.api centralized SDK (Axios + registry).
+ * v2.136: REMOVED all retry/backoff logic per issue #88. Cycle failures are
+ *         transient — the loop interval is the natural retry mechanism.
+ *
+ * NO RETRY POLICY: If a cycle fails, log the error and release the lock.
+ * The next scheduled cycle will try again. No exponential backoff, no
+ * retryCount, no __cycleRetryPending. See:
+ * @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
+ * @see standalone-scripts/macro-controller/diagrams/inconsistencies/auth-retry-inconsistencies.mmd
  *
  * @see spec/17-app-issues/free-credits-detect/overview.md
  * @see memory/architecture/networking/centralized-api-registry
@@ -22,7 +30,6 @@ import { isUserTypingInPrompt } from './dom-helpers';
 import { CREDIT_API_BASE, TIMING, loopCreditState, state } from './shared-state';
 import { autoDetectLoopCurrentWorkspace } from './workspace-detection';
 import { performDirectMove } from './loop-dom-fallback';
-import { stopLoop } from './loop-controls';
 import { runCycleDomFallback } from './loop-dom-fallback';
 import { checkAndActOnCreditBalance, BALANCE_CONFIG } from './credit-balance';
 import { delay } from './async-utils';
@@ -52,10 +59,6 @@ function isLoopStale(): boolean {
 // ============================================
 
 function releaseCycleLock(): void {
-  if (state.__cycleRetryPending) {
-    return;
-  }
-
   state.__cycleInFlight = false;
 }
 
@@ -110,7 +113,9 @@ async function doubleConfirmAndMove(threshold: number): Promise<void> {
 }
 
 // ============================================
-// handleFallbackAuthRecovery — auth failure recovery with retry
+// handleFallbackAuthRecovery — single auth recovery attempt (NO retry)
+// If recovery fails, the cycle is skipped. Next interval will try again.
+// @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
 // ============================================
 
 async function handleFallbackAuthRecovery(
@@ -123,25 +128,20 @@ async function handleFallbackAuthRecovery(
     invalidateSessionBridgeKey(freshToken);
   }
 
-  log('Cycle fallback: Auth ' + status + ' — recovering session...', 'warn');
+  log('Cycle: Auth ' + status + ' — recovering session...', 'warn');
   showToast('Auth ' + status + ' — recovering session...', 'warn', { noStop: true });
-
-  state.__cycleRetryPending = true;
-
-  await delay(2500);
-  state.__cycleRetryPending = false;
 
   const newToken = await recoverAuthOnce();
 
   if (!newToken) {
-    logError('Cycle fallback', 'Recovery failed — skipping this cycle');
-    showToast('Auth recovery failed — will retry next cycle', 'warn', { noStop: true });
+    logError('Cycle', 'Auth recovery failed — skipping this cycle. Next interval will retry naturally.');
+    showToast('Auth recovery failed — will try again next cycle', 'warn', { noStop: true });
     releaseCycleLock();
 
     return;
   }
 
-  log('Cycle fallback: Recovery successful — retrying API call once', 'success');
+  log('Cycle: Recovery successful — completing API call', 'success');
   await fetchWithTokenFn();
 }
 
@@ -152,14 +152,6 @@ async function handleFallbackAuthRecovery(
 async function processWorkspaceData(
   data: WorkspacesApiResponse,
 ): Promise<void> {
-  if (state.retryCount > 0) {
-    log('Retry recovery: API succeeded after ' + state.retryCount + ' previous failure(s)', 'success');
-    showToast('Recovered after ' + state.retryCount + ' retry(ies)', 'success');
-  }
-
-  state.retryCount = 0;
-  state.lastRetryError = null;
-
   if (isLoopStale()) {
     log('SKIP: State changed during API fetch', 'skip');
 
@@ -193,7 +185,7 @@ async function processWorkspaceData(
   const threshold = BALANCE_CONFIG.minDailyCredit;
 
   if (dailyFree >= threshold) {
-    log('✅ Daily free credits (' + dailyFree + ') >= threshold (' + threshold + ') — NO move needed', 'success');
+    log('Daily free credits (' + dailyFree + ') >= threshold (' + threshold + ') — NO move needed', 'success');
 
     return;
   }
@@ -203,39 +195,16 @@ async function processWorkspaceData(
 }
 
 // ============================================
-// handleCycleFetchError — manages retry/backoff for cycle failures
+// handleCycleFetchError — log and release, NO retry
+// Cycle failures are transient. The loop interval handles natural retry.
+// @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
 // ============================================
 
 function handleCycleFetchError(err: Error, freshToken: string): void {
-  state.retryCount++;
-  const hasRetriesLeft = state.retryCount <= state.maxRetries;
-
-  if (hasRetriesLeft) {
-    const backoff = state.retryBackoffMs * Math.pow(2, state.retryCount - 1);
-    showToast('Cycle failed: ' + err.message + ' — retrying in ' + (backoff / 1000) + 's (attempt ' + state.retryCount + '/' + state.maxRetries + ')', 'warn');
-    log('Cycle fallback API fetch failed (attempt ' + state.retryCount + '/' + state.maxRetries + '): ' + err.message + ' — retrying in ' + backoff + 'ms', 'warn');
-    logSub('Token: ' + (freshToken ? freshToken.substring(0, 12) + '...REDACTED' : 'NONE'), 1);
-    logSub('Token source: ' + getLastTokenSource(), 1);
-
-    state.__cycleRetryPending = true;
-    setTimeout(function () {
-      state.__cycleRetryPending = false;
-      state.__cycleInFlight = false;
-
-      if (state.running) {
-        log('Retry #' + state.retryCount + ' — re-running cycle...', 'check');
-        runCycle();
-      }
-    }, backoff);
-
-    return;
-  }
-
-  state.lastRetryError = err.message;
-  showToast('Cycle failed after ' + state.maxRetries + ' retries: ' + err.message + '. Loop stopped.', 'error', { stack: err.stack, noStop: true });
-  logError('Cycle', 'fallback API fetch failed after \' + state.maxRetries + \' retries: \' + err.message + \' — stopping loop');
-  logSub('Last token source: ' + getLastTokenSource(), 1);
-  stopLoop();
+  logError('Cycle', 'API fetch failed: ' + err.message + ' — skipping this cycle');
+  logSub('Token: ' + (freshToken ? freshToken.substring(0, 12) + '...REDACTED' : 'NONE'), 1);
+  logSub('Token source: ' + getLastTokenSource(), 1);
+  showToast('Cycle failed: ' + err.message + ' — will retry next interval', 'warn', { noStop: true });
   runCycleDomFallback();
 }
 
@@ -243,17 +212,17 @@ function handleCycleFetchError(err: Error, freshToken: string): void {
 // doCycleFetchWithToken — single workspace API call via SDK
 // ============================================
 
-async function doCycleFetchWithToken(isRetryAttempt: boolean): Promise<void> {
+async function doCycleFetchWithToken(isRecoveryAttempt: boolean): Promise<void> {
   const freshToken = resolveToken();
 
-  log('Cycle fallback API: GET /user/workspaces' + (isRetryAttempt ? ' (RETRY after recovery)' : ''), 'check');
+  log('Cycle API: GET /user/workspaces' + (isRecoveryAttempt ? ' (after recovery)' : ''), 'check');
   logSub('Auth: ' + (freshToken ? 'Bearer ' + freshToken.substring(0, 12) + '...REDACTED' : 'NO TOKEN (cookies only)'), 1);
   logSub('Token source: ' + getLastTokenSource(), 1);
 
   try {
     const resp = await window.marco!.api!.credits.fetchWorkspaces({ baseUrl: CREDIT_API_BASE });
 
-    if (isAuthFailure(resp.status) && !isRetryAttempt) {
+    if (isAuthFailure(resp.status) && !isRecoveryAttempt) {
       await handleFallbackAuthRecovery(
         freshToken,
         resp.status,
@@ -272,7 +241,7 @@ async function doCycleFetchWithToken(isRetryAttempt: boolean): Promise<void> {
     }
 
     const data = resp.data as WorkspacesApiResponse;
-    log('Cycle fallback API: response received', 'check');
+    log('Cycle API: response received', 'check');
     await processWorkspaceData(data);
   } catch (err) {
     handleCycleFetchError(err as Error, freshToken);
@@ -289,18 +258,21 @@ async function doCycleFetchFallback(): Promise<void> {
   const token = resolveToken();
 
   if (!token) {
-    log('Cycle fallback: No token — attempting recovery before API call...', 'warn');
+    log('Cycle fallback: No token — attempting single recovery...', 'warn');
 
     try {
       const recoveredToken = await recoverAuthOnce();
 
       if (recoveredToken) {
-        log('Cycle fallback: Recovered token — proceeding with API call', 'success');
+        log('Cycle fallback: Recovered token — proceeding', 'success');
       } else {
-        log('Cycle fallback: No token from any source — API call will likely fail with 401', 'warn');
+        logError('Cycle fallback', 'No token from any source — skipping this cycle');
+        releaseCycleLock();
+
+        return;
       }
     } catch (err) {
-      logError('Cycle fallback', 'Auth recovery failed before API call: ' + (err as Error).message);
+      logError('Cycle fallback', 'Auth recovery failed: ' + (err as Error).message + ' — skipping cycle');
       releaseCycleLock();
 
       return;
@@ -336,20 +308,15 @@ function handleDelegateTimeout(): boolean {
 
 // ============================================
 // runCycle — API-based credit check
+// NO RETRY: If the cycle fails, it releases the lock and the next
+// scheduled interval will try again naturally.
+// @see spec/17-app-issues/88-auth-loading-failure-retry-inconsistency/00-overview.md
 // ============================================
 
-// eslint-disable-next-line max-lines-per-function
 export function runCycle(): void {
   if (!state.running) {
     state.__cycleInFlight = false;
-    state.__cycleRetryPending = false;
     log('SKIP: Loop not running', 'skip');
-
-    return;
-  }
-
-  if (state.__cycleRetryPending) {
-    log('SKIP: Retry already scheduled — waiting', 'skip');
 
     return;
   }
@@ -386,7 +353,7 @@ export function runCycle(): void {
   checkAndActOnCreditBalance()
     .then(function (apiSucceeded: boolean) {
       if (apiSucceeded) {
-        log('Step 1: ✅ Credit balance API succeeded', 'success');
+        log('Step 1: Credit balance API succeeded', 'success');
         mc().updateUI();
         releaseCycleLock();
 
@@ -403,8 +370,8 @@ export function runCycle(): void {
       log('Step 1: Credit balance API failed — falling back to full workspace API...', 'warn');
       doCycleFetchFallback();
     })
-    .catch(function (_err: Error) {
-      logError('Step 1', 'Credit balance check error: \' + err.message + \' — falling back');
+    .catch(function (err: Error) {
+      logError('Step 1', 'Credit balance check error: ' + err.message + ' — skipping cycle');
 
       if (!BALANCE_CONFIG.fallbackToXPath) {
         releaseCycleLock();
