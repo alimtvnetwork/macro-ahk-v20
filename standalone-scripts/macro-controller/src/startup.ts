@@ -42,7 +42,7 @@ import { UIManager } from './core/UIManager';
 import { startLoop, stopLoop } from './loop-engine';
 import type { MarkViewedResponse } from './types';
 import type { StartupStateWithTimeout } from './types/api-data-types';
-import { ensureTokenReady } from './startup-token-gate';
+import { ensureTokenReady, AUTH_READY_TIMEOUT_MS } from './startup-token-gate';
 import { setupPersistenceObserver } from './startup-persistence';
 import { setupGlobalErrorHandlers, setupDiagnosticDump } from './startup-global-handlers';
 
@@ -327,7 +327,7 @@ function loadWorkspacesOnStartup(): void {
   updateStartupToast('Resolving auth token\u2026');
 
   timingStart('token', 'Token Resolution');
-  ensureTokenReady(2000).then(function (tokenResult) {
+  ensureTokenReady(AUTH_READY_TIMEOUT_MS).then(function (tokenResult) {
     const hasNoToken = !tokenResult.token;
 
     if (hasNoToken) {

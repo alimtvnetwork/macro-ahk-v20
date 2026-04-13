@@ -32,6 +32,7 @@ interface TokenGateCtx {
 
 const POLL_INTERVAL_MS = 250;
 const REFRESH_RETRY_MS = 1500;
+export const AUTH_READY_TIMEOUT_MS = 12_000;
 
 function finishTokenGate(ctx: TokenGateCtx, result: TokenReadyResult): void {
   if (ctx.settled) {
@@ -69,7 +70,7 @@ function maybeRefreshFromExtension(ctx: TokenGateCtx): void {
   }, { skipSessionBridgeCache: true });
 }
 
-export function ensureTokenReady(timeoutMs: number): Promise<TokenReadyResult> {
+export function ensureTokenReady(timeoutMs: number = AUTH_READY_TIMEOUT_MS): Promise<TokenReadyResult> {
   return new Promise<TokenReadyResult>(function (resolve) {
     const ctx: TokenGateCtx = {
       settled: false, refreshInFlight: false, lastRefreshAt: 0,

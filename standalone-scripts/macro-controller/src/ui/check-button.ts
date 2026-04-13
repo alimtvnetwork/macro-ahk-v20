@@ -6,7 +6,8 @@
 import { log } from '../logging';
 import { logError } from '../error-utils';
 import { showToast } from '../toast';
-import { refreshBearerTokenFromBestSource, resolveToken, getLastTokenSource } from '../auth';
+import { resolveToken, getLastTokenSource } from '../auth';
+import { ensureTokenReady, AUTH_READY_TIMEOUT_MS } from '../startup-token-gate';
 import { isOnProjectPage } from '../dom-helpers';
 import { runCheck } from '../loop-engine';
 
@@ -94,7 +95,7 @@ export function createCheckButton(deps: CheckButtonDeps): CheckButtonResult {
 }
 
 function _handleCheckClick(ctx: CheckButtonCtx): void {
-  const { checkBtn, updateAuthBadge } = ctx;
+  const { checkBtn } = ctx;
   if (ctx.checkInFlight) {
     log('Check cooldown: already in flight', 'warn');
     return;
@@ -125,22 +126,22 @@ function _handleCheckClick(ctx: CheckButtonCtx): void {
   const existingToken = resolveToken();
   if (existingToken) {
     log('Manual Check: ✅ Token already available (' + getLastTokenSource() + ') — skipping bridge wait', 'success');
-    updateAuthBadge(true, getLastTokenSource());
-    checkBtn.textContent = '⏳ Checking…';
+    ctx.updateAuthBadge(true, getLastTokenSource());
+    ctx.checkBtn.textContent = '⏳ Checking…';
     doRunCheck(ctx);
   } else {
-    checkBtn.textContent = '⏳ Auth…';
-    log('Manual Check: Step 0 — resolving auth token from extension bridge...', 'check');
-    refreshBearerTokenFromBestSource(function(authToken: string, authSource: string) {
-      if (authToken) {
-        log('Manual Check: ✅ Auth resolved from ' + authSource + ' (' + authToken.substring(0, 8) + '...)', 'success');
-        updateAuthBadge(true, authSource);
+    ctx.checkBtn.textContent = '⏳ Auth…';
+    log('Manual Check: Step 0 — waiting for auth-ready state...', 'check');
+    ensureTokenReady(AUTH_READY_TIMEOUT_MS).then(function(tokenResult) {
+      if (tokenResult.token) {
+        log('Manual Check: ✅ Auth resolved from ' + getLastTokenSource(), 'success');
+        ctx.updateAuthBadge(true, getLastTokenSource());
       } else {
-        log('Manual Check: ⚠️ No auth token — workspace/credit fetch may fail', 'warn');
-        updateAuthBadge(false, 'none');
+        log('Manual Check: ⚠️ No auth token after wait — workspace/credit fetch may fail', 'warn');
+        ctx.updateAuthBadge(false, 'none');
         showToast('⚠️ No auth token — check may be incomplete', 'warn');
       }
-      checkBtn.textContent = '⏳ Checking…';
+      ctx.checkBtn.textContent = '⏳ Checking…';
       doRunCheck(ctx);
     });
   }
