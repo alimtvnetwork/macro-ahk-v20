@@ -31,6 +31,7 @@ import { autoDetectLoopCurrentWorkspace } from './workspace-detection';
 import { performDirectMove } from './loop-dom-fallback';
 import { runCycleDomFallback } from './loop-dom-fallback';
 import { checkAndActOnCreditBalance, BALANCE_CONFIG } from './credit-balance';
+import { delay } from './async-utils';
 import { logError } from './error-utils';
 
 /** Shorthand for MacroController singleton */
