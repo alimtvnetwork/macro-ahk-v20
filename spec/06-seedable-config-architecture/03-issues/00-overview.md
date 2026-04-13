@@ -8,7 +8,7 @@
 
 | # | Issue | Status | Priority |
 |---|-------|--------|----------|
-| — | No open issues | — | — |
+| 88 | Auth Loading Failure & Unauthorized Retry Logic | Open | P0 |
 
 ---
 
