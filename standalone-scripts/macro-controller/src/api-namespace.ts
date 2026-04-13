@@ -15,6 +15,7 @@ import { VERSION } from './shared-state';
 import { log } from './logging';
 import { logError } from './error-utils';
 import { showToast } from './toast';
+import type { MacroControllerNamespaceShape, MacroControllerApiShape } from './types/api-data-types';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */

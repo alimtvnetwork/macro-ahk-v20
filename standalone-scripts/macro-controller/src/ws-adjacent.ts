@@ -18,6 +18,7 @@ import { showToast } from './toast';
 import { CREDIT_API_BASE, loopCreditState, state } from './shared-state';
 import { moveToWorkspace, updateLoopMoveStatus } from './ws-move';
 import { logError } from './error-utils';
+import type { ApiResponseData } from './types/api-data-types';
 
 function mc() { return MacroController.getInstance(); }
 

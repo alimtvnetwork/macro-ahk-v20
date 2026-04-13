@@ -20,6 +20,7 @@ import { showToast } from './toast';
 import { CREDIT_API_BASE, state } from './shared-state';
 import { clearResolvedWorkspace } from './credit-balance';
 import { logError } from './error-utils';
+import type { WorkspaceProbeData } from './types/api-data-types';
 
 const LOG_SESSIONCHECK = '[SessionCheck/';
 
