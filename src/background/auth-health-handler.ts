@@ -102,50 +102,7 @@ export async function buildAuthHealthResponse(): Promise<AuthHealthResponse> {
     });
     strategies.push(s1);
 
-    // ── Strategy 2: Supabase localStorage JWT scan ──
-    const s2 = await timedStrategy("localStorage JWT scan", 2, async () => {
-        const tabs = await getActivePlatformTabs();
-        if (tabs.length === 0) {
-            return { success: false, detail: "No platform tabs available" };
-        }
-
-        for (const tab of tabs) {
-            if (typeof tab.id !== "number") continue;
-            try {
-                const result = await _chrome.scripting!.executeScript({
-                    target: { tabId: tab.id },
-                    world: "MAIN",
-                    func: (): string | null => {
-                        try {
-                            for (let i = 0; i < localStorage.length; i++) {
-                                const key = localStorage.key(i);
-                                if (key && key.startsWith("sb-") && key.endsWith("-auth-token")) {
-                                    const raw = localStorage.getItem(key);
-                                    if (raw) {
-                                        const parsed = JSON.parse(raw);
-                                        const token = parsed?.access_token;
-                                        if (typeof token === "string" && token.startsWith("eyJ")) {
-                                            return `found:${key}`;
-                                        }
-                                    }
-                                }
-                            }
-                        } catch { /* ignore */ }
-                        return null;
-                    },
-                });
-                const val = result?.[0]?.result;
-                if (typeof val === "string" && val.startsWith("found:")) {
-                    return { success: true, detail: `JWT in ${val.slice(6)} (tabId=${tab.id})` };
-                }
-            } catch { /* tab access failed */ }
-        }
-        return { success: false, detail: `Scanned ${tabs.length} tab(s) — no JWT found` };
-    });
-    strategies.push(s2);
-    if (s2.success && !resolvedVia) resolvedVia = s2.name;
-
-    // ── Strategy 3: Signed URL token scan ──
+    // ── Strategy 2: Signed URL token scan ──
     const s3 = await timedStrategy("Signed URL token", 3, async () => {
         if (!tabUrl) {
             return { success: false, detail: "No active tab URL" };

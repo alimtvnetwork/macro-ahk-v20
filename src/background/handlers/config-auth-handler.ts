@@ -445,14 +445,6 @@ async function readTokenCandidateOnce(
         };
     }
 
-    const localStorageJwt = await readSupabaseJwtFromPlatformTabs(tabUrlHint);
-    if (localStorageJwt !== null) {
-        console.log("[config-auth] token wait: found JWT in platform tab/frame localStorage");
-        return {
-            token: localStorageJwt,
-            cookieName: "localStorage[sb-*-auth-token]",
-        };
-    }
 
     const signedUrlToken = await resolveSignedUrlTokenCandidate(tabUrlHint, primaryUrl);
 
@@ -559,75 +551,6 @@ async function getActivePlatformTabs(tabUrlHint?: string): Promise<chrome.tabs.T
     return tabs;
 }
 
-// eslint-disable-next-line max-lines-per-function
-async function readSupabaseJwtFromPlatformTabs(tabUrlHint?: string): Promise<string | null> {
-    const tabs = await getActivePlatformTabs(tabUrlHint);
-
-    for (const tab of tabs) {
-        if (typeof tab.id !== "number") continue;
-
-        try {
-            const result = await chrome.scripting.executeScript({
-                target: { tabId: tab.id, allFrames: true },
-                world: "MAIN",
-                func: function scanLocalStorageForJwt(): string | null { // eslint-disable-line sonarjs/cognitive-complexity -- localStorage scan with priority matching
-                    try {
-                        const len = localStorage.length;
-                        // Priority 1: Supabase auth token (sb-*-auth-token)
-                        for (let i = 0; i < len; i++) {
-                            const key = localStorage.key(i);
-                            if (!key) continue;
-                            if (key.startsWith("sb-") && key.includes("-auth-token")) {
-                                const raw = localStorage.getItem(key);
-                                if (!raw) continue;
-                                try {
-                                    const parsed = JSON.parse(raw);
-                                    const token = parsed?.access_token
-                                        ?? parsed?.currentSession?.access_token
-                                        ?? parsed?.session?.access_token;
-                                    if (typeof token === "string" && token.startsWith("eyJ") && token.split(".").length === 3) {
-                                        return token;
-                                    }
-                                } catch {
-                                    if (raw.startsWith("eyJ") && raw.split(".").length === 3) {
-                                        return raw;
-                                    }
-                                }
-                            }
-                        }
-                        // Priority 2: Lovable-specific auth keys
-                        const lovableKeys = ["lovable-auth-token", "lovable:token", "auth-token", "supabase.auth.token"];
-                        for (let j = 0; j < lovableKeys.length; j++) {
-                            const val = localStorage.getItem(lovableKeys[j]);
-                            if (!val) continue;
-                            try {
-                                const p2 = JSON.parse(val);
-                                const t2 = p2?.access_token ?? p2?.currentSession?.access_token ?? p2?.token;
-                                if (typeof t2 === "string" && t2.startsWith("eyJ") && t2.split(".").length === 3) return t2;
-                            } catch {
-                                if (val.startsWith("eyJ") && val.split(".").length === 3) return val;
-                            }
-                        }
-                    } catch {
-                        // localStorage may be unavailable in some contexts
-                    }
-                    return null;
-                },
-            });
-
-            for (const entry of result ?? []) {
-                const token = entry?.result;
-                if (typeof token === "string" && isLikelyJwt(token)) {
-                    return token;
-                }
-            }
-        } catch {
-            // Tab may be unavailable or restricted.
-        }
-    }
-
-    return null;
-}
 
 /** Extracts project ID from the active tab URL.
  *  Supports both path-based (/projects/{id}) and subdomain-based
