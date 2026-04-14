@@ -31,6 +31,7 @@ import {
 import { createConcurrencyLock } from './async-utils';
 import type { ConcurrencyLock } from './async-utils';
 import { logError } from './error-utils';
+import { AUTH_READY_TIMEOUT_MS } from './startup-token-gate';
 
 // ============================================
 // Types
@@ -93,7 +94,7 @@ export class AuthRecoveryManager {
     return this.recoveryLock
       .run(
         () => this.executeRecovery(),
-        10_000,
+        AUTH_READY_TIMEOUT_MS,
         resolveToken(),
       )
       .then(function (result) {
