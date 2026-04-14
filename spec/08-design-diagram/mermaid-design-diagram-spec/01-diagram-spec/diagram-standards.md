@@ -144,7 +144,7 @@ All diagrams live in `standalone-scripts/macro-controller/diagrams/`.
 | File | Description |
 |------|-------------|
 | `master-architecture-overview.mmd` | High-level map linking all five flows together with cross-system relationships |
-| `auth-bridge-waterfall.mmd` | 4-tier token recovery strategy — localStorage, Supabase JWT, Extension Bridge, Cookie fallback |
+| `auth-bridge-waterfall.mmd` | Token recovery strategy — Signed URL, Session Cookie JWT, Extension Bridge fallback |
 | `macro-controller-build.mmd` | Vite IIFE build pipeline — source → compile → dist artifacts → extension deploy |
 | `script-injection-pipeline.mmd` | 6-stage injection lifecycle — dependency resolution through IIFE execution with CSP fallbacks |
 | `prompts-pipeline.mmd` | Prompt file processing — source folders → JSON build → SQLite seeding → UI render |

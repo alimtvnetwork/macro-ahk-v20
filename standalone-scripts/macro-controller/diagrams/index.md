@@ -148,7 +148,7 @@ Copy Injection Logs button workflow: 5 parallel background fetches via Promise.a
 **File:** [`auth-token-seeding-workflow.mmd`](auth-token-seeding-workflow.mmd)  
 **Image:** [`images/auth-token-seeding-workflow.png`](images/auth-token-seeding-workflow.png)
 
-Full authentication and token seeding flow from 4 trigger sources (extension boot, Run Scripts pipeline, cookie change, tab navigation) through the core 2-tier resolution: Tier 1 scans tab localStorage for Supabase JWTs (`sb-*-auth-token`), Tier 2 reads session cookies and only seeds if the value is a real JWT (`eyJ...` with 3 segments). Raw opaque cookies are never seeded. On cookie change, the cookie watcher reseeds all platform tabs and broadcasts TOKEN_UPDATED/TOKEN_EXPIRED. Downstream consumers (authBridge, Macro Controller, Credit Monitor) read from localStorage with TTL caching.
+Full authentication and token seeding flow from 4 trigger sources (extension boot, Run Scripts pipeline, cookie change, tab navigation) through the core 2-tier resolution: Tier 1 reads a JWT from signed preview URLs (`__lovable_token`), Tier 2 reads session cookies and only seeds if the value is a real JWT (`eyJ...` with 3 segments). Raw opaque cookies are never seeded. On cookie change, the cookie watcher reseeds all platform tabs and broadcasts TOKEN_UPDATED/TOKEN_EXPIRED. Downstream consumers (authBridge, Macro Controller, Credit Monitor) read from localStorage with TTL caching.
 
 ![Auth Token Seeding Workflow](images/auth-token-seeding-workflow.png)
 

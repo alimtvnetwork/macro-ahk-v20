@@ -1,7 +1,7 @@
 # Issue: Auth Cookie Read Failure in Macro Controller
 
 **Date**: 2026-03-24
-**Status**: Fixed (v1.65.0) — Added Supabase localStorage scan as Tier 2 fallback
+**Status**: Fixed (v1.65.0) — Added localStorage JWT scan as Tier 2 fallback
 **Severity**: P0
 
 ---
