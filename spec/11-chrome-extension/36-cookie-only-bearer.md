@@ -89,10 +89,10 @@ Both keys are written together atomically. Any component reading `marco_bearer_t
 
 ---
 
-## Why No Broadcast / No Supabase Scan
+## Why No Broadcast / No External Auth Scan
 
 - **No broadcast needed**: All components read from the same localStorage. When the Auth Bridge saves a fresh token, it's immediately available to all components on the same origin.
-- **No Supabase scan**: The system does not use Supabase. Tokens come from the Lovable session cookie only.
+- **No external auth scan**: Tokens come from the Lovable session cookie and signed URLs only. No third-party auth systems are used.
 - **No multi-tier fallthrough**: Two steps are sufficient — localStorage cache with TTL, and cookie fallback. Adding more tiers adds complexity without value.
 
 ---

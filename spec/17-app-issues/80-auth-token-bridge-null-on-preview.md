@@ -26,7 +26,7 @@ Auth trace showed:
 
 ### RC1 — No resilient JWT fallback when `/auth-token` exchange misses
 `GET_TOKEN`/`REFRESH_TOKEN` depended primarily on `/projects/{id}/auth-token` exchange.
-When exchange returned no JWT (cookie mismatch, cold worker, or environment-specific auth shape), handlers returned empty token without recovering from already-available Supabase `sb-*-auth-token` localStorage state in other open platform tabs.
+When exchange returned no JWT (cookie mismatch, cold worker, or environment-specific auth shape), handlers returned empty token without recovering from already-available JWT localStorage state in other open platform tabs.
 
 ### RC2 — Incomplete domain coverage for extension matching
 Manifest/content-script and background tab pattern matching excluded apex domains (`https://lovable.app/*`, `https://lovableproject.com/*`) in key places, causing inconsistent relay/seeding coverage depending on where the user was logged in.
@@ -39,10 +39,10 @@ Manifest/content-script and background tab pattern matching excluded apex domain
 ## Failure Chain
 
 1. Macro controller starts on a preview tab (`*.lovable.app`).
-2. localStorage has no JWT (preview tab has no Supabase session).
+2. localStorage has no JWT (preview tab has no session).
 3. Bridge sends `GET_TOKEN` to extension background.
 4. Background attempts `/auth-token` exchange — fails (cookie mismatch or cold worker).
-5. No fallback scan of platform tabs for `sb-*-auth-token` localStorage.
+5. No fallback scan of platform tabs for JWT localStorage.
 6. Bridge returns empty token with no actionable error message.
 7. `ensureTokenReady(6000)` hits timeout → UI shows "no token after 6s".
 
@@ -51,7 +51,7 @@ Manifest/content-script and background tab pattern matching excluded apex domain
 ## Fix Implemented
 
 1. **Added resilient JWT fallback in background auth handlers**
-   - If exchange fails, scan platform tabs (`lovable.dev/app/lovableproject`) via `chrome.scripting.executeScript` for Supabase `sb-*-auth-token` JWTs.
+   - If exchange fails, scan platform tabs (`lovable.dev/app/lovableproject`) via `chrome.scripting.executeScript` for JWT localStorage keys.
    - If session cookie value itself is JWT-like, accept it.
 
 2. **Improved refresh error propagation**

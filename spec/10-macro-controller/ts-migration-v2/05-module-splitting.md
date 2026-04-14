@@ -25,7 +25,7 @@ Split all monolithic files (>200 lines) in `standalone-scripts/macro-controller/
 
 | File | Lines | Contents |
 |------|-------|----------|
-| `auth-resolve.ts` | 340 | Token utils (normalize, validate, extract), session bridge, Supabase scan, cookie reading, `resolveToken()`, persistence, badge, `markBearerTokenExpired`, `invalidateSessionBridgeKey` |
+| `auth-resolve.ts` | 340 | Token utils (normalize, validate, extract), session bridge, cookie reading, `resolveToken()`, persistence, badge, `markBearerTokenExpired`, `invalidateSessionBridgeKey` |
 | `auth-bridge.ts` | 395 | Extension bridge communication, relay health check, bridge outcome tracking, `AuthDebugSnapshot`, `extractTokenFromAuthBridgeResponse` |
 | `auth-recovery.ts` | 236 | `recoverAuthOnce()` with concurrency lock (RCA-4), `refreshBearerTokenFromBestSource()` waterfall, `RefreshTokenOptions` |
 | `auth.ts` | 44 | Barrel re-export |
