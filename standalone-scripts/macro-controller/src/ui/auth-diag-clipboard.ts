@@ -9,6 +9,7 @@
 import { getWaterfallClipboardLines } from './auth-diag-waterfall';
 import { logError } from '../error-utils';
 import { showToast } from '../toast';
+import { getStartupGateSnapshot } from '../startup-token-gate';
 
 /** Build the copy button and status badge for the diagnostics header. */
 export function buildHeaderControls(
@@ -78,6 +79,20 @@ function buildDiagnosticClipboardText(
     logError('buildAuthDiag', 'SDK auth diagnostics unavailable', e);
     // SDK not available
   }
+
+  // Append startup gate snapshot
+  const gate = getStartupGateSnapshot();
+  lines.push('');
+  lines.push('=== Startup Gate ===');
+  lines.push('Settled:    ' + gate.settled);
+  lines.push('Token:      ' + (gate.token ? 'yes' : 'no'));
+  lines.push('WaitedMs:   ' + gate.waitedMs);
+  lines.push('Reason:     ' + gate.reason);
+  lines.push('Bridge:     ' + gate.bridgeState);
+  lines.push('Cookies:    ' + gate.visibleCookies);
+  lines.push('SignedUrl:   ' + (gate.signedUrlDetected ? 'yes' : 'no'));
+  lines.push('Polls:      ' + gate.pollCount);
+  lines.push('Refreshes:  ' + gate.refreshCount);
 
   lines.push('');
   lines.push('=== Startup Waterfall ===');
