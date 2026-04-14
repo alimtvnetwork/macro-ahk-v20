@@ -8,7 +8,7 @@
  * @see .lovable/memory/architecture/macro-controller/bootstrap-strategy.md
  */
 
-import { resolveToken, refreshBearerTokenFromBestSource } from './auth';
+import { getAuthDebugSnapshot, resolveToken, refreshBearerTokenFromBestSource } from './auth';
 import { log } from './logging';
 
 export interface TokenReadyResult {
@@ -36,6 +36,27 @@ interface TokenGateCtx {
 const POLL_INTERVAL_MS = 250;
 const REFRESH_RETRY_MS = 1500;
 export const AUTH_READY_TIMEOUT_MS = 2_000;
+
+function buildTimeoutReason(ctx: TokenGateCtx, waitedMs: number): string {
+  const diag = getAuthDebugSnapshot();
+  const bridgeState = diag.bridgeOutcome.success
+    ? 'hit:' + (diag.bridgeOutcome.source || 'bridge')
+    : ctx.refreshInFlight
+      ? 'in-flight'
+      : diag.bridgeOutcome.attempted
+        ? 'miss:' + (diag.bridgeOutcome.error || 'empty')
+        : 'not-attempted';
+  const visibleCookies = diag.visibleCookieNames.length > 0
+    ? diag.visibleCookieNames.join(',')
+    : 'none';
+
+  return 'Timeout — no token after ' + Math.round(waitedMs / 1000) + 's'
+    + ' | source=' + diag.tokenSource
+    + ' | bridge=' + bridgeState
+    + ' | visibleCookies=' + visibleCookies
+    + ' | polls=' + ctx.pollCount
+    + ' | refreshes=' + ctx.refreshCount;
+}
 
 function finishTokenGate(ctx: TokenGateCtx, result: TokenReadyResult): void {
   if (ctx.settled) {
@@ -132,7 +153,7 @@ export function ensureTokenReady(timeoutMs: number = AUTH_READY_TIMEOUT_MS): Pro
       const isTimedOut = elapsed >= timeoutMs;
 
       if (isTimedOut) {
-        finishTokenGate(ctx, { token: '', waitedMs: elapsed, reason: 'Timeout — no token after ' + Math.round(elapsed / 1000) + 's. Ensure you are logged in.' });
+        finishTokenGate(ctx, { token: '', waitedMs: elapsed, reason: buildTimeoutReason(ctx, elapsed) });
       }
     }, POLL_INTERVAL_MS);
   });

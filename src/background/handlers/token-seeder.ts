@@ -1,9 +1,9 @@
 /**
  * Marco Extension — Token Seeder
  *
- * Reads session cookies and the page's localStorage, then seeds a JWT into
- * the target tab only when a valid JWT is already available. It never calls
- * the auth-token endpoint and never seeds raw opaque cookie values.
+ * Reads session cookies, signed URL tokens, and the page's localStorage, then
+ * seeds a JWT into the target tab only when a valid JWT is already available.
+ * It never calls the auth-token endpoint and never seeds raw opaque cookie values.
  *
  * v1.68.1 FIX: Raw session cookies are NOT JWTs — seeding them into
  * localStorage[marco_bearer_token] caused Tier 1 resolution to return
@@ -28,6 +28,7 @@ const SESSION_COOKIE_NAME_FALLBACKS = [
 const LS_SESSION_KEY = "lovable-session-id";
 const LS_SESSION_COOKIE_KEY = "lovable-session-id.id";
 const LS_MARCO_BEARER_KEY = "marco_bearer_token";
+const LS_TOKEN_SAVED_AT_KEY = "marco_token_saved_at";
 
 /* ------------------------------------------------------------------ */
 /*  Public API                                                         */
@@ -38,8 +39,9 @@ const LS_MARCO_BEARER_KEY = "marco_bearer_token";
  *
  * Resolution order:
  * 1. Read existing Supabase JWT from page localStorage (sb-*-auth-token)
- * 2. Read a JWT directly from session cookies
- * 3. If neither works, DO NOT seed — let macro controller handle it
+ * 2. Read a JWT from signed preview URL (__lovable_token / lovable_token)
+ * 3. Read a JWT directly from session cookies
+ * 4. If neither works, DO NOT seed — let macro controller handle it
  */
 export async function seedTokensIntoTab(tabId: number): Promise<void> {
     const tabUrl = await getTabUrl(tabId);
@@ -58,7 +60,16 @@ export async function seedTokensIntoTab(tabId: number): Promise<void> {
         return;
     }
 
-    // Step 2: Read session cookie directly and only seed it if it is already a JWT
+    // Step 2: Read signed preview URL token from tab/frame URLs
+    const signedUrlToken = await resolveSignedUrlTokenCandidate(tabId, tabUrl);
+
+    if (signedUrlToken !== null) {
+        console.log("[token-seeder] Found signed URL JWT in tab/frame URL — seeding into tab %d", tabId);
+        await injectJwtIntoTab(tabId, signedUrlToken);
+        return;
+    }
+
+    // Step 3: Read session cookie directly and only seed it if it is already a JWT
     const projectId = extractProjectIdFromTabUrl(tabUrl);
     const sessionCookieNames = await resolveSessionCookieNamesFromProjects();
     const sessionLookup = await readCookieValueByNameCandidates(sessionCookieNames, tabUrl);
@@ -69,7 +80,7 @@ export async function seedTokensIntoTab(tabId: number): Promise<void> {
         return;
     }
 
-    // Step 3: Check if session cookie exists (for diagnostics only)
+    // Step 4: Check if session cookie exists (for diagnostics only)
     if (sessionLookup.value !== null) {
         logBgWarnError(BgLogTag.TOKEN_SEEDER, `Session cookie exists for project ${projectId ?? "unknown"} but no JWT is available — NOT seeding raw cookie`);
     } else {
@@ -93,6 +104,7 @@ async function injectJwtIntoTab(tabId: number, jwt: string): Promise<void> {
                 LS_SESSION_KEY,
                 LS_SESSION_COOKIE_KEY,
                 LS_MARCO_BEARER_KEY,
+                LS_TOKEN_SAVED_AT_KEY,
             ],
         });
 
@@ -108,11 +120,13 @@ function writeJwtToLocalStorage(
     sessionKey: string,
     sessionCookieKey: string,
     marcoBearerKey: string,
+    tokenSavedAtKey: string,
 ): void {
     try {
         localStorage.setItem(sessionKey, jwt);
         localStorage.setItem(sessionCookieKey, jwt);
         localStorage.setItem(marcoBearerKey, jwt);
+        localStorage.setItem(tokenSavedAtKey, String(Date.now()));
     } catch {
         // localStorage may be unavailable — fail silently
     }
@@ -199,6 +213,53 @@ async function getTabUrl(tabId: number): Promise<string | null> {
     } catch {
         return null;
     }
+}
+
+function isLikelyJwt(token: string): boolean {
+    return token.startsWith("eyJ") && token.split(".").length === 3;
+}
+
+function extractSignedUrlTokenFromUrl(url: string | null | undefined): string | null {
+    if (!url) {
+        return null;
+    }
+
+    try {
+        const parsed = new URL(url);
+        const token = parsed.searchParams.get("__lovable_token")
+            ?? parsed.searchParams.get("lovable_token");
+
+        return token && isLikelyJwt(token)
+            ? token
+            : null;
+    } catch {
+        return null;
+    }
+}
+
+async function resolveSignedUrlTokenCandidate(tabId: number, tabUrl: string | null): Promise<string | null> {
+    const directToken = extractSignedUrlTokenFromUrl(tabUrl);
+
+    if (directToken !== null) {
+        return directToken;
+    }
+
+    try {
+        const frames = await chrome.webNavigation.getAllFrames({ tabId });
+
+        for (const frame of frames ?? []) {
+            const frameUrl = typeof frame?.url === "string" ? frame.url : "";
+            const token = extractSignedUrlTokenFromUrl(frameUrl);
+
+            if (token !== null) {
+                return token;
+            }
+        }
+    } catch {
+        // Frame URLs may be unavailable on restricted tabs.
+    }
+
+    return null;
 }
 
 /** Extracts project ID from a tab URL.

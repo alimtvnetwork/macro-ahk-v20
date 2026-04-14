@@ -344,10 +344,15 @@ function loadWorkspacesOnStartup(): void {
 
 /** Handle startup when no auth token is available. */
 function handleTokenFailure(tokenResult: { waitedMs: number; reason: string }): void {
+  const shortReason = tokenResult.reason.length > 220
+    ? tokenResult.reason.slice(0, 217) + '...'
+    : tokenResult.reason;
+
   timingEnd('token', 'error', 'No token after ' + tokenResult.waitedMs + 'ms');
   logError('Startup self-check', '❌ Token not available after ' + tokenResult.waitedMs + 'ms — ' + tokenResult.reason);
+  log('Startup auth failure detail: ' + tokenResult.reason, 'warn');
   showToast(
-    '⚠️ Auth failed — no token after ' + Math.round(tokenResult.waitedMs / 1000) + 's. '
+    '⚠️ Auth failed — ' + shortReason + '. '
     + 'Try: 1) Re-login to lovable.dev  2) Hard refresh (Ctrl+Shift+R)  3) Click Credits to retry',
     'error',
     { noStop: true },
