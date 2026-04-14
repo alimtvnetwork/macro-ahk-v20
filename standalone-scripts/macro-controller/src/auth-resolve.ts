@@ -85,12 +85,6 @@ function getAuthUtils(): MarcoSDKAuthTokenUtils {
 
       return '';
     },
-    scanSupabaseLocalStorage(): string {
-      return '';
-    },
-    extractSupabaseTokenFromRaw(): string {
-      return '';
-    },
   };
 }
 
@@ -171,19 +165,6 @@ export function getBearerTokenFromSessionBridge(): string {
       return token;
     }
 
-    const supabaseToken = utils.scanSupabaseLocalStorage(
-      (key: string, tokenLength: number) => {
-        setLastSessionBridgeSource(key);
-        log('resolveToken: ✅ Found Supabase auth in localStorage[' + key + '] (len=' + tokenLength + ')', 'success');
-      },
-      (scanErr: Error) => {
-        log('resolveToken: Supabase localStorage scan failed — ' + toErrorMessage(scanErr), 'warn');
-      },
-    );
-
-    if (supabaseToken) {
-      return supabaseToken;
-    }
   } catch (e) {
     log('resolveToken: localStorage bridge unavailable — ' + toErrorMessage(e), 'warn');
   }

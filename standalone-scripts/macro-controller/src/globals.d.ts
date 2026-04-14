@@ -110,15 +110,6 @@ declare global {
     isJwtToken(raw: string): boolean;
     isUsableToken(raw: string): boolean;
     extractBearerTokenFromRaw(raw: string): string;
-    scanSupabaseLocalStorage(
-      onFound?: (key: string, tokenLength: number) => void,
-      onScanError?: (error: Error) => void,
-    ): string;
-    extractSupabaseTokenFromRaw(
-      key: string,
-      raw: string,
-      onFound?: (key: string, tokenLength: number) => void,
-    ): string;
   }
 
   interface MarcoSDK {

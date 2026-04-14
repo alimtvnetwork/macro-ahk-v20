@@ -118,7 +118,7 @@ export function getAuthDebugSnapshot(): AuthDebugSnapshot {
     bridgeOutcome: bridgeOutcomeState.get(),
     visibleCookieNames,
     flow:
-      'localStorage/session-bridge -> supabase-scan -> extension-bridge(GET_TOKEN, REFRESH_TOKEN) -> cookie[' +
+      'localStorage/session-bridge -> extension-bridge(GET_TOKEN, REFRESH_TOKEN) -> cookie[' +
       sessionCookieNames.join(' | ') +
       ']',
   };

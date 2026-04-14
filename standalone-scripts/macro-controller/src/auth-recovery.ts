@@ -258,7 +258,7 @@ export { authRecoveryManager };
 
 /**
  * Multi-tier token refresh waterfall:
- * Tier 1/2: localStorage (seeded keys + Supabase scan)
+ * Tier 1/2: localStorage (seeded keys)
  * Tier 3a: Extension bridge GET_TOKEN
  * Tier 3b: Extension bridge REFRESH_TOKEN
  * Tier 4: Cookie fallback

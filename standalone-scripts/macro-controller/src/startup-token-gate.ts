@@ -5,8 +5,8 @@
  * background all share the same readiness budget and diagnostics.
  *
  * Includes a fast client-side pre-seed that runs synchronously before
- * the async waterfall to populate localStorage from signed URL tokens
- * and Supabase localStorage JWTs — enabling sub-2s cold-load resolution.
+ * the async waterfall to populate localStorage from signed URL tokens,
+ * enabling sub-2s cold-load resolution.
  *
  * @see .lovable/memory/architecture/macro-controller/bootstrap-strategy.md
  */
