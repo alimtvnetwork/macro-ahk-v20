@@ -94,14 +94,13 @@ function getMockResponse(message: MessagePayload): string | number | boolean | n
         GET_HEALTH_STATUS: { state: "HEALTHY", details: [] },
         GET_AUTH_HEALTH: {
             status: "authenticated",
-            resolvedVia: "localStorage JWT scan",
+            resolvedVia: "Cookie presence",
             totalMs: 142,
             strategies: [
                 { name: "Cookie presence", tier: 1, success: true, durationMs: 8, detail: "Session cookie found" },
-                { name: "localStorage JWT scan", tier: 2, success: true, durationMs: 45, detail: "JWT in sb-ref-auth-token (tabId=1)" },
-                { name: "Auth-token endpoint (tab)", tier: 3, success: true, durationMs: 78, detail: "JWT via tabId=1" },
-                { name: "Direct fetch (service worker)", tier: 4, success: false, durationMs: 6, detail: "HTTP 401 (expected — MV3 strips cookies)" },
-                { name: "Cross-tab cookie scan", tier: 5, success: true, durationMs: 5, detail: 'Cookie "lovable-session-id.id" (domain=.lovable.dev)' },
+                { name: "Signed URL token", tier: 2, success: false, durationMs: 2, detail: "No signed URL token found" },
+                { name: "Auth-token exchange", tier: 3, success: false, durationMs: 0, detail: "Disabled — cookie-only mode" },
+                { name: "Cross-tab cookie scan", tier: 4, success: true, durationMs: 5, detail: 'Cookie "lovable-session-id.id" (domain=.lovable.dev)' },
             ],
             checkedAt: new Date().toISOString(),
         },
