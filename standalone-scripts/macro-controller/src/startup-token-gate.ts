@@ -37,6 +37,64 @@ const POLL_INTERVAL_MS = 250;
 const REFRESH_RETRY_MS = 1500;
 export const AUTH_READY_TIMEOUT_MS = 2_000;
 
+// ── Last gate result (observable by diagnostics panel) ──
+
+export interface StartupGateSnapshot {
+  settled: boolean;
+  token: boolean;
+  waitedMs: number;
+  reason: string;
+  pollCount: number;
+  refreshCount: number;
+  bridgeState: string;
+  visibleCookies: string;
+  signedUrlDetected: boolean;
+}
+
+let _lastGateSnapshot: StartupGateSnapshot = {
+  settled: false, token: false, waitedMs: 0, reason: 'not-started',
+  pollCount: 0, refreshCount: 0, bridgeState: 'not-attempted',
+  visibleCookies: 'none', signedUrlDetected: false,
+};
+
+export function getStartupGateSnapshot(): StartupGateSnapshot {
+  return _lastGateSnapshot;
+}
+
+function detectSignedUrlToken(): boolean {
+  try {
+    const url = new URL(window.location.href);
+    const t = url.searchParams.get('__lovable_token') ?? url.searchParams.get('lovable_token');
+    return typeof t === 'string' && t.startsWith('eyJ') && t.split('.').length === 3;
+  } catch { return false; }
+}
+
+function captureGateSnapshot(ctx: TokenGateCtx, result: TokenReadyResult): void {
+  const diag = getAuthDebugSnapshot();
+  const bridgeState = diag.bridgeOutcome.success
+    ? 'hit:' + (diag.bridgeOutcome.source || 'bridge')
+    : ctx.refreshInFlight
+      ? 'in-flight'
+      : diag.bridgeOutcome.attempted
+        ? 'miss:' + (diag.bridgeOutcome.error || 'empty')
+        : 'not-attempted';
+  const visibleCookies = diag.visibleCookieNames.length > 0
+    ? diag.visibleCookieNames.join(',')
+    : 'none';
+
+  _lastGateSnapshot = {
+    settled: true,
+    token: !!result.token,
+    waitedMs: result.waitedMs,
+    reason: result.reason,
+    pollCount: ctx.pollCount,
+    refreshCount: ctx.refreshCount,
+    bridgeState,
+    visibleCookies,
+    signedUrlDetected: detectSignedUrlToken(),
+  };
+}
+
 function buildTimeoutReason(ctx: TokenGateCtx, waitedMs: number): string {
   const diag = getAuthDebugSnapshot();
   const bridgeState = diag.bridgeOutcome.success
@@ -64,6 +122,8 @@ function finishTokenGate(ctx: TokenGateCtx, result: TokenReadyResult): void {
   }
   ctx.settled = true;
   if (ctx.timer !== null) { clearInterval(ctx.timer); }
+
+  captureGateSnapshot(ctx, result);
 
   log(
     '[TokenGate] Settled — polls=' + ctx.pollCount

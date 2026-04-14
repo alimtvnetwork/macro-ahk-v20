@@ -22,6 +22,7 @@ import {
   updateJwtRow,
   updateRefreshRow,
   updateWsCacheRow,
+  updateStartupGateRow,
 } from './auth-diag-rows';
 
 import { buildWaterfallSection } from './auth-diag-waterfall';
@@ -59,6 +60,7 @@ interface AuthDiagUpdateCtx {
   jwtDetailVal: HTMLElement;
   refreshRow: ReturnType<typeof buildDiagRow>;
   wsCacheRow: ReturnType<typeof buildDiagRow>;
+  gateRow: ReturnType<typeof buildDiagRow>;
   renderWaterfall: () => void;
 }
 
@@ -69,6 +71,7 @@ function performAuthDiagUpdate(ctx: AuthDiagUpdateCtx): void {
   updateJwtRow(ctx.deps, ctx.jwtRow, ctx.jwtDetailVal);
   updateRefreshRow(ctx.refreshRow);
   updateWsCacheRow(ctx.wsCacheRow);
+  updateStartupGateRow(ctx.gateRow);
   ctx.renderWaterfall();
 
   // Update header badge with SDK bridge outcome indicator
@@ -136,6 +139,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
   const btnRowDiag = buildButtonRow(deps, () => updateAuthDiagRow());
   const pidRow = buildProjectIdRow(dimStyle, valStyle);
   const wsCacheRow = buildDiagRow(dimStyle, valStyle, 'WS src:', '100px', '8px');
+  const gateRow = buildDiagRow(dimStyle, valStyle, 'Gate:', '100px', '8px');
 
   diagBody.appendChild(cookieRow.row);
   diagBody.appendChild(bridgeRow.row);
@@ -145,6 +149,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
   diagBody.appendChild(refreshRow.row);
   diagBody.appendChild(pidRow);
   diagBody.appendChild(wsCacheRow.row);
+  diagBody.appendChild(gateRow.row);
   diagBody.appendChild(btnRowDiag);
 
   const { waterfallContainer, renderWaterfall } = buildWaterfallSection();
@@ -158,7 +163,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
   col.header.appendChild(copyButton);
   col.header.appendChild(headerBadge);
 
-  const diagCtx: AuthDiagUpdateCtx = { deps, cookieRow, bridgeRow, srcRow, headerBadge, jwtRow, jwtDetailVal, refreshRow, wsCacheRow, renderWaterfall };
+  const diagCtx: AuthDiagUpdateCtx = { deps, cookieRow, bridgeRow, srcRow, headerBadge, jwtRow, jwtDetailVal, refreshRow, wsCacheRow, gateRow, renderWaterfall };
   const updateAuthDiagRow = function(): void { performAuthDiagUpdate(diagCtx); };
 
   updateAuthDiagRow();

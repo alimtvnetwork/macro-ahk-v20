@@ -19,6 +19,7 @@ import {
 } from './auth-jwt-utils';
 import type { AuthDiagDeps } from './section-auth-diag';
 import { logError } from '../error-utils';
+import { getStartupGateSnapshot } from '../startup-token-gate';
 
 const ROW_CSS = 'display:flex;align-items:center;gap:6px;padding:2px 4px;background:rgba(0,0,0,.2);border-radius:3px;';
 
@@ -316,4 +317,36 @@ function buildReadCookieButton(deps: AuthDiagDeps, onUpdate: () => void): HTMLBu
   };
 
   return button;
+}
+
+// ── Startup Gate Row ──
+
+export function updateStartupGateRow(gateRow: DiagRowElements): void {
+  const snap = getStartupGateSnapshot();
+
+  if (!snap.settled) {
+    gateRow.iconEl.textContent = '⏳';
+    gateRow.valEl.textContent = 'Gate pending…';
+    gateRow.valEl.style.color = '';
+    return;
+  }
+
+  if (snap.token) {
+    gateRow.iconEl.textContent = '✅';
+    gateRow.valEl.textContent = snap.reason + ' · ' + snap.waitedMs + 'ms';
+    gateRow.valEl.style.color = '#4ade80';
+  } else {
+    gateRow.iconEl.textContent = '❌';
+    gateRow.valEl.textContent = 'FAILED · ' + snap.waitedMs + 'ms';
+    gateRow.valEl.style.color = '#f87171';
+  }
+
+  const parts: string[] = [
+    'bridge=' + snap.bridgeState,
+    'cookies=' + snap.visibleCookies,
+    'signedUrl=' + (snap.signedUrlDetected ? 'yes' : 'no'),
+    'polls=' + snap.pollCount,
+    'refreshes=' + snap.refreshCount,
+  ];
+  gateRow.valEl.title = snap.reason + '\n' + parts.join(' | ');
 }
