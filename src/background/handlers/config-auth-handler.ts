@@ -37,7 +37,7 @@ const COOKIE_SESSION_ID_HOST = "__Host-lovable-session-id.id";
 const COOKIE_REFRESH_TOKEN_HOST = "__Host-lovable-session-id.refresh";
 const AUTH_API_BASE = "https://api.lovable.dev";
 const TOKEN_CACHE_TTL_MS = 30_000;
-const AUTH_READY_TIMEOUT_MS = 12_000;
+const AUTH_READY_TIMEOUT_MS = 10_000;
 const AUTH_READY_RETRY_INTERVAL_MS = 300;
 
 const SESSION_COOKIE_NAME_CANDIDATES = [
@@ -534,11 +534,12 @@ function buildMissingCookieMessage(
         : "none";
 
     return [
-        `No JWT found after waiting ${Math.round(AUTH_READY_TIMEOUT_MS / 1000)}s for auth restoration.`,
+        `No JWT found after waiting ${Math.round(AUTH_READY_TIMEOUT_MS / 1000)}s for unified auth readiness.`,
         `Checked cookie URLs: ${cookieDiscovery.checkedUrls.join(" | ")}`,
         `Expected session cookie names: ${expectedSessionNames.join(", ")}`,
         `Expected refresh cookie names: ${expectedRefreshNames.join(", ")}`,
         `Discovered auth-like cookie names: ${discovered}`,
+        `Contract: background waitForTokenCandidate -> localStorage JWT / signed URL / JWT cookie`,
     ].join(" ");
 }
 
