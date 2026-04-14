@@ -139,6 +139,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
   const btnRowDiag = buildButtonRow(deps, () => updateAuthDiagRow());
   const pidRow = buildProjectIdRow(dimStyle, valStyle);
   const wsCacheRow = buildDiagRow(dimStyle, valStyle, 'WS src:', '100px', '8px');
+  const gateRow = buildDiagRow(dimStyle, valStyle, 'Gate:', '100px', '8px');
 
   diagBody.appendChild(cookieRow.row);
   diagBody.appendChild(bridgeRow.row);
@@ -148,6 +149,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
   diagBody.appendChild(refreshRow.row);
   diagBody.appendChild(pidRow);
   diagBody.appendChild(wsCacheRow.row);
+  diagBody.appendChild(gateRow.row);
   diagBody.appendChild(btnRowDiag);
 
   const { waterfallContainer, renderWaterfall } = buildWaterfallSection();
@@ -161,7 +163,7 @@ export function createAuthDiagRow(deps: AuthDiagDeps): AuthDiagResult {
   col.header.appendChild(copyButton);
   col.header.appendChild(headerBadge);
 
-  const diagCtx: AuthDiagUpdateCtx = { deps, cookieRow, bridgeRow, srcRow, headerBadge, jwtRow, jwtDetailVal, refreshRow, wsCacheRow, renderWaterfall };
+  const diagCtx: AuthDiagUpdateCtx = { deps, cookieRow, bridgeRow, srcRow, headerBadge, jwtRow, jwtDetailVal, refreshRow, wsCacheRow, gateRow, renderWaterfall };
   const updateAuthDiagRow = function(): void { performAuthDiagUpdate(diagCtx); };
 
   updateAuthDiagRow();
