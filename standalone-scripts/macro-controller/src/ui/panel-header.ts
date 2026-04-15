@@ -9,7 +9,6 @@ import {
   VERSION,
   cPrimaryLight,
   cNeutral500,
-  loopCreditState,
   tFontTiny,
   state,
 } from '../shared-state';
