@@ -28,16 +28,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - Resolved all 20 ESLint warnings across 16 files (cognitive-complexity, max-lines-per-function, unused directives)
 
+---
+
 ## [v2.118.0] — 2026-04-08
 
 ### Changed
 - Version bump: 2.117.0 → 2.118.0 (all version files synced)
 - CI: root `pnpm install` now always uses `--no-frozen-lockfile` (fixes missing lockfile error)
-
-## [v2.118.0] — 2026-04-08
-
-### Changed
-- Version bump: 2.117.0 → 2.118.0 (all version files synced)
 
 ---
 
