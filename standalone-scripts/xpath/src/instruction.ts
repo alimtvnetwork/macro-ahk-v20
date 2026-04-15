@@ -31,7 +31,7 @@ const instruction: ProjectInstruction = {
     schemaVersion: "1.0",
     name: "xpath",
     displayName: "XPath Utilities",
-    version: "2.133.0",
+    version: "2.139.0",
     description: "Global XPath utility library (getByXPath, findElement, reactClick)",
     world: "MAIN",
     isGlobal: true,
