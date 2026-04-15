@@ -6,6 +6,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v2.140.0] — 2026-04-15
+
+### Added
+- **Preview iframe guard**: Domain guard now blocks injection into `id-preview--*.lovable.app` hostnames and embedded iframes (`window !== window.top`), preventing auth timeout errors and false "Preview" workspace name detection
+
+### Changed
+- **Title bar badge priority**: Workspace name now displays first in the title bar badge (e.g., "P0155 RM-AR D5 P030") instead of project name; project name moved to tooltip
+- Version bump: 2.139.0 → 2.140.0 (all 7 version files synced)
+
+---
+
 ## [v2.139.0] — 2026-04-15
 
 ### Changed
