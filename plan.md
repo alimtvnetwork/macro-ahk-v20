@@ -1,9 +1,9 @@
 # Automator — Future Work Roadmap
 
-**Last Updated**: 2026-04-12
+**Last Updated**: 2026-04-15
 **Active Codebase**: `marco-script-ahk-v7.latest/` (v7.23)
-**Macro Controller**: v2.125.0
-**Chrome Extension**: v2.119.0
+**Macro Controller**: v2.139.0
+**Chrome Extension**: v2.139.0
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
@@ -12,9 +12,9 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.122.0 + Macro Controller v2.125.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.139.0 + Macro Controller v2.139.0 — Stable
 
-All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.122.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, 4-tier CSP fallback, and Cross-Project Sync (Phase 1 data layer + Phase 2 Library UI). Macro Controller at v2.125.0 with typed namespace API, centralized constants (Phase 1+2), and zero ESLint warnings. All immediate workstream items complete.
+All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.139.0 with full React UI unification, session-bridge auth (unified `getBearerToken()` contract), SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, 4-tier CSP fallback, and Cross-Project Sync (Phase 1 data layer + Phase 2 Library UI). Macro Controller at v2.139.0 with typed namespace API, centralized constants (Phase 1+2), zero ESLint warnings, and all Supabase references purged. All immediate workstream items complete.
 
 ### 2026-04-12 Session
 
