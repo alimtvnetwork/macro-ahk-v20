@@ -1,9 +1,9 @@
 # Automator — Future Work Roadmap
 
-**Last Updated**: 2026-04-13
+**Last Updated**: 2026-04-12
 **Active Codebase**: `marco-script-ahk-v7.latest/` (v7.23)
-**Macro Controller**: v2.135.0
-**Chrome Extension**: v2.135.0
+**Macro Controller**: v2.125.0
+**Chrome Extension**: v2.119.0
 **Detailed Plan**: `.lovable/plan.md`
 **Suggestions Tracker**: `.lovable/memory/suggestions/01-suggestions-tracker.md`
 **Completed Plans**: `.lovable/memory/workflow/completed/`
@@ -12,9 +12,9 @@
 
 ---
 
-## Current Status: v7.23 AHK + Extension v2.135.0 + Macro Controller v2.135.0 — Stable
+## Current Status: v7.23 AHK + Extension v2.122.0 + Macro Controller v2.125.0 — Stable
 
-Auth recovery now also scans all tab frames for localStorage JWTs and signed preview URL tokens, fixing editor-page cases where the live session only exists inside the embedded preview frame while startup still waits on the auth-ready gate.
+All critical AHK features implemented. 44 issue write-ups documented. 26 engineering standards established. Chrome Extension at v2.122.0 with full React UI unification, session-bridge auth, SQLite bundles, User Script API, Context Menu, relative scaling, view transitions, hover micro-interactions, 7-stage injection pipeline with cache gate, 4-tier CSP fallback, and Cross-Project Sync (Phase 1 data layer + Phase 2 Library UI). Macro Controller at v2.125.0 with typed namespace API, centralized constants (Phase 1+2), and zero ESLint warnings. All immediate workstream items complete.
 
 ### 2026-04-12 Session
 

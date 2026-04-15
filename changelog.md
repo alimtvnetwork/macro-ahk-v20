@@ -6,19 +6,6 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v2.137.0] — 2026-04-13
-
-### Changed
-- **Auth contract unification**: Migrated all operational paths (`startup.ts`, `ws-move.ts`, `rename-api.ts`, `ws-adjacent.ts`, UI components) from legacy `resolveToken()`/`recoverAuthOnce()` to the unified `getBearerToken()` / `getBearerToken({ force: true })` contract
-- Removed legacy auth functions (`resolveToken`, `recoverAuthOnce`, `invalidateSessionBridgeKey`) — single Auth Bridge path enforced project-wide
-- Updated `AuthDiagDeps` and panel wiring to support async token resolution
-
-### Fixed
-- **TS build errors**: Removed unused `getBearerToken` import in `loop-controls.ts`, prefixed 3 unused `token` params with `_` in auth recovery handlers, converted illegal `await` in non-async `launchCreditAndWorkspaceLoad()` to `.then()` chain
-- Version bump: 2.136.0 → 2.137.0 (all 7 version files synced)
-
----
-
 ## [v2.119.0] — 2026-04-08
 
 ### Fixed
