@@ -117,8 +117,10 @@ export const toastContainerId = DomId.ToastContainer;
 
 // Seed workspace name from project-scoped localStorage cache for UI-first strategy
 import { getCachedWorkspaceName, migrateLegacyCache } from './workspace-cache';
+import { isInvalidWorkspaceCandidateName } from './ws-name-matching';
 migrateLegacyCache(); // one-time migration from old non-scoped keys
-const _cachedWsName = getCachedWorkspaceName();
+const _cachedWsNameRaw = getCachedWorkspaceName();
+const _cachedWsName = isInvalidWorkspaceCandidateName(_cachedWsNameRaw) ? '' : _cachedWsNameRaw;
 
 // loopCfg imported at shared-state.ts level — use config-validator defaults
 import { RETRY_MAX_RETRIES as _retryMaxRetries, RETRY_BACKOFF_MS as _retryBackoffMs } from './constants';

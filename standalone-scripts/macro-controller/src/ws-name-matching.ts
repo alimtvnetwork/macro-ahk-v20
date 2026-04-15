@@ -11,6 +11,17 @@ import type { WorkspaceCredit } from './types';
 // Constants
 // ============================================
 export const SELECTED_WS_SELECTOR = '[aria-current="page"], [aria-selected="true"], [data-state="checked"], [data-state="active"], [data-selected="true"]';
+const INVALID_WORKSPACE_NAME_CANDIDATES = new Set([
+  'preview',
+  'project',
+  'projects',
+  'workspace',
+  'workspaces',
+  'current workspace',
+  'selected workspace',
+  'unknown workspace',
+  'unknown project',
+]);
 
 // ============================================
 // Normalization and matching
@@ -18,6 +29,25 @@ export const SELECTED_WS_SELECTOR = '[aria-current="page"], [aria-selected="true
 
 export function normalizeWorkspaceName(name: string): string {
   return (name || '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+export function isInvalidWorkspaceCandidateName(name: string, projectName?: string): boolean {
+  const normalizedName = normalizeWorkspaceName(name);
+  const normalizedProjectName = normalizeWorkspaceName(projectName || '');
+
+  if (!normalizedName) {
+    return true;
+  }
+
+  if (INVALID_WORKSPACE_NAME_CANDIDATES.has(normalizedName)) {
+    return true;
+  }
+
+  if (normalizedProjectName && normalizedName === normalizedProjectName) {
+    return true;
+  }
+
+  return false;
 }
 
 export function matchWorkspaceByName(rawName: string, perWs: WorkspaceCredit[]): WorkspaceCredit | null {

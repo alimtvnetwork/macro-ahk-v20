@@ -12,10 +12,12 @@ import { MacroController } from '../core/MacroController';
 import { nsWrite, nsCallTyped } from '../api-namespace';
 import { clearSkeletons } from './skeleton';
 import { cacheWorkspaceName } from '../workspace-cache';
+import { isInvalidWorkspaceCandidateName } from '../ws-name-matching';
+import { getTitleBarDisplayState } from './title-bar-display';
 
 function mc() { return MacroController.getInstance(); }
 import { IDS, TIMING, state, loopCreditState } from '../shared-state';
-import { log, getDisplayProjectName } from '../logging';
+import { log } from '../logging';
 import { runCycle } from '../loop-engine';
 
 // Re-export status renderer symbols
@@ -34,7 +36,7 @@ export function updateUI(): void {
   updateTitleBarWorkspaceName();
 
   // Persist workspace name to localStorage for instant UI on next load
-  if (state.workspaceName && !state.workspaceFromCache) {
+  if (state.workspaceName && !state.workspaceFromCache && !isInvalidWorkspaceCandidateName(state.workspaceName)) {
     cacheWorkspaceName(
       state.workspaceName,
       loopCreditState.currentWs ? loopCreditState.currentWs.id : undefined,
@@ -79,27 +81,11 @@ export function updateTitleBarWorkspaceName(): void {
   const syncIcon = document.getElementById('loop-ws-sync-icon');
   if (syncIcon) syncIcon.remove();
 
-  const wsName = state.workspaceName
-    || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
-  const projectName = getDisplayProjectName();
-
-  // Title bar prioritizes workspace name; project shown in tooltip
-  if (wsName) {
-    el.textContent = wsName;
-    el.style.color = '#fbbf24';
-    el.style.opacity = '1';
-    el.title = 'Workspace: ' + wsName + (projectName && projectName !== 'Unknown Project' ? ' | Project: ' + projectName : '') + ' — click to re-detect';
-  } else if (projectName && projectName !== 'Unknown Project') {
-    el.textContent = projectName;
-    el.style.color = '#fbbf24';
-    el.style.opacity = '0.7';
-    el.title = 'Project: ' + projectName + ' (workspace not yet detected) — click to re-detect';
-  } else {
-    el.textContent = '⟳ detecting…';
-    el.style.color = '#9ca3af';
-    el.style.opacity = '1';
-    el.title = 'No project detected — click to retry';
-  }
+  const titleBarState = getTitleBarDisplayState();
+  el.textContent = titleBarState.text;
+  el.style.color = titleBarState.color;
+  el.style.opacity = titleBarState.opacity;
+  el.title = titleBarState.title;
 }
 
 /**

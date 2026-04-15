@@ -9,11 +9,10 @@ import {
   VERSION,
   cPrimaryLight,
   cNeutral500,
-  loopCreditState,
   tFontTiny,
   state,
 } from '../shared-state';
-import { log, getDisplayProjectName } from '../logging';
+import { log } from '../logging';
 import {
   getLastTokenSource,
   refreshBearerTokenFromBestSource,
@@ -32,6 +31,7 @@ import type { PanelBuilderDeps } from './panel-builder';
 import type { PanelLayoutCtx } from './panel-layout';
 import { logError } from '../error-utils';
 import { CssFragment } from '../types';
+import { getCurrentWorkspaceDisplayName, getTitleBarDisplayState } from './title-bar-display';
 // ============================================
 // Return type for buildTitleRow
 // ============================================
@@ -131,18 +131,12 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
   const wsNameEl = document.createElement('div');
   wsNameEl.id = 'loop-title-ws-name';
   wsNameEl.style.cssText = CssFragment.FontSize + tFontTiny + ';color:#fbbf24;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;cursor:pointer;border-bottom:1px dotted rgba(251,191,36,0.4);transition:color 0.15s;margin-right:4px;';
-  wsNameEl.title = 'Project name — click to re-detect workspace';
+  const titleBarState = getTitleBarDisplayState();
+  wsNameEl.title = titleBarState.title;
+  wsNameEl.style.opacity = titleBarState.opacity;
 
-  const projectName = getDisplayProjectName();
-  const wsName = state.workspaceName
-    || (loopCreditState.currentWs ? (loopCreditState.currentWs.fullName || loopCreditState.currentWs.name) : '');
-
-  if (wsName) {
-    wsNameEl.textContent = wsName;
-    wsNameEl.title = 'Workspace: ' + wsName + (projectName && projectName !== 'Unknown Project' ? ' | Project: ' + projectName : '') + ' — click to re-detect';
-  } else if (projectName && projectName !== 'Unknown Project') {
-    wsNameEl.textContent = projectName;
-    wsNameEl.title = 'Project: ' + projectName + ' (workspace not yet detected) — click to re-detect';
+  if (titleBarState.text !== '⟳ detecting…') {
+    wsNameEl.textContent = titleBarState.text;
   } else {
     const wsShimmer = document.createElement('span');
     wsShimmer.className = 'marco-skeleton';
@@ -160,13 +154,12 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
     const token = resolveToken();
     state.workspaceFromApi = false;
     deps.autoDetectLoopCurrentWorkspace(token).then(function() {
-      wsNameEl.style.color = '#fbbf24';
-      wsNameEl.style.opacity = '1';
-      const ws = state.workspaceName || '';
-      const name = getDisplayProjectName();
-      // Title bar prioritizes workspace name; project shown in tooltip
-      wsNameEl.textContent = ws || (name && name !== 'Unknown Project' ? name : '❌ unknown');
-      wsNameEl.title = (ws ? 'Workspace: ' + ws : '') + (name && name !== 'Unknown Project' ? ' | Project: ' + name : '') + ' — click to re-detect';
+      const nextTitleBarState = getTitleBarDisplayState();
+      wsNameEl.style.color = nextTitleBarState.color;
+      wsNameEl.style.opacity = nextTitleBarState.opacity;
+      wsNameEl.textContent = nextTitleBarState.text;
+      wsNameEl.title = nextTitleBarState.title;
+      const ws = getCurrentWorkspaceDisplayName();
       if (ws) {
         log('Title bar: ✅ Workspace re-detected: "' + ws + '"', 'success');
         showToast('Workspace: ' + ws, 'success');
@@ -178,10 +171,11 @@ function buildWorkspaceNameBadge(deps: PanelBuilderDeps): HTMLElement {
       wsNameEl.style.color = '#f87171';
       wsNameEl.textContent = '❌ failed';
       setTimeout(function() {
-        wsNameEl.style.color = '#fbbf24';
-        const fallbackWs = state.workspaceName || '';
-        const fallbackName = getDisplayProjectName();
-        wsNameEl.textContent = fallbackWs || (fallbackName && fallbackName !== 'Unknown Project' ? fallbackName : '⟳ detecting…');
+        const fallbackTitleBarState = getTitleBarDisplayState();
+        wsNameEl.style.color = fallbackTitleBarState.color;
+        wsNameEl.style.opacity = fallbackTitleBarState.opacity;
+        wsNameEl.textContent = fallbackTitleBarState.text;
+        wsNameEl.title = fallbackTitleBarState.title;
       }, 2000);
     });
   };

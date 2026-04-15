@@ -6,6 +6,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v2.141.0] — 2026-04-15
+
+### Fixed
+- **Header label mapping**: Title bar badge beside `TS Macro` now shows the project name first, while the status line below continues showing the workspace name
+- **False workspace fallback**: Generic labels like `Preview` and raw project-name echoes are now rejected as workspace names during dialog detection and cache restore
+
+### Changed
+- Version bump: 2.140.0 → 2.141.0 (all synced version files updated)
+
+---
+
 ## [v2.140.0] — 2026-04-15
 
 ### Added

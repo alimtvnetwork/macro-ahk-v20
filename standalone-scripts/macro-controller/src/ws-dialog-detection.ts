@@ -9,9 +9,9 @@
 
 import { toErrorMessage, logError } from './error-utils';
 import { CONFIG, TIMING, loopCreditState, state } from './shared-state';
-import { log, logSub } from './logging';
+import { log, logSub, getDisplayProjectName } from './logging';
 import { reactClick, getByXPath, getAllByXPath, findElement, ML_ELEMENTS } from './xpath-utils';
-import { collectWorkspaceNameCandidatesFromNode, matchWorkspaceByName, normalizeWorkspaceName } from './ws-name-matching';
+import { collectWorkspaceNameCandidatesFromNode, matchWorkspaceByName, normalizeWorkspaceName, isInvalidWorkspaceCandidateName } from './ws-name-matching';
 import type { WorkspaceCredit, WorkspaceMatchCandidate } from './types';
 
 import { Label } from './types';
@@ -186,9 +186,14 @@ function applyChosenWorkspace(
     return;
   }
   const firstRaw = (allNodes[0].textContent || '').trim();
-  if (perWs.length === 0 && firstRaw) {
+  const projectName = getDisplayProjectName();
+  const isInvalidRawWorkspace = isInvalidWorkspaceCandidateName(firstRaw, projectName);
+
+  if (perWs.length === 0 && firstRaw && !isInvalidRawWorkspace) {
     state.workspaceName = firstRaw;
     log(fn + ': ✅ No workspace list — using raw XPath text as workspace name: "' + firstRaw + '"', 'success');
+  } else if (perWs.length === 0 && firstRaw && isInvalidRawWorkspace) {
+    log(fn + ': ⚠️ Ignoring raw XPath workspace candidate "' + firstRaw + '" because it is a generic/project label; preserving existing workspace', 'warn');
   } else {
     log(fn + ': XPath returned ' + allNodes.length + ' nodes but no unambiguous exact match. First node: "' + firstRaw + '" (checked ' + perWs.length + ' workspaces)', 'warn');
     log(fn + Label.KeepingExistingWs + (state.workspaceName || '(none)'), 'warn');
