@@ -1,0 +1,17 @@
+{
+  "version": "2.141.0",
+  "branch": "release/v2.141.0",
+  "sourceBranch": "main",
+  "commit": "506f7f7be2591a1eabc016b56705c480ad849f68",
+  "tag": "v2.141.0",
+  "assets": [],
+  "changelog": [
+    "**Header label mapping**: Title bar badge beside `TS Macro` now shows the project name first, while the status line below continues showing the workspace name",
+    "**False workspace fallback**: Generic labels like `Preview` and raw project-name echoes are now rejected as workspace names during dialog detection and cache restore",
+    "Version bump: 2.140.0 → 2.141.0 (all synced version files updated)"
+  ],
+  "draft": false,
+  "preRelease": false,
+  "createdAt": "2026-04-15T13:24:55Z",
+  "isLatest": false
+}
