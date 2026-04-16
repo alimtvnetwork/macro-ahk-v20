@@ -164,6 +164,13 @@ const workspace = Object.freeze({
             params: { projectId, ...options?.params },
         });
     },
+
+    switchContext(wsId: string, options?: ApiCallOptions): Promise<ApiResponse> {
+        return callEndpoint(apiRegistry.workspace.switchContext, {
+            ...options,
+            params: { wsId, ...options?.params },
+        });
+    },
 });
 
 /* ------------------------------------------------------------------ */
