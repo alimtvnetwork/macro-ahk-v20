@@ -273,10 +273,10 @@ class ToastManager {
       notify!.toast(message, resolvedLevel, opts);
       log('[Toast/' + resolvedLevel + '] ' + message.substring(0, 150), resolveLogLevel(resolvedLevel));
 
-      const isOverlayLevel = resolvedLevel === 'error' || resolvedLevel === 'warn';
+      const isOverlayLevel = resolvedLevel === 'error';
 
       if (isOverlayLevel) {
-        pushOverlayError(resolvedLevel as 'error' | 'warn', message, opts?.stack, 'toast');
+        pushOverlayError('error', message, opts?.stack, 'toast');
       }
 
       return;
@@ -285,10 +285,10 @@ class ToastManager {
     this.enqueueToast(message, resolvedLevel, opts);
     log('[Toast/' + resolvedLevel + '] (queued, SDK pending) ' + message.substring(0, 150), resolveLogLevel(resolvedLevel));
 
-    const isOverlayLevelQueued = resolvedLevel === 'error' || resolvedLevel === 'warn';
+    const isOverlayLevelQueued = resolvedLevel === 'error';
 
     if (isOverlayLevelQueued) {
-      pushOverlayError(resolvedLevel as 'error' | 'warn', message, opts?.stack, 'toast');
+      pushOverlayError('error', message, opts?.stack, 'toast');
     }
 
     const isTrackable = resolvedLevel === 'error' || resolvedLevel === 'warn';
