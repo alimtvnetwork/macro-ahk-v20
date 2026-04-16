@@ -161,7 +161,7 @@ function buildStartStopButton(deps: PanelBuilderDeps, btnStyle: string): { wrap:
   startStopBtn.id = IDS.START_BTN;
   startStopBtn.textContent = '▶';
   startStopBtn.title = 'Start loop';
-  startStopBtn.style.cssText = btnStyle + CssFragment.Background + cBtnStartGrad + ';color:#fff;border-radius:8px;min-width:36px;width:36px;font-size:14px;text-align:center;padding:6px 0;box-shadow:' + cBtnStartGlow + CssFragment.Border1pxSolidRgba;
+  startStopBtn.style.cssText = btnStyle + CssFragment.Background + cBtnStartGrad + ';color:#fff;border-radius:8px;min-width:36px;width:36px;font-size:14px;text-align:center;padding:6px 0;box-shadow:' + cBtnStartGlow + CssFragment.Border1pxSolidRgba + ';position:relative;';
   startStopBtn.onmouseenter = function() { startStopBtn.style.filter = 'brightness(1.12)'; startStopBtn.style.boxShadow = '0 2px 8px rgba(0,200,83,0.4), inset 0 1px 0 rgba(255,255,255,0.2)'; };
   startStopBtn.onmouseleave = function() { startStopBtn.style.filter = ''; startStopBtn.style.boxShadow = cBtnStartGlow; };
   startStopBtn.onclick = function() {
