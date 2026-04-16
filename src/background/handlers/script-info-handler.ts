@@ -46,6 +46,9 @@ export interface HotReloadResponse {
     scriptName: string;
     version: string;
     scriptSource: string;
+    bundledVersion: string;
+    outputFile: string;
+    sizeBytes: number | null;
 }
 
 interface ErrorResult {
@@ -162,7 +165,6 @@ export async function handleHotReloadScript(
     }
 
     try {
-        // 1. Read instruction.json for version and output file info
         const instruction = await fetchInstruction(folder);
         const outputFile = getPrimaryOutputFile(instruction);
 
@@ -170,7 +172,6 @@ export async function handleHotReloadScript(
             return { isOk: false, errorMessage: `No scripts declared in instruction.json for ${folder}` };
         }
 
-        // 2. Read the full script source
         const scriptUrl = chrome.runtime.getURL(
             `projects/scripts/${folder}/${outputFile}`,
         );
@@ -183,6 +184,15 @@ export async function handleHotReloadScript(
         }
         const scriptSource = await scriptRes.text();
 
+        let sizeBytes: number | null = null;
+        const contentLength = scriptRes.headers.get("content-length");
+        if (contentLength) {
+            sizeBytes = parseInt(contentLength, 10);
+        }
+        if (sizeBytes === null) {
+            sizeBytes = scriptSource.length;
+        }
+
         console.log(
             `[Marco] HOT_RELOAD_SCRIPT: ${scriptName} v${instruction.version} (${scriptSource.length} bytes)`,
         );
@@ -191,6 +201,9 @@ export async function handleHotReloadScript(
             isOk: true,
             scriptName: instruction.name,
             version: instruction.version,
+            bundledVersion: instruction.version,
+            outputFile,
+            sizeBytes,
             scriptSource,
         };
     } catch (err) {
