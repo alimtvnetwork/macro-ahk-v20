@@ -39,7 +39,7 @@ export function ProjectSelector({ data, onSelect }: Props) {
           <SelectTrigger className="h-8 text-xs">
             <SelectValue placeholder="Select a project" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent disablePortal>
             {selectableProjects.map((p) => (
               <SelectItem key={p.id} value={p.id} className="text-xs">
                 {p.name}
