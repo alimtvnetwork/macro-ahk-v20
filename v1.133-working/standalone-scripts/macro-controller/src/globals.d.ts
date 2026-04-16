@@ -68,6 +68,7 @@ interface MarcoSDKApiWorkspace {
   markViewed(projectId: string, options?: MarcoSDKApiCallOptions): Promise<MarcoSDKApiResponse>;
   probe(options?: MarcoSDKApiCallOptions): Promise<MarcoSDKApiResponse>;
   resolveByProject(projectId: string, options?: MarcoSDKApiCallOptions): Promise<MarcoSDKApiResponse>;
+  switchContext(wsId: string, options?: MarcoSDKApiCallOptions): Promise<MarcoSDKApiResponse>;
 }
 
 interface MarcoSDKApiModule {
