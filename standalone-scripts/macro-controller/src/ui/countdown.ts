@@ -1,4 +1,4 @@
- 
+
 /**
  * MacroLoop Controller — Countdown Timer & Start/Stop Button
  * Step 03c: Extracted from createUI() closure
@@ -66,6 +66,20 @@ function updateProgressBar(secs: number): void {
   barEl.style.background = progressColor(pct);
 }
 
+function renderStartGlyph(btn: HTMLElement): void {
+  btn.innerHTML = '▶';
+  btn.style.fontSize = '14px';
+}
+
+function renderStopGlyph(btn: HTMLElement): void {
+  btn.innerHTML = '';
+  btn.style.fontSize = '0';
+  const square = document.createElement('span');
+  square.setAttribute('aria-hidden', 'true');
+  square.style.cssText = 'display:block;width:12px;height:12px;background:#fff;border-radius:1px;';
+  btn.appendChild(square);
+}
+
 export function startCountdownTick(ctx: CountdownCtx) {
   stopCountdownTick(ctx);
   ctx.lastCountdownVal = -1;
@@ -91,7 +105,7 @@ export function updateStartStopBtn(ctx: CountdownCtx, running?: boolean) {
   const isRunning = (typeof running === 'boolean') ? running : !!state.running;
   ctx.loopIsRunning = isRunning;
   if (isRunning) {
-    ctx.startStopBtn.textContent = '⏹';
+    renderStopGlyph(ctx.startStopBtn);
     ctx.startStopBtn.title = 'Stop loop';
     ctx.startStopBtn.style.background = cBtnStopGrad;
     ctx.startStopBtn.style.boxShadow = cBtnStopGlow;
@@ -99,7 +113,7 @@ export function updateStartStopBtn(ctx: CountdownCtx, running?: boolean) {
     ctx.countdownBadge.style.display = 'inline-flex';
     startCountdownTick(ctx);
   } else {
-    ctx.startStopBtn.textContent = '▶';
+    renderStartGlyph(ctx.startStopBtn);
     ctx.startStopBtn.title = 'Start loop';
     ctx.startStopBtn.style.background = cBtnStartGrad;
     ctx.startStopBtn.style.boxShadow = cBtnStartGlow;
