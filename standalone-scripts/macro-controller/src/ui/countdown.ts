@@ -95,7 +95,7 @@ export function updateStartStopBtn(ctx: CountdownCtx, running?: boolean) {
     ctx.startStopBtn.title = 'Stop loop';
     ctx.startStopBtn.style.background = cBtnStopGrad;
     ctx.startStopBtn.style.boxShadow = cBtnStopGlow;
-    ctx.startStopBtn.style.borderRadius = '8px 0 0 8px';
+    ctx.startStopBtn.style.borderRadius = '8px';
     ctx.countdownBadge.style.display = 'inline-flex';
     startCountdownTick(ctx);
   } else {
