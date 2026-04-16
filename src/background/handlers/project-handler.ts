@@ -107,17 +107,23 @@ function sortProjectOptions(projects: StoredProject[]): StoredProject[] {
     });
 }
 
-/** Chooses the preferred active project, avoiding global SDK projects when possible. */
+/** Chooses the preferred active project, avoiding global SDK projects only for auto-fallback. */
 function selectPreferredActiveProject(
     projects: StoredProject[],
     activeId: string | null,
 ): { activeProject: StoredProject | null; nextActiveId: string | null } {
+    // If user explicitly set an active project, honour it even if global
+    if (activeId) {
+        const explicit = projects.find((project) => project.id === activeId);
+        if (explicit) {
+            return { activeProject: explicit, nextActiveId: activeId };
+        }
+    }
+
+    // Auto-fallback: prefer non-global projects
     const runnableProjects = projects.filter((project) => project.isGlobal !== true);
     const candidates = runnableProjects.length > 0 ? runnableProjects : projects;
-
-    const activeProject = (activeId
-        ? candidates.find((project) => project.id === activeId)
-        : null) ?? candidates[0] ?? null;
+    const activeProject = candidates[0] ?? null;
 
     return {
         activeProject,
