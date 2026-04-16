@@ -1,11 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { FolderOpen } from "lucide-react";
 import type { ActiveProjectData } from "@/hooks/use-popup-data";
 
@@ -35,18 +28,20 @@ export function ProjectSelector({ data, onSelect }: Props) {
       </div>
 
       {hasProjects ? (
-        <Select value={selectedValue} onValueChange={onSelect}>
-          <SelectTrigger className="h-8 text-xs">
-            <SelectValue placeholder="Select a project" />
-          </SelectTrigger>
-          <SelectContent>
-            {selectableProjects.map((p) => (
-              <SelectItem key={p.id} value={p.id} className="text-xs">
-                {p.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <select
+          value={selectedValue}
+          onChange={(e) => void onSelect(e.target.value)}
+          className="flex h-8 w-full items-center rounded-md border border-input bg-background px-2 py-1 text-xs text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {!selectedValue && (
+            <option value="" disabled>Select a project</option>
+          )}
+          {selectableProjects.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
       ) : (
         <p className="text-xs text-muted-foreground">No runnable projects configured</p>
       )}
