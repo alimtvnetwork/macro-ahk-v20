@@ -45,5 +45,12 @@ export interface WorkspaceMatchCandidate {
 export interface ExtensionResponse {
   entries?: Array<{ key: string; value: string }>;
   isOk?: boolean;
+  errorMessage?: string;
+  version?: string;
+  scriptName?: string;
+  scriptSource?: string;
+  bundledVersion?: string;
+  outputFile?: string;
+  sizeBytes?: number | null;
   [key: string]: unknown;
 }

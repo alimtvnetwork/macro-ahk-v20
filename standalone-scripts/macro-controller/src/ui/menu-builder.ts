@@ -10,9 +10,9 @@ import { log } from '../logging';
 import { showDatabaseModal } from './database-modal';
 import { exportWorkspacesAsCsv } from '../logging';
 import { VERSION, cPanelBg, cPanelFgDim, cPanelFgMuted, cPrimary, cBtnMenuBg, cBtnMenuFg, cSectionHeader, lDropdownRadius, lDropdownShadow, tFontSm, trFast, autoAttachCfg, state } from '../shared-state';
-import { LoopDirection, type AutoAttachGroupRuntime } from '../types';
+import { LoopDirection, type AutoAttachGroupRuntime, type DiagnosticDump, type ExtensionResponse } from '../types';
 import { showToast } from '../toast';
-import { nsWrite, nsCallTyped, nsReadTyped } from '../api-namespace';
+import { nsWrite, nsCallTyped } from '../api-namespace';
 import { refreshBearerTokenFromBestSource, getAuthDebugSnapshot } from '../auth';
 import { moveToAdjacentWorkspace } from '../workspace-management';
 import { createMenuItem, createMenuSep, createSubmenu } from './menu-helpers';
@@ -20,6 +20,7 @@ import { showAboutModal } from './about-modal';
 import { showChangelogModal } from './changelog-modal';
 import { resolveAutoAttachConfig, runAutoAttachGroup } from './auto-attach';
 import { logError } from '../error-utils';
+import { sendToExtension } from './prompt-manager';
 
 import { SECTION_DIVIDER } from '../constants';
 export interface MenuBuilderDeps {
@@ -140,47 +141,98 @@ function _addForceSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLEle
 }
 
 // ── Export Submenu ──
+function buildBundleHeader(bundle: string, now: Date): string {
+  const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
+  let header = SECTION_DIVIDER;
+  header += '// MACROLOOP BUNDLE EXPORT (self-contained)\n';
+  header += '// Generated: ' + timestamp + '\n';
+  header += '// Version:   v' + VERSION + '\n';
+  header += '// Contents:  xpath-utils.js + macro-looping.js\n';
+  header += '// Length:    ' + bundle.length + ' chars\n';
+  header += SECTION_DIVIDER;
+  header += '// All __PLACEHOLDER__ tokens have been resolved.\n';
+  header += '// Paste this entire script into any browser DevTools Console.\n';
+  header += '// TIP: If Domain Guard blocks, run: window.__comboForceInject = true  first.\n';
+  header += '// ============================================\n\n';
+  return header;
+}
+
+function downloadTextFile(fileName: string, content: string, mimeType: string): void {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = fileName;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+}
+
+async function fetchBundledMacroControllerSource(): Promise<ExtensionResponse> {
+  return sendToExtension('HOT_RELOAD_SCRIPT', { scriptName: 'macroController' });
+}
+
+async function fetchBundleSource(): Promise<string | null> {
+  const response = await fetchBundledMacroControllerSource();
+  const scriptSource = typeof response?.scriptSource === 'string' ? response.scriptSource : '';
+  if (!response?.isOk || scriptSource.length < 100) {
+    const reason = response?.errorMessage || 'Bundled macro controller source is unavailable';
+    logError('Export', reason);
+    showToast('❌ ' + reason, 'error');
+    return null;
+  }
+  return scriptSource;
+}
+
+function formatDiagnosticDump(diag: DiagnosticDump): string {
+  const lines: string[] = [];
+  lines.push('=== DIAGNOSTIC DUMP ===');
+  for (const key in diag) {
+    const value = diag[key];
+    const formatted = Array.isArray(value) ? '[' + value.join(', ') + ']' : String(value);
+    lines.push(key + ': ' + formatted);
+  }
+  return lines.join('\n');
+}
+
 function _addExportSubmenu(menuCtx: { menuBtnStyle: string; menuDropdown: HTMLElement }, menuDropdown: HTMLElement): void {
   const exportMenu = createSubmenu(menuCtx, '📦', 'Export');
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📋', 'Export CSV', 'Export all workspaces + credits as CSV', function() { exportWorkspacesAsCsv(); }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📥', 'Download Bundle', 'Download bundle (xpath-utils + macro-looping) as .js file', function() {
-    const bundle = nsReadTyped('_internal.exportBundle');
-    if (!bundle || bundle.length < 100) { logError('Export', 'No bundle available — re-inject via AHK to generate'); return; }
-    const now = new Date();
-    const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
-    let header = SECTION_DIVIDER;
-    header += '// MACROLOOP BUNDLE EXPORT (self-contained)\n';
-    header += '// Generated: ' + timestamp + '\n';
-    header += '// Version:   v' + VERSION + '\n';
-    header += '// Contents:  xpath-utils.js + macro-looping.js\n';
-    header += '// Length:    ' + bundle.length + ' chars\n';
-    header += SECTION_DIVIDER;
-    header += '// All __PLACEHOLDER__ tokens have been resolved.\n';
-    header += '// Paste this entire script into any browser DevTools Console.\n';
-    header += '// TIP: If Domain Guard blocks, run: window.__comboForceInject = true  first.\n';
-    header += '// ============================================\n\n';
-    const fullExport = header + bundle;
-    const blob = new Blob([fullExport], { type: 'application/javascript' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'automator-bundle-v' + VERSION + '-' + now.toISOString().replace(/[:.]/g, '-').substring(0, 19) + '.js';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    log('Export: Downloaded bundle (' + fullExport.length + ' chars)', 'success');
+    void fetchBundleSource().then(function(bundle) {
+      if (!bundle) return;
+      const now = new Date();
+      const fullExport = buildBundleHeader(bundle, now) + bundle;
+      downloadTextFile('automator-bundle-v' + VERSION + '-' + now.toISOString().replace(/[:.]/g, '-').substring(0, 19) + '.js', fullExport, 'application/javascript');
+      log('Export: Downloaded bundle (' + fullExport.length + ' chars)', 'success');
+      showToast('Bundle downloaded ✓', 'success');
+    });
   }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '📋', 'JS Bundle', 'Copy bundle to clipboard', function() {
-    const bundle = nsReadTyped('_internal.exportBundle');
-    if (!bundle || bundle.length < 100) { logError('Copy JS', 'No bundle available — re-inject via AHK to generate'); return; }
-    navigator.clipboard.writeText(bundle).then(function() {
-      log('Copy JS: Copied to clipboard (' + bundle.length + ' chars)', 'success');
-    }).catch(function(err: Error) { log('Copy JS: Clipboard failed: ' + err.message, 'warn'); });
+    void fetchBundleSource().then(function(bundle) {
+      if (!bundle) return;
+      navigator.clipboard.writeText(bundle).then(function() {
+        log('Copy JS: Copied to clipboard (' + bundle.length + ' chars)', 'success');
+        showToast('JS bundle copied ✓', 'success');
+      }).catch(function(err: Error) {
+        log('Copy JS: Clipboard failed: ' + err.message, 'warn');
+        showToast('❌ Clipboard copy failed', 'error');
+      });
+    });
   }));
   exportMenu.panel.appendChild(createMenuItem(menuCtx, '🔧', 'Diagnostic Dump', 'Run diagnostic dump', function() {
     const result = nsCallTyped('api.loop.diagnostics');
-    if (result === undefined) log('Diagnostic dump not available', 'warn');
+    if (result === undefined) {
+      log('Diagnostic dump not available', 'warn');
+      showToast('⚠️ Diagnostic dump not available', 'warn');
+      return;
+    }
+    const now = new Date();
+    const text = formatDiagnosticDump(result);
+    downloadTextFile('macroloop-diagnostic-dump-' + now.toISOString().replace(/[:.]/g, '-').substring(0, 19) + '.txt', text, 'text/plain');
+    log('Diagnostic dump exported (' + text.length + ' chars)', 'success');
+    showToast('Diagnostic dump downloaded ✓', 'success');
   }));
   menuDropdown.appendChild(exportMenu.el);
 }
