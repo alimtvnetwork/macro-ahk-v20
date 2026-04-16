@@ -175,7 +175,7 @@ function buildStartStopButton(deps: PanelBuilderDeps, btnStyle: string): { wrap:
   // Countdown badge
   const countdownBadge = document.createElement('span');
   countdownBadge.id = 'loop-countdown-badge';
-  countdownBadge.style.cssText = 'display:none;align-items:center;justify-content:center;font-size:9px;font-family:' + tFont + ';font-weight:700;color:#fbbf24;background:rgba(0,0,0,0.6);padding:2px 6px;height:34px;border-radius:0 8px 8px 0;border-left:1px solid rgba(251,191,36,0.3);min-width:28px;text-align:center;pointer-events:none;';
+  countdownBadge.style.cssText = 'display:none;align-items:center;justify-content:center;font-size:9px;font-family:' + tFont + ';font-weight:700;color:#fbbf24;background:rgba(0,0,0,0.6);padding:2px 6px;height:34px;border-radius:8px;border:1px solid rgba(251,191,36,0.3);margin-left:3px;min-width:28px;text-align:center;pointer-events:none;';
   countdownBadge.textContent = '';
 
   startStopWrap.appendChild(startStopBtn);
