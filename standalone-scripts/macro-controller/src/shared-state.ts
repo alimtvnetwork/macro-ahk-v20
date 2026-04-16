@@ -79,7 +79,7 @@ const TTypo = theme.typography || {};
 // Exported constants
 // ============================================
 export { FILE_NAME } from './constants';
-export const VERSION = '2.141.0';
+export const VERSION = '2.142.0';
 
 // Expose version via RiseupAsiaMacroExt namespace (Issue 78 — no bare window globals)
 try {
