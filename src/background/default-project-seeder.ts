@@ -16,6 +16,7 @@ import {
     DEFAULT_PROJECT_ID,
     SDK_PROJECT_ID,
     STORAGE_KEY_FIRST_RUN,
+    EXTENSION_VERSION,
 } from "../shared/constants";
 import { readAllProjects, writeAllProjects } from "./handlers/project-helpers";
 import { nowTimestamp } from "../shared/utils";
@@ -245,7 +246,7 @@ function buildDefaultProject(): StoredProject {
         id: DEFAULT_PROJECT_ID,
         schemaVersion: 1,
         name: "Macro Controller",
-        version: "1.1.0",
+        version: EXTENSION_VERSION,
         description: "Built-in MacroLoop controller for workspace and credit management",
         targetUrls: buildDefaultUrlRules(),
         scripts: [buildDefaultLoopingScriptEntry()],

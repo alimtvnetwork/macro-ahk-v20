@@ -28,6 +28,17 @@ import { registerSpaReinject } from "./spa-reinject";
 import { startHotReload } from "./hot-reload";
 import { MessageType } from "../shared/messages";
 import { logCaughtError, BgLogTag} from "./bg-logger";
+import { EXTENSION_VERSION } from "../shared/constants";
+
+/* ------------------------------------------------------------------ */
+/*  Browser Action Tooltip                                             */
+/* ------------------------------------------------------------------ */
+
+try {
+    chrome.action.setTitle({ title: `Macro Controller v${EXTENSION_VERSION}` });
+} catch {
+    /* chrome.action may not be available in all contexts */
+}
 
 const BOOT_FAST_PATH_TYPES = new Set<string>([
     MessageType.GET_CONFIG,
