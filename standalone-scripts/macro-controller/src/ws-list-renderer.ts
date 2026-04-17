@@ -39,10 +39,11 @@ import { DataAttr, DomId } from './types';
 // CQ11/CQ17: Encapsulated view-filter state
 // ============================================
 
-/** Manages workspace list view state (compact mode, free-only filter). */
+/** Manages workspace list view state (compact mode, free-only filter, expired-with-credits filter). */
 class WsListViewState {
   private static instance: WsListViewState | null = null;
   private isFreeOnly = false;
+  private isExpiredWithCredits = false;
   private isCompactMode: boolean;
 
   private constructor() {
@@ -64,7 +65,7 @@ class WsListViewState {
       return stored === null ? true : stored === 'true';
     } catch (e: unknown) {
 
-logError('getExpanded', 'Failed to read expanded state from localStorage', e);
+      logError('getExpanded', 'Failed to read expanded state from localStorage', e);
 
       return true;
     }
@@ -87,6 +88,15 @@ logError('getExpanded', 'Failed to read expanded state from localStorage', e);
   setFreeOnly(val: boolean): void {
     this.isFreeOnly = val;
   }
+
+  getExpiredWithCredits(): boolean {
+
+    return this.isExpiredWithCredits;
+  }
+
+  setExpiredWithCredits(val: boolean): void {
+    this.isExpiredWithCredits = val;
+  }
 }
 
 /** Shorthand for singleton access. */
@@ -106,6 +116,23 @@ export function getLoopWsFreeOnly(): boolean { return viewState().getFreeOnly();
 
 /** Set free-only filter state. */
 export function setLoopWsFreeOnly(val: boolean): void { viewState().setFreeOnly(val); }
+
+/**
+ * Minimum `available` credit threshold for a workspace to surface in the
+ * "Expired with credits" filter. Workspaces marked EXPIRED but holding
+ * more than this many credits are recovery candidates worth reviewing.
+ */
+export const EXPIRED_WITH_CREDITS_MIN = 5;
+
+/** Get expired-with-credits filter state. */
+export function getLoopWsExpiredWithCredits(): boolean {
+  return viewState().getExpiredWithCredits();
+}
+
+/** Set expired-with-credits filter state. */
+export function setLoopWsExpiredWithCredits(val: boolean): void {
+  viewState().setExpiredWithCredits(val);
+}
 
 // ============================================
 // Helper: fetch credits with auto-detect (used by ws-context-menu)
@@ -154,6 +181,7 @@ interface WsFilterState {
   rolloverOnly: boolean;
   billingOnly: boolean;
   minCredits: number;
+  expiredWithCredits: boolean;
 }
 
 /** Read filter state from DOM elements once, outside the loop. */
@@ -167,6 +195,7 @@ function readFilterState(filter: string): WsFilterState {
     rolloverOnly: rolloverEl?.getAttribute(DataAttr.Active) === 'true',
     billingOnly: billingEl?.getAttribute(DataAttr.Active) === 'true',
     minCredits: minEl ? parseInt((minEl as HTMLInputElement).value, 10) || 0 : 0,
+    expiredWithCredits: viewState().getExpiredWithCredits(),
   };
 }
 
@@ -189,6 +218,11 @@ function passesFilters(ws: WorkspaceCredit, fs: WsFilterState): boolean {
   if (fs.rolloverOnly && (ws.rollover || 0) <= 0) return false;
   if (fs.billingOnly && (ws.billingAvailable || 0) <= 0) return false;
   if (fs.minCredits > 0 && (ws.available || 0) < fs.minCredits) return false;
+  if (fs.expiredWithCredits) {
+    // Implemented in Task 4 via isExpiredWs() — for now use tier === 'EXPIRED'.
+    if (ws.tier !== 'EXPIRED') return false;
+    if ((ws.available || 0) <= EXPIRED_WITH_CREDITS_MIN) return false;
+  }
   return true;
 }
 
@@ -311,7 +345,7 @@ export function renderLoopWorkspaceList(
   const countLabel = document.getElementById('loop-ws-count-label');
   if (countLabel) {
     const total = workspaces.length;
-    countLabel.textContent = (filter || getLoopWsFreeOnly() || count !== total)
+    countLabel.textContent = (filter || getLoopWsFreeOnly() || getLoopWsExpiredWithCredits() || count !== total)
       ? 'Workspaces (' + count + '/' + total + ')'
       : 'Workspaces (' + total + ')';
   }
