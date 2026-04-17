@@ -60,6 +60,28 @@ export function getLoopWsNavIndex(): number { return navState().getIndex(); }
 // Checkbox click handler (with Shift range select)
 // ============================================
 
+/** v2.148.0: check every visible row whose data-ws-idx falls within [lo,hi]. */
+function checkVisibleRange(lo: number, hi: number): void {
+  const listEl = document.getElementById(DomId.LoopWsList);
+  if (!listEl) return;
+  const visibleItems = listEl.querySelectorAll(SEL_LOOP_WS_ITEM);
+  for (const item of Array.from(visibleItems)) {
+    const visIdx = parseInt(item.getAttribute('data-ws-idx') || '-1', 10);
+    if (visIdx < lo || visIdx > hi) continue;
+    const id = item.getAttribute(DataAttr.WsId);
+    if (id) getLoopWsCheckedIds()[id] = true;
+  }
+}
+
+/** Toggle a single workspace's checked state. */
+function toggleSingle(wsId: string): void {
+  if (getLoopWsCheckedIds()[wsId]) {
+    delete getLoopWsCheckedIds()[wsId];
+  } else {
+    getLoopWsCheckedIds()[wsId] = true;
+  }
+}
+
 /**
  * Handle workspace checkbox click with Shift range-select support.
  *
@@ -72,25 +94,11 @@ export function handleWsCheckboxClick(
   idx: number,
   isShift: boolean,
 ): void {
-  if (isShift && getLoopWsLastCheckedIdx() >= 0) {
-    const listEl = document.getElementById(DomId.LoopWsList);
-    const visibleItems: Element[] = listEl
-      ? Array.from(listEl.querySelectorAll(SEL_LOOP_WS_ITEM))
-      : [];
-    const lo = Math.min(getLoopWsLastCheckedIdx(), idx);
-    const hi = Math.max(getLoopWsLastCheckedIdx(), idx);
-    for (const item of visibleItems) {
-      const visIdx = parseInt(item.getAttribute('data-ws-idx') || '-1', 10);
-      if (visIdx < lo || visIdx > hi) continue;
-      const id = item.getAttribute(DataAttr.WsId);
-      if (id) getLoopWsCheckedIds()[id] = true;
-    }
+  const lastIdx = getLoopWsLastCheckedIdx();
+  if (isShift && lastIdx >= 0) {
+    checkVisibleRange(Math.min(lastIdx, idx), Math.max(lastIdx, idx));
   } else {
-    if (getLoopWsCheckedIds()[wsId]) {
-      delete getLoopWsCheckedIds()[wsId];
-    } else {
-      getLoopWsCheckedIds()[wsId] = true;
-    }
+    toggleSingle(wsId);
   }
   setLoopWsLastCheckedIdx(idx);
   updateWsSelectionUI();
