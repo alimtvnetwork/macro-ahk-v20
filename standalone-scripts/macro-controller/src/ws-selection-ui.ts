@@ -28,6 +28,8 @@ export {
   setLoopWsCompactMode,
   getLoopWsFreeOnly,
   setLoopWsFreeOnly,
+  getLoopWsExpiredWithCredits,
+  setLoopWsExpiredWithCredits,
   buildLoopTooltipText,
   renderLoopWorkspaceList,
   populateLoopWorkspaceDropdown,

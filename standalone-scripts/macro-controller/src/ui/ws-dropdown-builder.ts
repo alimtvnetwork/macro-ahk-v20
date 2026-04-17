@@ -12,14 +12,15 @@
  * - Move button row
  */
 
-import { log, logSub } from '../logging';
+import { log } from '../logging';
 import { createWorkspaceListSkeleton } from './skeleton';
-import { cPanelBg, cPrimary, cPrimaryBorderA, cPrimaryBgAS, cPrimaryHL, cPrimaryLighter, cInputBg, cInputBorder, cInputFg, loopCreditState, getLoopWsCheckedIds, setLoopWsCheckedIds, setLoopWsLastCheckedIdx, state } from '../shared-state';
+import { cPanelBg, cPrimary, cPrimaryBorderA, cPrimaryHL, cPrimaryLighter, cInputBg, cInputBorder, cInputFg, loopCreditState, getLoopWsCheckedIds, setLoopWsCheckedIds, setLoopWsLastCheckedIdx, state } from '../shared-state';
 import { resolveToken } from '../auth';
 import type { RenameHistoryEntry, UndoRenameResults } from '../types';
 import { logError } from '../error-utils';
+import { buildWsFilterMenuButton } from './ws-filter-menu';
 
-import { DataAttr, DomId } from '../types';
+import { DomId } from '../types';
 export interface WsDropdownDeps {
   populateLoopWorkspaceDropdown: () => void;
   updateWsSelectionUI: () => void;
@@ -33,6 +34,8 @@ export interface WsDropdownDeps {
   setLoopWsFreeOnly: (v: boolean) => void;
   getLoopWsCompactMode: () => boolean;
   setLoopWsCompactMode: (v: boolean) => void;
+  getLoopWsExpiredWithCredits: () => boolean;
+  setLoopWsExpiredWithCredits: (v: boolean) => void;
   getLoopWsNavIndex: () => number;
   setLoopWsNavIndex: (v: number) => void;
   triggerLoopMoveFromSelection: () => void;
