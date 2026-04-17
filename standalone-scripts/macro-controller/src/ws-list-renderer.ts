@@ -424,9 +424,10 @@ function _createClickHandler(): (e: MouseEvent) => void {
     if ((e.target as HTMLElement).classList && (e.target as HTMLElement).classList.contains('loop-ws-checkbox')) {
       e.preventDefault();
       e.stopPropagation();
+      // v2.148.0: pass DOM-visible index so shift-click range respects active filters
       handleWsCheckboxClick(
         item.getAttribute(DataAttr.WsId) || '',
-        parseInt(item.getAttribute('data-ws-raw-idx') || '0', 10),
+        parseInt(item.getAttribute('data-ws-idx') || '0', 10),
         e.shiftKey,
       );
       return;

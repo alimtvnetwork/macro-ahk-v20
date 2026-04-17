@@ -6,7 +6,6 @@
  * triggerLoopMoveFromSelection, setLoopWsNavIndex
  */
 
-import type { WorkspaceCredit } from './types';
 import {
   loopCreditState,
   getLoopWsCheckedIds,
@@ -63,6 +62,10 @@ export function getLoopWsNavIndex(): number { return navState().getIndex(); }
 
 /**
  * Handle workspace checkbox click with Shift range-select support.
+ *
+ * v2.148.0: `idx` is the DOM-visible index (data-ws-idx), not the raw
+ * perWorkspace index. Shift-range therefore walks only currently-rendered
+ * rows, so hidden/filtered workspaces are never auto-checked.
  */
 export function handleWsCheckboxClick(
   wsId: string,
@@ -70,13 +73,17 @@ export function handleWsCheckboxClick(
   isShift: boolean,
 ): void {
   if (isShift && getLoopWsLastCheckedIdx() >= 0) {
-    const perWs: WorkspaceCredit[] = loopCreditState.perWorkspace || [];
+    const listEl = document.getElementById(DomId.LoopWsList);
+    const visibleItems: Element[] = listEl
+      ? Array.from(listEl.querySelectorAll(SEL_LOOP_WS_ITEM))
+      : [];
     const lo = Math.min(getLoopWsLastCheckedIdx(), idx);
     const hi = Math.max(getLoopWsLastCheckedIdx(), idx);
-    for (let s = lo; s <= hi; s++) {
-      if (perWs[s] && perWs[s].id) {
-        getLoopWsCheckedIds()[perWs[s].id] = true;
-      }
+    for (const item of visibleItems) {
+      const visIdx = parseInt(item.getAttribute('data-ws-idx') || '-1', 10);
+      if (visIdx < lo || visIdx > hi) continue;
+      const id = item.getAttribute(DataAttr.WsId);
+      if (id) getLoopWsCheckedIds()[id] = true;
     }
   } else {
     if (getLoopWsCheckedIds()[wsId]) {
