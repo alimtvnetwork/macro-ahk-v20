@@ -33,6 +33,13 @@ export interface WorkspaceCredit {
   hasFree: boolean;
   totalCreditsUsed: number;
   subscriptionStatus: string;
+  /**
+   * ISO 8601 timestamp of the last subscription_status change (from the API field
+   * `subscription_status_changed_at`). When tier === 'EXPIRED' this marks when the
+   * expiry/cancel/past_due transition happened, used to compute the "expired · Nd" badge.
+   * Empty string when the API does not provide it.
+   */
+  subscriptionStatusChangedAt: string;
   plan: string;
   role: string;
   tier: string;
