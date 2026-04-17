@@ -331,8 +331,23 @@ export function renderLoopWorkspaceList(
   const frag = document.createDocumentFragment();
   const fs = readFilterState(filter);
 
+  // Collect surviving rows first so we can optionally re-order them.
+  // (We keep the original wsIndex so checkbox state / nav indices stay stable.)
+  const survivors: Array<{ ws: WorkspaceCredit; wsIndex: number }> = [];
   for (const [wsIndex, ws] of workspaces.entries()) {
     if (!passesFilters(ws, fs)) continue;
+    survivors.push({ ws, wsIndex });
+  }
+
+  // When the "expired with credits" filter is the active intent, surface the
+  // highest-credit recovery candidates first so users can prioritise them.
+  if (fs.expiredWithCredits) {
+    survivors.sort(function (a, b) {
+      return (b.ws.available || 0) - (a.ws.available || 0);
+    });
+  }
+
+  for (const { ws, wsIndex } of survivors) {
     const isCurrent = isCurrentWorkspace(ws, currentName);
     if (isCurrent) currentIdx = count;
     frag.appendChild(buildWsRow(ws, wsIndex, isCurrent, count, maxTotalCredits));
