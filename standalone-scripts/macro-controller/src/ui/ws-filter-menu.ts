@@ -152,6 +152,40 @@ function persistCompactMode(active: boolean): void {
 }
 
 /** Build the popover panel (initially hidden). */
+function buildFilterRowConfigs(deps: WsFilterMenuDeps): FilterRowConfig[] {
+  return [
+    {
+      id: ID_FREE_FILTER, icon: '🆓', label: 'Free only', hint: 'daily > 0',
+      initialActive: deps.getLoopWsFreeOnly(),
+      onToggle: function (active: boolean) { deps.setLoopWsFreeOnly(active); },
+    },
+    {
+      id: ID_ROLLOVER_FILTER, icon: '🔄', label: 'Rollover only', hint: 'rollover > 0',
+      initialActive: false,
+      onToggle: function () { /* state lives on data-active attr */ },
+    },
+    {
+      id: ID_BILLING_FILTER, icon: '💰', label: 'Billing only', hint: 'billing > 0',
+      initialActive: false,
+      onToggle: function () { /* state lives on data-active attr */ },
+    },
+    {
+      id: ID_EXPIRED_CREDITS_FILTER, icon: '⏰', label: 'Expired w/ credits',
+      hint: 'available > 5, sorted desc',
+      initialActive: deps.getLoopWsExpiredWithCredits(),
+      onToggle: function (active: boolean) { deps.setLoopWsExpiredWithCredits(active); },
+    },
+    {
+      id: ID_COMPACT_TOGGLE, icon: '⚡', label: 'Compact view', hint: 'available/total only',
+      initialActive: deps.getLoopWsCompactMode(),
+      onToggle: function (active: boolean) {
+        deps.setLoopWsCompactMode(active);
+        persistCompactMode(active);
+      },
+    },
+  ];
+}
+
 function buildPopover(deps: WsFilterMenuDeps): HTMLElement {
   const popover = document.createElement('div');
   popover.id = ID_FILTER_MENU_POPOVER;
@@ -160,54 +194,9 @@ function buildPopover(deps: WsFilterMenuDeps): HTMLElement {
     'min-width:220px;background:' + cPanelBg + ';border:1px solid ' + cPrimary +
     ';border-radius:5px;padding:4px;box-shadow:0 6px 20px rgba(0,0,0,.55);';
 
-  popover.appendChild(buildFilterRow({
-    id: ID_FREE_FILTER,
-    icon: '🆓',
-    label: 'Free only',
-    hint: 'daily > 0',
-    initialActive: deps.getLoopWsFreeOnly(),
-    onToggle: function (active: boolean) { deps.setLoopWsFreeOnly(active); },
-  }, deps.populateLoopWorkspaceDropdown));
-
-  popover.appendChild(buildFilterRow({
-    id: ID_ROLLOVER_FILTER,
-    icon: '🔄',
-    label: 'Rollover only',
-    hint: 'rollover > 0',
-    initialActive: false,
-    onToggle: function () { /* state lives on the row's data-active attr */ },
-  }, deps.populateLoopWorkspaceDropdown));
-
-  popover.appendChild(buildFilterRow({
-    id: ID_BILLING_FILTER,
-    icon: '💰',
-    label: 'Billing only',
-    hint: 'billing > 0',
-    initialActive: false,
-    onToggle: function () { /* state lives on data-active */ },
-  }, deps.populateLoopWorkspaceDropdown));
-
-  popover.appendChild(buildFilterRow({
-    id: ID_EXPIRED_CREDITS_FILTER,
-    icon: '⏰',
-    label: 'Expired w/ credits',
-    hint: 'available > 5, sorted desc',
-    initialActive: deps.getLoopWsExpiredWithCredits(),
-    onToggle: function (active: boolean) { deps.setLoopWsExpiredWithCredits(active); },
-  }, deps.populateLoopWorkspaceDropdown));
-
-  popover.appendChild(buildFilterRow({
-    id: ID_COMPACT_TOGGLE,
-    icon: '⚡',
-    label: 'Compact view',
-    hint: 'available/total only',
-    initialActive: deps.getLoopWsCompactMode(),
-    onToggle: function (active: boolean) {
-      deps.setLoopWsCompactMode(active);
-      persistCompactMode(active);
-    },
-  }, deps.populateLoopWorkspaceDropdown));
-
+  for (const cfg of buildFilterRowConfigs(deps)) {
+    popover.appendChild(buildFilterRow(cfg, deps.populateLoopWorkspaceDropdown));
+  }
   popover.appendChild(buildMinCreditsRow(deps.populateLoopWorkspaceDropdown));
   popover.appendChild(buildLegendBlock());
 
