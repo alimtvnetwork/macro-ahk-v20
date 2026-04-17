@@ -318,4 +318,4 @@ async function doFetchLoopCreditsAsync(isRetry?: boolean): Promise<void> {
 // ============================================
 // Barrel re-exports from credit-parser
 // ============================================
-export { parseLoopApiResponse, syncCreditStateFromApi, resolveWsTier, WsTier, WS_TIER_LABELS } from './credit-parser';
+export { parseLoopApiResponse, syncCreditStateFromApi, resolveWsTier, WsTier, WS_TIER_LABELS, isExpiredWs, expiredDays } from './credit-parser';
