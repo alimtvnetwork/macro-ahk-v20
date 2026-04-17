@@ -101,7 +101,8 @@ function parseWorkspaceItem(rawItem: Record<string, unknown>, wsIdx: number): im
     totalCredits,
     subscriptionStatus: subStatus, plan, role,
     tier: resolveWsTier(plan, subStatus, bLimit),
-    raw: ws
+    raw: ws,
+    rawApi: rawWs as Record<string, unknown>
   };
 }
 
