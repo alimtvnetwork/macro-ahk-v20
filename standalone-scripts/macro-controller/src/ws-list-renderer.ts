@@ -39,10 +39,11 @@ import { DataAttr, DomId } from './types';
 // CQ11/CQ17: Encapsulated view-filter state
 // ============================================
 
-/** Manages workspace list view state (compact mode, free-only filter). */
+/** Manages workspace list view state (compact mode, free-only filter, expired-with-credits filter). */
 class WsListViewState {
   private static instance: WsListViewState | null = null;
   private isFreeOnly = false;
+  private isExpiredWithCredits = false;
   private isCompactMode: boolean;
 
   private constructor() {
@@ -64,7 +65,7 @@ class WsListViewState {
       return stored === null ? true : stored === 'true';
     } catch (e: unknown) {
 
-logError('getExpanded', 'Failed to read expanded state from localStorage', e);
+      logError('getExpanded', 'Failed to read expanded state from localStorage', e);
 
       return true;
     }
@@ -86,6 +87,15 @@ logError('getExpanded', 'Failed to read expanded state from localStorage', e);
 
   setFreeOnly(val: boolean): void {
     this.isFreeOnly = val;
+  }
+
+  getExpiredWithCredits(): boolean {
+
+    return this.isExpiredWithCredits;
+  }
+
+  setExpiredWithCredits(val: boolean): void {
+    this.isExpiredWithCredits = val;
   }
 }
 
