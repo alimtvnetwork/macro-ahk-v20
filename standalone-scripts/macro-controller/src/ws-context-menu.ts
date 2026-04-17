@@ -6,7 +6,7 @@
  *
  * v2.149.0 — Inline rename now exposes clickable ✓ / ✗ buttons next to the
  * input field so the action is discoverable without keyboard shortcuts.
- * Enter / Escape continue to work for power users.
+ * On success a toast confirms the new name. Enter / Escape still work.
  */
 
 import {
@@ -54,7 +54,6 @@ function buildCtxMenuItem(label: string, onClick: () => void): HTMLElement {
 
 /**
  * Copy the verbatim raw API JSON for a single workspace to the clipboard.
- * Uses WorkspaceCredit.rawApi (preserved from /user/workspaces response).
  */
 function copyWorkspaceJson(wsId: string, wsName: string): void {
   const perWs = loopCreditState.perWorkspace || [];
@@ -78,7 +77,6 @@ function copyWorkspaceJson(wsId: string, wsName: string): void {
 
 /**
  * Right-click context menu for a single workspace.
- * Provides Rename + Copy JSON actions.
  */
 export function showWsContextMenu(
   wsId: string,
@@ -100,7 +98,6 @@ export function showWsContextMenu(
     removeWsContextMenu();
     startInlineRename(wsId, wsName);
   }));
-
   menu.appendChild(buildCtxMenuItem('📋 Copy JSON', function () {
     removeWsContextMenu();
     copyWorkspaceJson(wsId, wsName);
@@ -108,17 +105,11 @@ export function showWsContextMenu(
 
   document.body.appendChild(menu);
 
-  // Close on click outside
   setTimeout(function () {
-    document.addEventListener('click', removeWsContextMenu, {
-      once: true,
-    });
+    document.addEventListener('click', removeWsContextMenu, { once: true });
   }, 10);
 }
 
-/**
- * Remove workspace context menu from DOM.
- */
 export function removeWsContextMenu(): void {
   const existing = document.getElementById(ID_CTX_MENU);
   if (existing) existing.remove();
@@ -126,7 +117,6 @@ export function removeWsContextMenu(): void {
 
 // ── Inline rename helpers ──
 
-/** Build a small icon-button used for confirm (✓) and cancel (✗). */
 function buildIconButton(
   glyph: string,
   title: string,
@@ -153,7 +143,6 @@ function buildIconButton(
   return btn;
 }
 
-/** Build the inline-rename input element. */
 function buildRenameInput(currentName: string): HTMLInputElement {
   const input = document.createElement('input');
   input.type = 'text';
@@ -166,7 +155,6 @@ function buildRenameInput(currentName: string): HTMLInputElement {
   return input;
 }
 
-/** Apply the rename to local state + persist to API. */
 function commitRename(wsId: string, currentName: string, newName: string): void {
   if (!newName) {
     log('[Rename] Empty name — cancelled', 'warn');
@@ -187,17 +175,17 @@ function commitRename(wsId: string, currentName: string, newName: string): void 
           break;
         }
       }
+      showToast('✏️ Renamed to "' + newName + '"', 'success');
       populateLoopWorkspaceDropdown();
       fetchLoopCreditsWithDetect(false);
     })
     .catch(function (e: unknown) {
-      logError('wsContextMenu', 'Workspace context action failed', e);
-      showToast('❌ Workspace context action failed', 'error');
+      logError('wsContextMenu', 'Workspace rename failed', e);
+      showToast('❌ Rename failed', 'error');
       populateLoopWorkspaceDropdown();
     });
 }
 
-/** Find the .loop-ws-name element for a given workspace id. */
 function findNameDiv(wsId: string): HTMLElement | null {
   const listEl = document.getElementById(DomId.LoopWsList);
   if (!listEl) return null;
@@ -211,8 +199,7 @@ function findNameDiv(wsId: string): HTMLElement | null {
 
 /**
  * Start inline rename of a workspace in the list.
- * Renders an editable input flanked by ✓ (confirm) and ✗ (cancel) buttons
- * inside the workspace's `.loop-ws-name` slot.
+ * Renders an editable input flanked by ✓ (confirm) and ✗ (cancel) buttons.
  */
 export function startInlineRename(wsId: string, currentName: string): void {
   const nameDiv = findNameDiv(wsId);
@@ -229,7 +216,6 @@ export function startInlineRename(wsId: string, currentName: string): void {
     committed = true;
     commitRename(wsId, currentName, input.value.trim());
   };
-
   const doCancel = function (): void {
     if (committed) return;
     committed = true;
@@ -240,16 +226,11 @@ export function startInlineRename(wsId: string, currentName: string): void {
     if (e.key === 'Enter') { e.preventDefault(); doCommit(); }
     else if (e.key === 'Escape') { e.preventDefault(); doCancel(); }
   };
-
-  // Prevent the row's click handler from firing while editing
   wrap.onclick = function (e: MouseEvent) { e.stopPropagation(); };
 
-  const okBtn = buildIconButton('✓', 'Confirm rename (Enter)', '#059669', '#fff', doCommit);
-  const cancelBtn = buildIconButton('✗', 'Cancel rename (Esc)', 'rgba(100,116,139,0.4)', '#e2e8f0', doCancel);
-
   wrap.appendChild(input);
-  wrap.appendChild(okBtn);
-  wrap.appendChild(cancelBtn);
+  wrap.appendChild(buildIconButton('✓', 'Confirm rename (Enter)', '#059669', '#fff', doCommit));
+  wrap.appendChild(buildIconButton('✗', 'Cancel rename (Esc)', 'rgba(100,116,139,0.4)', '#e2e8f0', doCancel));
 
   nameDiv.textContent = '';
   nameDiv.appendChild(wrap);
