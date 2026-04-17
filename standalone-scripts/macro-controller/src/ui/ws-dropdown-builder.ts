@@ -127,18 +127,26 @@ export function buildWsDropdownSection(deps: WsDropdownDeps): WsDropdownResult {
   return { wsDropSection };
 }
 
-// ── Ws Dropdown Header (buttons + filters + legend) ──
+// ── Ws Dropdown Header (action buttons + hamburger filter menu) ──
 function _buildWsDropdownHeader(deps: WsDropdownDeps): HTMLElement {
-  void deps;
-
   const wsDropHeader = document.createElement('div');
   wsDropHeader.style.cssText = 'display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap;';
   wsDropHeader.innerHTML = '<span style="font-size:11px;">🏢</span><span id="loop-ws-count-label" style="font-size:10px;color:' + cPrimaryLighter + ';font-weight:bold;">Workspaces</span>'
     + '<span id="loop-ws-sel-count" style="font-size:8px;color:#facc15;display:none;"></span>';
 
   _appendActionButtons(wsDropHeader, deps);
-  _appendFilterButtons(wsDropHeader, deps);
-  _appendMinCreditsAndLegend(wsDropHeader, deps.populateLoopWorkspaceDropdown);
+
+  // v2.148.0: secondary filters live behind a hamburger menu pinned to the
+  // top-right of the WS panel header. Only "Focus Current" stays inline.
+  wsDropHeader.appendChild(buildWsFilterMenuButton({
+    populateLoopWorkspaceDropdown: deps.populateLoopWorkspaceDropdown,
+    getLoopWsFreeOnly: deps.getLoopWsFreeOnly,
+    setLoopWsFreeOnly: deps.setLoopWsFreeOnly,
+    getLoopWsCompactMode: deps.getLoopWsCompactMode,
+    setLoopWsCompactMode: deps.setLoopWsCompactMode,
+    getLoopWsExpiredWithCredits: deps.getLoopWsExpiredWithCredits,
+    setLoopWsExpiredWithCredits: deps.setLoopWsExpiredWithCredits,
+  }));
 
   return wsDropHeader;
 }
@@ -191,68 +199,6 @@ function _appendActionButtons(header: HTMLElement, deps: WsDropdownDeps): void {
     handleFocusCurrent(populateLoopWorkspaceDropdown, setLoopWsNavIndex, fetchLoopCreditsWithDetect, autoDetectLoopCurrentWorkspace);
   };
   header.appendChild(wsFocusBtn);
-}
-
-// ── Filter Buttons (Free, Rollover, Billing, Compact) ──
-function _appendFilterButtons(header: HTMLElement, deps: WsDropdownDeps): void {
-  const { populateLoopWorkspaceDropdown, getLoopWsFreeOnly, setLoopWsFreeOnly, getLoopWsCompactMode, setLoopWsCompactMode } = deps;
-
-  header.appendChild(_buildFilterBtn('🆓', 'Toggle free-only filter', 'rgba(250,204,21,0.15)', '#facc15', 'rgba(250,204,21,0.4)', function() {
-    setLoopWsFreeOnly(!getLoopWsFreeOnly());
-    return getLoopWsFreeOnly();
-  }, populateLoopWorkspaceDropdown));
-
-  header.appendChild(_buildToggleFilterBtn('loop-ws-rollover-filter', '🔄', 'Show only workspaces with rollover credits',
-    cPrimaryBgAS, '#c4b5fd', 'rgba(167,139,250,0.4)', 'rgba(167,139,250,0.15)', populateLoopWorkspaceDropdown));
-
-  header.appendChild(_buildToggleFilterBtn('loop-ws-billing-filter', '💰', 'Show only workspaces with billing credits',
-    'rgba(34,197,94,0.15)', '#4ade80', 'rgba(34,197,94,0.4)', 'rgba(34,197,94,0.15)', populateLoopWorkspaceDropdown));
-
-  const wsCompactBtn = document.createElement('button');
-  wsCompactBtn.id = 'loop-ws-compact-toggle';
-  wsCompactBtn.textContent = '⚡';
-  wsCompactBtn.title = 'Compact view: show only ⚡available/total';
-  wsCompactBtn.style.cssText = 'padding:1px 5px;background:rgba(34,211,238,0.4);color:#22d3ee;border:1px solid rgba(34,211,238,0.4);border-radius:3px;font-size:9px;cursor:pointer;font-weight:700;';
-  wsCompactBtn.onclick = function(e: Event) {
-    e.preventDefault(); e.stopPropagation();
-    setLoopWsCompactMode(!getLoopWsCompactMode());
-    try { localStorage.setItem('ml_compact_mode', getLoopWsCompactMode() ? 'true' : 'false'); } catch (ex) { logSub('Failed to persist compact mode: ' + (ex instanceof Error ? ex.message : String(ex)), 1); }
-    (this as HTMLElement).style.background = getLoopWsCompactMode() ? 'rgba(34,211,238,0.4)' : 'rgba(34,211,238,0.15)';
-    (this as HTMLElement).style.fontWeight = getLoopWsCompactMode() ? '700' : 'normal';
-    populateLoopWorkspaceDropdown();
-  };
-  header.appendChild(wsCompactBtn);
-}
-
-// ── Min Credits + Legend ──
-function _appendMinCreditsAndLegend(header: HTMLElement, populateLoopWorkspaceDropdown: () => void): void {
-  const wsMinRow = document.createElement('div');
-  wsMinRow.style.cssText = 'display:flex;align-items:center;gap:3px;';
-  const wsMinLabel = document.createElement('span');
-  wsMinLabel.style.cssText = 'font-size:8px;color:#94a3b8;';
-  wsMinLabel.textContent = 'Min⚡';
-  const wsMinInput = document.createElement('input');
-  wsMinInput.type = 'number';
-  wsMinInput.id = 'loop-ws-min-credits';
-  wsMinInput.placeholder = '0';
-  wsMinInput.min = '0';
-  wsMinInput.style.cssText = 'width:35px;padding:1px 3px;border:1px solid ' + cPrimary + ';border-radius:2px;background:' + cPanelBg + ';color:#22d3ee;font-size:8px;outline:none;font-family:monospace;';
-  wsMinInput.oninput = function() { populateLoopWorkspaceDropdown(); };
-  wsMinRow.appendChild(wsMinLabel);
-  wsMinRow.appendChild(wsMinInput);
-  header.appendChild(wsMinRow);
-
-  const wsLegend = document.createElement('div');
-  wsLegend.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;padding:2px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:2px;';
-  wsLegend.innerHTML = '<span style="font-size:7px;color:#4ade80;" title="Billing credits from subscription">💰Billing</span>'
-    + '<span style="font-size:7px;color:#c4b5fd;" title="Rollover from previous period">🔄Rollover</span>'
-    + '<span style="font-size:7px;color:#facc15;" title="Daily free credits">📅Daily</span>'
-    + '<span style="font-size:7px;color:#22d3ee;" title="Total available credits">⚡Total</span>'
-    + '<span style="font-size:7px;color:#4ade80;" title="Trial credits">🎁Trial</span>'
-    + '<span style="font-size:7px;color:#94a3b8;" title="📍=Current 🟢=OK 🟡=Low 🔴=Empty">📍🟢🟡🔴</span>';
-  header.appendChild(wsLegend);
-
-  // legend appended to header
 }
 
 // ── Undo Button ──
