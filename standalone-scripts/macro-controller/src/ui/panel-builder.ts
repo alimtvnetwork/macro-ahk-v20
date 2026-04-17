@@ -75,6 +75,8 @@ export interface PanelBuilderDeps {
   setLoopWsFreeOnly: (v: boolean) => void;
   getLoopWsCompactMode: () => boolean;
   setLoopWsCompactMode: (v: boolean) => void;
+  getLoopWsExpiredWithCredits: () => boolean;
+  setLoopWsExpiredWithCredits: (v: boolean) => void;
   getLoopWsNavIndex: () => number;
   setLoopWsNavIndex: (v: number) => void;
   triggerLoopMoveFromSelection: () => void;

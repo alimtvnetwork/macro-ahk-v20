@@ -36,7 +36,7 @@ import { LoopEngine } from './core/LoopEngine';
 import { UIManager } from './core/UIManager';
 import { WorkspaceManager } from './core/WorkspaceManager';
 import { nsWrite, getNamespace } from './api-namespace';
-import { updateWsSelectionUI, triggerLoopMoveFromSelection, setLoopWsNavIndex, populateLoopWorkspaceDropdown, renderBulkRenameDialog, getLoopWsCompactMode, setLoopWsCompactMode, getLoopWsFreeOnly, setLoopWsFreeOnly, getLoopWsNavIndex } from './ws-selection-ui';
+import { updateWsSelectionUI, triggerLoopMoveFromSelection, setLoopWsNavIndex, populateLoopWorkspaceDropdown, renderBulkRenameDialog, getLoopWsCompactMode, setLoopWsCompactMode, getLoopWsFreeOnly, setLoopWsFreeOnly, getLoopWsExpiredWithCredits, setLoopWsExpiredWithCredits, getLoopWsNavIndex } from './ws-selection-ui';
 import { shouldInject } from './startup-domain-guard';
 import { runIdempotentCheck } from './startup-idempotent-check';
 
@@ -103,6 +103,7 @@ import { Label } from './types';
     getRenameHistory, undoLastRename, updateUndoBtnVisibility,
     getLoopWsFreeOnly, setLoopWsFreeOnly,
     getLoopWsCompactMode, setLoopWsCompactMode,
+    getLoopWsExpiredWithCredits, setLoopWsExpiredWithCredits,
     getLoopWsNavIndex, setLoopWsNavIndex,
     triggerLoopMoveFromSelection,
   };

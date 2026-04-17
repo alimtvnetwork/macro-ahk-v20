@@ -235,47 +235,7 @@ function _buildUndoBtn(
   return wsUndoBtn;
 }
 
-// ── Filter Button (with getter/setter) ──
-function _buildFilterBtn(
-  icon: string, title: string, bgOff: string, color: string, bgOn: string,
-  toggle: () => boolean, populate: () => void,
-): HTMLElement {
-  const btn = document.createElement('button');
-  btn.textContent = icon;
-  btn.title = title;
-  btn.style.cssText = 'padding:1px 5px;background:' + bgOff + ';color:' + color + ';border:1px solid ' + bgOn + ';border-radius:3px;font-size:9px;cursor:pointer;';
-  btn.onclick = function(e: Event) {
-    e.preventDefault(); e.stopPropagation();
-    const isActive = toggle();
-    (this as HTMLElement).style.background = isActive ? bgOn : bgOff;
-    (this as HTMLElement).style.fontWeight = isActive ? '700' : 'normal';
-    populate();
-  };
-  return btn;
-}
-
-// ── Toggle Filter Button (with data-active attribute) ──
-function _buildToggleFilterBtn(
-  id: string, icon: string, title: string,
-  bgOff: string, color: string, bgOn: string, bgInactive: string,
-  populate: () => void,
-): HTMLElement {
-  const btn = document.createElement('button');
-  btn.id = id;
-  btn.textContent = icon;
-  btn.title = title;
-  btn.style.cssText = 'padding:1px 5px;background:' + bgOff + ';color:' + color + ';border:1px solid ' + bgOn + ';border-radius:3px;font-size:9px;cursor:pointer;';
-  btn.setAttribute(DataAttr.Active, 'false');
-  btn.onclick = function(e: Event) {
-    e.preventDefault(); e.stopPropagation();
-    const isActive = (this as HTMLElement).getAttribute(DataAttr.Active) === 'true';
-    (this as HTMLElement).setAttribute(DataAttr.Active, isActive ? 'false' : 'true');
-    (this as HTMLElement).style.background = !isActive ? bgOn : bgInactive;
-    (this as HTMLElement).style.fontWeight = !isActive ? '700' : 'normal';
-    populate();
-  };
-  return btn;
-}
+// (Filter button helpers removed in v2.148.0 — replaced by ws-filter-menu.ts hamburger.)
 
 // ── Search Input ──
 function _buildWsSearchInput(
