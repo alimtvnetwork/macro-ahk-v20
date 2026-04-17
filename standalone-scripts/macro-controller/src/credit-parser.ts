@@ -109,6 +109,7 @@ function parseWorkspaceItem(rawItem: Record<string, unknown>, wsIdx: number): im
   const available = calcAvailableCredits(totalCredits, rUsed, dUsed, bUsed, freeUsed);
 
   const subStatus = ((rawWs.workspace ? (rawWs as Record<string, unknown>).subscription_status : ws.subscription_status) || '') as string;
+  const subStatusChangedAt = ((rawWs.workspace ? (rawWs as Record<string, unknown>).subscription_status_changed_at : ws.subscription_status_changed_at) || '') as string;
   const role = ((rawWs.workspace ? (rawWs as Record<string, unknown>).role : ws.role) || 'N/A') as string;
   const plan = ((rawWs.workspace ? (rawWs as Record<string, unknown>).plan : ws.plan) || (rawWs.plan as string) || '') as string;
 
@@ -128,7 +129,7 @@ function parseWorkspaceItem(rawItem: Record<string, unknown>, wsIdx: number): im
     topupLimit,
     totalCreditsUsed,
     totalCredits,
-    subscriptionStatus: subStatus, plan, role,
+    subscriptionStatus: subStatus, subscriptionStatusChangedAt: subStatusChangedAt, plan, role,
     tier: resolveWsTier(plan, subStatus, bLimit),
     raw: ws,
     rawApi: rawWs as Record<string, unknown>
