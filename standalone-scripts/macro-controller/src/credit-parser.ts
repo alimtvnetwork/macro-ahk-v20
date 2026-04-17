@@ -56,6 +56,35 @@ export function resolveWsTier(plan: string, subStatus: string, billingLimit: num
 }
 
 // ============================================
+// Expiry helpers — used by ws-list-renderer & filter logic
+// ============================================
+
+/**
+ * Returns true when the workspace is in an "expired" subscription state.
+ * Uses subscription_status (canonical signal): canceled / cancelled / past_due / unpaid.
+ * Centralised here so the filter, badge, and sort code share one definition.
+ */
+export function isExpiredWs(ws: import('./types').WorkspaceCredit): boolean {
+  const s = (ws.subscriptionStatus || '').toLowerCase().trim();
+  return s === 'canceled' || s === 'cancelled' || s === 'past_due' || s === 'unpaid';
+}
+
+/**
+ * Returns the integer number of full days since the workspace's
+ * subscription_status last changed (i.e. since it became expired).
+ * Returns null when no timestamp is available or it cannot be parsed.
+ */
+export function expiredDays(ws: import('./types').WorkspaceCredit): number | null {
+  const iso = ws.subscriptionStatusChangedAt;
+  if (!iso) return null;
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return null;
+  const ms = Date.now() - t;
+  if (ms < 0) return 0;
+  return Math.floor(ms / 86400000);
+}
+
+// ============================================
 // parseWorkspaceItem — extract a single workspace from API response
 // ============================================
 function parseWorkspaceItem(rawItem: Record<string, unknown>, wsIdx: number): import('./types').WorkspaceCredit {
@@ -80,6 +109,7 @@ function parseWorkspaceItem(rawItem: Record<string, unknown>, wsIdx: number): im
   const available = calcAvailableCredits(totalCredits, rUsed, dUsed, bUsed, freeUsed);
 
   const subStatus = ((rawWs.workspace ? (rawWs as Record<string, unknown>).subscription_status : ws.subscription_status) || '') as string;
+  const subStatusChangedAt = ((rawWs.workspace ? (rawWs as Record<string, unknown>).subscription_status_changed_at : ws.subscription_status_changed_at) || '') as string;
   const role = ((rawWs.workspace ? (rawWs as Record<string, unknown>).role : ws.role) || 'N/A') as string;
   const plan = ((rawWs.workspace ? (rawWs as Record<string, unknown>).plan : ws.plan) || (rawWs.plan as string) || '') as string;
 
@@ -99,7 +129,7 @@ function parseWorkspaceItem(rawItem: Record<string, unknown>, wsIdx: number): im
     topupLimit,
     totalCreditsUsed,
     totalCredits,
-    subscriptionStatus: subStatus, plan, role,
+    subscriptionStatus: subStatus, subscriptionStatusChangedAt: subStatusChangedAt, plan, role,
     tier: resolveWsTier(plan, subStatus, bLimit),
     raw: ws,
     rawApi: rawWs as Record<string, unknown>
