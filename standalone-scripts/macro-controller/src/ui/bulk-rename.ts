@@ -161,11 +161,19 @@ async function _initPresetUi(body: HTMLElement, inputs: RenameInputsResult): Pro
     _activePresetName,
     // onSwitch
     function (name: string) {
-      _activePresetName = name;
-      store.setActivePresetName(name);
-      store.loadPreset(name).then(function (p) {
-        if (p) { _populateUiFromPreset(p, inputs); }
-      });
+      // v2.149.0: persist edits to the previously-active preset BEFORE
+      // loading the new one — otherwise unsaved field changes are silently lost.
+      const previousName = _activePresetName;
+      const previousPreset = _readUiToPreset(inputs);
+      store.savePreset(previousName, previousPreset)
+        .catch(function () { /* best-effort — never block switch */ })
+        .finally(function () {
+          _activePresetName = name;
+          store.setActivePresetName(name);
+          store.loadPreset(name).then(function (p) {
+            if (p) { _populateUiFromPreset(p, inputs); }
+          });
+        });
     },
     // onNew
     function () {
