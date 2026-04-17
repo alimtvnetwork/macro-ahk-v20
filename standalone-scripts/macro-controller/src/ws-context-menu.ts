@@ -24,7 +24,51 @@ import {
 } from './ws-list-renderer';
 
 /**
- * Right-click context menu for single workspace rename.
+ * Build a single context-menu row element with hover effect.
+ */
+function buildCtxMenuItem(label: string, onClick: () => void): HTMLElement {
+  const item = document.createElement('div');
+  item.textContent = label;
+  item.style.cssText =
+    'padding:5px 12px;font-size:' + tFontTiny +
+    ';color:' + cPanelFg + ';cursor:pointer;white-space:nowrap;';
+  item.onmouseover = function () {
+    (this as HTMLElement).style.background = 'rgba(139,92,246,0.3)';
+  };
+  item.onmouseout = function () {
+    (this as HTMLElement).style.background = 'transparent';
+  };
+  item.onclick = onClick;
+  return item;
+}
+
+/**
+ * Copy the verbatim raw API JSON for a single workspace to the clipboard.
+ * Uses WorkspaceCredit.rawApi (preserved from /user/workspaces response).
+ */
+function copyWorkspaceJson(wsId: string, wsName: string): void {
+  const perWs = loopCreditState.perWorkspace || [];
+  const ws = perWs.find(function (w) { return w.id === wsId; });
+  if (!ws || !ws.rawApi) {
+    showToast('❌ No JSON data for "' + wsName + '"', 'error');
+    log('[CopyJSON] No rawApi for wsId=' + wsId, 'warn');
+    return;
+  }
+  const json = JSON.stringify(ws.rawApi, null, 2);
+  navigator.clipboard.writeText(json)
+    .then(function () {
+      showToast('📋 Copied JSON for "' + wsName + '" (' + json.length + ' chars)', 'success');
+      log('[CopyJSON] Copied ' + json.length + ' chars for ' + wsName, 'info');
+    })
+    .catch(function (e: unknown) {
+      logError('wsContextMenu', 'Clipboard write failed for Copy JSON', e);
+      showToast('❌ Clipboard copy failed', 'error');
+    });
+}
+
+/**
+ * Right-click context menu for a single workspace.
+ * Provides Rename + Copy JSON actions.
  */
 export function showWsContextMenu(
   wsId: string,
@@ -40,25 +84,18 @@ export function showWsContextMenu(
     'px;z-index:100001;background:' + cPanelBg +
     ';border:1px solid ' + cPrimary +
     ';border-radius:' + lDropdownRadius +
-    ';padding:2px 0;box-shadow:0 4px 12px rgba(0,0,0,.5);min-width:100px;';
+    ';padding:2px 0;box-shadow:0 4px 12px rgba(0,0,0,.5);min-width:140px;';
 
-  const renameItem = document.createElement('div');
-  renameItem.textContent = '✏️ Rename';
-  renameItem.style.cssText =
-    'padding:5px 12px;font-size:' + tFontTiny +
-    ';color:' + cPanelFg + ';cursor:pointer;';
-  renameItem.onmouseover = function () {
-    (this as HTMLElement).style.background = 'rgba(139,92,246,0.3)';
-  };
-  renameItem.onmouseout = function () {
-    (this as HTMLElement).style.background = 'transparent';
-  };
-  renameItem.onclick = function () {
+  menu.appendChild(buildCtxMenuItem('✏️ Rename', function () {
     removeWsContextMenu();
     startInlineRename(wsId, wsName);
-  };
+  }));
 
-  menu.appendChild(renameItem);
+  menu.appendChild(buildCtxMenuItem('📋 Copy JSON', function () {
+    removeWsContextMenu();
+    copyWorkspaceJson(wsId, wsName);
+  }));
+
   document.body.appendChild(menu);
 
   // Close on click outside
