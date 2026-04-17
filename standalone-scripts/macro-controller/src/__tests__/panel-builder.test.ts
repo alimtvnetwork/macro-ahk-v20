@@ -193,6 +193,8 @@ function makeMockDeps(): PanelBuilderDeps {
     setLoopWsFreeOnly: vi.fn(),
     getLoopWsCompactMode: vi.fn(() => false),
     setLoopWsCompactMode: vi.fn(),
+    getLoopWsExpiredWithCredits: vi.fn(() => false),
+    setLoopWsExpiredWithCredits: vi.fn(),
     getLoopWsNavIndex: vi.fn(() => 0),
     setLoopWsNavIndex: vi.fn(),
     triggerLoopMoveFromSelection: vi.fn(),
