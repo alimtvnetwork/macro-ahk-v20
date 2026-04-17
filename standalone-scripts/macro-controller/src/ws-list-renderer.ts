@@ -246,7 +246,15 @@ function buildWsRowInnerHtml(
 ): string {
   const wsTier = ws.tier || 'FREE';
   const tierMeta = WS_TIER_LABELS[wsTier] || WS_TIER_LABELS['FREE'];
-  const tierBadge = '<span style="font-size:7px;color:' + tierMeta.fg + ';background:' + tierMeta.bg + ';padding:0 3px;border-radius:2px;font-weight:700;margin-left:4px;vertical-align:middle;">' + tierMeta.label + '</span>';
+  let tierBadge = '<span style="font-size:7px;color:' + tierMeta.fg + ';background:' + tierMeta.bg + ';padding:0 3px;border-radius:2px;font-weight:700;margin-left:4px;vertical-align:middle;">' + tierMeta.label + '</span>';
+  // For EXPIRED workspaces, append a subtle "·Nd" day-count chip so the user
+  // can see how long the workspace has been in the expired state.
+  if (wsTier === 'EXPIRED') {
+    const days = expiredDays(ws);
+    if (days !== null) {
+      tierBadge += '<span style="font-size:7px;color:#fca5a5;background:rgba(127,29,29,0.45);padding:0 3px;border-radius:2px;font-weight:600;margin-left:2px;vertical-align:middle;" title="Days since subscription_status_changed_at">·' + days + 'd</span>';
+    }
+  }
   const nameColor = isCurrent ? '#67e8f9' : '#e2e8f0';
   const nameBold = isCurrent ? 'font-weight:800;' : 'font-weight:500;';
 
