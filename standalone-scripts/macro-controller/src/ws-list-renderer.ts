@@ -117,6 +117,23 @@ export function getLoopWsFreeOnly(): boolean { return viewState().getFreeOnly();
 /** Set free-only filter state. */
 export function setLoopWsFreeOnly(val: boolean): void { viewState().setFreeOnly(val); }
 
+/**
+ * Minimum `available` credit threshold for a workspace to surface in the
+ * "Expired with credits" filter. Workspaces marked EXPIRED but holding
+ * more than this many credits are recovery candidates worth reviewing.
+ */
+export const EXPIRED_WITH_CREDITS_MIN = 5;
+
+/** Get expired-with-credits filter state. */
+export function getLoopWsExpiredWithCredits(): boolean {
+  return viewState().getExpiredWithCredits();
+}
+
+/** Set expired-with-credits filter state. */
+export function setLoopWsExpiredWithCredits(val: boolean): void {
+  viewState().setExpiredWithCredits(val);
+}
+
 // ============================================
 // Helper: fetch credits with auto-detect (used by ws-context-menu)
 // ============================================
