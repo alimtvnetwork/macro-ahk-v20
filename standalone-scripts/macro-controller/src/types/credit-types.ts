@@ -37,7 +37,13 @@ export interface WorkspaceCredit {
   role: string;
   tier: string;
   raw: Record<string, string | number>;
-  [key: string]: string | number | boolean | Record<string, string | number> | undefined;
+  /**
+   * Verbatim raw API workspace section as returned by /user/workspaces.
+   * Preserved as a JSON-stringifyable object for the right-click "Copy JSON" action.
+   * Keys/values reflect the exact server response (snake_case, nested objects, arrays).
+   */
+  rawApi: Record<string, unknown>;
+  [key: string]: string | number | boolean | Record<string, string | number> | Record<string, unknown> | undefined;
 }
 
 export interface LoopCreditState {
