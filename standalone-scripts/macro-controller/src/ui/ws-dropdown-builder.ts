@@ -14,7 +14,7 @@
 
 import { log } from '../logging';
 import { createWorkspaceListSkeleton } from './skeleton';
-import { cPanelBg, cPrimary, cPrimaryBorderA, cPrimaryHL, cPrimaryLighter, cInputBg, cInputBorder, cInputFg, loopCreditState, getLoopWsCheckedIds, setLoopWsCheckedIds, setLoopWsLastCheckedIdx, state } from '../shared-state';
+import { cPrimary, cPrimaryBorderA, cPrimaryHL, cPrimaryLighter, cInputBg, cInputBorder, cInputFg, loopCreditState, getLoopWsCheckedIds, setLoopWsCheckedIds, setLoopWsLastCheckedIdx, state } from '../shared-state';
 import { resolveToken } from '../auth';
 import type { RenameHistoryEntry, UndoRenameResults } from '../types';
 import { logError } from '../error-utils';
