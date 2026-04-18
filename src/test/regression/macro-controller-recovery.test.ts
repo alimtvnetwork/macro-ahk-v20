@@ -91,6 +91,16 @@ describe("Post-injection verification exists", () => {
     });
 });
 
+
+describe("MacroController runtime namespace healing", () => {
+    it("api-namespace.ts replaces non-extensible MacroController namespace objects", () => {
+        const content = readFile("standalone-scripts/macro-controller/src/api-namespace.ts");
+        expect(content).toContain("Object.isExtensible(existing)");
+        expect(content).toContain("needsReplacement");
+        expect(content).toContain("root.Projects.MacroController = {");
+    });
+});
+
 describe("Version alignment", () => {
     it("manifest.json and constants.ts have the same version", () => {
         const manifest = JSON.parse(readFile("chrome-extension/manifest.json"));
