@@ -218,6 +218,17 @@ export function startInlineRename(wsId: string, currentName: string): void {
   };
   const doCancel = function (): void {
     if (committed) return;
+    const typed = input.value.trim();
+    const hasUnsaved = typed.length > 0 && typed !== currentName;
+    if (hasUnsaved) {
+      const ok = window.confirm(
+        'Discard unsaved rename?\n\n"' + currentName + '" → "' + typed + '"',
+      );
+      if (!ok) {
+        input.focus();
+        return;
+      }
+    }
     committed = true;
     populateLoopWorkspaceDropdown();
   };
