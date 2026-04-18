@@ -946,6 +946,11 @@ async function injectProjectNamespaces(tabId: number, allProjects: StoredProject
         const projectSlug = project.slug || slugify(project.name);
         const codeName = project.codeName || toCodeName(projectSlug);
 
+        if (codeName === "MacroController") {
+            console.log("[injection:ns] Skipped generic namespace injection for \"%s\" (%s) — runtime namespace is owned by the script bundle", project.name, codeName);
+            continue;
+        }
+
         let nsScript = cachedScripts.get(pid);
         if (!nsScript) {
             let fileCache: Array<{ name: string; data: string }> = [];

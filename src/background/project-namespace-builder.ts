@@ -137,6 +137,11 @@ export function buildProjectNamespaceScript(ctx: NamespaceContext): string {
 var root = window.RiseupAsiaMacroExt;
 if (!root) { root = { Projects: {} }; window.RiseupAsiaMacroExt = root; }
 if (!root.Projects) { root.Projects = {}; }
+var existingNs = root.Projects["${cn}"];
+if (existingNs && (existingNs._internal || (existingNs.api && existingNs.api.mc))) {
+  console.log("[namespace] Preserved existing RiseupAsiaMacroExt.Projects.${cn} runtime namespace");
+  return;
+}
 var m = window.marco;
 if (!m) {
   console.warn("[namespace] window.marco not yet available — registering ${cn} with deferred proxy");
