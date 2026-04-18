@@ -3,7 +3,7 @@
  * See: spec/05-chrome-extension/65-developer-docs-and-project-slug.md
  */
 import { useState } from "react";
-import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 
 export interface DevGuideTargetUrl {
@@ -195,9 +195,52 @@ function buildFullGuideText(namespace: string, sections: string[]): string {
   return lines.join("\n");
 }
 
+/**
+ * Build a one-liner self-check snippet that reports whether the SDK
+ * globals are reachable in the current page context, with green/red
+ * console output via %c CSS styling.
+ *
+ * Output (example):
+ *   ✅ window.marco              defined (v2.152.0)
+ *   ✅ RiseupAsiaMacroExt        defined
+ *   ✅ Projects.MacroController  defined
+ *   ✅ All checks passed — SDK ready.
+ *
+ * Or on failure:
+ *   ❌ window.marco              MISSING
+ *   ❌ RiseupAsiaMacroExt        MISSING
+ *   ❌ Projects.MacroController  MISSING
+ *   ❌ SDK NOT INJECTED — check that this tab's URL matches a project rule
+ *      and that DevTools console is on the top frame (not an iframe).
+ */
+function buildSelfCheckSnippet(namespace: string): string {
+  // Extract the codeName from "RiseupAsiaMacroExt.Projects.<CodeName>"
+  const codeName = namespace.split(".").pop() ?? "<CodeName>";
+  const ok = "color:#22c55e;font-weight:bold";
+  const bad = "color:#ef4444;font-weight:bold";
+  const dim = "color:#94a3b8";
+  return [
+    `(()=>{`,
+    `var m=window.marco,r=window.RiseupAsiaMacroExt,p=r&&r.Projects&&r.Projects["${codeName}"];`,
+    `var f=function(l,v,e){console.log("%c"+(v?"\\u2705":"\\u274C")+" %c"+l.padEnd(34)+"%c"+(v?(" defined"+(e?" ("+e+")":"")):" MISSING"),v?"${ok}":"${bad}","color:inherit","${dim}");};`,
+    `f("window.marco",!!m,m&&m.version);`,
+    `f("window.RiseupAsiaMacroExt",!!r);`,
+    `f("RiseupAsiaMacroExt.Projects.${codeName}",!!p,p&&p.meta&&p.meta.version);`,
+    `if(m&&r&&p)console.log("%c\\u2705 All checks passed \\u2014 SDK ready.","${ok};font-size:13px");`,
+    `else console.log("%c\\u274C SDK NOT INJECTED \\u2014 check that this tab\\u2019s URL matches a project rule and the DevTools console is on the top frame (not an iframe).","${bad};font-size:13px");`,
+    `})();`,
+  ].join("");
+}
+
 // eslint-disable-next-line max-lines-per-function
 export function DevGuideSection({ namespace, section, targetUrls }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const selfCheckSnippet = buildSelfCheckSnippet(namespace);
+
+  const handleCopySelfCheck = () => {
+    copyText(selfCheckSnippet);
+    toast.success("Self-check copied — paste into the DevTools console of a matched tab");
+  };
 
   const sections = section === "all"
     ? Object.keys(sectionDocs)
@@ -257,6 +300,36 @@ export function DevGuideSection({ namespace, section, targetUrls }: Props) {
                 <li><strong className="text-foreground">Tip:</strong> in DevTools, make sure the console's <em>top-frame context</em> is selected (default), not an iframe.</li>
               </ul>
             </div>
+          </div>
+
+          {/* Self-check one-liner — paste into console to verify SDK reachability */}
+          <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5 space-y-2">
+            <div className="flex items-start gap-2.5">
+              <Stethoscope className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-semibold text-foreground">
+                  Quick self-check
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  Paste this one-liner into the DevTools console (on a matched tab) — it prints color-coded ✅/❌ output for{" "}
+                  <code className="font-mono text-foreground">window.marco</code>,{" "}
+                  <code className="font-mono text-foreground">RiseupAsiaMacroExt</code>, and{" "}
+                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors shrink-0"
+                onClick={handleCopySelfCheck}
+                title="Copy self-check one-liner"
+              >
+                <Copy className="h-3 w-3" />
+                Copy
+              </button>
+            </div>
+            <pre className="rounded-md border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap select-all">
+              {selfCheckSnippet}
+            </pre>
           </div>
 
           <div className="pt-1 flex items-start justify-between gap-3 flex-wrap">
