@@ -3,7 +3,7 @@
  * See: spec/05-chrome-extension/65-developer-docs-and-project-slug.md
  */
 import { useState } from "react";
-import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -180,13 +180,34 @@ export function DevGuideSection({ namespace, section }: Props) {
         <BookOpen className="h-4 w-4 text-primary" />
         <span className="text-xs font-semibold text-foreground">Developer Guide</span>
         <span className="text-[10px] text-muted-foreground ml-1">
-          — How to access from injected scripts
+          — How to access the SDK from the page console & injected scripts
         </span>
       </button>
 
       {expanded && (
         <div className="px-4 pb-4 space-y-4 border-t border-border/40">
-          <div className="pt-3 flex items-start justify-between">
+          {/* Context callout — explains where the SDK is reachable */}
+          <div className="mt-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2.5 flex gap-2.5">
+            <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="space-y-1.5 text-[11px] leading-relaxed">
+              <p className="font-semibold text-foreground">
+                Where can I run these snippets?
+              </p>
+              <p className="text-muted-foreground">
+                <code className="font-mono text-foreground">RiseupAsiaMacroExt</code> and{" "}
+                <code className="font-mono text-foreground">window.marco</code> are injected into the page's{" "}
+                <strong className="text-foreground">MAIN world</strong>, only on tabs whose URL matches one of this project's URL rules
+                (or the SDK's URL rules).
+              </p>
+              <ul className="list-disc list-inside text-muted-foreground space-y-0.5 pl-1">
+                <li><strong className="text-foreground">✅ Works in:</strong> DevTools console of a matched tab (e.g. <code className="font-mono text-foreground">https://lovable.dev/projects/*</code>), and inside scripts injected by this extension.</li>
+                <li><strong className="text-foreground">❌ Does NOT work in:</strong> the popup, options page, <code className="font-mono text-foreground">chrome://</code> URLs, <code className="font-mono text-foreground">about:blank</code>, or any non-matched tab — you'll get <code className="font-mono text-foreground">ReferenceError: RiseupAsiaMacroExt is not defined</code>.</li>
+                <li><strong className="text-foreground">Tip:</strong> in DevTools, make sure the console's <em>top-frame context</em> is selected (default), not an iframe.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-1 flex items-start justify-between">
             <div>
               <p className="text-[11px] text-muted-foreground mb-1">
                 SDK Namespace for this project:
