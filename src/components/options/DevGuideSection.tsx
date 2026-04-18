@@ -3,18 +3,60 @@
  * See: spec/05-chrome-extension/65-developer-docs-and-project-slug.md
  */
 import { useState } from "react";
-import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+
+export interface DevGuideTargetUrl {
+  pattern: string;
+  matchType: "glob" | "regex" | "exact";
+}
 
 interface Props {
   /** The full SDK namespace for this project, e.g. RiseupAsiaMacroExt.Projects.MacroController */
   namespace: string;
   /** Which section this guide is for */
   section: "urls" | "variables" | "xpath" | "cookies" | "scripts" | "kv" | "files" | "all";
+  /** Optional URL rules — when provided, renders an "Open matched tab" helper button */
+  targetUrls?: DevGuideTargetUrl[];
 }
 
 function copyText(text: string) {
   navigator.clipboard.writeText(text).then(() => toast.success("Copied to clipboard"));
+}
+
+/**
+ * Resolve the first usable concrete URL from a project's URL rules.
+ * Strategy:
+ *   - "exact" → use as-is
+ *   - "glob"  → replace `*` segments with sensible placeholders (no leading `*` host)
+ *   - "regex" → skip (cannot reliably synthesize)
+ * Returns null if no rule yields a launchable URL.
+ */
+function resolveOpenableUrl(rules: DevGuideTargetUrl[]): string | null {
+  for (const rule of rules) {
+    if (!rule.pattern) continue;
+    if (rule.matchType === "exact") {
+      if (/^https?:\/\//i.test(rule.pattern)) return rule.pattern;
+      continue;
+    }
+    if (rule.matchType === "glob") {
+      // Skip patterns with wildcard hostnames — we can't pick a real subdomain
+      // (e.g. "https://*.lovable.app/*" — leave to next rule).
+      if (/^https?:\/\/\*/i.test(rule.pattern)) continue;
+      // Replace path-level "*" with empty so "https://lovable.dev/projects/*" → "https://lovable.dev/projects/"
+      const concrete = rule.pattern.replace(/\*+/g, "");
+      if (/^https?:\/\//i.test(concrete)) return concrete;
+    }
+    // regex → skip
+  }
+  // Fallback: try wildcard hostnames by substituting `www`
+  for (const rule of rules) {
+    if (rule.matchType === "glob" && /^https?:\/\/\*/i.test(rule.pattern)) {
+      const concrete = rule.pattern.replace(/^(https?:\/\/)\*\.?/i, "$1www.").replace(/\*+/g, "");
+      if (/^https?:\/\//i.test(concrete)) return concrete;
+    }
+  }
+  return null;
 }
 
 function CodeBlock({ code, label }: { code: string; label?: string }) {
