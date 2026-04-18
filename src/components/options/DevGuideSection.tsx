@@ -3,7 +3,7 @@
  * See: spec/05-chrome-extension/65-developer-docs-and-project-slug.md
  */
 import { useState } from "react";
-import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 
 export interface DevGuideTargetUrl {
@@ -193,6 +193,43 @@ function buildFullGuideText(namespace: string, sections: string[]): string {
     }
   }
   return lines.join("\n");
+}
+
+/**
+ * Build a one-liner self-check snippet that reports whether the SDK
+ * globals are reachable in the current page context, with green/red
+ * console output via %c CSS styling.
+ *
+ * Output (example):
+ *   ✅ window.marco              defined (v2.152.0)
+ *   ✅ RiseupAsiaMacroExt        defined
+ *   ✅ Projects.MacroController  defined
+ *   ✅ All checks passed — SDK ready.
+ *
+ * Or on failure:
+ *   ❌ window.marco              MISSING
+ *   ❌ RiseupAsiaMacroExt        MISSING
+ *   ❌ Projects.MacroController  MISSING
+ *   ❌ SDK NOT INJECTED — check that this tab's URL matches a project rule
+ *      and that DevTools console is on the top frame (not an iframe).
+ */
+function buildSelfCheckSnippet(namespace: string): string {
+  // Extract the codeName from "RiseupAsiaMacroExt.Projects.<CodeName>"
+  const codeName = namespace.split(".").pop() ?? "<CodeName>";
+  const ok = "color:#22c55e;font-weight:bold";
+  const bad = "color:#ef4444;font-weight:bold";
+  const dim = "color:#94a3b8";
+  return [
+    `(()=>{`,
+    `var m=window.marco,r=window.RiseupAsiaMacroExt,p=r&&r.Projects&&r.Projects["${codeName}"];`,
+    `var f=function(l,v,e){console.log("%c"+(v?"\\u2705":"\\u274C")+" %c"+l.padEnd(34)+"%c"+(v?(" defined"+(e?" ("+e+")":"")):" MISSING"),v?"${ok}":"${bad}","color:inherit","${dim}");};`,
+    `f("window.marco",!!m,m&&m.version);`,
+    `f("window.RiseupAsiaMacroExt",!!r);`,
+    `f("RiseupAsiaMacroExt.Projects.${codeName}",!!p,p&&p.meta&&p.meta.version);`,
+    `if(m&&r&&p)console.log("%c\\u2705 All checks passed \\u2014 SDK ready.","${ok};font-size:13px");`,
+    `else console.log("%c\\u274C SDK NOT INJECTED \\u2014 check that this tab\\u2019s URL matches a project rule and the DevTools console is on the top frame (not an iframe).","${bad};font-size:13px");`,
+    `})();`,
+  ].join("");
 }
 
 // eslint-disable-next-line max-lines-per-function
