@@ -7,6 +7,10 @@
  * v2.149.0 — Inline rename now exposes clickable ✓ / ✗ buttons next to the
  * input field so the action is discoverable without keyboard shortcuts.
  * On success a toast confirms the new name. Enter / Escape still work.
+ *
+ * v2.150.0 — Cancel (✗ button or Esc key) now prompts a confirm dialog
+ * when there are unsaved typed changes, preventing accidental data loss.
+ * Both cancel paths share the same `doCancel` helper.
  */
 
 import {
