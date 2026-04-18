@@ -1049,7 +1049,7 @@ function GeneralTabContent({ project, allProjects, onSave }: GeneralTabContentPr
       <ActivityLogSection projectId={project.id} projectSlug={projectSlug} />
 
       {/* Developer Guide (inline) */}
-      <DevGuideSection namespace={toSdkNamespace(projectSlug)} section="all" />
+      <DevGuideSection namespace={toSdkNamespace(projectSlug)} section="all" targetUrls={project.targetUrls ?? []} />
     </div>
   );
 }
