@@ -1419,7 +1419,7 @@ function InjectionOrderPreview({ project, allProjects, globalProjects, deps, isG
 
 
 // eslint-disable-next-line max-lines-per-function
-function DocsTab({ namespace, slug }: { namespace: string; slug: string }) {
+function DocsTab({ namespace, slug, targetUrls }: { namespace: string; slug: string; targetUrls?: import("./DevGuideSection").DevGuideTargetUrl[] }) {
   const [generating, setGenerating] = useState(false);
   const [docsOutput, setDocsOutput] = useState<{ markdown?: string; prisma?: string } | null>(null);
   const [docsFormat, setDocsFormat] = useState<"markdown" | "prisma">("markdown");
