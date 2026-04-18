@@ -235,6 +235,12 @@ function buildSelfCheckSnippet(namespace: string): string {
 // eslint-disable-next-line max-lines-per-function
 export function DevGuideSection({ namespace, section, targetUrls }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const selfCheckSnippet = buildSelfCheckSnippet(namespace);
+
+  const handleCopySelfCheck = () => {
+    copyText(selfCheckSnippet);
+    toast.success("Self-check copied — paste into the DevTools console of a matched tab");
+  };
 
   const sections = section === "all"
     ? Object.keys(sectionDocs)
@@ -294,6 +300,36 @@ export function DevGuideSection({ namespace, section, targetUrls }: Props) {
                 <li><strong className="text-foreground">Tip:</strong> in DevTools, make sure the console's <em>top-frame context</em> is selected (default), not an iframe.</li>
               </ul>
             </div>
+          </div>
+
+          {/* Self-check one-liner — paste into console to verify SDK reachability */}
+          <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5 space-y-2">
+            <div className="flex items-start gap-2.5">
+              <Stethoscope className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-semibold text-foreground">
+                  Quick self-check
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  Paste this one-liner into the DevTools console (on a matched tab) — it prints color-coded ✅/❌ output for{" "}
+                  <code className="font-mono text-foreground">window.marco</code>,{" "}
+                  <code className="font-mono text-foreground">RiseupAsiaMacroExt</code>, and{" "}
+                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors shrink-0"
+                onClick={handleCopySelfCheck}
+                title="Copy self-check one-liner"
+              >
+                <Copy className="h-3 w-3" />
+                Copy
+              </button>
+            </div>
+            <pre className="rounded-md border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap select-all">
+              {selfCheckSnippet}
+            </pre>
           </div>
 
           <div className="pt-1 flex items-start justify-between gap-3 flex-wrap">
