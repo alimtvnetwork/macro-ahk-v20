@@ -196,7 +196,7 @@ function buildFullGuideText(namespace: string, sections: string[]): string {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function DevGuideSection({ namespace, section }: Props) {
+export function DevGuideSection({ namespace, section, targetUrls }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   const sections = section === "all"
@@ -206,6 +206,16 @@ export function DevGuideSection({ namespace, section }: Props) {
   const handleCopyAll = () => {
     const text = buildFullGuideText(namespace, sections);
     copyText(text);
+  };
+
+  const openableUrl = targetUrls && targetUrls.length > 0
+    ? resolveOpenableUrl(targetUrls)
+    : null;
+
+  const handleOpenMatchedTab = () => {
+    if (!openableUrl) return;
+    window.open(openableUrl, "_blank", "noopener,noreferrer");
+    toast.success(`Opening ${openableUrl} — switch to that tab and use DevTools console`);
   };
 
   return (
@@ -249,12 +259,12 @@ export function DevGuideSection({ namespace, section }: Props) {
             </div>
           </div>
 
-          <div className="pt-1 flex items-start justify-between">
-            <div>
+          <div className="pt-1 flex items-start justify-between gap-3 flex-wrap">
+            <div className="min-w-0">
               <p className="text-[11px] text-muted-foreground mb-1">
                 SDK Namespace for this project:
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <code className="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-1 rounded select-all">
                   {namespace}
                 </code>
@@ -262,9 +272,21 @@ export function DevGuideSection({ namespace, section }: Props) {
                   type="button"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => copyText(namespace)}
+                  title="Copy namespace"
                 >
                   <Copy className="h-3 w-3" />
                 </button>
+                {openableUrl && (
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                    onClick={handleOpenMatchedTab}
+                    title={`Open ${openableUrl} in a new tab so you can try the snippets in DevTools`}
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    Open matched tab
+                  </button>
+                )}
               </div>
             </div>
             <button
