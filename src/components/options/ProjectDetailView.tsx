@@ -1538,7 +1538,7 @@ function DocsTab({ namespace, slug, targetUrls }: { namespace: string; slug: str
         )}
       </div>
 
-      <DevGuideSection namespace={namespace} section="all" />
+      <DevGuideSection namespace={namespace} section="all" targetUrls={targetUrls} />
     </div>
   );
 }
