@@ -221,7 +221,7 @@ function extractSessionNamesFromProject(ns: RiseupAsiaProject): string[] {
 
 export function getSessionCookieNames(): string[] {
   try {
-    const root = RiseupAsiaMacroExt;
+    const root = (typeof window !== 'undefined' ? window.RiseupAsiaMacroExt : undefined);
     if (!root?.Projects) {
       return FALLBACK_SESSION_COOKIE_NAMES;
     }

@@ -68,7 +68,7 @@ export function updateCookieRow(deps: AuthDiagDeps, cookieRow: DiagRowElements):
 
 function detectBindingsSource(): boolean {
   try {
-    const root = RiseupAsiaMacroExt;
+    const root = (typeof window !== 'undefined' ? window.RiseupAsiaMacroExt : undefined);
     return root !== undefined && root.Projects !== undefined && Object.keys(root.Projects).length > 0;
   } catch (e: unknown) {
     logError('hasActiveProject', 'Failed to check active projects', e);
