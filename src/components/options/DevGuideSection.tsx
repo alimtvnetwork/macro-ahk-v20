@@ -3,8 +3,37 @@
  * See: spec/05-chrome-extension/65-developer-docs-and-project-slug.md
  */
 import { useState } from "react";
-import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
+
+/** Sub-namespaces expected on every Projects.<CodeName> object — kept in sync with project-namespace-builder.ts */
+const EXPECTED_SUB_NAMESPACES = [
+  "vars", "urls", "xpath", "cookies", "kv", "files",
+  "meta", "log", "scripts", "db", "api", "notify", "docs",
+] as const;
+
+/**
+ * Build a one-line self-check snippet.
+ * Reports presence of window.marco, RiseupAsiaMacroExt, and Projects.<CodeName>
+ * with green ✅ / red ❌ console output.
+ */
+function buildSelfCheckSnippet(namespace: string): string {
+  // namespace looks like: RiseupAsiaMacroExt.Projects.MacroController
+  const parts = namespace.split(".");
+  const codeName = parts[parts.length - 1] ?? "";
+  return `(()=>{const g=globalThis,O="color:#22c55e;font-weight:bold",X="color:#ef4444;font-weight:bold",m=g.marco,r=g.RiseupAsiaMacroExt,p=r&&r.Projects&&r.Projects["${codeName}"];console.log("%c[SDK self-check] window.marco "+(m?"\u2705 "+(m.version||""):"\u274C missing"),m?O:X);console.log("%c[SDK self-check] RiseupAsiaMacroExt "+(r?"\u2705":"\u274C missing"),r?O:X);console.log("%c[SDK self-check] Projects.${codeName} "+(p?"\u2705 v"+((p.meta&&p.meta.version)||"?"):"\u274C missing"),p?O:X);})();`;
+}
+
+/**
+ * Build an expandable extended diagnostics snippet.
+ * Lists each expected sub-namespace under Projects.<CodeName> with ✅ / ❌.
+ */
+function buildExtendedDiagnosticsSnippet(namespace: string): string {
+  const parts = namespace.split(".");
+  const codeName = parts[parts.length - 1] ?? "";
+  const expected = JSON.stringify([...EXPECTED_SUB_NAMESPACES]);
+  return `(()=>{const g=globalThis,O="color:#22c55e",X="color:#ef4444",B="color:#a78bfa;font-weight:bold",p=g.RiseupAsiaMacroExt&&g.RiseupAsiaMacroExt.Projects&&g.RiseupAsiaMacroExt.Projects["${codeName}"];if(!p){console.log("%c[SDK extended] Projects.${codeName} \u274C missing — cannot enumerate sub-namespaces",X);return;}console.log("%c[SDK extended] Projects.${codeName} sub-namespaces:",B);${expected}.forEach(k=>{const ok=p[k]!==undefined&&p[k]!==null;console.log("%c  "+(ok?"\u2705":"\u274C")+" "+k,ok?O:X);});const extra=Object.keys(p).filter(k=>!${expected}.includes(k));if(extra.length){console.log("%c[SDK extended] Extra (non-standard) keys: "+extra.join(", "),"color:#f59e0b");}})();`;
+}
 
 export interface DevGuideTargetUrl {
   pattern: string;
