@@ -202,46 +202,44 @@ const nsCache = new NamespaceCache();
 export function getNamespace(): MacroControllerNamespace | null {
   if (nsCache.ns) return nsCache.ns;
 
-  // Safe global access — bare `RiseupAsiaMacroExt` would throw ReferenceError
-  // if the SDK IIFE hasn't injected yet. `window.X` is always safe.
   const root = (typeof window !== 'undefined'
     ? (window as Window).RiseupAsiaMacroExt
     : undefined) as RiseupAsiaMacroExtNamespace | undefined;
 
-  // SDK not yet ready (early bootstrap, iframe without SDK, etc.)
-  // Return null silently — callers handle gracefully and we'll succeed on retry.
-  // No toast: this is expected during the brief window before SDK injection.
   if (!root || !root.Projects) return null;
 
   try {
-    if (!root.Projects.MacroController) {
-      root.Projects.MacroController = {};
+    const existing = root.Projects.MacroController as Record<string, unknown> | undefined;
+    const needsReplacement = !existing || !Object.isExtensible(existing);
+
+    if (needsReplacement) {
+      root.Projects.MacroController = {
+        meta: { version: VERSION, displayName: 'Macro Controller' },
+        api: {} as MacroControllerApi,
+        _internal: {} as MacroControllerInternal,
+      } as MacroControllerNamespace;
     }
 
     const mc = root.Projects.MacroController as MacroControllerNamespace;
 
-    // Ensure sub-objects exist
-    if (!mc.meta) mc.meta = { version: '', displayName: '' };
-    if (!mc.api) mc.api = {} as MacroControllerApi;
+    if (!mc.meta || typeof mc.meta !== 'object') mc.meta = { version: '', displayName: '' };
+    if (!mc.api || typeof mc.api !== 'object') mc.api = {} as MacroControllerApi;
     const api = mc.api;
-    if (!api.loop) api.loop = {} as LoopApi;
-    if (!api.credits) api.credits = {} as CreditsApi;
-    if (!api.auth) api.auth = {} as AuthApi;
-    if (!api.workspace) api.workspace = {} as WorkspaceApi;
-    if (!api.ui) api.ui = {} as UiApi;
-    if (!api.config) api.config = {} as ConfigApi;
-    if (!api.autoAttach) api.autoAttach = {} as AutoAttachApi;
-    if (!mc._internal) mc._internal = {} as MacroControllerInternal;
+    if (!api.loop || typeof api.loop !== 'object') api.loop = {} as LoopApi;
+    if (!api.credits || typeof api.credits !== 'object') api.credits = {} as CreditsApi;
+    if (!api.auth || typeof api.auth !== 'object') api.auth = {} as AuthApi;
+    if (!api.workspace || typeof api.workspace !== 'object') api.workspace = {} as WorkspaceApi;
+    if (!api.ui || typeof api.ui !== 'object') api.ui = {} as UiApi;
+    if (!api.config || typeof api.config !== 'object') api.config = {} as ConfigApi;
+    if (!api.autoAttach || typeof api.autoAttach !== 'object') api.autoAttach = {} as AutoAttachApi;
+    if (!mc._internal || typeof mc._internal !== 'object') mc._internal = {} as MacroControllerInternal;
 
-    // Set meta
     mc.meta.version = VERSION;
     mc.meta.displayName = 'Macro Controller';
 
     nsCache.ns = mc;
     return nsCache.ns;
   } catch (e) {
-    // Genuine failure: SDK root exists but mutation failed (frozen/sealed?).
-    // This is unexpected — log + toast once.
     logError('getNamespace', 'Failed to access MacroController namespace', e);
     showToast('❌ Failed to access MacroController namespace', 'error');
     return null;
