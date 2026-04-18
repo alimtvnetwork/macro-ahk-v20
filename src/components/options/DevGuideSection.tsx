@@ -332,6 +332,72 @@ export function DevGuideSection({ namespace, section, targetUrls }: Props) {
             </button>
           </div>
 
+          {/* Quick self-check — verify SDK availability in the page context */}
+          <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5 space-y-2">
+            <div className="flex items-start gap-2.5">
+              <Stethoscope className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              <div className="space-y-1.5 text-[11px] leading-relaxed flex-1 min-w-0">
+                <p className="font-semibold text-foreground">Quick self-check</p>
+                <p className="text-muted-foreground">
+                  Paste this one-liner in the DevTools console of a matched tab — it reports{" "}
+                  <code className="font-mono text-foreground">window.marco</code>,{" "}
+                  <code className="font-mono text-foreground">RiseupAsiaMacroExt</code>, and{" "}
+                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>{" "}
+                  with ✅/❌ and version info.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="shrink-0 flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                onClick={() => copyText(selfCheckSnippet)}
+                title="Copy self-check snippet"
+              >
+                <Copy className="h-3 w-3" />
+                Copy
+              </button>
+            </div>
+            <pre className="rounded border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap">
+              {selfCheckSnippet}
+            </pre>
+
+            {/* Expandable extended diagnostics */}
+            <button
+              type="button"
+              className="w-full flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors pt-1"
+              onClick={() => setShowExtended(!showExtended)}
+            >
+              {showExtended
+                ? <ChevronDown className="h-3 w-3" />
+                : <ChevronRight className="h-3 w-3" />
+              }
+              <span>Extended diagnostics — list all sub-namespaces ({EXPECTED_SUB_NAMESPACES.length})</span>
+            </button>
+
+            {showExtended && (
+              <div className="space-y-2 pt-1 border-t border-primary/20">
+                <p className="text-[11px] text-muted-foreground">
+                  This snippet enumerates every expected sub-namespace on{" "}
+                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>{" "}
+                  ({EXPECTED_SUB_NAMESPACES.join(", ")}) and prints ✅/❌ for each, plus any non-standard extra keys.
+                </p>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                    onClick={() => copyText(extendedSnippet)}
+                    title="Copy extended diagnostics snippet"
+                  >
+                    <Copy className="h-3 w-3" />
+                    Copy extended
+                  </button>
+                </div>
+                <pre className="rounded border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap">
+                  {extendedSnippet}
+                </pre>
+              </div>
+            )}
+          </div>
+
           {sections.map((s) => {
             const doc = sectionDocs[s]?.(namespace);
             if (!doc) return null;
