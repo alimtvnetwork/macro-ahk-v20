@@ -202,10 +202,18 @@ const nsCache = new NamespaceCache();
 export function getNamespace(): MacroControllerNamespace | null {
   if (nsCache.ns) return nsCache.ns;
 
-  try {
-    const root = RiseupAsiaMacroExt;
-    if (!root || !root.Projects) return null;
+  // Safe global access — bare `RiseupAsiaMacroExt` would throw ReferenceError
+  // if the SDK IIFE hasn't injected yet. `window.X` is always safe.
+  const root = (typeof window !== 'undefined'
+    ? (window as Window).RiseupAsiaMacroExt
+    : undefined) as RiseupAsiaMacroExtNamespace | undefined;
 
+  // SDK not yet ready (early bootstrap, iframe without SDK, etc.)
+  // Return null silently — callers handle gracefully and we'll succeed on retry.
+  // No toast: this is expected during the brief window before SDK injection.
+  if (!root || !root.Projects) return null;
+
+  try {
     if (!root.Projects.MacroController) {
       root.Projects.MacroController = {};
     }
@@ -232,6 +240,8 @@ export function getNamespace(): MacroControllerNamespace | null {
     nsCache.ns = mc;
     return nsCache.ns;
   } catch (e) {
+    // Genuine failure: SDK root exists but mutation failed (frozen/sealed?).
+    // This is unexpected — log + toast once.
     logError('getNamespace', 'Failed to access MacroController namespace', e);
     showToast('❌ Failed to access MacroController namespace', 'error');
     return null;
