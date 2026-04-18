@@ -239,7 +239,7 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
                 availableConfigs={availableConfigs}
                 onSave={onSave}
               />
-              <DevGuideSection namespace={sdkNamespace} section="scripts" />
+              <DevGuideSection namespace={sdkNamespace} section="scripts" targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="urls" className="mt-4" forceMount={activeTab === "urls" ? true : undefined}>
@@ -249,7 +249,7 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
                   onChange={(urls) => onSave({ id: project.id, targetUrls: urls })}
                 />
               </Suspense>
-              <DevGuideSection namespace={sdkNamespace} section="urls" />
+              <DevGuideSection namespace={sdkNamespace} section="urls" targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="variables" className="mt-4" forceMount={activeTab === "variables" ? true : undefined}>
@@ -259,7 +259,7 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
                   onChange={(vars) => onSave({ id: project.id, variables: vars } as Partial<StoredProject> & { variables: string })}
                 />
               </Suspense>
-              <DevGuideSection namespace={sdkNamespace} section="variables" />
+              <DevGuideSection namespace={sdkNamespace} section="variables" targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="xpath" className="mt-4" forceMount={activeTab === "xpath" ? true : undefined}>
@@ -274,7 +274,7 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
                   }
                 />
               </Suspense>
-              <DevGuideSection namespace={sdkNamespace} section="xpath" />
+              <DevGuideSection namespace={sdkNamespace} section="xpath" targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="cookies" className="mt-4" forceMount={activeTab === "cookies" ? true : undefined}>
@@ -286,7 +286,7 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
                   legacyRules={(project as unknown as Record<string, unknown>).cookieRules as import("./CookiesPanel").CookieRule[] | undefined}
                 />
               </Suspense>
-              <DevGuideSection namespace={sdkNamespace} section="cookies" />
+              <DevGuideSection namespace={sdkNamespace} section="cookies" targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="updater" className="mt-4" forceMount={activeTab === "updater" ? true : undefined}>
@@ -296,14 +296,14 @@ export function ProjectDetailView({ project, allProjects, availableScripts, avai
             </TabsContent>
 
             <TabsContent value="docs" className="mt-4" forceMount={activeTab === "docs" ? true : undefined}>
-              <DocsTab namespace={sdkNamespace} slug={projectSlug} />
+              <DocsTab namespace={sdkNamespace} slug={projectSlug} targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="files" className="mt-4" forceMount={activeTab === "files" ? true : undefined}>
               <Suspense fallback={<TabFallback />}>
                 <ProjectFilesPanel projectId={project.id} />
               </Suspense>
-              <DevGuideSection namespace={sdkNamespace} section="files" />
+              <DevGuideSection namespace={sdkNamespace} section="files" targetUrls={project.targetUrls ?? []} />
             </TabsContent>
 
             <TabsContent value="timing" className="mt-4" forceMount={activeTab === "timing" ? true : undefined}>
@@ -1049,7 +1049,7 @@ function GeneralTabContent({ project, allProjects, onSave }: GeneralTabContentPr
       <ActivityLogSection projectId={project.id} projectSlug={projectSlug} />
 
       {/* Developer Guide (inline) */}
-      <DevGuideSection namespace={toSdkNamespace(projectSlug)} section="all" />
+      <DevGuideSection namespace={toSdkNamespace(projectSlug)} section="all" targetUrls={project.targetUrls ?? []} />
     </div>
   );
 }
@@ -1419,7 +1419,7 @@ function InjectionOrderPreview({ project, allProjects, globalProjects, deps, isG
 
 
 // eslint-disable-next-line max-lines-per-function
-function DocsTab({ namespace, slug }: { namespace: string; slug: string }) {
+function DocsTab({ namespace, slug, targetUrls }: { namespace: string; slug: string; targetUrls?: import("./DevGuideSection").DevGuideTargetUrl[] }) {
   const [generating, setGenerating] = useState(false);
   const [docsOutput, setDocsOutput] = useState<{ markdown?: string; prisma?: string } | null>(null);
   const [docsFormat, setDocsFormat] = useState<"markdown" | "prisma">("markdown");
@@ -1538,7 +1538,7 @@ function DocsTab({ namespace, slug }: { namespace: string; slug: string }) {
         )}
       </div>
 
-      <DevGuideSection namespace={namespace} section="all" />
+      <DevGuideSection namespace={namespace} section="all" targetUrls={targetUrls} />
     </div>
   );
 }
