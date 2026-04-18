@@ -61,29 +61,33 @@ function copyText(text: string) {
  *   - "regex" → skip (cannot reliably synthesize)
  * Returns null if no rule yields a launchable URL.
  */
+function tryResolveOne(rule: DevGuideTargetUrl): string | null {
+  if (!rule.pattern) return null;
+  if (rule.matchType === "exact") {
+    return /^https?:\/\//i.test(rule.pattern) ? rule.pattern : null;
+  }
+  if (rule.matchType === "glob") {
+    if (/^https?:\/\/\*/i.test(rule.pattern)) return null; // wildcard host — handled in fallback
+    const concrete = rule.pattern.replace(/\*+/g, "");
+    return /^https?:\/\//i.test(concrete) ? concrete : null;
+  }
+  return null; // regex → skip
+}
+
+function tryResolveWildcardHost(rule: DevGuideTargetUrl): string | null {
+  if (rule.matchType !== "glob" || !/^https?:\/\/\*/i.test(rule.pattern)) return null;
+  const concrete = rule.pattern.replace(/^(https?:\/\/)\*\.?/i, "$1www.").replace(/\*+/g, "");
+  return /^https?:\/\//i.test(concrete) ? concrete : null;
+}
+
 function resolveOpenableUrl(rules: DevGuideTargetUrl[]): string | null {
   for (const rule of rules) {
-    if (!rule.pattern) continue;
-    if (rule.matchType === "exact") {
-      if (/^https?:\/\//i.test(rule.pattern)) return rule.pattern;
-      continue;
-    }
-    if (rule.matchType === "glob") {
-      // Skip patterns with wildcard hostnames — we can't pick a real subdomain
-      // (e.g. "https://*.lovable.app/*" — leave to next rule).
-      if (/^https?:\/\/\*/i.test(rule.pattern)) continue;
-      // Replace path-level "*" with empty so "https://lovable.dev/projects/*" → "https://lovable.dev/projects/"
-      const concrete = rule.pattern.replace(/\*+/g, "");
-      if (/^https?:\/\//i.test(concrete)) return concrete;
-    }
-    // regex → skip
+    const url = tryResolveOne(rule);
+    if (url) return url;
   }
-  // Fallback: try wildcard hostnames by substituting `www`
   for (const rule of rules) {
-    if (rule.matchType === "glob" && /^https?:\/\/\*/i.test(rule.pattern)) {
-      const concrete = rule.pattern.replace(/^(https?:\/\/)\*\.?/i, "$1www.").replace(/\*+/g, "");
-      if (/^https?:\/\//i.test(concrete)) return concrete;
-    }
+    const url = tryResolveWildcardHost(rule);
+    if (url) return url;
   }
   return null;
 }
