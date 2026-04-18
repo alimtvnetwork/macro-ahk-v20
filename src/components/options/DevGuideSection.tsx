@@ -6,6 +6,35 @@ import { useState } from "react";
 import { ChevronDown, ChevronRight, BookOpen, Copy, ClipboardCopy, AlertTriangle, ExternalLink, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 
+/** Sub-namespaces expected on every Projects.<CodeName> object — kept in sync with project-namespace-builder.ts */
+const EXPECTED_SUB_NAMESPACES = [
+  "vars", "urls", "xpath", "cookies", "kv", "files",
+  "meta", "log", "scripts", "db", "api", "notify", "docs",
+] as const;
+
+/**
+ * Build a one-line self-check snippet.
+ * Reports presence of window.marco, RiseupAsiaMacroExt, and Projects.<CodeName>
+ * with green ✅ / red ❌ console output.
+ */
+function buildSelfCheckSnippet(namespace: string): string {
+  // namespace looks like: RiseupAsiaMacroExt.Projects.MacroController
+  const parts = namespace.split(".");
+  const codeName = parts[parts.length - 1] ?? "";
+  return `(()=>{const g=globalThis,O="color:#22c55e;font-weight:bold",X="color:#ef4444;font-weight:bold",m=g.marco,r=g.RiseupAsiaMacroExt,p=r&&r.Projects&&r.Projects["${codeName}"];console.log("%c[SDK self-check] window.marco "+(m?"\u2705 "+(m.version||""):"\u274C missing"),m?O:X);console.log("%c[SDK self-check] RiseupAsiaMacroExt "+(r?"\u2705":"\u274C missing"),r?O:X);console.log("%c[SDK self-check] Projects.${codeName} "+(p?"\u2705 v"+((p.meta&&p.meta.version)||"?"):"\u274C missing"),p?O:X);})();`;
+}
+
+/**
+ * Build an expandable extended diagnostics snippet.
+ * Lists each expected sub-namespace under Projects.<CodeName> with ✅ / ❌.
+ */
+function buildExtendedDiagnosticsSnippet(namespace: string): string {
+  const parts = namespace.split(".");
+  const codeName = parts[parts.length - 1] ?? "";
+  const expected = JSON.stringify([...EXPECTED_SUB_NAMESPACES]);
+  return `(()=>{const g=globalThis,O="color:#22c55e",X="color:#ef4444",B="color:#a78bfa;font-weight:bold",p=g.RiseupAsiaMacroExt&&g.RiseupAsiaMacroExt.Projects&&g.RiseupAsiaMacroExt.Projects["${codeName}"];if(!p){console.log("%c[SDK extended] Projects.${codeName} \u274C missing — cannot enumerate sub-namespaces",X);return;}console.log("%c[SDK extended] Projects.${codeName} sub-namespaces:",B);${expected}.forEach(k=>{const ok=p[k]!==undefined&&p[k]!==null;console.log("%c  "+(ok?"\u2705":"\u274C")+" "+k,ok?O:X);});const extra=Object.keys(p).filter(k=>!${expected}.includes(k));if(extra.length){console.log("%c[SDK extended] Extra (non-standard) keys: "+extra.join(", "),"color:#f59e0b");}})();`;
+}
+
 export interface DevGuideTargetUrl {
   pattern: string;
   matchType: string;
@@ -32,29 +61,33 @@ function copyText(text: string) {
  *   - "regex" → skip (cannot reliably synthesize)
  * Returns null if no rule yields a launchable URL.
  */
+function tryResolveOne(rule: DevGuideTargetUrl): string | null {
+  if (!rule.pattern) return null;
+  if (rule.matchType === "exact") {
+    return /^https?:\/\//i.test(rule.pattern) ? rule.pattern : null;
+  }
+  if (rule.matchType === "glob") {
+    if (/^https?:\/\/\*/i.test(rule.pattern)) return null; // wildcard host — handled in fallback
+    const concrete = rule.pattern.replace(/\*+/g, "");
+    return /^https?:\/\//i.test(concrete) ? concrete : null;
+  }
+  return null; // regex → skip
+}
+
+function tryResolveWildcardHost(rule: DevGuideTargetUrl): string | null {
+  if (rule.matchType !== "glob" || !/^https?:\/\/\*/i.test(rule.pattern)) return null;
+  const concrete = rule.pattern.replace(/^(https?:\/\/)\*\.?/i, "$1www.").replace(/\*+/g, "");
+  return /^https?:\/\//i.test(concrete) ? concrete : null;
+}
+
 function resolveOpenableUrl(rules: DevGuideTargetUrl[]): string | null {
   for (const rule of rules) {
-    if (!rule.pattern) continue;
-    if (rule.matchType === "exact") {
-      if (/^https?:\/\//i.test(rule.pattern)) return rule.pattern;
-      continue;
-    }
-    if (rule.matchType === "glob") {
-      // Skip patterns with wildcard hostnames — we can't pick a real subdomain
-      // (e.g. "https://*.lovable.app/*" — leave to next rule).
-      if (/^https?:\/\/\*/i.test(rule.pattern)) continue;
-      // Replace path-level "*" with empty so "https://lovable.dev/projects/*" → "https://lovable.dev/projects/"
-      const concrete = rule.pattern.replace(/\*+/g, "");
-      if (/^https?:\/\//i.test(concrete)) return concrete;
-    }
-    // regex → skip
+    const url = tryResolveOne(rule);
+    if (url) return url;
   }
-  // Fallback: try wildcard hostnames by substituting `www`
   for (const rule of rules) {
-    if (rule.matchType === "glob" && /^https?:\/\/\*/i.test(rule.pattern)) {
-      const concrete = rule.pattern.replace(/^(https?:\/\/)\*\.?/i, "$1www.").replace(/\*+/g, "");
-      if (/^https?:\/\//i.test(concrete)) return concrete;
-    }
+    const url = tryResolveWildcardHost(rule);
+    if (url) return url;
   }
   return null;
 }
@@ -195,52 +228,12 @@ function buildFullGuideText(namespace: string, sections: string[]): string {
   return lines.join("\n");
 }
 
-/**
- * Build a one-liner self-check snippet that reports whether the SDK
- * globals are reachable in the current page context, with green/red
- * console output via %c CSS styling.
- *
- * Output (example):
- *   ✅ window.marco              defined (v2.152.0)
- *   ✅ RiseupAsiaMacroExt        defined
- *   ✅ Projects.MacroController  defined
- *   ✅ All checks passed — SDK ready.
- *
- * Or on failure:
- *   ❌ window.marco              MISSING
- *   ❌ RiseupAsiaMacroExt        MISSING
- *   ❌ Projects.MacroController  MISSING
- *   ❌ SDK NOT INJECTED — check that this tab's URL matches a project rule
- *      and that DevTools console is on the top frame (not an iframe).
- */
-function buildSelfCheckSnippet(namespace: string): string {
-  // Extract the codeName from "RiseupAsiaMacroExt.Projects.<CodeName>"
-  const codeName = namespace.split(".").pop() ?? "<CodeName>";
-  const ok = "color:#22c55e;font-weight:bold";
-  const bad = "color:#ef4444;font-weight:bold";
-  const dim = "color:#94a3b8";
-  return [
-    `(()=>{`,
-    `var m=window.marco,r=window.RiseupAsiaMacroExt,p=r&&r.Projects&&r.Projects["${codeName}"];`,
-    `var f=function(l,v,e){console.log("%c"+(v?"\\u2705":"\\u274C")+" %c"+l.padEnd(34)+"%c"+(v?(" defined"+(e?" ("+e+")":"")):" MISSING"),v?"${ok}":"${bad}","color:inherit","${dim}");};`,
-    `f("window.marco",!!m,m&&m.version);`,
-    `f("window.RiseupAsiaMacroExt",!!r);`,
-    `f("RiseupAsiaMacroExt.Projects.${codeName}",!!p,p&&p.meta&&p.meta.version);`,
-    `if(m&&r&&p)console.log("%c\\u2705 All checks passed \\u2014 SDK ready.","${ok};font-size:13px");`,
-    `else console.log("%c\\u274C SDK NOT INJECTED \\u2014 check that this tab\\u2019s URL matches a project rule and the DevTools console is on the top frame (not an iframe).","${bad};font-size:13px");`,
-    `})();`,
-  ].join("");
-}
-
 // eslint-disable-next-line max-lines-per-function
 export function DevGuideSection({ namespace, section, targetUrls }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [showExtended, setShowExtended] = useState(false);
   const selfCheckSnippet = buildSelfCheckSnippet(namespace);
-
-  const handleCopySelfCheck = () => {
-    copyText(selfCheckSnippet);
-    toast.success("Self-check copied — paste into the DevTools console of a matched tab");
-  };
+  const extendedSnippet = buildExtendedDiagnosticsSnippet(namespace);
 
   const sections = section === "all"
     ? Object.keys(sectionDocs)
@@ -302,36 +295,6 @@ export function DevGuideSection({ namespace, section, targetUrls }: Props) {
             </div>
           </div>
 
-          {/* Self-check one-liner — paste into console to verify SDK reachability */}
-          <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5 space-y-2">
-            <div className="flex items-start gap-2.5">
-              <Stethoscope className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-semibold text-foreground">
-                  Quick self-check
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  Paste this one-liner into the DevTools console (on a matched tab) — it prints color-coded ✅/❌ output for{" "}
-                  <code className="font-mono text-foreground">window.marco</code>,{" "}
-                  <code className="font-mono text-foreground">RiseupAsiaMacroExt</code>, and{" "}
-                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors shrink-0"
-                onClick={handleCopySelfCheck}
-                title="Copy self-check one-liner"
-              >
-                <Copy className="h-3 w-3" />
-                Copy
-              </button>
-            </div>
-            <pre className="rounded-md border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap select-all">
-              {selfCheckSnippet}
-            </pre>
-          </div>
-
           <div className="pt-1 flex items-start justify-between gap-3 flex-wrap">
             <div className="min-w-0">
               <p className="text-[11px] text-muted-foreground mb-1">
@@ -371,6 +334,72 @@ export function DevGuideSection({ namespace, section, targetUrls }: Props) {
               <ClipboardCopy className="h-3.5 w-3.5" />
               Copy All
             </button>
+          </div>
+
+          {/* Quick self-check — verify SDK availability in the page context */}
+          <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5 space-y-2">
+            <div className="flex items-start gap-2.5">
+              <Stethoscope className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              <div className="space-y-1.5 text-[11px] leading-relaxed flex-1 min-w-0">
+                <p className="font-semibold text-foreground">Quick self-check</p>
+                <p className="text-muted-foreground">
+                  Paste this one-liner in the DevTools console of a matched tab — it reports{" "}
+                  <code className="font-mono text-foreground">window.marco</code>,{" "}
+                  <code className="font-mono text-foreground">RiseupAsiaMacroExt</code>, and{" "}
+                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>{" "}
+                  with ✅/❌ and version info.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="shrink-0 flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                onClick={() => copyText(selfCheckSnippet)}
+                title="Copy self-check snippet"
+              >
+                <Copy className="h-3 w-3" />
+                Copy
+              </button>
+            </div>
+            <pre className="rounded border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap">
+              {selfCheckSnippet}
+            </pre>
+
+            {/* Expandable extended diagnostics */}
+            <button
+              type="button"
+              className="w-full flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors pt-1"
+              onClick={() => setShowExtended(!showExtended)}
+            >
+              {showExtended
+                ? <ChevronDown className="h-3 w-3" />
+                : <ChevronRight className="h-3 w-3" />
+              }
+              <span>Extended diagnostics — list all sub-namespaces ({EXPECTED_SUB_NAMESPACES.length})</span>
+            </button>
+
+            {showExtended && (
+              <div className="space-y-2 pt-1 border-t border-primary/20">
+                <p className="text-[11px] text-muted-foreground">
+                  This snippet enumerates every expected sub-namespace on{" "}
+                  <code className="font-mono text-foreground">Projects.{namespace.split(".").pop()}</code>{" "}
+                  ({EXPECTED_SUB_NAMESPACES.join(", ")}) and prints ✅/❌ for each, plus any non-standard extra keys.
+                </p>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-md border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                    onClick={() => copyText(extendedSnippet)}
+                    title="Copy extended diagnostics snippet"
+                  >
+                    <Copy className="h-3 w-3" />
+                    Copy extended
+                  </button>
+                </div>
+                <pre className="rounded border border-border bg-background p-2 text-[10px] font-mono text-foreground/80 overflow-x-auto whitespace-pre-wrap">
+                  {extendedSnippet}
+                </pre>
+              </div>
+            )}
           </div>
 
           {sections.map((s) => {
