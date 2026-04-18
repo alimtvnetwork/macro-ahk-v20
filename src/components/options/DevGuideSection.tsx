@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 export interface DevGuideTargetUrl {
   pattern: string;
-  matchType: "glob" | "regex" | "exact";
+  matchType: string;
 }
 
 interface Props {
