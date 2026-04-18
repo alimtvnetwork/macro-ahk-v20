@@ -227,6 +227,9 @@ function buildFullGuideText(namespace: string, sections: string[]): string {
 // eslint-disable-next-line max-lines-per-function
 export function DevGuideSection({ namespace, section, targetUrls }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [showExtended, setShowExtended] = useState(false);
+  const selfCheckSnippet = buildSelfCheckSnippet(namespace);
+  const extendedSnippet = buildExtendedDiagnosticsSnippet(namespace);
 
   const sections = section === "all"
     ? Object.keys(sectionDocs)
