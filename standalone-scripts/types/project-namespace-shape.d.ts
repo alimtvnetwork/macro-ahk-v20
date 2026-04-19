@@ -79,7 +79,12 @@ declare global {
         get: (key: string) => Promise<unknown>;
         set: (key: string, value: unknown) => Promise<void>;
         delete: (key: string) => Promise<void>;
-        list: () => Promise<string[]>;
+        /**
+         * Returns the project's KV entries. Concrete implementations may
+         * yield either `string[]` (key list) or richer `{key,value}[]`
+         * rows — callers should narrow as needed.
+         */
+        list: () => Promise<unknown>;
     }
 
     interface NamespaceFilesApi {
