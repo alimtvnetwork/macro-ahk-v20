@@ -29,7 +29,7 @@ interface MarcoLike {
     };
     cookies?: {
         get: (name: string) => Promise<string | null>;
-        getAll: () => Promise<Record<string, string>>;
+        getAll: () => Promise<unknown>;
     };
     xpath?: { getChatBox: () => Element | null };
     kv: {
