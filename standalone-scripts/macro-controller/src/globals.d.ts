@@ -170,37 +170,13 @@ declare global {
     RiseupAsiaMacroExt?: RiseupAsiaMacroExtNamespace;
   }
 
-  interface RiseupAsiaCookieBinding {
-    role?: string;
-    cookieName?: string;
-  }
-
-  interface RiseupAsiaProject {
-    meta?: { version?: string };
-    api?: Record<string, unknown>;
-    _internal?: Record<string, unknown>;
-    cookies?: {
-      bindings?: Array<RiseupAsiaCookieBinding>;
-    };
-  }
-
-  interface RiseupAsiaMacroExtNamespace {
-    Logger?: {
-      error(fn: string, msg: string, error?: unknown): void;
-      warn(fn: string, msg: string): void;
-      info(fn: string, msg: string): void;
-      debug(fn: string, msg: string): void;
-      console(fn: string, msg: string, ...args: unknown[]): void;
-      stackTrace(fn: string, msg: string, error?: unknown): void;
-    };
-    Projects?: Record<string, RiseupAsiaProject | undefined>;
-  }
-
   /**
-   * Bare global access — no `window.` prefix needed in consumer code.
-   * The namespace is bootstrapped by the SDK before any scripts run.
+   * NOTE: RiseupAsiaCookieBinding, RiseupAsiaProject, RiseupAsiaMacroExtNamespace,
+   * and the bare `RiseupAsiaMacroExt` global are declared in the shared file:
+   *   standalone-scripts/types/riseup-namespace.d.ts
+   * Do not re-declare them here — TypeScript will merge interfaces but
+   * duplicate `const` declarations are an error.
    */
-  const RiseupAsiaMacroExt: Window['RiseupAsiaMacroExt'];
 }
 
 export {};
