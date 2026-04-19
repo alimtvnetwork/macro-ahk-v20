@@ -22,9 +22,10 @@
  *   exact path, missing item, reason.
  */
 
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, existsSync, writeFileSync } from "node:fs";
 import { join, resolve, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
