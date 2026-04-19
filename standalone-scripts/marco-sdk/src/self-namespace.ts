@@ -10,10 +10,15 @@
  * but wired directly to the in-scope `marco.*` modules — no proxy stub,
  * no late-binding lookup.
  *
+ * Shape contract: `standalone-scripts/types/project-namespace-shape.ts`
+ * — both this file and `src/background/project-namespace-builder.ts`
+ * MUST produce a value satisfying `ProjectNamespace`.
+ *
  * See: spec/17-app-issues/66-sdk-global-object-missing.md
  */
 
 import { NamespaceLogger } from "./logger";
+import type { ProjectNamespace } from "../../types/project-namespace-shape";
 
 interface MarcoLike {
     config?: {
@@ -80,7 +85,7 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
         (root.Settings && root.Settings.Broadcast && root.Settings.Broadcast.BaseUrl) ||
         "http://localhost:19280";
 
-    const ns = Object.freeze({
+    const ns: ProjectNamespace = Object.freeze({
         vars: Object.freeze({
             get: (k: string) =>
                 marco.config ? marco.config.get(k) : Promise.reject(new Error("no config")),
