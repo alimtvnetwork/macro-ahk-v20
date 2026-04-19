@@ -72,6 +72,10 @@ function isSkippableTarget(target) {
   if (target.startsWith("mem://")) return true;
   if (target.startsWith("knowledge://")) return true;
   if (/^[a-z][a-z0-9+.-]*:/i.test(target)) return true; // http:, https:, mailto:, tel:, etc.
+  // False-positive guard: real file links contain at least one of `/`, `.`, or `#`.
+  // Things like `[T](val)` or `[K,V](items)` are TypeScript generic syntax in prose,
+  // not markdown links — skip them.
+  if (!/[/.#]/.test(target)) return true;
   return false;
 }
 
