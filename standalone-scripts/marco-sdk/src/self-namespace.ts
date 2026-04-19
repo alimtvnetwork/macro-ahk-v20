@@ -89,6 +89,7 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
     const NO_CONFIG_ERR = "no config";
     const NO_FILES_ERR = "no files api";
     const SDK_NO_DB_ERR = "SDK has no project DB";
+    const LOG_PREFIX = "[RiseupMacroSdk]";
     const ns: ProjectNamespace = Object.freeze({
         vars: Object.freeze({
             get: (k: string) =>
@@ -139,9 +140,9 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
             dependencies: Object.freeze([]),
         }),
         log: Object.freeze({
-            info: (msg: string) => console.log("[RiseupMacroSdk]", msg),
-            warn: (msg: string) => console.warn("[RiseupMacroSdk]", msg),
-            error: (msg: string) => console.error("[RiseupMacroSdk]", msg),
+            info: (msg: string) => console.log(LOG_PREFIX, msg),
+            warn: (msg: string) => console.warn(LOG_PREFIX, msg),
+            error: (msg: string) => console.error(LOG_PREFIX, msg),
         }),
         scripts: Object.freeze([]),
         db: Object.freeze({
