@@ -18,7 +18,8 @@
  */
 
 import { NamespaceLogger } from "./logger";
-import type { ProjectNamespace } from "../../types/project-namespace-shape";
+/* `ProjectNamespace` is a global ambient interface declared in
+   `standalone-scripts/types/project-namespace-shape.d.ts` — no import needed. */
 
 interface MarcoLike {
     config?: {

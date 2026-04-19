@@ -21,9 +21,8 @@
 import {
     assertEmittedShape,
     PROJECT_NAMESPACE_KEYS,
-} from "../../standalone-scripts/types/project-namespace-shape";
+} from "./project-namespace-shape-guard";
 
-export type { ProjectNamespace } from "../../standalone-scripts/types/project-namespace-shape";
 export { PROJECT_NAMESPACE_KEYS };
 
 /* ------------------------------------------------------------------ */
