@@ -111,11 +111,16 @@ The extension Vite config (`chrome-extension/vite.config.ts`) includes a pre-bui
 |------|---------|
 | `standalone-scripts/marco-sdk/src/index.ts` | SDK entry point |
 | `standalone-scripts/marco-sdk/src/instruction.ts` | Project manifest (sole source of truth) |
+| `standalone-scripts/marco-sdk/src/self-namespace.ts` | Registers `Projects.RiseupMacroSdk` (stub urls/db, real vars/xpath/cookies/kv/files/notify) |
+| `standalone-scripts/marco-sdk/src/self-test.ts` | Runtime PASS/FAIL self-test for `Projects.RiseupMacroSdk` |
+| `standalone-scripts/types/project-namespace-shape.d.ts` | Single source of truth for the namespace shape |
+| `src/background/project-namespace-builder.ts` | Generates per-project full namespaces (real urls/db) |
 | `vite.config.sdk.ts` | Vite IIFE build config |
 | `tsconfig.sdk.json` | TypeScript config for SDK |
 | `chrome-extension/vite.config.ts` | Extension build (copyProjectScripts) |
 | `src/lib/slug-utils.ts` | Slug generation + codeName + namespace derivation |
 | `src/components/options/DevGuideSection.tsx` | Inline developer docs component |
+| `spec/12-devtools-and-injection/developer-guide/04-sdk-namespace.md` | User-facing stub vs full distinction |
 
 ## Dependencies
 
