@@ -10,6 +10,20 @@
 
 The Rise Up Macro SDK is a standalone IIFE bundle that exposes `window.marco` (and `window.RiseupAsiaMacroExt.Projects.<CodeName>.*` per-project namespaces) for injected scripts in the page's MAIN world. It provides unified access to extension services via the message bridge.
 
+### Two flavours of registered namespace
+
+`RiseupAsiaMacroExt.Projects` contains two kinds of entries:
+
+| Namespace | Source | `urls` / `db` | Purpose |
+|-----------|--------|---------------|---------|
+| `Projects.RiseupMacroSdk` | Self-registered by the SDK IIFE itself, via `standalone-scripts/marco-sdk/src/self-namespace.ts` | **Stubs** (SDK is not a user project — no URL match rules, no SQLite DB) | Guarantees the documented namespace shape exists at runtime even when no user project is active. Backed directly by `window.marco.*`. |
+| `Projects.{CodeName}` | Generated per user project by `src/background/project-namespace-builder.ts` and emitted into each project IIFE | **Real** — bound to the project's URL match rules and its own SQLite DB | Full per-project runtime surface for installed user projects. |
+
+Both flavours satisfy the same shape contract (`standalone-scripts/types/project-namespace-shape.d.ts`). A runtime self-test in the SDK IIFE (`self-test.ts`) validates `Projects.RiseupMacroSdk` on every page load and logs PASS/FAIL via `NamespaceLogger`.
+
+See: [Developer Guide §04 — SDK Namespace](../12-devtools-and-injection/developer-guide/04-sdk-namespace.md) for the user-facing explanation of the stub vs full distinction.
+
+
 ## Architecture
 
 ### Build Pipeline
