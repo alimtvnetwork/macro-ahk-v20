@@ -197,6 +197,76 @@ class NamespaceCache {
 const nsCache = new NamespaceCache();
 
 /**
+ * Build a structured, machine-grep-able diagnostic for namespace failures.
+ * Format is intentionally multi-line so it is readable in toasts AND in logs.
+ *
+ * Required fields (per project standard):
+ *   - version       : exact MacroController version
+ *   - lookup        : full window.* path that was attempted
+ *   - missing       : the specific key that was not found / not writable
+ *   - calledBy      : caller function + file
+ *   - reason        : root-cause diagnosis
+ *   - stackFiltered : stack trace with chunk-* / assets/* lines removed
+ */
+function buildNamespaceDiagnostic(opts: {
+  lookup: string;
+  missing: string;
+  calledBy: string;
+  reason: string;
+  error?: unknown;
+}): string {
+  const stack = opts.error instanceof Error && typeof opts.error.stack === 'string'
+    ? opts.error.stack
+        .split('\n')
+        .filter((l) => !/chunk-[a-z0-9]+\.js|\/assets\/[^)]*\.js/i.test(l))
+        .slice(0, 6)
+        .join('\n')
+    : '(no stack)';
+
+  return [
+    '❌ [MacroController v' + VERSION + '] Namespace access failed',
+    'Lookup:   ' + opts.lookup,
+    'Missing:  ' + opts.missing,
+    'CalledBy: ' + opts.calledBy,
+    'Reason:   ' + opts.reason,
+    'Cause:    ' + toErrorMessage(opts.error ?? 'n/a'),
+    'Stack:',
+    stack,
+  ].join('\n');
+}
+
+/**
+ * Recursively unfreeze a namespace branch by replacing any frozen / non-extensible
+ * sub-object with a shallow mutable clone. Returns the (possibly new) mutable root.
+ *
+ * This handles the collision case where the generic per-project namespace builder
+ * pre-registered `Projects.MacroController = Object.freeze({ api: Object.freeze({...}), ... })`
+ * before the controller's own runtime namespace had a chance to claim the slot.
+ */
+function ensureMutableBranch<T extends object>(node: T): T {
+  if (Object.isExtensible(node)) {
+    // Top-level is mutable — also heal known sub-branches that may be frozen.
+    const n = node as unknown as Record<string, unknown>;
+    for (const key of ['api', '_internal', 'meta'] as const) {
+      const child = n[key];
+      if (child && typeof child === 'object' && !Object.isExtensible(child)) {
+        n[key] = { ...(child as Record<string, unknown>) };
+      }
+    }
+    return node;
+  }
+  // Whole node frozen — shallow clone, then heal children.
+  const clone = { ...(node as unknown as Record<string, unknown>) };
+  for (const key of ['api', '_internal', 'meta'] as const) {
+    const child = clone[key];
+    if (child && typeof child === 'object' && !Object.isExtensible(child)) {
+      clone[key] = { ...(child as Record<string, unknown>) };
+    }
+  }
+  return clone as unknown as T;
+}
+
+/**
  * Get or create the MacroController namespace on RiseupAsiaMacroExt.
  * Safe to call multiple times — idempotent.
  */
@@ -207,33 +277,54 @@ export function getNamespace(): MacroControllerNamespace | null {
     ? (window as Window).RiseupAsiaMacroExt
     : undefined) as RiseupAsiaMacroExtNamespace | undefined;
 
-  if (!root || !root.Projects) return null;
+  if (!root) {
+    logError('getNamespace', buildNamespaceDiagnostic({
+      lookup: 'window.RiseupAsiaMacroExt',
+      missing: 'RiseupAsiaMacroExt (root SDK namespace)',
+      calledBy: 'getNamespace() @ api-namespace.ts',
+      reason: 'SDK script (marco-sdk.js) has not executed yet in this MAIN-world context',
+    }));
+    return null;
+  }
+  if (!root.Projects) {
+    logError('getNamespace', buildNamespaceDiagnostic({
+      lookup: 'window.RiseupAsiaMacroExt.Projects',
+      missing: 'Projects (project registry container)',
+      calledBy: 'getNamespace() @ api-namespace.ts',
+      reason: 'SDK initialized but Projects container missing — likely a partial SDK build',
+    }));
+    return null;
+  }
 
   try {
     const existing = root.Projects.MacroController as Record<string, unknown> | undefined;
-    const needsReplacement = !existing || !Object.isExtensible(existing);
-
-    if (needsReplacement) {
+    if (!existing) {
       root.Projects.MacroController = {
         meta: { version: VERSION, displayName: 'Macro Controller' },
         api: {} as MacroControllerApi,
         _internal: {} as MacroControllerInternal,
-      } as MacroControllerNamespace;
+      } as unknown as RiseupAsiaProject;
+    } else {
+      // Heal frozen branches (collision with generic namespace builder).
+      const healed = ensureMutableBranch(existing);
+      if (healed !== existing) {
+        root.Projects.MacroController = healed as unknown as RiseupAsiaProject;
+      }
     }
 
-    const mc = root.Projects.MacroController as MacroControllerNamespace;
+    const mc = root.Projects.MacroController as unknown as MacroControllerNamespace;
 
-    if (!mc.meta || typeof mc.meta !== 'object') mc.meta = { version: '', displayName: '' };
-    if (!mc.api || typeof mc.api !== 'object') mc.api = {} as MacroControllerApi;
+    if (!mc.meta || typeof mc.meta !== 'object' || !Object.isExtensible(mc.meta)) mc.meta = { version: '', displayName: '' };
+    if (!mc.api || typeof mc.api !== 'object' || !Object.isExtensible(mc.api)) mc.api = {} as MacroControllerApi;
     const api = mc.api;
-    if (!api.loop || typeof api.loop !== 'object') api.loop = {} as LoopApi;
-    if (!api.credits || typeof api.credits !== 'object') api.credits = {} as CreditsApi;
-    if (!api.auth || typeof api.auth !== 'object') api.auth = {} as AuthApi;
-    if (!api.workspace || typeof api.workspace !== 'object') api.workspace = {} as WorkspaceApi;
-    if (!api.ui || typeof api.ui !== 'object') api.ui = {} as UiApi;
-    if (!api.config || typeof api.config !== 'object') api.config = {} as ConfigApi;
-    if (!api.autoAttach || typeof api.autoAttach !== 'object') api.autoAttach = {} as AutoAttachApi;
-    if (!mc._internal || typeof mc._internal !== 'object') mc._internal = {} as MacroControllerInternal;
+    if (!api.loop || typeof api.loop !== 'object' || !Object.isExtensible(api.loop)) api.loop = {} as LoopApi;
+    if (!api.credits || typeof api.credits !== 'object' || !Object.isExtensible(api.credits)) api.credits = {} as CreditsApi;
+    if (!api.auth || typeof api.auth !== 'object' || !Object.isExtensible(api.auth)) api.auth = {} as AuthApi;
+    if (!api.workspace || typeof api.workspace !== 'object' || !Object.isExtensible(api.workspace)) api.workspace = {} as WorkspaceApi;
+    if (!api.ui || typeof api.ui !== 'object' || !Object.isExtensible(api.ui)) api.ui = {} as UiApi;
+    if (!api.config || typeof api.config !== 'object' || !Object.isExtensible(api.config)) api.config = {} as ConfigApi;
+    if (!api.autoAttach || typeof api.autoAttach !== 'object' || !Object.isExtensible(api.autoAttach)) api.autoAttach = {} as AutoAttachApi;
+    if (!mc._internal || typeof mc._internal !== 'object' || !Object.isExtensible(mc._internal)) mc._internal = {} as MacroControllerInternal;
 
     mc.meta.version = VERSION;
     mc.meta.displayName = 'Macro Controller';
@@ -241,8 +332,16 @@ export function getNamespace(): MacroControllerNamespace | null {
     nsCache.ns = mc;
     return nsCache.ns;
   } catch (e) {
-    logError('getNamespace', 'Failed to access MacroController namespace', e);
-    showToast('❌ Failed to access MacroController namespace', 'error');
+    const diag = buildNamespaceDiagnostic({
+      lookup: 'window.RiseupAsiaMacroExt.Projects.MacroController',
+      missing: 'mutable MacroController namespace (write into a frozen sub-object failed)',
+      calledBy: 'getNamespace() @ api-namespace.ts (called from nsWrite/nsReadTyped/macro-looping bootstrap)',
+      reason: 'A frozen object (likely registered by the generic per-project namespace builder) blocks runtime initialization. Healing pass attempted but assignment still threw.',
+      error: e,
+    });
+    logError('getNamespace', diag, e);
+    // Single toast — short user-visible summary, full diagnostic stays in the log.
+    showToast('❌ [MacroController v' + VERSION + '] Namespace blocked at Projects.MacroController — see console for full diagnostic.', 'error');
     return null;
   }
 }
