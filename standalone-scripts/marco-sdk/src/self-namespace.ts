@@ -85,7 +85,8 @@ export function registerSdkSelfNamespace(marco: MarcoOpaque, version: string): v
         (root.Settings && root.Settings.Broadcast && root.Settings.Broadcast.BaseUrl) ||
         "http://localhost:19280";
 
-    const NO_CONFIG_ERR = "no config";
+    const NO_KV_ERR = "no kv api";
+    const NO_NOTIFY_ERR = "no notify api";
     const NO_FILES_ERR = "no files api";
     const SDK_NO_DB_ERR = "SDK has no project DB";
     const LOG_PREFIX = "[RiseupMacroSdk]";
