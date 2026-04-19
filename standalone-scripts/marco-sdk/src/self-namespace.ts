@@ -195,7 +195,7 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
         }),
         notify: Object.freeze({
             toast: (msg: string, level?: string, opts?: unknown) =>
-                marco.notify ? marco.notify.toast(msg, level, opts) : console.log("[RiseupMacroSdk]", msg),
+                marco.notify ? marco.notify.toast(msg, level, opts) : console.log(LOG_PREFIX, msg),
             dismiss: (id: string) => (marco.notify ? marco.notify.dismiss(id) : undefined),
             dismissAll: () => (marco.notify ? marco.notify.dismissAll() : undefined),
             onError: (cb: (e: unknown) => void) =>
