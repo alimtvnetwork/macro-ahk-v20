@@ -92,11 +92,11 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
     const ns: ProjectNamespace = Object.freeze({
         vars: Object.freeze({
             get: (k: string) =>
-                marco.config ? marco.config.get(k) : Promise.reject(new Error("no config")),
+                marco.config ? marco.config.get(k) : Promise.reject(new Error(NO_CONFIG_ERR)),
             set: (k: string, v: unknown) =>
-                marco.config ? marco.config.set(k, v) : Promise.reject(new Error("no config")),
+                marco.config ? marco.config.set(k, v) : Promise.reject(new Error(NO_CONFIG_ERR)),
             getAll: () =>
-                marco.config ? marco.config.getAll() : Promise.reject(new Error("no config")),
+                marco.config ? marco.config.getAll() : Promise.reject(new Error(NO_CONFIG_ERR)),
         }),
         urls: Object.freeze({
             getMatched: () => null,
@@ -122,11 +122,11 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
         }),
         files: Object.freeze({
             save: (n: string, d: string) =>
-                marco.files ? marco.files.save(n, d) : Promise.reject(new Error("no files api")),
+                marco.files ? marco.files.save(n, d) : Promise.reject(new Error(NO_FILES_ERR)),
             read: (n: string) =>
-                marco.files ? marco.files.read(n) : Promise.reject(new Error("no files api")),
+                marco.files ? marco.files.read(n) : Promise.reject(new Error(NO_FILES_ERR)),
             list: () =>
-                marco.files ? marco.files.list() : Promise.reject(new Error("no files api")),
+                marco.files ? marco.files.list() : Promise.reject(new Error(NO_FILES_ERR)),
             cache: Object.freeze({}),
         }),
         meta: Object.freeze({
@@ -147,11 +147,11 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
         db: Object.freeze({
             table: () =>
                 Object.freeze({
-                    findMany: () => Promise.reject(new Error("SDK has no project DB")),
-                    create: () => Promise.reject(new Error("SDK has no project DB")),
-                    update: () => Promise.reject(new Error("SDK has no project DB")),
-                    delete: () => Promise.reject(new Error("SDK has no project DB")),
-                    count: () => Promise.reject(new Error("SDK has no project DB")),
+                    findMany: () => Promise.reject(new Error(SDK_NO_DB_ERR)),
+                    create: () => Promise.reject(new Error(SDK_NO_DB_ERR)),
+                    update: () => Promise.reject(new Error(SDK_NO_DB_ERR)),
+                    delete: () => Promise.reject(new Error(SDK_NO_DB_ERR)),
+                    count: () => Promise.reject(new Error(SDK_NO_DB_ERR)),
                 }),
         }),
         api: Object.freeze({
