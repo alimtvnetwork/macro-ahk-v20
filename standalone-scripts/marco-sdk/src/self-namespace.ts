@@ -86,6 +86,9 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
         (root.Settings && root.Settings.Broadcast && root.Settings.Broadcast.BaseUrl) ||
         "http://localhost:19280";
 
+    const NO_CONFIG_ERR = "no config";
+    const NO_FILES_ERR = "no files api";
+    const SDK_NO_DB_ERR = "SDK has no project DB";
     const ns: ProjectNamespace = Object.freeze({
         vars: Object.freeze({
             get: (k: string) =>
