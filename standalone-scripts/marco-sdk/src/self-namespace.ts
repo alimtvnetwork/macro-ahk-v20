@@ -196,11 +196,11 @@ export function registerSdkSelfNamespace(marco: MarcoOpaque, version: string): v
         notify: Object.freeze({
             toast: (msg: string, level?: string, opts?: unknown) =>
                 marco.notify ? marco.notify.toast(msg, level, opts) : console.log(LOG_PREFIX, msg),
-            dismiss: (id: string) => (marco.notify ? marco.notify.dismiss(id) : undefined),
-            dismissAll: () => (marco.notify ? marco.notify.dismissAll() : undefined),
+            dismiss: (id: string) => (marco.notify?.dismiss ? marco.notify.dismiss(id) : undefined),
+            dismissAll: () => (marco.notify?.dismissAll ? marco.notify.dismissAll() : undefined),
             onError: (cb: (e: unknown) => void) =>
-                marco.notify ? marco.notify.onError(cb) : undefined,
-            getRecentErrors: () => (marco.notify ? marco.notify.getRecentErrors() : []),
+                marco.notify?.onError ? marco.notify.onError(cb) : undefined,
+            getRecentErrors: () => (marco.notify?.getRecentErrors ? marco.notify.getRecentErrors() : []),
         }),
         docs: Object.freeze({
             overview:
