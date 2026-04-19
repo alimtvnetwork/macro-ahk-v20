@@ -20,7 +20,10 @@
     "build:xpath": "node scripts/check-axios-version.mjs && node scripts/compile-instruction.mjs standalone-scripts/xpath && tsc --noEmit -p tsconfig.xpath.json && vite build --config vite.config.xpath.ts && echo Built xpath.js",
     "build:sdk": "node scripts/check-axios-version.mjs && node scripts/compile-instruction.mjs standalone-scripts/marco-sdk && tsc --noEmit -p tsconfig.sdk.json && vite build --config vite.config.sdk.ts && node scripts/generate-dts.mjs && echo Built marco-sdk.js + .d.ts to standalone-scripts/marco-sdk/dist",
     "build:marco-sdk": "npm run build:sdk",
-    "build:extension": "node scripts/check-axios-version.mjs && node scripts/lint-const-reassign.mjs && node scripts/compile-instruction.mjs standalone-scripts/marco-sdk && node scripts/compile-instruction.mjs standalone-scripts/xpath && node scripts/compile-instruction.mjs standalone-scripts/macro-controller && node scripts/check-standalone-dist.mjs && node scripts/check-version-sync.mjs && npm run build:prompts && vite build --config vite.config.extension.ts",
+    "build:extension": "node scripts/check-axios-version.mjs && node scripts/lint-const-reassign.mjs && node scripts/check-spec-links.mjs && node scripts/compile-instruction.mjs standalone-scripts/marco-sdk && node scripts/compile-instruction.mjs standalone-scripts/xpath && node scripts/compile-instruction.mjs standalone-scripts/macro-controller && node scripts/check-standalone-dist.mjs && node scripts/check-version-sync.mjs && npm run build:prompts && vite build --config vite.config.extension.ts",
+    "check:spec-links": "node scripts/check-spec-links.mjs",
+    "check:spec-links:update-baseline": "node scripts/check-spec-links.mjs --update-baseline",
+    "check:spec-links:strict": "node scripts/check-spec-links.mjs --strict",
     "lint:no-bun": "node scripts/no-bun-in-scripts.mjs",
     "bump": "node scripts/bump-version.mjs"
   },
