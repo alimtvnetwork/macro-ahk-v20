@@ -36,19 +36,18 @@ import { NamespaceLogger } from "./logger";
  * to enforce the public shape. Drift between the namespace contract and
  * what we emit will fail at compile time on the `ns` annotation.
  */
-type MaybeFn<TArgs extends readonly unknown[], TRet> = ((...args: TArgs) => TRet) | undefined;
 type MarcoOpaque = {
-    readonly config?: { get: MaybeFn<[string], Promise<unknown>>; set: MaybeFn<[string, unknown], Promise<void>>; getAll: MaybeFn<[], Promise<Record<string, unknown>>> };
-    readonly cookies?: { get: MaybeFn<[string], Promise<string | null>>; getAll: MaybeFn<[], Promise<unknown>> };
-    readonly xpath?: { resolve?: MaybeFn<[string], Element | null> };
-    readonly kv?: { get: MaybeFn<[string], Promise<unknown>>; set: MaybeFn<[string, unknown], Promise<void>>; delete: MaybeFn<[string], Promise<void>>; list: MaybeFn<[], Promise<unknown>> };
-    readonly files?: { save: MaybeFn<[string, string], Promise<unknown>>; read: MaybeFn<[string], Promise<unknown>>; list: MaybeFn<[], Promise<unknown>> };
+    readonly config?: { get(k: string): Promise<unknown>; set(k: string, v: unknown): Promise<void>; getAll(): Promise<Record<string, unknown>> };
+    readonly cookies?: { get(name: string): Promise<string | null>; getAll(): Promise<unknown> };
+    readonly xpath?: { resolve?(key: string): Element | null };
+    readonly kv?: { get(k: string): Promise<unknown>; set(k: string, v: unknown): Promise<void>; delete(k: string): Promise<void>; list(): Promise<unknown> };
+    readonly files?: { save(n: string, d: string): Promise<unknown>; read(n: string): Promise<unknown>; list(): Promise<unknown> };
     readonly notify?: {
-        toast?: MaybeFn<[string, string?, unknown?], unknown>;
-        dismiss?: MaybeFn<[string], unknown>;
-        dismissAll?: MaybeFn<[], unknown>;
-        onError?: MaybeFn<[(e: unknown) => void], unknown>;
-        getRecentErrors?: MaybeFn<[], unknown[]>;
+        toast(msg: string, level?: string, opts?: unknown): unknown;
+        dismiss?(id: string): unknown;
+        dismissAll?(): unknown;
+        onError?(cb: (e: unknown) => void): unknown;
+        getRecentErrors?(): unknown[];
     };
 };
 
@@ -117,10 +116,10 @@ export function registerSdkSelfNamespace(marco: MarcoOpaque, version: string): v
             getAll: () => (marco.cookies ? marco.cookies.getAll() : Promise.resolve({})),
         }),
         kv: Object.freeze({
-            get: (k: string) => (marco.kv ? marco.kv.get!(k) : Promise.reject(new Error(NO_KV_ERR))),
-            set: (k: string, v: unknown) => (marco.kv ? marco.kv.set!(k, v) : Promise.reject(new Error(NO_KV_ERR))),
-            delete: (k: string) => (marco.kv ? marco.kv.delete!(k) : Promise.reject(new Error(NO_KV_ERR))),
-            list: () => (marco.kv ? marco.kv.list!() : Promise.reject(new Error(NO_KV_ERR))),
+            get: (k: string) => (marco.kv ? marco.kv.get(k) : Promise.reject(new Error(NO_KV_ERR))),
+            set: (k: string, v: unknown) => (marco.kv ? marco.kv.set(k, v) : Promise.reject(new Error(NO_KV_ERR))),
+            delete: (k: string) => (marco.kv ? marco.kv.delete(k) : Promise.reject(new Error(NO_KV_ERR))),
+            list: () => (marco.kv ? marco.kv.list() : Promise.reject(new Error(NO_KV_ERR))),
         }),
         files: Object.freeze({
             save: (n: string, d: string) =>
