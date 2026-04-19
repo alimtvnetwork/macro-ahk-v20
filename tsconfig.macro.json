@@ -22,7 +22,7 @@
       "@macro/*": ["standalone-scripts/macro-controller/src/*"]
     }
   },
-  "include": ["standalone-scripts/macro-controller/src/**/*.ts"],
+  "include": ["standalone-scripts/macro-controller/src/**/*.ts", "standalone-scripts/types/**/*.d.ts"],
   "exclude": [
     "node_modules",
     "standalone-scripts/macro-controller/dist",
