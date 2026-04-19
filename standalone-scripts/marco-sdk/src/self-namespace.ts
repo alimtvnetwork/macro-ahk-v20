@@ -21,36 +21,29 @@ import { NamespaceLogger } from "./logger";
 /* `ProjectNamespace` is a global ambient interface declared in
    `standalone-scripts/types/project-namespace-shape.d.ts` — no import needed. */
 
-interface MarcoLike {
-    config?: {
-        get: (k: string) => Promise<unknown>;
-        set: (k: string, v: unknown) => Promise<void>;
-        getAll: () => Promise<Record<string, unknown>>;
-    };
-    cookies?: {
-        get: (name: string) => Promise<string | null>;
-        getAll: () => Promise<unknown>;
-    };
-    xpath?: { resolve?: (key: string) => Element | null };
-    kv: {
-        get: (k: string) => Promise<unknown>;
-        set: (k: string, v: unknown) => Promise<void>;
-        delete: (k: string) => Promise<void>;
-        list: () => Promise<unknown>;
-    };
-    files?: {
-        save: (n: string, d: string) => Promise<unknown>;
-        read: (n: string) => Promise<unknown>;
-        list: () => Promise<unknown>;
-    };
-    notify?: {
-        toast: (msg: string, level?: string, opts?: unknown) => unknown;
-        dismiss: (id: string) => unknown;
-        dismissAll: () => unknown;
-        onError: (cb: (e: unknown) => void) => unknown;
-        getRecentErrors: () => unknown[];
-    };
-    version?: string;
+/**
+ * Loose accessor over the frozen `window.marco` object.
+ *
+ * Each sub-module is treated as `unknown` until accessed via the
+ * `safeCall` helper below — we never assume a method exists, we only
+ * call it if both the module and the method are present at runtime.
+ *
+ * This avoids re-importing every concrete SDK module type into the
+ * self-namespace contract, while still keeping the public
+ * `ProjectNamespace` shape strongly typed via the shared `.d.ts`.
+ */
+type MarcoLoose = Record<string, Record<string, unknown> | undefined>;
+
+function safeCall<T>(
+    obj: Record<string, unknown> | undefined,
+    method: string,
+    args: unknown[],
+    fallback: T,
+): T {
+    if (!obj) return fallback;
+    const fn = obj[method];
+    if (typeof fn !== "function") return fallback;
+    return (fn as (...a: unknown[]) => T).apply(obj, args);
 }
 
 const SDK_CODE_NAME = "RiseupMacroSdk";
