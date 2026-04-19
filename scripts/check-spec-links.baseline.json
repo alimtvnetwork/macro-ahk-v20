@@ -1,0 +1,510 @@
+{
+  "generatedAt": "2026-04-19T10:43:18.933Z",
+  "note": "Pre-existing broken relative links allowed to pass build. New breaks fail. Regenerate with: node scripts/check-spec-links.mjs --update-baseline",
+  "entries": [
+    {
+      "source": "spec/03-coding-guidelines/00-overview.md",
+      "target": "../01-spec-authoring-guide/00-overview.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/00-overview.md",
+      "target": "../03-error-manage-spec/04-error-manage-spec/00-overview.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/00-overview.md",
+      "target": "../../../.lovable/memories/done/coding-guidelines-consolidation-plan.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/00-overview.md",
+      "target": "../../01-spec-authoring-guide/00-overview.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/00-overview.md",
+      "target": "../../03-error-manage-spec/04-error-manage-spec/00-overview.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/02-boolean-principles/00-overview.md",
+      "target": "../../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md#12-result-guard-rule-mandatory-error-check-before-value-access"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/04-code-style/05-multi-line-formatting.md",
+      "target": "apperror.Wrap(..."
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/08-dry-principles.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/envelope.schema.json"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/13-strict-typing.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md#12-result-guard-rule-mandatory-error-check-before-value-access"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/15-master-coding-guidelines/03-code-style-and-errors.md",
+      "target": "../../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md#106-no-raw-error-in-struct-fields-invariant-i-2"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/15-master-coding-guidelines/03-code-style-and-errors.md",
+      "target": "../../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md#12-result-guard-rule-mandatory-error-check-before-value-access"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/01-cross-language/25-generic-return-types.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/03-result-types.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/02-typescript/08-typescript-standards-reference.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/envelope.schema.json"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/02-typescript/11-eslint-enforcement.md",
+      "target": "../../../../eslint-plugins/coding-guidelines/index.js"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/03-golang/04-golang-standards-reference/02-type-safety-and-errors.md",
+      "target": "pluginResult.AppError("
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/03-golang/04-golang-standards-reference/02-type-safety-and-errors.md",
+      "target": "set.AppError("
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/03-golang/04-golang-standards-reference/02-type-safety-and-errors.md",
+      "target": "src.AppError("
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/03-golang/04-golang-standards-reference/02-type-safety-and-errors.md",
+      "target": "src.AppError("
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/03-golang/08-pathutil-fileutil-spec.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/03-error-code-registry/01-registry.md#gen-700-file-system"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/03-golang/08-pathutil-fileutil-spec.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/03-error-code-registry/01-registry.md#gen-700-file-system"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/04-php/07-php-standards-reference/00-overview.md",
+      "target": "../../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/01-error-handling-reference.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/09-security/01-axios-version-control/00-overview.md",
+      "target": "../../../../01-spec-authoring-guide/00-overview.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/04-response-envelope-reference.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/04-response-envelope-reference.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/04-response-envelope-reference.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/04-response-envelope-reference.md"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/envelope-minimal.json"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/envelope-multiple.json"
+    },
+    {
+      "source": "spec/03-coding-guidelines/03-coding-guidelines-spec/10-database-conventions/06-rest-api-format.md",
+      "target": "../../../03-error-manage-spec/04-error-manage-spec/02-error-architecture/05-response-envelope/envelope-single.json"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/01-error-handling-reference.md",
+      "target": "../../../02-coding-guidelines/03-coding-guidelines-spec/03-golang/04-golang-standards-reference/00-overview.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/01-error-handling-reference.md",
+      "target": "../../../02-coding-guidelines/03-coding-guidelines-spec/04-php/01-enums.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/01-error-handling-reference.md",
+      "target": "../../../02-coding-guidelines/03-coding-guidelines-spec/04-php/07-php-standards-reference/00-overview.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/04-error-modal/03-error-modal-reference.md",
+      "target": "../../../../02-coding-guidelines/03-coding-guidelines-spec/02-typescript/08-typescript-standards-reference.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/04-error-modal/03-error-modal-reference/13-file-reference.md",
+      "target": "../../../../../02-coding-guidelines/03-coding-guidelines-spec/02-typescript/08-typescript-standards-reference.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/04-error-modal/04-color-themes.md",
+      "target": "../../../../02-coding-guidelines/03-coding-guidelines-spec/02-typescript/10-log-level-enum.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/04-error-modal/04-color-themes/00-overview.md",
+      "target": "../../../../../02-coding-guidelines/03-coding-guidelines-spec/02-typescript/10-log-level-enum.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md",
+      "target": "../../../../../02-coding-guidelines/03-coding-guidelines-spec/01-cross-language/04-code-style/00-overview.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md",
+      "target": "../../../../../02-coding-guidelines/03-coding-guidelines-spec/03-golang/01-enum-specification/00-overview.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/00-overview.md",
+      "target": "../../../../../02-coding-guidelines/03-coding-guidelines-spec/03-golang/04-golang-standards-reference/00-overview.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/02-error-architecture/06-apperror-package/01-apperror-reference/05-apperrtype-enums.md",
+      "target": "../../../../../02-coding-guidelines/03-coding-guidelines-spec/03-golang/01-enum-specification/00-overview.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/03-error-code-registry/01-registry.md",
+      "target": "../../../02-coding-guidelines/03-coding-guidelines-spec/01-cross-language/03-casting-elimination-patterns.md"
+    },
+    {
+      "source": "spec/04-error-manage-spec/04-error-manage-spec/03-error-code-registry/01-registry.md",
+      "target": "../../../02-coding-guidelines/03-coding-guidelines-spec/01-cross-language/03-casting-elimination-patterns.md"
+    },
+    {
+      "source": "spec/05-split-db-architecture/00-overview.md",
+      "target": "../01-spec-authoring-guide/05-app-project-template.md"
+    },
+    {
+      "source": "spec/05-split-db-architecture/00-overview.md",
+      "target": "../05-seedable-config-architecture/00-overview.md"
+    },
+    {
+      "source": "spec/05-split-db-architecture/01-fundamentals.md",
+      "target": "../05-seedable-config-architecture/00-overview.md"
+    },
+    {
+      "source": "spec/06-seedable-config-architecture/00-overview.md",
+      "target": "../01-spec-authoring-guide/05-app-project-template.md"
+    },
+    {
+      "source": "spec/06-seedable-config-architecture/00-overview.md",
+      "target": "../04-split-db-architecture/00-overview.md"
+    },
+    {
+      "source": "spec/06-seedable-config-architecture/01-fundamentals.md",
+      "target": "../04-split-db-architecture/00-overview.md"
+    },
+    {
+      "source": "spec/10-macro-controller/app-readme.md",
+      "target": "../../marco-script-ahk-v7.latest/specs/spec.md"
+    },
+    {
+      "source": "spec/10-macro-controller/app-readme.md",
+      "target": "../03-data-and-api/api-response/"
+    },
+    {
+      "source": "spec/10-macro-controller/ts-migration-v2/05-module-splitting.md",
+      "target": "../../../spec/08-coding-guidelines/chrome-extension-guidelines/05-file-organization.md"
+    },
+    {
+      "source": "spec/10-macro-controller/workspace-detection.md",
+      "target": "../02-app-issues/01-workspace-name-shows-project-name.md"
+    },
+    {
+      "source": "spec/10-macro-controller/workspace-detection.md",
+      "target": "../02-app-issues/03-progress-bar-missing-granted-stale-workspace.md"
+    },
+    {
+      "source": "spec/10-macro-controller/workspace-name/overview.md",
+      "target": "../../../.lovable/memory/features/macro-controller/workspace-detection-protocol.md"
+    },
+    {
+      "source": "spec/10-macro-controller/workspace-name/overview.md",
+      "target": "../../02-app-issues/free-credits-detect/overview.md"
+    },
+    {
+      "source": "spec/10-macro-controller/workspace-name/overview.md",
+      "target": "../../02-app-issues/free-credits-detect/sample-response.json"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/chrome-extension-guidelines/01-naming-conventions.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/chrome-extension-guidelines/02-function-standards.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/chrome-extension-guidelines/03-boolean-logic.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/chrome-extension-guidelines/04-formatting-rules.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/chrome-extension-guidelines/05-file-organization.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/chrome-extension-guidelines/06-project-config-schema.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/engineering-standards.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/golang-standards/02-boolean-standards.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/23-coding-guidelines.md",
+      "target": "../08-coding-guidelines/golang-standards/03-readable-conditions.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/60-check-button-spec.md",
+      "target": "../02-app-issues/check-button/"
+    },
+    {
+      "source": "spec/11-chrome-extension/60-check-button-spec.md",
+      "target": "../02-app-issues/check-button/08-workspace-detection-race.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/60-check-button-spec.md",
+      "target": "../02-app-issues/check-button/09-dialog-close-before-progress-read.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/60-check-button-spec.md",
+      "target": "../02-app-issues/check-button/10-runtime-seed-drift.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/60-check-button-spec.md",
+      "target": "../02-app-issues/check-button/10-runtime-seed-drift.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/testing/00-overview.md",
+      "target": "../../11-imported/00-testing-index.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/testing/01-e2e-test-specification.md",
+      "target": "../../08-coding-guidelines/golang-standards/03-readable-conditions.md"
+    },
+    {
+      "source": "spec/11-chrome-extension/testing/01-e2e-test-specification.md",
+      "target": "../../11-imported/error-management/06-apperror-package/readme.md"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "../07-chrome-extension/testing/01-e2e-test-specification.md"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "../07-chrome-extension/testing/02-pre-release-regression-checklist.md"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "playwright.config.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-01-onboarding.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-02-project-crud.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-03-url-matching.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-04-injection-isolated.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-05-injection-main.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-06-config-cascade.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-07-auth-flow.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-08-popup-match.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-09-sw-rehydration.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-10-wasm-fallback.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-11-config-recovery.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-12-csp-fallback.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-13-backoff.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-14-state-transitions.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-15-multi-tab.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-16-ps-install.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-17-watch-mode.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-18-zip-export.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-19-options-crud.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/e2e-20-xpath-recorder.spec.ts"
+    },
+    {
+      "source": "spec/14-imported/00-testing-index.md",
+      "target": "tests/e2e/fixtures.ts"
+    },
+    {
+      "source": "spec/14-imported/error-management/01-error-handling/readme.md",
+      "target": "../../../08-coding-guidelines/golang-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/error-management/01-error-handling/readme.md",
+      "target": "../../../08-coding-guidelines/php-standards/enums.md"
+    },
+    {
+      "source": "spec/14-imported/error-management/01-error-handling/readme.md",
+      "target": "../../../08-coding-guidelines/php-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/error-management/02-error-modal/readme.md",
+      "target": "../../../08-coding-guidelines/typescript-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/error-management/06-apperror-package/readme.md",
+      "target": "../../../08-coding-guidelines/coding-guidelines/code-style.md"
+    },
+    {
+      "source": "spec/14-imported/error-management/06-apperror-package/readme.md",
+      "target": "../../../08-coding-guidelines/golang-standards/01-enum-specification/00-overview.md"
+    },
+    {
+      "source": "spec/14-imported/error-management/06-apperror-package/readme.md",
+      "target": "../../../08-coding-guidelines/golang-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/generic-enforce/go-audit-2026-02-14.md",
+      "target": "..."
+    },
+    {
+      "source": "spec/14-imported/generic-enforce/go-audit-2026-02-14.md",
+      "target": "..."
+    },
+    {
+      "source": "spec/14-imported/generic-enforce/readme.md",
+      "target": "../../08-coding-guidelines/coding-guidelines/dry-principles.md"
+    },
+    {
+      "source": "spec/14-imported/generic-enforce/readme.md",
+      "target": "../../08-coding-guidelines/golang-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/generic-enforce/readme.md",
+      "target": "../../08-coding-guidelines/typescript-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/wordpress-plugin-development/03-database-patterns.md",
+      "target": "../../08-coding-guidelines/coding-guidelines/database-naming.md"
+    },
+    {
+      "source": "spec/14-imported/wordpress-plugin-development/07-error-handling.md",
+      "target": "../../08-coding-guidelines/php-standards/enums.md"
+    },
+    {
+      "source": "spec/14-imported/wordpress-plugin-development/07-error-handling.md",
+      "target": "../../08-coding-guidelines/php-standards/readme.md"
+    },
+    {
+      "source": "spec/14-imported/wordpress-plugin-development/11-coding-guidelines.md",
+      "target": "../../08-coding-guidelines/coding-guidelines/no-negatives.md"
+    },
+    {
+      "source": "spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/01-overview.md",
+      "target": "../../.lovable/memory/architecture/indexeddb-injection-cache.md"
+    },
+    {
+      "source": "spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/01-overview.md",
+      "target": "../../.lovable/memory/architecture/injection-pipeline-performance-plan.md"
+    },
+    {
+      "source": "spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/01-overview.md",
+      "target": "../../.lovable/memory/features/macro-controller/prompts-system-v2.md"
+    },
+    {
+      "source": "spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/01-overview.md",
+      "target": "../../07-chrome-extension/45-prompt-manager-crud.md"
+    },
+    {
+      "source": "spec/17-app-issues/89-chrome-extension-load-workspace-prompt-root-cause/01-overview.md",
+      "target": "../../07-chrome-extension/52-prompt-caching-indexeddb.md"
+    },
+    {
+      "source": "spec/17-app-issues/check-button/02-no-search-feedback.md",
+      "target": "../../.lovable/memory/workflow/completed/07-workspace-detection-overhaul.md"
+    },
+    {
+      "source": "spec/17-app-issues/check-button/09-dialog-close-before-progress-read.md",
+      "target": "../../07-chrome-extension/60-check-button-spec.md"
+    },
+    {
+      "source": "spec/17-app-issues/check-button/11-popup-injection-missing-guard.md",
+      "target": "../../.lovable/memory/architecture/self-healing-script-storage.md"
+    },
+    {
+      "source": "spec/17-app-issues/free-credits-detect/overview.md",
+      "target": "../../.lovable/memory/features/macro-controller/credit-refresh-behavior.md"
+    },
+    {
+      "source": "spec/17-app-issues/free-credits-detect/overview.md",
+      "target": "../../.lovable/memory/features/macro-controller/workspace-api-bearer-token-policy.md"
+    },
+    {
+      "source": "spec/17-app-issues/free-credits-detect/overview.md",
+      "target": "../../06-macro-controller/credit-system.md"
+    },
+    {
+      "source": "spec/17-app-issues/free-credits-detect/overview.md",
+      "target": "../../06-macro-controller/workspace-name/overview.md"
+    },
+    {
+      "source": "spec/17-app-issues/free-credits-detect/overview.md",
+      "target": "../../07-chrome-extension/60-check-button-spec.md"
+    }
+  ]
+}
