@@ -88,9 +88,9 @@ declare global {
     }
 
     interface NamespaceFilesApi {
-        save: (name: string, data: string) => Promise<void>;
-        read: (name: string) => Promise<string>;
-        list: () => Promise<string[]>;
+        save: (name: string, data: string) => Promise<unknown>;
+        read: (name: string) => Promise<unknown>;
+        list: () => Promise<unknown>;
         cache: Readonly<Record<string, string>>;
     }
 

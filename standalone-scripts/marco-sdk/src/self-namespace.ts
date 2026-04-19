@@ -39,9 +39,9 @@ interface MarcoLike {
         list: () => Promise<unknown>;
     };
     files?: {
-        save: (n: string, d: string) => Promise<void>;
-        read: (n: string) => Promise<string>;
-        list: () => Promise<string[]>;
+        save: (n: string, d: string) => Promise<unknown>;
+        read: (n: string) => Promise<unknown>;
+        list: () => Promise<unknown>;
     };
     notify?: {
         toast: (msg: string, level?: string, opts?: unknown) => unknown;
