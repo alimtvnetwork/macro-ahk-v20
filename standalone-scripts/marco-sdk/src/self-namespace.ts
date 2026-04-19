@@ -31,7 +31,7 @@ interface MarcoLike {
         get: (name: string) => Promise<string | null>;
         getAll: () => Promise<unknown>;
     };
-    xpath?: { getChatBox: () => Element | null };
+    xpath?: { getChatBox?: () => Element | null };
     kv: {
         get: (k: string) => Promise<unknown>;
         set: (k: string, v: unknown) => Promise<void>;
