@@ -286,4 +286,16 @@ var ns = Object.freeze({
 root.Projects["${cn}"] = ns;
 console.log("[namespace] Registered RiseupAsiaMacroExt.Projects.${cn}");
 })();`;
+
+    /* Build-time guard — fail fast if the generator drifts from the shape
+       contract. Emits the exact missing sub-namespace list. */
+    assertEmittedShape(
+        iife,
+        `buildProjectNamespaceScript(codeName="${ctx.codeName}")`,
+    );
+    /* Touch the imported keys list so tree-shaking keeps it for runtime
+       diagnostics consumers that import it from this module. */
+    void PROJECT_NAMESPACE_KEYS;
+    return iife;
 }
+
