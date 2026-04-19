@@ -145,7 +145,7 @@ export function buildProjectNamespaceScript(ctx: NamespaceContext): string {
         })),
     );
 
-    return `;(function(){
+    const iife = `;(function(){
 /* Per-project namespace: RiseupAsiaMacroExt.Projects.${cn} */
 var root = window.RiseupAsiaMacroExt;
 if (!root) { root = { Projects: {} }; window.RiseupAsiaMacroExt = root; }
