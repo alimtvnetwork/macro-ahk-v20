@@ -31,7 +31,7 @@ interface MarcoLike {
         get: (name: string) => Promise<string | null>;
         getAll: () => Promise<unknown>;
     };
-    xpath?: { getChatBox?: () => Element | null };
+    xpath?: { resolve?: (key: string) => Element | null };
     kv: {
         get: (k: string) => Promise<unknown>;
         set: (k: string, v: unknown) => Promise<void>;
@@ -104,7 +104,7 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
             getVariables: () => ({}),
         }),
         xpath: Object.freeze({
-            getChatBox: () => (marco.xpath?.getChatBox ? marco.xpath.getChatBox() : null),
+            getChatBox: () => (marco.xpath?.resolve ? marco.xpath.resolve("chatBox") : null),
         }),
         cookies: Object.freeze({
             bindings: Object.freeze([] as Array<{ cookieName: string; url: string; role: string }>),
