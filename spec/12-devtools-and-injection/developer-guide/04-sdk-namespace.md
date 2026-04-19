@@ -213,7 +213,7 @@ The API module uses an Axios instance with automatic bearer token injection, 401
 
 ## Per-Project Namespace
 
-Each project also gets a project-scoped namespace:
+Each project gets a project-scoped namespace registered under its **`codeName`** (PascalCase derived from the project's slug):
 
 ```javascript
 window.RiseupAsiaMacroExt.Projects.{CodeName}.vars.get(key)
@@ -223,6 +223,34 @@ window.RiseupAsiaMacroExt.Projects.{CodeName}.kv.get(key)
 window.RiseupAsiaMacroExt.Projects.{CodeName}.meta    // { name, version, slug, codeName }
 window.RiseupAsiaMacroExt.Projects.{CodeName}.log.info(msg)
 ```
+
+Replace `{CodeName}` with **your project's actual codeName** — e.g. `MacroController`, `MarcoDashboard`, etc. Run `Object.keys(RiseupAsiaMacroExt.Projects)` in the page console to see what's registered on the current tab.
+
+### Two flavours of registered namespace
+
+| Namespace | Registered by | Purpose | `urls` / `db` |
+|-----------|---------------|---------|---------------|
+| `Projects.RiseupMacroSdk` | The SDK IIFE itself, at init (`standalone-scripts/marco-sdk/src/self-namespace.ts`) | **Self-namespace** so the documented API surface is callable from the SDK layer alone, even on tabs with zero user projects | **Stubs** — `urls.getMatched()` returns `null`, `urls.listOpen()` returns `[]`, `db.table(...).*` rejects with `"SDK has no project DB"` |
+| `Projects.{YourCodeName}` | The background `injection-handler` after your project's scripts are injected (`src/background/project-namespace-builder.ts`) | **Full per-project namespace** with project metadata, cookie bindings, scripts list, file cache, and a real project-scoped SQLite DB | **Real implementations** — matched URL rule, open tabs, URL-template variables, and full Prisma-style `db.<Table>.{findMany,create,update,delete,count}` |
+
+Use `Projects.RiseupMacroSdk` only for SDK-level smoke tests or when you need a guaranteed-present namespace before any user project loads. For real work — variables, cookies, KV, files, DB, URL rules — always use **your own project's codeName** namespace.
+
+### Verifying at runtime
+
+```javascript
+// What's registered on this tab?
+Object.keys(RiseupAsiaMacroExt.Projects)
+// → ["RiseupMacroSdk", "MacroController"]
+
+// Self-namespace (always present once SDK loads)
+RiseupAsiaMacroExt.Projects.RiseupMacroSdk.meta
+// → { name: "Rise Up Macro SDK", version: "...", codeName: "RiseupMacroSdk", ... }
+
+// Your user project (present only when its URL rules match this tab)
+RiseupAsiaMacroExt.Projects.MacroController.urls.getMatched()
+// → { pattern: "...", label: "..." }   (real rule object)
+```
+
 
 ## Message Type Naming Convention
 

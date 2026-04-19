@@ -14,7 +14,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 
 import { join, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "..");
-const GUIDE_DIR = join(ROOT, "spec", "07-devtools-and-injection", "developer-guide");
+const GUIDE_DIR = join(ROOT, "spec", "12-devtools-and-injection", "developer-guide");
 const OUT_PATH = join(ROOT, "src", "lib", "developer-guide-data.generated.ts");
 
 function main() {
