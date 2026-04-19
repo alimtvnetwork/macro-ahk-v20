@@ -30,8 +30,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = resolve(__dirname, "..");
 const SPEC_ROOT = join(REPO_ROOT, "spec");
+const BASELINE_PATH = join(REPO_ROOT, "scripts", "check-spec-links.baseline.json");
 
 const SCRIPT_TAG = "[check-spec-links]";
+
+const argv = new Set(process.argv.slice(2));
+const UPDATE_BASELINE = argv.has("--update-baseline");
+const STRICT = argv.has("--strict"); // ignore baseline; fail on ANY broken link
 
 /** Recursively collect all .md files under a directory. */
 function collectMarkdownFiles(dir) {
