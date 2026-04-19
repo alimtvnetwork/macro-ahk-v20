@@ -85,6 +85,7 @@ export function registerSdkSelfNamespace(marco: MarcoOpaque, version: string): v
         (root.Settings && root.Settings.Broadcast && root.Settings.Broadcast.BaseUrl) ||
         "http://localhost:19280";
 
+    const NO_CONFIG_ERR = "no config";
     const NO_KV_ERR = "no kv api";
     const NO_NOTIFY_ERR = "no notify api";
     const NO_FILES_ERR = "no files api";
@@ -116,10 +117,10 @@ export function registerSdkSelfNamespace(marco: MarcoOpaque, version: string): v
             getAll: () => (marco.cookies ? marco.cookies.getAll() : Promise.resolve({})),
         }),
         kv: Object.freeze({
-            get: (k: string) => marco.kv.get(k),
-            set: (k: string, v: unknown) => marco.kv.set(k, v),
-            delete: (k: string) => marco.kv.delete(k),
-            list: () => marco.kv.list(),
+            get: (k: string) => (marco.kv ? marco.kv.get!(k) : Promise.reject(new Error(NO_KV_ERR))),
+            set: (k: string, v: unknown) => (marco.kv ? marco.kv.set!(k, v) : Promise.reject(new Error(NO_KV_ERR))),
+            delete: (k: string) => (marco.kv ? marco.kv.delete!(k) : Promise.reject(new Error(NO_KV_ERR))),
+            list: () => (marco.kv ? marco.kv.list!() : Promise.reject(new Error(NO_KV_ERR))),
         }),
         files: Object.freeze({
             save: (n: string, d: string) =>
