@@ -36,7 +36,7 @@ interface MarcoLike {
         get: (k: string) => Promise<unknown>;
         set: (k: string, v: unknown) => Promise<void>;
         delete: (k: string) => Promise<void>;
-        list: () => Promise<string[]>;
+        list: () => Promise<unknown>;
     };
     files?: {
         save: (n: string, d: string) => Promise<void>;
