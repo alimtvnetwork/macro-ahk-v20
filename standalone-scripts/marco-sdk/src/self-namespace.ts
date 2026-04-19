@@ -36,13 +36,20 @@ import { NamespaceLogger } from "./logger";
  * to enforce the public shape. Drift between the namespace contract and
  * what we emit will fail at compile time on the `ns` annotation.
  */
+type MaybeFn<TArgs extends readonly unknown[], TRet> = ((...args: TArgs) => TRet) | undefined;
 type MarcoOpaque = {
-    readonly config?: { get(k: string): Promise<unknown>; set(k: string, v: unknown): Promise<void>; getAll(): Promise<Record<string, unknown>> };
-    readonly cookies?: { get(name: string): Promise<string | null>; getAll(): Promise<unknown> };
-    readonly xpath?: { resolve?(key: string): Element | null };
-    readonly kv?: { get(k: string): Promise<unknown>; set(k: string, v: unknown): Promise<void>; delete(k: string): Promise<void>; list(): Promise<unknown> };
-    readonly files?: { save(n: string, d: string): Promise<unknown>; read(n: string): Promise<unknown>; list(): Promise<unknown> };
-    readonly notify?: { toast(msg: string, level?: string, opts?: unknown): unknown; getRecentErrors?(): unknown[] };
+    readonly config?: { get: MaybeFn<[string], Promise<unknown>>; set: MaybeFn<[string, unknown], Promise<void>>; getAll: MaybeFn<[], Promise<Record<string, unknown>>> };
+    readonly cookies?: { get: MaybeFn<[string], Promise<string | null>>; getAll: MaybeFn<[], Promise<unknown>> };
+    readonly xpath?: { resolve?: MaybeFn<[string], Element | null> };
+    readonly kv?: { get: MaybeFn<[string], Promise<unknown>>; set: MaybeFn<[string, unknown], Promise<void>>; delete: MaybeFn<[string], Promise<void>>; list: MaybeFn<[], Promise<unknown>> };
+    readonly files?: { save: MaybeFn<[string, string], Promise<unknown>>; read: MaybeFn<[string], Promise<unknown>>; list: MaybeFn<[], Promise<unknown>> };
+    readonly notify?: {
+        toast?: MaybeFn<[string, string?, unknown?], unknown>;
+        dismiss?: MaybeFn<[string], unknown>;
+        dismissAll?: MaybeFn<[], unknown>;
+        onError?: MaybeFn<[(e: unknown) => void], unknown>;
+        getRecentErrors?: MaybeFn<[], unknown[]>;
+    };
 };
 
 const SDK_CODE_NAME = "RiseupMacroSdk";
