@@ -12,11 +12,20 @@
  * Rules:
  *  - Scans files matching: spec/**\/*.md
  *  - Extracts `[text](target)` link patterns; ignores fenced code blocks (```).
- *  - Considers a link "relative" if it does NOT start with:
- *      http://, https://, mailto:, tel:, #, /, or `mem://`
+ *  - Skips external/anchor targets (http(s)://, mailto:, tel:, #..., /..., mem://, knowledge://).
+ *  - Skips false-positive prose like `[T](val)` where target has no `/`, `.`, or `#`.
  *  - Strips `#fragment` and `?query` before resolving.
  *  - Resolves the target relative to the markdown file's directory.
  *  - Fails if the resolved path does not exist on disk.
+ *
+ * Baseline:
+ *  - A snapshot of pre-existing broken links lives at
+ *    scripts/check-spec-links.baseline.json. Builds pass when current breaks
+ *    match the baseline; they fail on any NEW break.
+ *  - Regenerate the baseline after intentional spec moves:
+ *      node scripts/check-spec-links.mjs --update-baseline
+ *  - To ignore the baseline and fail on ANY broken link:
+ *      node scripts/check-spec-links.mjs --strict
  *
  * Output format follows project Code Red logging:
  *   exact path, missing item, reason.
