@@ -21,6 +21,7 @@ import { createUtilsApi } from "./utils";
 import { createPromptsApi } from "./prompts";
 import { createApiModule } from "./api";
 import { NamespaceLogger } from "./logger";
+import { registerSdkSelfNamespace } from "./self-namespace";
 /* ------------------------------------------------------------------ */
 /*  Build namespace                                                    */
 /* ------------------------------------------------------------------ */
@@ -37,7 +38,7 @@ const marco = Object.freeze({
     utils: Object.freeze(createUtilsApi()),
     prompts: Object.freeze(createPromptsApi()),
     api: Object.freeze(createApiModule()),
-    version: "2.158.0",
+    version: "2.159.0",
 });
 
 /* ------------------------------------------------------------------ */
@@ -58,6 +59,11 @@ if (!win.RiseupAsiaMacroExt) {
 } else {
     (win.RiseupAsiaMacroExt as Record<string, unknown>).Logger = NamespaceLogger;
 }
+
+/* Register the SDK's own per-project namespace so the documented
+   `RiseupAsiaMacroExt.Projects.RiseupMacroSdk.*` surface exists at runtime.
+   Issue 66 — Option A. */
+registerSdkSelfNamespace(marco, "2.159.0");
 
 
 /* ------------------------------------------------------------------ */
@@ -82,4 +88,4 @@ initXPathCache().catch(() => {
     /* silent — cache will be empty until first explicit call */
 });
 
-console.log("[marco-sdk] Riseup Macro SDK v2.158.0 initialized (RiseupAsiaMacroExt root + Logger created, api + utils + prompts + authUtils modules loaded)");
+console.log("[marco-sdk] Riseup Macro SDK v2.159.0 initialized (RiseupAsiaMacroExt root + Logger + Projects.RiseupMacroSdk self-namespace registered)");
