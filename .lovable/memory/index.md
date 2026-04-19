@@ -1,5 +1,5 @@
 # Memory: index.md
-Updated: 2026-04-11
+Updated: 2026-04-19
 
 # Project Memory
 
@@ -40,3 +40,5 @@ MV3 suspension errors (context invalidated, receiving end missing) are operation
 - [Custom display name](mem://features/macro-controller/custom-display-name) — User-configurable project name in Settings → General, persisted in localStorage, highest priority in title bar
 - [No-retry policy](mem://constraints/no-retry-policy) — NEVER add retry/backoff to cycle/credit/auth. Loop interval is natural retry. Issue #88.
 - [Startup fix v2.137](mem://auth/startup-fix-v2137) — Gate timeout 12s→2s, removed double auth re-entry in startup, migrated root auth surface to getBearerToken
+- [Error message format](mem://standards/error-message-format) — Mandatory structured multi-line format (version + Lookup/Missing/CalledBy/Reason/Cause/Stack) for namespace + runtime errors
+- [Shared SDK namespace types](mem://architecture/shared-sdk-namespace-types) — Global types live in standalone-scripts/types/riseup-namespace.d.ts; per-project shapes via RiseupAsiaProjectBase&lt;TApi, TInternal&gt;
