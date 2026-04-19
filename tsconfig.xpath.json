@@ -17,6 +17,6 @@
       "@xpath/*": ["standalone-scripts/xpath/src/*"]
     }
   },
-  "include": ["standalone-scripts/xpath/src/**/*.ts"],
+  "include": ["standalone-scripts/xpath/src/**/*.ts", "standalone-scripts/types/**/*.d.ts"],
   "exclude": ["node_modules", "standalone-scripts/xpath/dist"]
 }
