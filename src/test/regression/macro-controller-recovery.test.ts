@@ -93,11 +93,33 @@ describe("Post-injection verification exists", () => {
 
 
 describe("MacroController runtime namespace healing", () => {
-    it("api-namespace.ts replaces non-extensible MacroController namespace objects", () => {
+    it("api-namespace.ts heals frozen sub-branches and writes a structured diagnostic", () => {
         const content = readFile("standalone-scripts/macro-controller/src/api-namespace.ts");
-        expect(content).toContain("Object.isExtensible(existing)");
-        expect(content).toContain("needsReplacement");
-        expect(content).toContain("root.Projects.MacroController = {");
+        // Deep healing pass replaces frozen sub-branches (api, _internal, meta).
+        expect(content).toContain("ensureMutableBranch");
+        expect(content).toContain("Object.isExtensible(child)");
+        // Per-branch defensive checks — were previously only typeof checks.
+        expect(content).toContain("!Object.isExtensible(api.loop)");
+        expect(content).toContain("!Object.isExtensible(mc._internal)");
+        // Structured diagnostic contract: version, lookup, missing, calledBy, reason, stack.
+        expect(content).toContain("buildNamespaceDiagnostic");
+        expect(content).toContain("MacroController v");
+        expect(content).toContain("Lookup:");
+        expect(content).toContain("Missing:");
+        expect(content).toContain("CalledBy:");
+        expect(content).toContain("Reason:");
+        // Toast must NOT use the old generic message — must include version + the location hint.
+        expect(content).not.toContain("'❌ Failed to access MacroController namespace'");
+        expect(content).toContain("Namespace blocked at Projects.MacroController");
+    });
+
+    it("shared global types live in standalone-scripts/types/riseup-namespace.d.ts", () => {
+        const content = readFile("standalone-scripts/types/riseup-namespace.d.ts");
+        expect(content).toContain("RiseupAsiaMacroExtNamespace");
+        expect(content).toContain("RiseupAsiaProjectBase");
+        // No `any` and no bare `unknown` index signatures in the public surface.
+        expect(content).not.toMatch(/:\s*any\b/);
+        expect(content).not.toMatch(/\[key:\s*string\]:\s*unknown/);
     });
 });
 
