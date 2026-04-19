@@ -11,7 +11,19 @@
  * See: spec/17-app-issues/66-sdk-global-object-missing.md
  * See: spec/05-chrome-extension/63-rise-up-macro-sdk.md
  * See: spec/17-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md
+ *
+ * Shape contract: `standalone-scripts/types/project-namespace-shape.ts`
+ * — the emitted IIFE MUST produce a `ProjectNamespace`. The
+ * `assertEmittedShape()` helper checks every required top-level key
+ * is present in the generated source on every build.
  */
+
+import {
+    assertEmittedShape,
+    PROJECT_NAMESPACE_KEYS,
+} from "./project-namespace-shape-guard";
+
+export { PROJECT_NAMESPACE_KEYS };
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -132,7 +144,7 @@ export function buildProjectNamespaceScript(ctx: NamespaceContext): string {
         })),
     );
 
-    return `;(function(){
+    const iife = `;(function(){
 /* Per-project namespace: RiseupAsiaMacroExt.Projects.${cn} */
 var root = window.RiseupAsiaMacroExt;
 if (!root) { root = { Projects: {} }; window.RiseupAsiaMacroExt = root; }
@@ -273,4 +285,16 @@ var ns = Object.freeze({
 root.Projects["${cn}"] = ns;
 console.log("[namespace] Registered RiseupAsiaMacroExt.Projects.${cn}");
 })();`;
+
+    /* Build-time guard — fail fast if the generator drifts from the shape
+       contract. Emits the exact missing sub-namespace list. */
+    assertEmittedShape(
+        iife,
+        `buildProjectNamespaceScript(codeName="${ctx.codeName}")`,
+    );
+    /* Touch the imported keys list so tree-shaking keeps it for runtime
+       diagnostics consumers that import it from this module. */
+    void PROJECT_NAMESPACE_KEYS;
+    return iife;
 }
+
