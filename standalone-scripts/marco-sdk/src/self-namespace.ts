@@ -101,7 +101,7 @@ export function registerSdkSelfNamespace(marco: MarcoLike, version: string): voi
             getVariables: () => ({}),
         }),
         xpath: Object.freeze({
-            getChatBox: () => (marco.xpath ? marco.xpath.getChatBox() : null),
+            getChatBox: () => (marco.xpath?.getChatBox ? marco.xpath.getChatBox() : null),
         }),
         cookies: Object.freeze({
             bindings: Object.freeze([] as Array<{ cookieName: string; url: string; role: string }>),
