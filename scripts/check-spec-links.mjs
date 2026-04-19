@@ -153,15 +153,72 @@ function main() {
     `${SCRIPT_TAG} scanned ${files.length} markdown files, ` +
     `${totalLinks} total links, ${checkedLinks} relative links checked.`;
 
+  // Build a stable key for each broken link so the baseline survives unrelated
+  // file edits (we key on source + target only, NOT line number).
+  const keyOf = (b) => `${b.source}|${b.target}`;
+  const currentKeys = new Set(broken.map(keyOf));
+
+  // --update-baseline: snapshot ALL current breaks and exit OK.
+  if (UPDATE_BASELINE) {
+    const payload = {
+      generatedAt: new Date().toISOString(),
+      note: "Pre-existing broken relative links allowed to pass build. New breaks fail. Regenerate with: node scripts/check-spec-links.mjs --update-baseline",
+      entries: broken
+        .map((b) => ({ source: b.source, target: b.target }))
+        .sort((a, b) => (keyOf(a) < keyOf(b) ? -1 : 1)),
+    };
+    writeFileSync(BASELINE_PATH, JSON.stringify(payload, null, 2) + "\n", "utf8");
+    console.log(
+      `${SCRIPT_TAG} baseline updated: ${broken.length} entries written to ${relative(
+        REPO_ROOT,
+        BASELINE_PATH
+      )}.`
+    );
+    return;
+  }
+
+  // Load baseline (if present) so pre-existing rot doesn't fail the build.
+  let baselineKeys = new Set();
+  if (!STRICT && existsSync(BASELINE_PATH)) {
+    try {
+      const raw = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
+      const entries = Array.isArray(raw?.entries) ? raw.entries : [];
+      baselineKeys = new Set(entries.map((e) => `${e.source}|${e.target}`));
+    } catch (err) {
+      console.error(
+        `${SCRIPT_TAG} HARD ERROR — failed to parse baseline.\n` +
+          `  path: ${relative(REPO_ROOT, BASELINE_PATH)}\n` +
+          `  reason: ${err instanceof Error ? err.message : String(err)}\n` +
+          `  fix:    delete the file or regenerate via 'node scripts/check-spec-links.mjs --update-baseline'.`
+      );
+      process.exit(1);
+    }
+  }
+
+  // Partition: new breaks (not in baseline) vs known/baselined.
+  const newlyBroken = broken.filter((b) => !baselineKeys.has(keyOf(b)));
+  const stale = [...baselineKeys].filter((k) => !currentKeys.has(k));
+
   if (broken.length === 0) {
     console.log(`${summary} OK — all relative links resolve.`);
     return;
   }
 
+  if (newlyBroken.length === 0) {
+    console.log(
+      `${summary} OK — ${broken.length} pre-existing broken link(s) match baseline.` +
+        (stale.length > 0
+          ? ` Note: ${stale.length} baseline entr${stale.length === 1 ? "y is" : "ies are"} stale (resolved or removed); run --update-baseline to clean.`
+          : "")
+    );
+    return;
+  }
+
   console.error(
-    `${SCRIPT_TAG} HARD ERROR — ${broken.length} broken relative link(s) detected.\n`
+    `${SCRIPT_TAG} HARD ERROR — ${newlyBroken.length} NEW broken relative link(s) detected ` +
+      `(${broken.length - newlyBroken.length} pre-existing in baseline).\n`
   );
-  for (const b of broken) {
+  for (const b of newlyBroken) {
     console.error(
       `  source:   ${b.source}:${b.line}\n` +
         `  link:     [${b.text}](${b.target})\n` +
@@ -169,7 +226,10 @@ function main() {
         `  reason:   target file does not exist on disk; rename or update the link.\n`
     );
   }
-  console.error(summary);
+  console.error(
+    summary +
+      `\n${SCRIPT_TAG} If these breaks are intentional/pre-existing, run: node scripts/check-spec-links.mjs --update-baseline`
+  );
   process.exit(1);
 }
 
