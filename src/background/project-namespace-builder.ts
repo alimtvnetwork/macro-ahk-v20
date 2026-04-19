@@ -11,7 +11,20 @@
  * See: spec/17-app-issues/66-sdk-global-object-missing.md
  * See: spec/05-chrome-extension/63-rise-up-macro-sdk.md
  * See: spec/17-app-issues/75-sdk-namespace-enrichment-and-developer-tooling.md
+ *
+ * Shape contract: `standalone-scripts/types/project-namespace-shape.ts`
+ * — the emitted IIFE MUST produce a `ProjectNamespace`. The
+ * `assertEmittedShape()` helper checks every required top-level key
+ * is present in the generated source on every build.
  */
+
+import {
+    assertEmittedShape,
+    PROJECT_NAMESPACE_KEYS,
+} from "../../standalone-scripts/types/project-namespace-shape";
+
+export type { ProjectNamespace } from "../../standalone-scripts/types/project-namespace-shape";
+export { PROJECT_NAMESPACE_KEYS };
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
