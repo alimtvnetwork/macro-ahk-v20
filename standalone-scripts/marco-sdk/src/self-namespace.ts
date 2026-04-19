@@ -22,35 +22,34 @@ import { NamespaceLogger } from "./logger";
    `standalone-scripts/types/project-namespace-shape.d.ts` — no import needed. */
 
 /**
- * Loose accessor over the frozen `window.marco` object.
+ * Internal accessor type for `window.marco`.
  *
- * Each sub-module is treated as `unknown` until accessed via the
- * `safeCall` helper below — we never assume a method exists, we only
- * call it if both the module and the method are present at runtime.
+ * The real `marco` object is fully typed inside the SDK (`AuthApi`,
+ * `KvApi`, `NotifyApi`, etc.), but those types differ from what the
+ * `ProjectNamespace` contract exposes (`NamespaceKvApi` returns
+ * `Promise<unknown>` for `list()` etc.). Re-importing every concrete
+ * SDK module type here would duplicate the module surface and re-create
+ * the very drift this refactor exists to prevent.
  *
- * This avoids re-importing every concrete SDK module type into the
- * self-namespace contract, while still keeping the public
- * `ProjectNamespace` shape strongly typed via the shared `.d.ts`.
+ * Instead we accept `marco` as an internal opaque accessor and rely on
+ * the explicit `ProjectNamespace` annotation on the returned `ns` object
+ * to enforce the public shape. Drift between the namespace contract and
+ * what we emit will fail at compile time on the `ns` annotation.
  */
-type MarcoLoose = Record<string, Record<string, unknown> | undefined>;
-
-function safeCall<T>(
-    obj: Record<string, unknown> | undefined,
-    method: string,
-    args: unknown[],
-    fallback: T,
-): T {
-    if (!obj) return fallback;
-    const fn = obj[method];
-    if (typeof fn !== "function") return fallback;
-    return (fn as (...a: unknown[]) => T).apply(obj, args);
-}
+type MarcoOpaque = {
+    readonly config?: { get(k: string): Promise<unknown>; set(k: string, v: unknown): Promise<void>; getAll(): Promise<Record<string, unknown>> };
+    readonly cookies?: { get(name: string): Promise<string | null>; getAll(): Promise<unknown> };
+    readonly xpath?: { resolve?(key: string): Element | null };
+    readonly kv?: { get(k: string): Promise<unknown>; set(k: string, v: unknown): Promise<void>; delete(k: string): Promise<void>; list(): Promise<unknown> };
+    readonly files?: { save(n: string, d: string): Promise<unknown>; read(n: string): Promise<unknown>; list(): Promise<unknown> };
+    readonly notify?: { toast(msg: string, level?: string, opts?: unknown): unknown; getRecentErrors?(): unknown[] };
+};
 
 const SDK_CODE_NAME = "RiseupMacroSdk";
 const SDK_SLUG = "riseup-macro-sdk";
 const SDK_PROJECT_ID = "marco-sdk";
 
-export function registerSdkSelfNamespace(marco: MarcoLike, version: string): void {
+export function registerSdkSelfNamespace(marco: MarcoOpaque, version: string): void {
     const win = window as unknown as Record<string, unknown>;
     const root = win.RiseupAsiaMacroExt as
         | { Projects?: Record<string, unknown>; Settings?: { Broadcast?: { BaseUrl?: string } } }
