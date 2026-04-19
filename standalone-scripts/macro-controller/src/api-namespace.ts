@@ -14,6 +14,7 @@
 import { VERSION } from './shared-state';
 import { logError } from './error-utils';
 import { showToast } from './toast';
+import { toErrorMessage } from './error-utils';
 
 import type { MacroController } from './core/MacroController';
 import type { ControllerState } from './types/config-types';
